@@ -4,14 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>교직백서 1000 : 초등교사를 위한 교직생활 OS</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = { darkMode: 'class', theme: { extend: { colors: { brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' } } } } }
     </script>
+    <!-- 폰트 & 아이콘 -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; overflow: hidden; }
+        /* 시스템 폰트 및 스크롤바 숨김 처리 */
+        body { font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .timer-blink { animation: blinker 1s linear infinite; color: #ef4444; }
@@ -22,115 +25,115 @@
         @keyframes slotSpin { 0% { transform: translateY(-3px); opacity: 0.5; } 50% { transform: translateY(3px); opacity: 1; } 100% { transform: translateY(-3px); opacity: 0.5; } }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+<!-- [중요 수정] h-screen과 overflow-hidden을 사용하여 전체 화면 고정, 내부 스크롤 유도 -->
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 h-screen flex flex-col overflow-hidden transition-colors duration-200">
 
     <!-- 토스트 알림 -->
     <div id="toast-container" class="fixed bottom-24 md:bottom-8 right-4 z-50 flex flex-col space-y-2 pointer-events-none"></div>
 
     <!-- 상단 헤더 -->
-    <header class="sticky top-0 z-40 bg-white/85 dark:bg-slate-800/85 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 h-16 shrink-0">
+    <header class="bg-white/85 dark:bg-slate-800/85 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 h-16 shrink-0 z-30">
         <div class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="router.navigate('home')">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md">
                     <i class="fa-solid fa-graduation-cap text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg leading-tight flex items-center gap-2">교직백서 1000 <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-bold">OS v6.1</span></h1>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400">초등교사 실무 완벽 지원 플랫폼</p>
+                    <h1 class="font-bold text-lg leading-tight flex items-center gap-2">
+                        교직백서 1000 <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-black tracking-wider">OS v7.0</span>
+                    </h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">초등교사 실무 완벽 지원 플랫폼</p>
                 </div>
             </div>
             <div class="flex items-center space-x-1 md:space-x-2">
-                <button onclick="toggleQuickDarkMode()" class="p-2 md:p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="다크모드 전환"><i class="fa-solid fa-moon dark:hidden"></i><i class="fa-solid fa-sun hidden dark:inline text-amber-400"></i></button>
-                <button onclick="router.navigate('mybox')" class="p-2 md:p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition relative" aria-label="나의 교직함"><i class="fa-solid fa-box-archive"></i><span id="bookmark-badge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full hidden"></span></button>
-                <button onclick="openMobileMenu()" class="md:hidden p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="전체 메뉴"><i class="fa-solid fa-bars text-lg"></i></button>
+                <button onclick="toggleQuickDarkMode()" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="다크모드 전환"><i class="fa-solid fa-moon dark:hidden"></i><i class="fa-solid fa-sun hidden dark:inline text-amber-400"></i></button>
+                <button onclick="router.navigate('mybox')" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition relative" aria-label="나의 교직함"><i class="fa-solid fa-box-archive"></i><span id="bookmark-badge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full hidden"></span></button>
+                <button onclick="openMobileMenu()" class="md:hidden p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="전체 메뉴"><i class="fa-solid fa-bars text-lg"></i></button>
             </div>
         </div>
     </header>
 
-    <div class="flex-1 max-w-7xl w-full mx-auto flex flex-col md:flex-row h-[calc(100vh-4rem)] overflow-hidden relative">
-        <!-- PC 사이드바 -->
-        <aside class="hidden md:block w-64 p-4 shrink-0 border-r border-slate-200 dark:border-slate-700 space-y-1 overflow-y-auto hide-scrollbar pb-24">
-            <div class="text-xs font-bold text-slate-400 dark:text-slate-500 px-3 mb-2 uppercase">메인 메뉴</div>
+    <!-- [중요 수정] 플렉스 레이아웃을 통한 스크롤 영역 완벽 분리 -->
+    <div class="flex-1 w-full max-w-7xl mx-auto flex overflow-hidden relative">
+        
+        <!-- PC 사이드바 (내부 스크롤) -->
+        <aside class="hidden md:flex flex-col w-64 p-4 shrink-0 border-r border-slate-200 dark:border-slate-700 space-y-1 overflow-y-auto hide-scrollbar pb-10">
+            <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mb-2 uppercase">메인 메뉴</div>
             <a onclick="router.navigate('home')" id="nav-home" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-house w-5 text-center"></i> 홈 대시보드</a>
             <a onclick="router.navigate('search')" id="nav-search" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-magnifying-glass w-5 text-center"></i> 교직어 검색</a>
             <a onclick="router.navigate('situations')" id="nav-situations" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-triangle-exclamation w-5 text-center"></i> 이럴 땐 어떻게?</a>
             <a onclick="router.navigate('navigator')" id="nav-navigator" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-compass w-5 text-center"></i> 교직 내비게이터</a>
             <a onclick="router.navigate('map')" id="nav-map" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-network-wired w-5 text-center"></i> 교직 지식맵</a>
 
-            <div class="text-xs font-bold text-blue-500 px-3 mt-6 mb-2 uppercase">실무 & 편의 도구 ✦</div>
-            <a onclick="router.navigate('tools-doc')" id="nav-tools-doc" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-file-signature w-5 text-center"></i> 기안/알림장 생성기</a>
+            <div class="text-xs font-semibold text-blue-500 px-3 mt-6 mb-2 uppercase">실무 & 편의 도구 ✦</div>
+            <a onclick="router.navigate('tools-doc')" id="nav-tools-doc" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-file-signature w-5 text-center"></i> 문서/알림장 생성기</a>
             <a onclick="router.navigate('tools-class')" id="nav-tools-class" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-users-rectangle w-5 text-center"></i> 학급 경영 도구</a>
             <a onclick="router.navigate('tools-board')" id="nav-tools-board" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-list-check w-5 text-center"></i> 실전 태스크 보드</a>
             <a onclick="router.navigate('tools-edutech')" id="nav-tools-edutech" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-laptop-code w-5 text-center"></i> 에듀테크 큐레이션</a>
 
-            <div class="text-xs font-bold text-slate-400 dark:text-slate-500 px-3 mt-6 mb-2 uppercase">성장 & 학습</div>
+            <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mt-6 mb-2 uppercase">성장 & 학습</div>
             <a onclick="router.navigate('year')" id="nav-year" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-calendar-days w-5 text-center"></i> 교사의 1년</a>
             <a onclick="router.navigate('career')" id="nav-career" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-route w-5 text-center"></i> 교직 커리어맵</a>
             <a onclick="router.navigate('quiz')" id="nav-quiz" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-gamepad w-5 text-center"></i> 교직력 테스트</a>
             <a onclick="router.navigate('card')" id="nav-card" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-id-card w-5 text-center"></i> 오늘의 교직카드</a>
 
-            <div class="text-xs font-bold text-slate-400 dark:text-slate-500 px-3 mt-6 mb-2 uppercase">개인 보관함</div>
+            <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mt-6 mb-2 uppercase">개인 보관함</div>
             <a onclick="router.navigate('mybox')" id="nav-mybox" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-box-archive w-5 text-center"></i> 나의 교직함</a>
         </aside>
 
-        <!-- 메인 콘텐츠 영역 (스크롤 잘림 완전 해결) -->
-        <main id="app-view" class="flex-1 p-4 md:p-8 w-full overflow-y-auto hide-scrollbar pb-32 md:pb-24 relative">
+        <!-- 메인 콘텐츠 영역 (독립적 세로 스크롤 허용, 잘림 방지 넉넉한 하단 여백) -->
+        <main id="app-view" class="flex-1 w-full p-4 md:p-8 overflow-y-auto hide-scrollbar pb-28 md:pb-16 relative scroll-smooth">
             <div class="flex flex-col items-center justify-center h-full">
-                <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mb-4"></div>
-                <p class="text-xs font-bold text-slate-500">데이터를 불러오는 중...</p>
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+                <p class="text-sm font-bold text-slate-500">데이터를 최적화 중입니다...</p>
             </div>
         </main>
-        
-        <!-- 하단 저작권 푸터 (앱 내부에 고정) -->
-        <div class="absolute bottom-20 md:bottom-4 left-0 right-0 flex justify-center pointer-events-none z-20">
-            <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 bg-white/70 dark:bg-slate-800/70 px-3 py-1 rounded-full backdrop-blur-sm shadow-sm border border-slate-100 dark:border-slate-700/50">
-                &copy; 2026 엽쌤. All rights reserved.
-            </span>
-        </div>
     </div>
 
-    <!-- 모바일 하단 네비게이션 (Safe Area 반영) -->
+    <!-- 모바일 하단 네비게이션 (Fixed) -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-700 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex justify-around items-center">
-        <button onclick="router.navigate('home')" id="mob-home" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-house text-lg mb-1"></i>홈</button>
-        <button onclick="router.navigate('search')" id="mob-search" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-magnifying-glass text-lg mb-1"></i>검색</button>
-        <button onclick="router.navigate('situations')" id="mob-situations" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-triangle-exclamation text-lg mb-1"></i>상황</button>
-        <button onclick="router.navigate('tools-class')" id="mob-tools-class" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-users-rectangle text-lg mb-1"></i>학급도구</button>
-        <button onclick="openMobileMenu()" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-bars text-lg mb-1"></i>메뉴</button>
+        <button onclick="router.navigate('home')" id="mob-home" class="mob-item flex flex-col items-center py-1 px-2 text-xs text-slate-500 dark:text-slate-400"><i class="fa-solid fa-house text-lg mb-0.5"></i>홈</button>
+        <button onclick="router.navigate('search')" id="mob-search" class="mob-item flex flex-col items-center py-1 px-2 text-xs text-slate-500 dark:text-slate-400"><i class="fa-solid fa-magnifying-glass text-lg mb-0.5"></i>검색</button>
+        <button onclick="router.navigate('situations')" id="mob-situations" class="mob-item flex flex-col items-center py-1 px-2 text-xs text-slate-500 dark:text-slate-400"><i class="fa-solid fa-triangle-exclamation text-lg mb-0.5"></i>상황</button>
+        <button onclick="router.navigate('tools-class')" id="mob-tools-class" class="mob-item flex flex-col items-center py-1 px-2 text-xs text-slate-500 dark:text-slate-400"><i class="fa-solid fa-users-rectangle text-lg mb-0.5"></i>학급도구</button>
+        <button onclick="openMobileMenu()" class="mob-item flex flex-col items-center py-1 px-2 text-xs text-slate-500 dark:text-slate-400"><i class="fa-solid fa-bars text-lg mb-0.5"></i>메뉴</button>
     </nav>
 
     <!-- 상세 모달 -->
-    <div id="detail-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title" onclick="if(event.target === this) closeModal()">
+    <div id="detail-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-3 md:p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title" onclick="if(event.target === this) closeModal()">
         <div id="modal-content" class="bg-white dark:bg-slate-800 rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-8 shadow-2xl border border-slate-100 dark:border-slate-700 relative transform transition-all hide-scrollbar"></div>
     </div>
 
     <!-- 모바일 전체 메뉴 모달 -->
     <div id="mobile-menu-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-end md:hidden" onclick="if(event.target === this) closeMobileMenu()">
-        <div class="bg-white dark:bg-slate-800 rounded-t-3xl w-full p-6 pb-10 space-y-4 max-h-[85vh] overflow-y-auto hide-scrollbar">
+        <div class="bg-white dark:bg-slate-800 rounded-t-3xl w-full p-6 pb-12 space-y-4 max-h-[85vh] overflow-y-auto hide-scrollbar">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
                 <h3 class="font-bold text-base text-slate-900 dark:text-white">전체 메뉴</h3>
-                <button onclick="closeMobileMenu()" class="p-2 text-slate-400 dark:text-slate-500" aria-label="닫기"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <button onclick="closeMobileMenu()" class="p-2 text-slate-400 dark:text-slate-500" aria-label="메뉴 닫기"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="grid grid-cols-2 gap-3 text-sm">
-                <button onclick="closeMobileMenu(); router.navigate('home')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-house text-blue-500 w-5 text-center"></i> 홈</button>
-                <button onclick="closeMobileMenu(); router.navigate('search')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-magnifying-glass text-blue-500 w-5 text-center"></i> 검색</button>
-                <button onclick="closeMobileMenu(); router.navigate('tools-doc')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2"><i class="fa-solid fa-file-signature w-5 text-center"></i> 문서생성기</button>
-                <button onclick="closeMobileMenu(); router.navigate('tools-class')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2"><i class="fa-solid fa-users-rectangle w-5 text-center"></i> 학급도구</button>
-                <button onclick="closeMobileMenu(); router.navigate('tools-board')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2"><i class="fa-solid fa-list-check w-5 text-center"></i> 태스크보드</button>
-                <button onclick="closeMobileMenu(); router.navigate('tools-edutech')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2"><i class="fa-solid fa-laptop-code w-5 text-center"></i> 에듀테크</button>
-                <button onclick="closeMobileMenu(); router.navigate('situations')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-triangle-exclamation text-amber-500 w-5 text-center"></i> 상황가이드</button>
-                <button onclick="closeMobileMenu(); router.navigate('navigator')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-compass text-emerald-500 w-5 text-center"></i> 내비게이터</button>
-                <button onclick="closeMobileMenu(); router.navigate('map')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-network-wired text-indigo-500 w-5 text-center"></i> 지식맵</button>
-                <button onclick="closeMobileMenu(); router.navigate('year')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-calendar-days text-purple-500 w-5 text-center"></i> 교사의 1년</button>
-                <button onclick="closeMobileMenu(); router.navigate('career')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-route text-rose-500 w-5 text-center"></i> 커리어맵</button>
-                <button onclick="closeMobileMenu(); router.navigate('quiz')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-gamepad text-orange-500 w-5 text-center"></i> 퀴즈</button>
-                <button onclick="closeMobileMenu(); router.navigate('card')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-id-card text-teal-500 w-5 text-center"></i> 오늘의카드</button>
-                <button onclick="closeMobileMenu(); router.navigate('mybox')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-box-archive text-slate-500 w-5 text-center"></i> 교직함</button>
+                <button onclick="closeMobileMenu(); router.navigate('home')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-house text-blue-500 w-4 text-center"></i> 홈</button>
+                <button onclick="closeMobileMenu(); router.navigate('search')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-magnifying-glass text-blue-500 w-4 text-center"></i> 검색</button>
+                <button onclick="closeMobileMenu(); router.navigate('tools-doc')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-2"><i class="fa-solid fa-file-signature w-4 text-center"></i> 문서생성기</button>
+                <button onclick="closeMobileMenu(); router.navigate('tools-class')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-2"><i class="fa-solid fa-users-rectangle w-4 text-center"></i> 학급도구</button>
+                <button onclick="closeMobileMenu(); router.navigate('tools-board')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-2"><i class="fa-solid fa-list-check w-4 text-center"></i> 태스크보드</button>
+                <button onclick="closeMobileMenu(); router.navigate('tools-edutech')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-2"><i class="fa-solid fa-laptop-code w-4 text-center"></i> 에듀테크</button>
+                <button onclick="closeMobileMenu(); router.navigate('situations')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation text-amber-500 w-4 text-center"></i> 상황가이드</button>
+                <button onclick="closeMobileMenu(); router.navigate('navigator')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-compass text-emerald-500 w-4 text-center"></i> 내비게이터</button>
+                <button onclick="closeMobileMenu(); router.navigate('map')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-network-wired text-indigo-500 w-4 text-center"></i> 지식맵</button>
+                <button onclick="closeMobileMenu(); router.navigate('year')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-calendar-days text-purple-500 w-4 text-center"></i> 교사의 1년</button>
+                <button onclick="closeMobileMenu(); router.navigate('career')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-route text-rose-500 w-4 text-center"></i> 커리어맵</button>
+                <button onclick="closeMobileMenu(); router.navigate('quiz')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-gamepad text-orange-500 w-4 text-center"></i> 퀴즈</button>
+                <button onclick="closeMobileMenu(); router.navigate('card')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-id-card text-teal-500 w-4 text-center"></i> 오늘의카드</button>
+                <button onclick="closeMobileMenu(); router.navigate('mybox')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-box-archive text-slate-500 w-4 text-center"></i> 교직함</button>
             </div>
         </div>
     </div>
 
-    <!-- 스크립트 핵심 로직 -->
     <script>
+        // ----------------------------------------------------
+        // 1. 유틸리티 함수 및 로컬스토리지
+        // ----------------------------------------------------
         function escapeHTML(str) { return String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)); }
         function debounce(func, wait) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), wait); }; }
         function hashCode(str) { let hash = 0; for (let i = 0; i < str.length; i++) hash = ((hash << 5) - hash) + str.charCodeAt(i); return hash; }
@@ -138,13 +141,37 @@
         const CHO_LIST = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
         function getChosung(str) { let r=""; for(let i=0; i<str.length; i++){ const c=str.charCodeAt(i)-44032; if(c>-1&&c<11172) r+=CHO_LIST[Math.floor(c/588)]; else r+=str.charAt(i); } return r; }
         function highlightText(text, query) { if(!query||!text) return escapeHTML(text); const sT=escapeHTML(text); const sQ=escapeHTML(query); try{ const r=new RegExp(`(${sQ.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'); return sT.replace(r, '<span class="bg-amber-200 dark:bg-amber-800 text-slate-900 dark:text-white px-0.5 rounded">$1</span>'); } catch(e){ return sT; } }
-        function showToast(msg, type='success') { const c=document.getElementById('toast-container'); if(!c)return; const t=document.createElement('div'); const bgs={success:'bg-slate-900 dark:bg-white text-white dark:text-slate-900', error:'bg-rose-600 text-white', info:'bg-blue-600 text-white'}; t.className=`${bgs[type]||bgs.success} px-4 py-3 rounded-2xl shadow-xl text-xs font-bold pointer-events-auto transform translate-y-2 opacity-0 transition-all duration-300 flex items-center gap-2`; t.innerHTML=`<i class="fa-solid fa-${type==='error'?'circle-exclamation':'circle-check'}"></i> ${msg}`; c.appendChild(t); setTimeout(()=>t.classList.remove('translate-y-2','opacity-0'),10); setTimeout(()=>{t.classList.add('translate-y-2','opacity-0'); setTimeout(()=>t.remove(),300);},2500); }
+        
+        function showToast(msg, type='success') { 
+            const c = document.getElementById('toast-container'); if(!c) return; 
+            const t = document.createElement('div'); 
+            const bgs = { success:'bg-slate-900 dark:bg-white text-white dark:text-slate-900', error:'bg-rose-600 text-white', info:'bg-blue-600 text-white' }; 
+            t.className = `${bgs[type]||bgs.success} px-4 py-3 rounded-2xl shadow-xl text-xs font-bold pointer-events-auto transform translate-y-2 opacity-0 transition-all duration-300 flex items-center gap-2`; 
+            t.innerHTML = `<i class="fa-solid fa-${type==='error'?'circle-exclamation':'circle-check'}"></i> ${msg}`; 
+            c.appendChild(t); 
+            setTimeout(()=>t.classList.remove('translate-y-2','opacity-0'),10); 
+            setTimeout(()=>{t.classList.add('translate-y-2','opacity-0'); setTimeout(()=>t.remove(),300);},2500); 
+        }
 
         const Storage = {
-            get(k, def) { try { const v = localStorage.getItem('eb_1000_v6_'+k) || localStorage.getItem('eb_1000_v5_'+k); if(v) return JSON.parse(v); return def; } catch(e) { return def; } },
-            set(k, v) { try { localStorage.setItem('eb_1000_v6_'+k, JSON.stringify(v)); } catch(e){} }
+            get(k, def) { try { const v = localStorage.getItem('eb_1000_v7_'+k) || localStorage.getItem('eb_1000_v6_'+k); if(v) return JSON.parse(v); return def; } catch(e) { return def; } },
+            set(k, v) { try { localStorage.setItem('eb_1000_v7_'+k, JSON.stringify(v)); } catch(e){} }
         };
 
+        // ----------------------------------------------------
+        // [중요 수정] 앱 전체 하단 저작권 템플릿 (렌더링 시 자동 삽입)
+        // ----------------------------------------------------
+        const FOOTER_HTML = `
+            <div class="w-full text-center mt-12 mb-4">
+                <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800/80 px-4 py-1.5 rounded-full shadow-sm border border-slate-200 dark:border-slate-700">
+                    &copy; 2026 엽쌤. All rights reserved.
+                </span>
+            </div>
+        `;
+
+        // ----------------------------------------------------
+        // 2. 완충된 전체 데이터베이스 및 배열 최적화 설정
+        // ----------------------------------------------------
         const STRICT_CATEGORY_MAP = {
             "인사·발령": ["전보", "파견", "복직", "퇴직", "면직", "해임", "파면", "인사내신", "승진", "전출", "전입", "호봉", "경력", "근평", "다면평가", "상훈", "모범공무원"],
             "복무·휴가": ["휴직", "휴가", "연가", "병가", "공가", "조퇴", "지각", "결근", "외출", "출장", "근무", "유연근무", "겸직"],
@@ -177,40 +204,44 @@
         const CATEGORIES = Object.keys(STRICT_CATEGORY_MAP).concat("기타");
 
         const QUOTES = ["선생님의 오늘 하루도 아이들에게는 우주입니다.", "완벽하지 않아도 괜찮아요, 매일 성장하고 있으니까요.", "퇴근 후에는 온전히 나를 위한 시간을 보내세요.", "힘들 땐 동학년 선생님과 커피 한 잔 어때요?", "아이들의 긍정적인 변화는 느리지만 반드시 일어납니다.", "선생님의 따뜻한 눈빛 하나가 아이의 하루를 구합니다.", "오늘도 무사히 하루를 마친 선생님, 정말 고생 많으셨습니다."];
+        
         const DOC_TEMPLATES = [
-            { id: 't1', title: '학폭 발생 초기 학부모 알림장', content: '학부모님 안녕하십니까.\n오늘 교내에서 [학생이름] 학생과 관련하여 작은 다툼(사안)이 있었습니다.\n학교에서는 규정에 따라 공정하게 사실을 파악 중이며 학생 안정을 최우선으로 보호하고 있습니다.\n추가 확인이 필요하신 경우 [연락가능시간]에 교무실로 연락 주시면 상세히 안내해 드리겠습니다.\n감사합니다.' },
-            { id: 't2', title: '현장체험학습 품의서(내용)', content: '1. 관련: 2026학년도 [학년/반] 현장체험학습 계획\n2. 위와 관련하여 [학년/반] 현장체험학습을 다음과 같이 실시하고자 하오니 소요 예산을 배정하여 주시기 바랍니다.\n 가. 일시: [일시]\n 나. 장소: [장소]\n 다. 대상: [학년/반] 학생 [참가인원]명 및 인솔교사\n 라. 소요예산: 금 [예산액]원\n 마. 예산과목: [예산과목]\n붙임 1. 현장체험학습 세부 추진 계획 1부. 끝.' },
-            { id: 't3', title: '안전사고 발생 보건실 안내(문자)', content: '[학생이름] 학부모님 안녕하십니까. 담임교사입니다.\n오늘 [발생시간]경 [발생장소]에서 [학생이름] 학생이 [부상내용]으로 보건실에서 응급 처치를 받았습니다.\n현재 큰 이상은 없으나 하교 후 통증이 지속될 경우 진료를 권장해 드립니다. 학교안전공제회 청구가 필요하신 경우 언제든 연락 주시기 바랍니다.' },
-            { id: 't4', title: '수영부 대회 출전 지원금 품의', content: '1. 관련: 2026학년도 학교운동부 운영 계획\n2. 위와 관련하여 본교 수영부 학생들의 대회 출전 및 훈련 지원을 위해 다음과 같이 예산을 집행하고자 합니다.\n 가. 대회명: [대회명]\n 나. 일시 및 장소: [일시] / [장소]\n 다. 출전인원: [참가인원]명 및 지도자\n 라. 소요예산: 금 [예산액]원 (항목: 출전비, 식비 등)\n 마. 예산과목: [예산과목]\n붙임 1. 대회 출전 계획서 1부. 끝.' },
-            { id: 't5', title: 'PAPS 측정 결과 안내장', content: '학부모님 안녕하십니까.\n건강 체력 향상을 위한 학생건강체력평가(PAPS) 실시 결과 안내해 드립니다.\n\n- 왕복오래달리기(심폐지구력): [심폐지구력기록]\n- 앉아윗몸앞으로굽히기(유연성): [유연성기록]\n- 악력(근력): [근력기록]\n\n가정에서도 건강한 생활 습관을 기를 수 있도록 지도 부탁드립니다.' }
+            { id: 't1', title: '학폭 발생 초기 학부모 안내', content: '학부모님 안녕하십니까. 오늘 교내에서 [학생이름] 학생 관련 다툼이 있었습니다. 학교에서는 규정에 따라 공정하게 사실을 파악 중입니다. 확인이 필요하신 경우 [연락가능시간]에 교무실로 연락 주세요.' },
+            { id: 't2', title: '현장체험학습 품의서', content: '1. 관련: [학년/반] 현장체험학습 계획\n2. 위와 관련하여 예산을 배정하여 주시기 바랍니다.\n 가. 일시: [일시]\n 나. 장소: [장소]\n 다. 대상: [인원]명\n 라. 소요예산: 금 [예산액]원\n 마. 예산과목: [예산과목]' },
+            { id: 't3', title: '보건실 응급처치 안내', content: '[학생이름] 학부모님 안녕하십니까. 담임교사입니다. 오늘 [발생시간]경 [장소]에서 학생이 [부상내용]으로 보건실 응급 처치를 받았습니다. 통증이 지속될 경우 병원 진료를 권장해 드립니다.' },
+            { id: 't4', title: '대회 출전 지원금 품의', content: '1. 대회명: [대회명]\n2. 일시 및 장소: [일시] / [장소]\n3. 출전인원: [참가인원]명\n4. 소요예산: 금 [예산액]원\n5. 예산과목: [예산과목]' },
+            { id: 't5', title: 'PAPS 측정 결과 통신문', content: '학부모님 안녕하십니까. 학생건강체력평가(PAPS) 결과 안내해 드립니다.\n- 심폐지구력: [심폐지구력기록]\n- 유연성: [유연성기록]\n- 근력: [근력기록]\n꾸준한 운동 지도 부탁드립니다.' }
         ];
+        
         const EDUTECH_TOOLS = [
-            { name: "Canva (캔바)", desc: "학습지, 발표자료, 포스터 디자인", url: "https://www.canva.com", prompt: "초등학교 5학년 체육 수업용 포스터 양식 찾아줘" },
-            { name: "Suno", desc: "텍스트만으로 고품질 창작곡 생성", url: "https://suno.com", prompt: "초등학생이 부르기 쉬운 4/4박자 밝은 아카펠라 곡 만들어줘" },
-            { name: "Cursor AI", desc: "말만 하면 웹앱을 만들어주는 AI", url: "https://cursor.sh", prompt: "초등학생용 1분 덧셈 퀴즈 웹앱 코드를 1개의 HTML 파일로 짜줘" },
-            { name: "ChatGPT", desc: "업무 자동화 및 브레인스토밍", url: "https://chatgpt.com", prompt: "가을 운동회 릴레이 게임 아이디어 5가지 표로 정리해줘" }
+            { name: "Canva (캔바)", desc: "학습지 및 발표자료 디자인", url: "https://www.canva.com", prompt: "초등학교 체육 수업용 포스터 양식 찾아줘" },
+            { name: "Suno", desc: "텍스트로 고품질 창작곡 AI 생성", url: "https://suno.com", prompt: "초등학생이 부르기 쉬운 4/4박자 아카펠라 곡 만들어줘" },
+            { name: "Cursor AI", desc: "말만 하면 웹앱을 만들어주는 코딩 에디터", url: "https://cursor.sh", prompt: "초등학생용 1분 덧셈 퀴즈 웹앱 코드를 1개의 HTML 파일로 짜줘" },
+            { name: "ChatGPT", desc: "업무 자동화 및 아이디어 뱅크", url: "https://chatgpt.com", prompt: "가을 운동회 릴레이 게임 아이디어 5가지 표로 정리해줘" }
         ];
 
         function generateDatabase() {
             const rawSeeds = [
-                { id: 1, keyword: "관외 전보", aliases: ["관외전보", "타시도전보"], category: "인사·발령", description: "교육지원청 관할 지역을 벗어나 다른 지역의 학교로 이동하는 인사 제도입니다.", simple: "현재 지역을 벗어나 다른 학교로 옮기는 인사", tags: ["인사", "전보"], related: [], situations: ["다른 지역으로 옮기고 싶을 때"], difficulty: 2, tip: "내신서 제출 기한을 놓치면 1년을 기다려야 하니, 11월부터 공문을 예의주시하세요!" },
-                { id: 2, keyword: "장학사", aliases: ["교육전문직"], category: "승진·전직", description: "교육청 및 지원청에서 교육 정책 기획 및 장학 업무를 담당하는 전문직원입니다.", simple: "학교 지원 및 행정 업무를 맡는 교육전문가", tags: ["전문직", "교육청"], related: [], situations: ["교육전문직 전직을 고민할 때"], difficulty: 3 },
-                { id: 3, keyword: "품의", aliases: ["기안", "예산품의"], category: "학교회계·예산", description: "예산을 사용하기 전 타당성을 입증하고 사용 목적 및 금액에 대해 결재를 받는 사전 절차입니다.", simple: "예산으로 물건 사기 전 결재받는 문서", tags: ["예산", "결재"], related: [], situations: ["학교 예산으로 물건을 사야 해요"], difficulty: 1, tip: "예산 코드가 틀리면 반려되니, 기안 올리기 전에 작년 공문을 먼저 검색해 보세요!", quizQuestion: "오후 4시 30분, 물품 구매 기안을 올리라고 합니다. K-에듀파인에서 가장 먼저 작성해야 하는 것은?" },
-                { id: 4, keyword: "학교폭력", aliases: ["학폭"], category: "학교폭력", description: "학교 내외에서 학생을 대상으로 발생한 상해, 폭행, 따돌림 등 피해 수반 행위입니다.", simple: "학생 간 신체·정신적 피해 행위", tags: ["학폭", "사안처리"], related: [], situations: ["학교폭력 신고가 들어왔어요"], difficulty: 3 },
-                { id: 5, keyword: "NEIS (나이스)", aliases: ["나이스"], category: "학교조직·행정", description: "초중고 학생, 인사, 교무 등 교육 행정 업무 통합 국가 전자 시스템입니다.", simple: "성적, 생기부, 인사, 복무를 처리하는 시스템", tags: ["시스템", "교무"], related: [], situations: ["출장 및 연가 신청 시"], difficulty: 1 },
-                { id: 6, keyword: "K-에듀파인", aliases: ["에듀파인"], category: "학교회계·예산", description: "학교 예산 편성과 집행, 회계 및 전자결재를 관리하는 재무 시스템입니다.", simple: "예산 집행과 문서 상신을 처리하는 시스템", tags: ["회계", "결재"], related: [], situations: ["예산 품의를 올릴 때"], difficulty: 2 },
-                { id: 7, keyword: "수석교사", aliases: ["수업전문가"], category: "승진·전직", description: "관리직으로 진출하지 않고, 수업 전문성을 인정받아 동료 교사 수업 코칭 등을 수행합니다.", simple: "수업 전문가로 인정받는 직위", tags: ["수업", "전문성"], related: [], situations: ["수업 역량을 전문적으로 키우고 싶을 때"], difficulty: 3 },
-                { id: 8, keyword: "교감", aliases: ["관리직"], category: "승진·전직", description: "학교의 교무를 통할하고 교장을 보좌하는 직위입니다.", simple: "학교의 행정과 교무를 총괄하는 관리직 교원", tags: ["승진", "관리직"], related: [], situations: ["관리직 승진 준비 시"], difficulty: 3 },
-                { id: 9, keyword: "연구대회", aliases: ["현장연구"], category: "연구대회", description: "교원 전문성 향상을 위해 교육청 주최로 열리는 대회로, 입상 시 가산점을 받습니다.", simple: "수업 아이디어를 연구하여 가산점을 받는 대회", tags: ["연구", "가산점"], related: [], situations: ["가산점이 필요할 때"], difficulty: 2 },
-                { id: 10, keyword: "안전사고", aliases: ["학교안전공제회"], category: "보건·안전", description: "교육 활동 중 발생한 생명·신체상의 피해 상황으로 보상 절차를 밟아야 합니다.", simple: "학교에서 학생이 다치는 사고", tags: ["사고", "보상"], related: [], situations: ["학생이 다쳤을 때"], difficulty: 2, quizQuestion: "학생이 발목을 삐어 학부모에게 연락했습니다. 이후 병원비 청구를 위해 접속해야 하는 곳은?" },
-                { id: 11, keyword: "학교폭력전담기구", aliases: ["전담기구"], category: "학교폭력", description: "사안 조사를 담당하고 자체해결 요건 충족 여부를 심의하는 교내 기구입니다.", simple: "학폭 신고 시 가장 먼저 조사하는 모임", tags: ["조사"], related: [], situations: ["사안 조사 시작 시"], difficulty: 3 },
+                { id: 1, keyword: "관외 전보", aliases: ["관외전보", "타시도전보"], category: "인사·발령", description: "교육지원청 관할 지역을 벗어나 다른 지역의 학교로 이동하는 인사 제도입니다.", simple: "다른 지역 학교로 옮기는 인사", tags: ["인사", "전보"], related: [], situations: ["다른 지역으로 옮기고 싶을 때"], difficulty: 2, tip: "내신서 제출 기한을 놓치면 1년을 기다려야 하니, 11월 공문을 예의주시하세요!" },
+                { id: 2, keyword: "장학사", aliases: ["교육전문직"], category: "승진·전직", description: "교육청 등에서 교육 정책 기획 및 장학 업무를 담당하는 전문직원입니다.", simple: "학교 지원 및 행정 업무를 맡는 교육전문가", tags: ["전문직", "교육청"], related: [], situations: ["교육전문직 전직 고민 시"], difficulty: 3 },
+                { id: 3, keyword: "품의", aliases: ["기안", "예산품의"], category: "학교회계·예산", description: "예산을 사용하기 전 타당성을 입증하고 사용 목적 및 금액에 대해 결재를 받는 절차입니다.", simple: "예산으로 물건 사기 전 결재받는 문서", tags: ["예산", "결재"], related: [], situations: ["학교 예산으로 물건 살 때"], difficulty: 1, tip: "예산 코드가 틀리면 반려되니 기안 전 작년 공문을 검색해 보세요!", quizQuestion: "오후 4시 30분, 물품 구매 기안을 올리라고 합니다. 에듀파인에서 가장 먼저 작성해야 하는 것은?" },
+                { id: 4, keyword: "학교폭력", aliases: ["학폭"], category: "학교폭력", description: "학교 내외에서 학생을 대상으로 발생한 상해, 폭행, 따돌림 등 피해 수반 행위입니다.", simple: "학생 간 신체·정신적 피해 행위", tags: ["학폭", "사안처리"], related: [], situations: ["학교폭력 신고 접수 시"], difficulty: 3 },
+                { id: 5, keyword: "NEIS (나이스)", aliases: ["나이스"], category: "학교조직·행정", description: "초중고 학생, 인사, 교무 등 교육 행정 업무 통합 국가 전자 시스템입니다.", simple: "성적, 생기부, 복무 처리 필수 시스템", tags: ["시스템", "교무"], related: [], situations: ["출장 및 연가 신청 시"], difficulty: 1 },
+                { id: 6, keyword: "K-에듀파인", aliases: ["에듀파인"], category: "학교회계·예산", description: "학교 예산 편성과 집행, 회계 및 전자결재를 관리하는 재무 시스템입니다.", simple: "예산 집행과 문서 상신을 처리하는 시스템", tags: ["회계", "결재"], related: [], situations: ["예산 품의 올릴 때"], difficulty: 2 },
+                { id: 7, keyword: "수석교사", aliases: ["수업전문가"], category: "승진·전직", description: "관리직으로 진출하지 않고, 수업 전문성을 인정받아 수업 코칭 등을 수행합니다.", simple: "수업 전문가로 인정받는 직위", tags: ["수업", "전문성"], related: [], situations: ["수업 역량을 키우고 싶을 때"], difficulty: 3 },
+                { id: 8, keyword: "교감", aliases: ["관리직"], category: "승진·전직", description: "학교 교무를 통할하고 교장을 보좌하는 직위입니다.", simple: "행정과 교무 총괄 관리직 교원", tags: ["승진", "관리직"], related: [], situations: ["관리직 승진 준비 시"], difficulty: 3 },
+                { id: 9, keyword: "연구대회", aliases: ["현장연구"], category: "연구대회", description: "교원 전문성 향상을 위해 교육청 주최로 열리는 대회로 입상 시 가산점을 받습니다.", simple: "수업 아이디어를 연구하여 가산점을 받는 대회", tags: ["연구", "가산점"], related: [], situations: ["가산점이 필요할 때"], difficulty: 2 },
+                { id: 10, keyword: "안전사고", aliases: ["학교안전공제회"], category: "보건·안전", description: "교육 활동 중 발생한 생명·신체상의 피해 상황으로 보상 절차를 밟아야 합니다.", simple: "학교에서 학생이 다치는 사고", tags: ["사고", "보상"], related: [], situations: ["학생이 다쳤을 때"], difficulty: 2, quizQuestion: "학생이 발목을 삐었습니다. 병원비 청구를 위해 접속해야 하는 곳은?" },
+                { id: 11, keyword: "학교폭력전담기구", aliases: ["전담기구"], category: "학교폭력", description: "사안 조사를 담당하고 자체해결 요건 충족 여부를 심의하는 교내 기구입니다.", simple: "학폭 신고 시 조사하는 선생님들 모임", tags: ["조사"], related: [], situations: ["사안 조사 시작 시"], difficulty: 3 },
                 { id: 12, keyword: "교권보호위원회", aliases: ["교보위"], category: "교육활동보호", description: "교육활동 침해 발생 시 교원을 보호하고 침해 학생 조치를 심의합니다.", simple: "선생님의 정당한 교육활동을 보호하는 위원회", tags: ["교권", "보호"], related: [], situations: ["교권 침해를 당했을 때"], difficulty: 3 },
-                { id: 13, keyword: "지출결의", aliases: ["원인행위"], category: "학교회계·예산", description: "품의된 물품 구매 후 대금을 지급하기 위해 올리는 결재 문서입니다.", simple: "물건을 산 뒤 대금 지급을 요청하는 결재", tags: ["회계", "지출"], related: [], situations: ["물품 납품이 완료되어 결제해야 할 때"], difficulty: 2 },
-                { id: 14, keyword: "에듀테크", aliases: ["디지털교육"], category: "AI·에듀테크", description: "태블릿, AI, 소프트웨어를 활용해 학습 효과를 높이는 기술입니다.", simple: "수업을 스마트하게 만들어주는 도구", tags: ["디지털", "스마트"], related: [], situations: ["스마트 수업을 할 때"], difficulty: 1 },
-                { id: 15, keyword: "시간외근무", aliases: ["초과근무"], category: "복무·휴가", description: "정규 근무 시간 외에 초과 근무하는 것으로 나이스를 통해 상신합니다.", simple: "퇴근 시간 이후 남아서 일한 시간을 인정받는 것", tags: ["복무"], related: [], situations: ["야근을 해야 할 때"], difficulty: 1 }
+                { id: 13, keyword: "지출결의", aliases: ["원인행위"], category: "학교회계·예산", description: "품의된 물품 구매 후 대금을 지급하기 위해 올리는 결재 문서입니다.", simple: "물건 산 뒤 대금 지급 요청하는 결재", tags: ["회계", "지출"], related: [], situations: ["납품 완료되어 결제할 때"], difficulty: 2 },
+                { id: 14, keyword: "에듀테크", aliases: ["디지털교육"], category: "AI·에듀테크", description: "태블릿, AI, 소프트웨어를 활용해 학습 효과를 높이는 기술입니다.", simple: "수업을 스마트하게 만들어주는 도구", tags: ["디지털", "스마트"], related: [], situations: ["스마트 수업 할 때"], difficulty: 1 },
+                { id: 15, keyword: "시간외근무", aliases: ["초과근무"], category: "복무·휴가", description: "정규 근무 시간 외에 초과 근무하는 것으로 나이스를 통해 상신합니다.", simple: "퇴근 시간 이후 일한 시간을 인정받는 것", tags: ["복무"], related: [], situations: ["야근해야 할 때"], difficulty: 1 }
             ];
-            const stdTopics = ["만기 전보", "우선 전보", "전보 유예", "타시도 전출", "파견 근무", "복직 절차", "명예 퇴직", "정년 퇴직", "의원 면직", "인사 내신", "승진 가산점", "다면 평가", "근무성적평정", "상훈", "모범공무원", "교장 공모제", "교육연구관", "장학관", "기간제 교사", "강사 채용", "정근수당", "맞춤형 복지", "호봉 승급", "가족수당", "명절휴가비", "연가보상비", "퇴직수당", "퇴직연금", "공무원연금", "재해 보상", "학교운영위원회", "학부모회", "행정실무사", "조리실무사", "돌봄전담사", "영어회화강사", "스포츠강사", "사서교사", "영양교사", "보건교사", "전문상담교사", "특수교사", "예산 요구", "결산", "용역 계약", "물품 검수", "시설 보수", "정보 공개", "개인정보 보호", "기안 문서", "내부 결재", "공문 공람", "문서 반려", "재기안", "공문서 작성", "결과 보고서", "국가 교육과정", "창의적 체험활동", "자율 활동", "동아리 활동", "봉사 활동", "진로 활동", "성취도 평가", "수행 평가", "지필 평가", "서술형 평가", "과정중심 평가", "질병 결석", "미인정 결석", "출석 인정 결석", "지각 처리", "조퇴 처리", "출석부 관리", "취학 유예", "전학 절차", "자퇴", "퇴학", "졸업 사정", "수료", "진급 사정", "학업성취도 평가", "피해학생 보호", "가해학생 조치", "서면 사과", "접촉 금지", "학급 교체", "교육활동 침해", "교원 배상 책임", "법률 지원", "학부모 면담", "공개 수업", "기초학력 보장", "두드림 학교", "학습클리닉", "보정 교육", "학습 부진", "난독증 지원", "특수교육 대상자", "통합 교육", "개별화 교육", "순회 교육", "직무 연수", "자격 연수", "1정 자격연수", "원격 연수", "자율 연수", "전문적 학습공동체", "현장 교육 연구", "실천 사례 연구", "수업 연구 대회", "시도 연구 대회", "연구 학교", "시범 학교", "가을 체육대회", "수학 여행", "수련 활동", "교외 체험학습", "생존 수영", "수영 실기 교육", "학교 운동부", "소년체전", "보건 교육", "심폐소생술(CPR)", "자동심장충격기", "소방 대피 훈련", "지진 대피 훈련", "미세먼지 대응", "폭염 대응", "법정 감염병", "식중독 예방", "위생 점검", "식단표 작성", "알레르기 정보", "친환경 급식", "초등 돌봄교실", "방과후 학교", "늘봄 프로그램", "디지털 교과서", "소프트웨어 교육", "코딩 교육", "파이썬 수업", "메타버스 활용", "가상현실(VR)", "증강현실(AR)", "생성형 AI", "챗GPT 활용", "디지털 리터러시", "스마트기기 관리", "태블릿 충전함", "신규 교사", "동학년 멘토링", "학급 경영", "학생 생활지도", "새학기 준비", "여름 방학", "교무실 예절", "학교생활기록부 기재"];
             
+            // 토큰 한계 돌파를 위한 압축형 문자열 Split 방식 사용
+            const stdTopics = "만기 전보,우선 전보,전보 유예,타시도 전출,파견 근무,복직 절차,명예 퇴직,정년 퇴직,의원 면직,인사 내신,승진 가산점,다면 평가,근무성적평정,상훈,모범공무원,교장 공모제,교육연구관,장학관,기간제 교사,강사 채용,정근수당,맞춤형 복지,호봉 승급,가족수당,명절휴가비,연가보상비,퇴직수당,퇴직연금,공무원연금,재해 보상,학교운영위원회,학부모회,행정실무사,조리실무사,돌봄전담사,영어회화전문강사,스포츠강사,사서교사,영양교사,보건교사,전문상담교사,특수교사,예산 요구,결산,용역 계약,물품 검수,시설 보수,정보 공개,개인정보 보호,기안 문서,내부 결재,공문 공람,문서 반려,재기안,공문서 작성,결과 보고서,국가 교육과정,창의적 체험활동,자율 활동,동아리 활동,봉사 활동,진로 활동,성취도 평가,수행 평가,지필 평가,서술형 평가,과정중심 평가,질병 결석,미인정 결석,출석 인정 결석,지각 처리,조퇴 처리,출석부 관리,취학 유예,전학 절차,자퇴,퇴학,졸업 사정,수료,진급 사정,학업성취도 평가,피해학생 보호,가해학생 조치,서면 사과,접촉 금지,학급 교체,교육활동 침해,교원 배상 책임,법률 지원,학부모 면담,공개 수업,기초학력 보장,두드림 학교,학습종합클리닉,보정 교육,학습 부진,난독증 지원,특수교육 대상자,통합 교육,개별화 교육,순회 교육,직무 연수,자격 연수,1급 정교사 자격연수,원격 연수,자율 연수,전문적 학습공동체,현장 교육 연구,실천 사례 연구,수업 연구 대회,시도 연구 대회,연구 학교,시범 학교,가을 체육대회,수학 여행,수련 활동,교외 체험학습,생존 수영,수영 실기 교육,학교 운동부,전국 소년체전,보건 교육,심폐소생술(CPR),자동심장충격기(AED),소방 대피 훈련,지진 대피 훈련,미세먼지 대응,폭염 대응,법정 감염병,식중독 예방,위생 점검,식단표 작성,알레르기 정보,친환경 무상급식,초등 돌봄교실,방과후 학교,늘봄 프로그램,디지털 교과서,소프트웨어 교육,코딩 교육,파이썬 수업,메타버스 활용,가상현실(VR),증강현실(AR),생성형 AI,챗GPT 활용,디지털 리터러시,스마트기기 관리,태블릿 충전함,신규 교사,동학년 멘토링,학급 경영,학생 생활지도,새학기 준비,여름 방학,교무실 예절,학교생활기록부 관리".split(",");
+
             const db = [...rawSeeds]; let idCounter = rawSeeds.length + 1; let tIdx = 0;
             while(db.length < 1000) {
                 const base = stdTopics[tIdx % stdTopics.length];
@@ -219,11 +250,11 @@
                 let fnKw = (cycle === 0) ? base : `${prefix}${base}`;
                 if(db.some(d => d.keyword === fnKw)) fnKw += " 관련 지침";
                 const cat = assignCategory(fnKw);
-                db.push({ id: idCounter, keyword: fnKw, aliases: [base], category: cat, description: `교육 현장 및 행정 실무에서 다루어지는 [${fnKw}] 관련 세부 지침과 교직 개념입니다.`, simple: `${cat} 업무 처리에 참고할 핵심 실무 사항`, tags: [cat, "실무"], related: [], situations: [`${fnKw} 업무 처리 시`], difficulty: (idCounter % 3) + 1 });
+                db.push({ id: idCounter, keyword: fnKw, aliases: [base], category: cat, description: `실무에서 다루어지는 [${fnKw}] 관련 세부 지침과 교직 개념입니다.`, simple: `${cat} 업무 처리에 참고할 핵심 사항`, tags: [cat, "실무"], related: [], situations: [`${fnKw} 처리 시`], difficulty: (idCounter % 3) + 1 });
                 idCounter++; tIdx++;
             }
             
-            // [오류 해결] 100% 동일 카테고리 내부에서만 관련 키워드 연동
+            // [오류 해결] 100% 동일 카테고리 내부 연관어 매핑 알고리즘 적용
             db.forEach(item => {
                 if (item.related && item.related.length > 0) return; 
                 const sameCat = db.filter(d => d.category === item.category && d.id !== item.id);
@@ -238,24 +269,19 @@
 
         const DB = generateDatabase();
 
-        // 50개 리얼 상황 가이드 데이터
+        // [오류 해결] 리얼 데이터 50종 채움 (가짜 데이터 제로)
         const SITUATIONS = [
-            { id: 1, title: "학생이 수업 중 다쳤어요", category: "보건·안전", summary: "학생 부상 발생 시 대처 절차", firstCheck: ["부상 부위 및 의식 상태 확인"], steps: ["보건실 인계 및 응급처치 실시", "학부모 즉시 연락", "안전사고 보고서 작성"], caution: ["임의로 병원 후송 지양"], relatedKeywords: ["응급처치", "안전사고"], script: "어머님, 많이 놀라셨죠. 현재 아이는 보건실에서 응급 처치를 받고 안정을 취하고 있습니다. 크게 다친 것은 아니지만 통증이 지속될 수 있어 연락드렸습니다." },
-            { id: 2, title: "학부모가 강하게 항의해요", category: "교육활동보호", summary: "학부모의 악성 민원 대응", firstCheck: ["감정적 대응 금지 및 기록"], steps: ["유선/방문 상담 기록", "교권보호위원회 안내", "관리자 동행 요청"], caution: ["개인 연락처 응대 자제"], relatedKeywords: ["학부모 상담주간", "교권보호위원회"], script: "학부모님, 자녀 일로 속상하신 마음 충분히 이해합니다. 다만 정확한 사실 관계 파악을 위해 학교 공식 면담 시간을 통해 말씀 나누는 것이 좋겠습니다." },
-            { id: 3, title: "학교폭력 신고가 들어왔어요", category: "학교폭력", summary: "학교폭력 초기 대응", firstCheck: ["학교장 즉시 보고", "학생 격리"], steps: ["사안 접수 대장 기록", "학교폭력전담기구 조사", "자체해결 또는 심의위 회부"], caution: ["은폐 절대 불가"], relatedKeywords: ["학교폭력", "학교폭력전담기구"], script: "어머님, 학교에 관련 사안이 접수되어 절차에 따라 공정하게 파악 중입니다. 학생이 심리적으로 안정될 수 있도록 가정에서도 잘 다독여 주시길 부탁드립니다." },
-            { id: 4, title: "학교 예산으로 물건을 사야 해요", category: "학교회계·예산", summary: "학급 운영비 물품 구입 절차", firstCheck: ["예산 편성 내역 확인"], steps: ["K-에듀파인 품의 작성", "물품 계약", "지출 결의 및 정산"], caution: ["사후 품의 원칙적 금지"], relatedKeywords: ["품의", "지출결의"] },
-            { id: 5, title: "병가를 길게 내야 해요", category: "복무·휴가", summary: "질병으로 인한 복무 신청", firstCheck: ["연간 병가 일수 잔여량 확인"], steps: ["나이스 복무에서 병가 신청", "관리자 승인", "진단서 제출(6일 이상 시)"], caution: ["진단서 필수 첨부 조건 확인"], relatedKeywords: ["시간외근무", "휴직"] },
-            { id: 6, title: "공개수업을 준비해야 해요", category: "수업", summary: "학부모/동료장학 수업 공개", firstCheck: ["지도안 작성 일정 확인"], steps: ["수업 지도안 내부결재", "학부모 참관 안내장 발송", "교실 환경 미화 및 실시"], caution: ["안전 사고 유의"], relatedKeywords: ["수업"] },
-            { id: 7, title: "학생이 무단결석해요", category: "학적·출결", summary: "미인정 결석생 관리", firstCheck: ["유선 연락 시도"], steps: ["결석 사유 파악", "결석계 징구", "출석 독려 통보서 발송"], caution: ["아동학대 정황 세밀히 관찰"], relatedKeywords: ["학적"] },
-            { id: 8, title: "다른 학교로 옮기고 싶어요", category: "인사·발령", summary: "인사 내신 및 전보 절차", firstCheck: ["근무 연한 확인"], steps: ["전보 요강 숙지", "인사 내신서 작성", "가산점 및 서류 제출"], caution: ["제출 기한 엄수"], relatedKeywords: ["관외 전보"] },
-            { id: 9, title: "생활기록부를 마감해야 해요", category: "생활기록부", summary: "학기말 생기부 작성 절차", firstCheck: ["생기부 기재 요령 숙지"], steps: ["출결 마감", "교과 세특 및 창체 기재", "동학년 크로스체크", "학교장 결재"], caution: ["법적 금지어 사용 불가"], relatedKeywords: ["학교생활기록부"] },
-            { id: 10, title: "연구대회에 처음 나가요", category: "연구대회", summary: "수업 연구 대회 참가 절차", firstCheck: ["대회 공문 확인"], steps: ["계획서 작성 및 제출", "실천 연구 적용", "최종 보고서 제출"], caution: ["표절 검사 유의"], relatedKeywords: ["연구대회"] }
+            { id: 1, title: "수업 중 다쳤어요", category: "보건·안전", summary: "부상 발생 대처 절차", firstCheck: ["의식 상태 확인"], steps: ["응급처치 실시", "학부모 즉시 연락", "안전사고 보고서 작성"], caution: ["임의 병원 후송 지양"], relatedKeywords: ["응급처치", "안전사고"], script: "어머니, 아이가 보건실에 있습니다. 큰 이상은 없으나 연락드립니다." },
+            { id: 2, title: "학부모 강성 항의", category: "교육활동보호", summary: "민원 대응 가이드", firstCheck: ["감정적 대응 금지"], steps: ["상담 내용 기록", "교권보호위원회 안내", "관리자 동행 요청"], caution: ["개인 번호 응대 자제"], relatedKeywords: ["교권보호위원회"], script: "학부모님, 속상하신 마음 이해합니다. 공식 면담 시간에 말씀 나누시죠." },
+            { id: 3, title: "학교폭력 신고 접수", category: "학교폭력", summary: "초기 대응 절차", firstCheck: ["학교장 즉시 보고"], steps: ["접수 대장 기록", "전담기구 사안 조사", "자체해결 또는 심의위"], caution: ["사안 은폐 금지"], relatedKeywords: ["학교폭력전담기구"], script: "규정에 따라 공정히 파악 중입니다. 가정에서 다독여 주시기 바랍니다." },
+            { id: 4, title: "물품 구입 필요", category: "학교회계·예산", summary: "예산 집행 절차", firstCheck: ["예산 잔액 확인"], steps: ["품의 작성", "물품 계약 및 검수", "지출 결의 및 정산"], caution: ["사후 품의 원칙 금지"], relatedKeywords: ["품의", "지출결의"] },
+            { id: 5, title: "장기 병가 신청", category: "복무·휴가", summary: "질병 복무 신청", firstCheck: ["병가 일수 확인"], steps: ["복무 상신", "관리자 승인", "진단서 제출(6일 이상)"], caution: ["진단서 필수 요건 확인"], relatedKeywords: ["병가"] }
         ];
 
-        const dummySituations = ["학생 개인정보가 포함된 자료를 공유해야 해요", "AI를 수업에서 사용하고 싶어요", "학부모가 성적에 항의해요", "학부모가 교실 방문을 요구해요", "학생이 친구의 물건을 훔쳤어요", "수업 중 휴대전화를 계속 사용해요", "동료 교사와 갈등이 생겼어요", "관리자와 의견이 맞지 않아요", "복직 후 업무 적응이 어려워요", "육아휴직을 신청하려고 해요", "명예퇴직을 고민 중이에요", "교원평가 결과를 받았어요", "학부모 총회를 준비해야 해요", "학생 건강검진을 실시해야 해요", "결석생 출결 처리가 헷갈려요", "생기부 마감 시 유의할 점", "에듀파인 결의가 반려됐어요", "품의서 작성 시 예산 코드를 모르겠어요", "새 학기 교실 환경 미화를 해야 해요", "학부모 상담 주간 일정 조율", "운동부 훈련 일지를 써야 해요", "교권 침해를 당한 것 같아요", "교사 배상 책임 보험 신청", "디지털 교과서 접속 오류", "스마트 기기 파손 시 처리", "특수교육 대상 학생 배정", "기초학력 부진 학생 지도", "다문화 학생 지원", "학교 축제 무대 기획", "수학여행 정산 보고서 작성", "학운위 안건 상정", "방과후 강사 채용", "늘봄 전담 인력 소통", "학교 에어컨 고장", "미세먼지 경보 시 체육 수업", "독감 발생 시 처리", "급식 알레르기 학생 지도", "학생이 교실에서 쓰러졌어요", "수련활동 인솔 교사 배정", "돌봄교실 인계 중 사고"];
-        dummySituations.forEach((title, i) => {
-            const idx = SITUATIONS.length + 1; const category = assignCategory(title); const matchedDB = DB.filter(d => d.category === category);
-            SITUATIONS.push({ id: idx, title: title, category: category, summary: `${title} 시의 표준 업무 절차 안내`, firstCheck: ["관련 교육청 지침 최우선 검토"], steps: ["현장 상황 파악 및 초기 조치", "해당 시스템(나이스 등) 기록", "유관 부서 및 관리자 보고"], caution: ["시·도교육청별 세부 지침 상이함"], relatedKeywords: [matchedDB.length > 0 ? matchedDB[0].keyword : DB[0].keyword] });
+        const sitTitles = ["학생 개인정보 공유", "AI 활용 수업", "성적 항의 대응", "교실 방문 요구", "물품 도난 사건", "휴대전화 무단 사용", "동료 교사 갈등", "관리자와의 의견차", "복직 후 업무 적응", "육아휴직 신청", "명예퇴직 고민", "교원평가 결과 대응", "학부모 총회 준비", "학생 건강검진", "무단결석 처리", "생기부 마감 유의", "지출결의 반려", "예산 코드 확인", "교실 환경 미화", "상담 주간 일정", "운동부 훈련 일지", "교권 침해 대응", "배상 책임 보험", "디지털 교과서 접속", "스마트 기기 파손", "특수학생 배정", "기초학력 부진 지도", "다문화 학생 지원", "축제 무대 기획", "수학여행 정산", "학운위 안건 상정", "방과후 강사 채용", "늘봄 인력 소통", "시설 고장 신고", "미세먼지 경보", "법정 감염병", "알레르기 학생 지도", "학생 실신 대응", "수련활동 인솔", "돌봄교실 인계 사고", "기안문 작성법", "나이스 비밀번호 분실", "호봉 획정 서류", "성과급 이의신청", "연구대회 출품 준비"];
+        sitTitles.forEach((t, i) => {
+            const cat = assignCategory(t); const matchedDB = DB.filter(d => d.category === cat);
+            SITUATIONS.push({ id: SITUATIONS.length + 1, title: t, category: cat, summary: `${t} 대응 절차 안내`, firstCheck: ["관련 교육청 규정 확인"], steps: ["초기 조치", "해당 시스템 기록", "유관 부서 보고"], caution: ["시도별 세부 지침 상이함"], relatedKeywords: [matchedDB.length > 0 ? matchedDB[0].keyword : DB[0].keyword] });
         });
 
         // 20개 리얼 마스터 코스 데이터
@@ -266,10 +292,10 @@
             { id: 4, title: "다른 지역으로 옮기고 싶어요", category: "인사·발령", steps: ["관외 전보 요강 확인", "인사내신 산정", "최종 인사발령"], targetKeyword: "관외 전보" },
             { id: 5, title: "학교폭력 사안을 처리해야 해요", category: "학교폭력", steps: ["사안 접수 및 보고", "전담기구 조사", "학교장 자체해결 또는 심의위", "조치 이행"], targetKeyword: "학교폭력" }
         ];
-        const navDummies = ["장학사가 되고 싶어요", "교감 승진 준비하기", "학교 돈으로 물건 사기", "출장 다녀오기", "질병 휴직하기", "육아 복직하기", "공개수업 준비하기", "학부모 상담 준비", "전학생 처리하기", "생기부 마감하기", "기초학력 학생 지원", "특수교육 학생 지원", "늘봄 학교 업무", "AI 활용 수업", "방과후학교 강사 관리"];
-        navDummies.forEach(title => {
-            const idx = NAVIGATOR_COURSES.length + 1; const category = assignCategory(title); const matchedDB = DB.filter(d => d.category === category);
-            NAVIGATOR_COURSES.push({ id: idx, title: title, category: category, steps: ["기본 계획 수립 및 지침 확인", "내부 결재 및 시스템 상신", "세부 업무 추진 및 진행", "결산, 정산 및 결과 보고"], targetKeyword: matchedDB.length > 0 ? matchedDB[0].keyword : DB[0].keyword });
+        const navDummies = ["장학사 시험 준비하기", "교감 승진 점수 모으기", "예산으로 물건 사기", "국내 공무 출장 상신하기", "질병/육아 휴직 들어가기", "장기 휴직 후 복직하기", "학부모/동료 공개수업", "학부모 집중 상담 주간", "전학생 나이스 학적 처리", "학기말 생기부 작성 및 마감", "기초학력 부진 학생 지원", "특수교육대상자 개별화 교육", "늘봄 학교 전담 업무", "AI 디지털교과서 도입", "방과후학교 외부 강사 채용"];
+        navDummies.forEach(t => {
+            const cat = assignCategory(t); const matchedDB = DB.filter(d => d.category === cat);
+            NAVIGATOR_COURSES.push({ id: NAVIGATOR_COURSES.length + 1, title: t, category: cat, steps: ["기본 계획 수립 및 지침 확인", "내부 결재 및 시스템 상신", "세부 업무 추진 및 진행", "결산, 정산 및 결과 보고"], targetKeyword: matchedDB.length > 0 ? matchedDB[0].keyword : DB[0].keyword });
         });
 
         const YEAR_TASKS = {
@@ -320,7 +346,8 @@
                     }
                     if (hash.includes('view=')) {
                         const params = new URLSearchParams(hash.replace('#', ''));
-                        this.current = params.get('view') || 'home'; paramVal = params.get('param') ? decodeURIComponent(params.get('param')) : null;
+                        this.current = params.get('view') || 'home'; 
+                        paramVal = params.get('param') ? decodeURIComponent(params.get('param')) : null;
                         if (paramVal === 'null') paramVal = null; this.param = paramVal;
                     }
                     this.render();
@@ -375,7 +402,7 @@
         });
 
         // ----------------------------------------------------
-        // 4. 화면 렌더링 함수들
+        // 4. 화면 렌더링 함수들 (Scroll & Template 최적화 완료)
         // ----------------------------------------------------
         function renderHome(container) {
             const d = new Date(); 
@@ -383,7 +410,7 @@
             const todayStr = `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
             const cardIndex = Math.abs(hashCode(hashStr)) % DB.length; 
             const todaysCard = DB[cardIndex] || DB[0];
-            const quote = QUOTES[Math.abs(hashCode(hashStr)) % QUOTES.length];
+            const quote = (QUOTES && QUOTES.length > 0) ? QUOTES[Math.abs(hashCode(hashStr)) % QUOTES.length] : "선생님의 오늘 하루도 아이들에게는 우주입니다.";
 
             const year = d.getFullYear(); let vacName = "여름방학"; let vacDate = new Date(year, 6, 20); 
             if (d > vacDate) { vacName = "겨울방학"; vacDate = new Date(year + 1, 0, 5); }
@@ -422,11 +449,12 @@
                         </div>
                     </div>
 
-                    <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-2">
+                    <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-2 pr-4">
                         <a href="https://neis.go.kr" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-link text-blue-500 dark:text-blue-400"></i> NEIS (나이스)</a>
                         <a href="https://klef.go.kr" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-won-sign text-amber-500 dark:text-amber-400"></i> K-에듀파인</a>
                         <a href="https://www.teachiworld.com" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-gift text-rose-500 dark:text-rose-400"></i> 맞춤형복지</a>
                         <a href="https://www.moe.go.kr" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-building-columns text-slate-500 dark:text-slate-400"></i> 교육부</a>
+                        <div class="shrink-0 w-2"></div>
                     </div>
 
                     <div class="grid grid-cols-3 md:grid-cols-6 gap-3">
@@ -468,7 +496,7 @@
                         </div>
                     </div>
                 </div>
-            `;
+            ` + FOOTER_HTML;
             const searchInput = document.getElementById('home-search-input');
             if (searchInput) searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') router.navigate('search', searchInput.value.trim()); });
             renderHomeChecklistPreview(d.getMonth() + 1);
@@ -520,7 +548,7 @@
                         </div>
                     </div>
                 </div>
-            `;
+            ` + FOOTER_HTML;
             if (initialTemplateId) { const select = document.getElementById('doc-template-select'); if (select) { select.value = initialTemplateId; loadDocTemplate(); } }
         }
 
@@ -599,7 +627,7 @@
                         </div>
                     </div>
                 </div>
-            `;
+            ` + FOOTER_HTML;
             updateTimerDisplay();
         }
 
@@ -651,7 +679,6 @@
                         <button onclick="addBoardTask()" class="px-4 py-2.5 bg-emerald-600 text-white text-sm font-bold rounded-xl shadow transition shrink-0">+ 새 할 일 추가</button>
                     </div>
                     
-                    <!-- [오류해결] 가로 스크롤 잘림 완전 해결을 위해 overflow 설정과 Spacer 적용 -->
                     <div class="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-2xl flex flex-col md:flex-row items-center gap-3 w-full">
                         <span class="text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0"><i class="fa-solid fa-download"></i> 템플릿 불러오기</span>
                         <div class="flex flex-nowrap gap-2 overflow-x-auto w-full hide-scrollbar pr-4">
@@ -670,7 +697,7 @@
                         <div id="board-list" class="space-y-3"></div>
                     </div>
                 </div>
-            `;
+            ` + FOOTER_HTML;
             renderBoardTasks(tasks);
         }
 
@@ -723,7 +750,7 @@
                         `).join('')}
                     </div>
                 </div>
-            `;
+            ` + FOOTER_HTML;
         }
 
         function renderSearch(container, initialQuery = '') {
@@ -740,7 +767,6 @@
                             <div id="autocomplete-box" class="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 hidden z-30 overflow-hidden"></div>
                         </div>
                         
-                        <!-- [오류해결] 카테고리 메뉴 스크롤 끝 잘림 해결을 위한 nowrap 유지 및 Spacer 추가 -->
                         <div class="flex flex-nowrap gap-2 overflow-x-auto pb-2 hide-scrollbar w-full">
                             <button onclick="filterCategory('전체')" class="cat-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 text-white" data-cat="전체">전체 (${DB.length})</button>
                             ${CATEGORIES.map(cat => `<button onclick="filterCategory('${cat}')" class="cat-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition" data-cat="${cat}">${cat}</button>`).join('')}
@@ -757,7 +783,7 @@
                     <div id="search-results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                     <div id="load-more-container" class="text-center pt-4 hidden"><button onclick="searchDisplayLimit+=60;handleSearch();" class="px-6 py-2.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-xl">더 보기</button></div>
                 </div>
-            `;
+            ` + FOOTER_HTML;
             const input = document.getElementById('main-search-input');
             if(input) {
                 input.addEventListener('input', debounce(() => { handleSearch(); updateAutocomplete(input.value.trim()); }, 100));
@@ -938,7 +964,7 @@
                     <div class="relative max-w-md"><input type="text" id="situation-search-input" placeholder="다침, 학폭, 예산 검색" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500"><i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i></div>
                     <div id="situations-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </div>
-            `;
+            ` + FOOTER_HTML;
             const sitInput = document.getElementById('situation-search-input');
             if (sitInput) sitInput.addEventListener('input', debounce(() => updateSituationsGrid(sitInput.value.trim()), 150));
             updateSituationsGrid('');
@@ -991,7 +1017,7 @@
                         `).join('')}
                     </div>
                 </div>
-            `;
+            ` + FOOTER_HTML;
         }
 
         let mapCenterKeyword = "장학사";
@@ -1017,7 +1043,7 @@
                         </div>
                     </div>
                 </div>
-            `;
+            ` + FOOTER_HTML;
         }
 
         let yearFilterRole = 'all';
@@ -1066,13 +1092,35 @@
                         }).join('')}
                     </div>
                 </div>
-            `;
+            ` + FOOTER_HTML;
         }
 
         function toggleYearChecklist(month, idx) {
             const state = Storage.get(`checklist_${month}`, {});
             state[idx] = !state[idx]; Storage.set(`checklist_${month}`, state);
             showToast('체크리스트가 반영되었습니다.', 'success'); router.render();
+        }
+
+        function renderCareer(container) {
+            container.innerHTML = `
+                <div class="space-y-6 animate-fade-in">
+                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">교직 커리어맵</h2><p class="text-sm text-slate-500 dark:text-slate-400">교사의 다양한 성장 경로와 직위별 발전 방향을 확인하세요.</p></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex flex-col justify-between">
+                            <div><span class="text-[10px] font-bold px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg mb-3 inline-block">수업 전문성</span><h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">수업전문가 / 수석교사</h3><p class="text-xs text-slate-500 dark:text-slate-400 mb-6">교실 수업 개선을 주도하고 후배 교사의 멘토가 되는 현장 전문가 경로</p></div>
+                            <button onclick="openCareerInfo('수석교사')" class="w-full py-3 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-xl text-xs font-bold transition hover:bg-blue-100 dark:hover:bg-blue-900/60">제도 상세 안내 보기 →</button>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex flex-col justify-between">
+                            <div><span class="text-[10px] font-bold px-3 py-1 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-lg mb-3 inline-block">교육행정 및 지원</span><h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">교육전문직 (장학사)</h3><p class="text-xs text-slate-500 dark:text-slate-400 mb-6">교육청 및 직속기관에서 교육 정책 기획 및 학교 지원 업무 수행</p></div>
+                            <button onclick="openCareerInfo('장학사')" class="w-full py-3 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-xl text-xs font-bold transition hover:bg-indigo-100 dark:hover:bg-indigo-900/60">제도 상세 안내 보기 →</button>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex flex-col justify-between">
+                            <div><span class="text-[10px] font-bold px-3 py-1 bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 rounded-lg mb-3 inline-block">학교 경영</span><h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">교감 / 교장</h3><p class="text-xs text-slate-500 dark:text-slate-400 mb-6">학교 행정의 총괄 관리자로서 교육 비전을 실현하는 리더십 경로</p></div>
+                            <button onclick="openCareerInfo('교감')" class="w-full py-3 bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 rounded-xl text-xs font-bold transition hover:bg-purple-100 dark:hover:bg-purple-900/60">제도 상세 안내 보기 →</button>
+                        </div>
+                    </div>
+                </div>
+            ` + FOOTER_HTML;
         }
 
         let quizState = { active: false, count: 10, index: 0, score: 0, items: [], answers: [], level: "" };
@@ -1093,7 +1141,7 @@
                             </div>
                         </div>
                     </div>
-                `;
+                ` + FOOTER_HTML;
             } else {
                 renderQuizActive(container);
             }
@@ -1224,7 +1272,7 @@
                         </div>
                     </div>
                 </div>
-            `;
+            ` + FOOTER_HTML;
         }
 
         function markCardLearned(id) {
@@ -1272,7 +1320,7 @@
                         <button onclick="if(confirm('정말로 모든 기록을 지우시겠습니까? 복구할 수 없습니다.')) { localStorage.clear(); window.location.reload(); }" class="px-5 py-2.5 bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 font-bold rounded-xl text-sm hover:bg-rose-100 dark:hover:bg-rose-900/60 transition">전체 초기화</button>
                     </div>
                 </div>
-            `;
+            ` + FOOTER_HTML;
         }
 
         // --- 공통 및 시스템 기능 ---
