@@ -48,7 +48,7 @@
                 <div>
                     <h1 class="font-bold text-lg leading-tight flex items-center gap-2">
                         교직백서 1000 
-                        <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-medium">OS v3.4</span>
+                        <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-medium">OS v3.5</span>
                     </h1>
                     <p class="text-xs text-slate-500 dark:text-slate-400">초등교사를 위한 교직생활 통합 플랫폼</p>
                 </div>
@@ -1763,11 +1763,11 @@
             if (m) m.classList.add('hidden');
         }
 
-        function debounce(func, wait) {
+        function debounce(getFunc, wait) {
             let timeout;
             return function(...args) {
                 clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
+                timeout = setTimeout(() => getFunc.apply(this, args), wait);
             };
         }
 
