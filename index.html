@@ -7,12 +7,18 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' } } } } }
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: { colors: { brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' } } }
+            }
+        }
     </script>
+    <!-- 폰트 & 아이콘 -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+        body { font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .timer-blink { animation: blinker 1s linear infinite; color: #ef4444; }
@@ -25,13 +31,14 @@
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200 pb-16 md:pb-0">
 
+    <!-- 토스트 알림 -->
     <div id="toast-container" class="fixed bottom-20 md:bottom-6 right-4 z-50 flex flex-col space-y-2 pointer-events-none"></div>
 
     <!-- 상단 헤더 -->
     <header class="sticky top-0 z-40 bg-white/85 dark:bg-slate-800/85 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
         <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="router.navigate('home')">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
                     <i class="fa-solid fa-graduation-cap text-lg"></i>
                 </div>
                 <div>
@@ -42,9 +49,9 @@
                 </div>
             </div>
             <div class="flex items-center space-x-2">
-                <button onclick="toggleQuickDarkMode()" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="다크모드 전환"><i class="fa-solid fa-moon dark:hidden"></i><i class="fa-solid fa-sun hidden dark:inline text-amber-400"></i></button>
-                <button onclick="router.navigate('mybox')" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition relative" aria-label="나의 교직함"><i class="fa-solid fa-box-archive"></i><span id="bookmark-badge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full hidden"></span></button>
-                <button onclick="openMobileMenu()" class="md:hidden p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="전체 메뉴"><i class="fa-solid fa-bars"></i></button>
+                <button onclick="toggleQuickDarkMode()" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition" aria-label="다크모드 전환"><i class="fa-solid fa-moon dark:hidden"></i><i class="fa-solid fa-sun hidden dark:inline text-amber-400"></i></button>
+                <button onclick="router.navigate('mybox')" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition relative" aria-label="나의 교직함"><i class="fa-solid fa-box-archive"></i><span id="bookmark-badge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full hidden"></span></button>
+                <button onclick="openMobileMenu()" class="md:hidden p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition" aria-label="전체 메뉴"><i class="fa-solid fa-bars"></i></button>
             </div>
         </div>
     </header>
@@ -52,26 +59,26 @@
     <div class="flex-1 max-w-7xl w-full mx-auto flex flex-col md:flex-row pb-20 md:pb-6">
         <!-- PC 사이드바 -->
         <aside class="hidden md:block w-64 p-4 shrink-0 border-r border-slate-200 dark:border-slate-700 space-y-1 overflow-y-auto hide-scrollbar h-[calc(100vh-4rem)]">
-            <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mb-2 uppercase">메인 메뉴</div>
+            <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mb-2 uppercase tracking-wider">메인 메뉴</div>
             <a onclick="router.navigate('home')" id="nav-home" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-house w-5 text-center"></i> 홈 대시보드</a>
             <a onclick="router.navigate('search')" id="nav-search" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-magnifying-glass w-5 text-center"></i> 교직어 검색</a>
             <a onclick="router.navigate('situations')" id="nav-situations" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-triangle-exclamation w-5 text-center"></i> 이럴 땐 어떻게?</a>
             <a onclick="router.navigate('navigator')" id="nav-navigator" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-compass w-5 text-center"></i> 교직 내비게이터</a>
             <a onclick="router.navigate('map')" id="nav-map" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-network-wired w-5 text-center"></i> 교직 지식맵</a>
 
-            <div class="text-xs font-semibold text-blue-500 px-3 mt-6 mb-2 uppercase">실무 & 편의 도구 ✦</div>
-            <a onclick="router.navigate('tools-doc')" id="nav-tools-doc" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-file-signature w-5 text-center"></i> 기안/알림장 생성기</a>
+            <div class="text-xs font-semibold text-blue-500 px-3 mt-6 mb-2 uppercase tracking-wider">실무 & 편의 도구 ✦</div>
+            <a onclick="router.navigate('tools-doc')" id="nav-tools-doc" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-file-signature w-5 text-center"></i> 문서/알림장 생성기</a>
             <a onclick="router.navigate('tools-class')" id="nav-tools-class" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-users-rectangle w-5 text-center"></i> 학급 경영 도구</a>
             <a onclick="router.navigate('tools-board')" id="nav-tools-board" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-list-check w-5 text-center"></i> 실전 태스크 보드</a>
             <a onclick="router.navigate('tools-edutech')" id="nav-tools-edutech" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-laptop-code w-5 text-center"></i> 에듀테크 큐레이션</a>
 
-            <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mt-6 mb-2 uppercase">성장 & 학습</div>
+            <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mt-6 mb-2 uppercase tracking-wider">성장 & 학습</div>
             <a onclick="router.navigate('year')" id="nav-year" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-calendar-days w-5 text-center"></i> 교사의 1년</a>
             <a onclick="router.navigate('career')" id="nav-career" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-route w-5 text-center"></i> 교직 커리어맵</a>
             <a onclick="router.navigate('quiz')" id="nav-quiz" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-gamepad w-5 text-center"></i> 교직력 테스트</a>
             <a onclick="router.navigate('card')" id="nav-card" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-id-card w-5 text-center"></i> 오늘의 교직카드</a>
 
-            <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mt-6 mb-2 uppercase">개인 보관함</div>
+            <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mt-6 mb-2 uppercase tracking-wider">개인 보관함</div>
             <a onclick="router.navigate('mybox')" id="nav-mybox" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-box-archive w-5 text-center"></i> 나의 교직함</a>
         </aside>
 
@@ -124,6 +131,7 @@
         </div>
     </div>
 
+    <!-- 스크립트 로직 -->
     <script>
         // ----------------------------------------------------
         // 1. 유틸리티 함수 및 로컬스토리지
@@ -285,12 +293,18 @@
             let idCounter = rawSeeds.length + 1;
             let topicIdx = 0;
 
+            // [오류 해결] 숫자를 임의로 붙이는 방식 전면 차단 및 안전한 수식어 도입
             while (db.length < 1000) {
                 const baseTopic = standardTopics[topicIdx % standardTopics.length];
                 const cycle = Math.floor(topicIdx / standardTopics.length);
                 const prefixes = ["", "초등 ", "학교 ", "실무 ", "교육 ", "기본 ", "현장 ", "행정 ", "운영 ", "지원 "];
+                
+                // 빈 값 방지 처리 (초기 검색창 null 오류 방지용 안전 검사)
                 let finalKeyword = (cycle === 0) ? baseTopic : `${prefixes[cycle % prefixes.length]}${baseTopic}`;
+                
+                // 완전히 동일한 키워드일 경우에만 접미사 대체 (숫자(2) 형태는 절대 쓰지 않음)
                 if(db.some(d => d.keyword === finalKeyword)) { finalKeyword = finalKeyword + " 관련 지침"; }
+
                 const category = assignCategory(finalKeyword);
                 
                 db.push({
@@ -349,7 +363,7 @@
         };
 
         // ----------------------------------------------------
-        // 3. 라우터 및 상태 관리 (에러 복원 기능 탑재)
+        // 3. 라우터 및 상태 관리
         // ----------------------------------------------------
         let globalTimerInterval = null; let timerSeconds = 300; let currentDocTemplate = null; let randomLeaveInterval = null;
         
@@ -425,7 +439,7 @@
         });
 
         // ----------------------------------------------------
-        // 4. 화면 렌더링 세부 함수들 (모든 기능 탑재)
+        // 4. 화면 렌더링 세부 함수들
         // ----------------------------------------------------
         function renderHome(container) {
             const d = new Date(); const todayStr = `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
@@ -769,12 +783,15 @@
         }
 
         function renderSearch(container, initialQuery = '') {
+            // [오류 수정 반영] initialQuery가 null일 때 빈 문자열로 안전하게 치환
+            const queryStr = initialQuery || '';
+            
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
                     <div><h2 class="text-2xl font-bold mb-1 text-slate-900 dark:text-white">교직어 검색</h2><p class="text-sm text-slate-500 dark:text-slate-400">${DB.length}개의 정밀 검증된 교직 용어와 실무 개념을 고속 검색하세요.</p></div>
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4 relative">
                         <div class="relative">
-                            <input type="text" id="main-search-input" value="${initialQuery}" placeholder="용어, 초성 검색..." class="w-full pl-12 pr-10 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
+                            <input type="text" id="main-search-input" value="${queryStr}" placeholder="용어, 초성 검색..." class="w-full pl-12 pr-10 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <button onclick="clearSearch()" id="clear-search-btn" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 hidden" aria-label="검색어 지우기"><i class="fa-solid fa-circle-xmark"></i></button>
                             <div id="autocomplete-box" class="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 hidden z-30 overflow-hidden"></div>
@@ -1108,28 +1125,7 @@
             showToast('체크리스트가 반영되었습니다.', 'success'); router.render();
         }
 
-        function renderCareer(container) {
-            container.innerHTML = `
-                <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">교직 커리어맵</h2><p class="text-sm text-slate-500 dark:text-slate-400">교사의 다양한 성장 경로와 직위별 발전 방향을 확인하세요.</p></div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex flex-col justify-between">
-                            <div><span class="text-[10px] font-bold px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg mb-3 inline-block">수업 전문성</span><h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">수업전문가 / 수석교사</h3><p class="text-xs text-slate-500 dark:text-slate-400 mb-6">교실 수업 개선을 주도하고 후배 교사의 멘토가 되는 현장 전문가 경로</p></div>
-                            <button onclick="openCareerInfo('수석교사')" class="w-full py-3 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-xl text-xs font-bold transition hover:bg-blue-100 dark:hover:bg-blue-900/60">제도 상세 안내 보기 →</button>
-                        </div>
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex flex-col justify-between">
-                            <div><span class="text-[10px] font-bold px-3 py-1 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-lg mb-3 inline-block">교육행정 및 지원</span><h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">교육전문직 (장학사)</h3><p class="text-xs text-slate-500 dark:text-slate-400 mb-6">교육청 및 직속기관에서 교육 정책 기획 및 학교 지원 업무 수행</p></div>
-                            <button onclick="openCareerInfo('장학사')" class="w-full py-3 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-xl text-xs font-bold transition hover:bg-indigo-100 dark:hover:bg-indigo-900/60">제도 상세 안내 보기 →</button>
-                        </div>
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex flex-col justify-between">
-                            <div><span class="text-[10px] font-bold px-3 py-1 bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 rounded-lg mb-3 inline-block">학교 경영</span><h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">교감 / 교장</h3><p class="text-xs text-slate-500 dark:text-slate-400 mb-6">학교 행정의 총괄 관리자로서 교육 비전을 실현하는 리더십 경로</p></div>
-                            <button onclick="openCareerInfo('교감')" class="w-full py-3 bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 rounded-xl text-xs font-bold transition hover:bg-purple-100 dark:hover:bg-purple-900/60">제도 상세 안내 보기 →</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
+        // --- 퀴즈 구동부 안전망 보완 ---
         let quizState = { active: false, count: 10, index: 0, score: 0, items: [], answers: [], level: "" };
 
         function renderQuiz(container) {
@@ -1165,6 +1161,7 @@
             const q = quizState.items[quizState.index];
             const quizQuestionText = q.quizQuestion || `다음 설명에 해당하는 교직 용어는 무엇인가요?\n\n"${q.description}"`;
             
+            // 안전망: 오답 보기가 충분한지 확인
             let wrongOptionsData = DB.filter(d => d.id !== q.id && d.category === q.category).sort(() => 0.5 - Math.random());
             if (wrongOptionsData.length < 3) {
                 const add = DB.filter(d => d.id !== q.id && d.category !== q.category).sort(() => 0.5 - Math.random());
