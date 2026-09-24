@@ -36,7 +36,7 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-lg leading-tight flex items-center gap-2">
-                        교직백서 1000 <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-medium">OS v5.3</span>
+                        교직백서 1000 <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-medium">OS v5.4</span>
                     </h1>
                     <p class="text-xs text-slate-500 dark:text-slate-400">초등교사 실무 완벽 지원 플랫폼</p>
                 </div>
@@ -174,7 +174,7 @@
         };
 
         // ----------------------------------------------------
-        // 2. 완충된 전체 데이터베이스 설정
+        // 2. 완충된 전체 데이터베이스 설정 ('생활기록부' 카테고리 제거 및 병합)
         // ----------------------------------------------------
         const STRICT_CATEGORY_MAP = {
             "인사·발령": ["전보", "파견", "복직", "퇴직", "면직", "해임", "파면", "인사내신", "승진", "전출", "전입", "호봉", "경력", "근평", "다면평가", "상훈", "모범공무원"],
@@ -185,8 +185,7 @@
             "교육과정": ["교육과정", "시수", "수업일수", "창체", "동아리", "자율활동"],
             "수업": ["수업", "학습", "지도안", "플립러닝", "프로젝트", "하브루타", "블렌디드"],
             "평가": ["평가", "성취도", "성적"],
-            "학적·출결": ["학적", "출결", "입학", "졸업", "진급", "유예", "면제"],
-            "생활기록부": ["생활기록부", "생기부", "세특", "행특"],
+            "학적·출결": ["학적", "출결", "입학", "졸업", "진급", "유예", "면제", "생활기록부", "생기부", "세특", "행특"], // '생활기록부' 통합
             "학생생활": ["생활지도", "규정", "자치회", "인성교육", "안전지도", "교통안전"],
             "학교폭력": ["학교폭력", "학폭", "사안조사", "심의위원회", "접촉금지", "가해학생", "피해학생"],
             "교육활동보호": ["교권", "침해", "보호위원회"],
@@ -279,23 +278,20 @@
                 "법정 감염병", "식중독 예방", "위생 점검", "식단표 작성", "알레르기 정보", "친환경 무상급식", "초등 돌봄교실", "방과후 학교",
                 "늘봄 프로그램", "디지털 교과서", "소프트웨어 교육(SW)", "코딩 교육", "파이썬 수업", "메타버스 활용", "가상현실(VR)",
                 "증강현실(AR)", "생성형 AI", "챗GPT 활용", "디지털 리터러시", "스마트기기 관리", "태블릿 충전함", "신규 교사",
-                "동학년 멘토링", "학급 경영", "학생 생활지도", "새학기 준비", "여름 방학", "교무실 예절"
+                "동학년 멘토링", "학급 경영", "학생 생활지도", "새학기 준비", "여름 방학", "교무실 예절", "학교생활기록부 작성"
             ];
 
             const db = [...rawSeeds];
             let idCounter = rawSeeds.length + 1;
             let topicIdx = 0;
 
-            // [오류 해결] 숫자를 임의로 붙이는 방식 전면 차단 및 안전한 수식어 도입
             while (db.length < 1000) {
                 const baseTopic = standardTopics[topicIdx % standardTopics.length];
                 const cycle = Math.floor(topicIdx / standardTopics.length);
                 const prefixes = ["", "초등 ", "학교 ", "실무 ", "교육 ", "기본 ", "현장 ", "행정 ", "운영 ", "지원 "];
                 
-                // 빈 값 방지 처리 (초기 검색창 null 오류 방지용 안전 검사)
                 let finalKeyword = (cycle === 0) ? baseTopic : `${prefixes[cycle % prefixes.length]}${baseTopic}`;
                 
-                // 완전히 동일한 키워드일 경우에만 접미사 대체 (숫자(2) 형태는 절대 쓰지 않음)
                 if(db.some(d => d.keyword === finalKeyword)) { finalKeyword = finalKeyword + " 관련 지침"; }
 
                 const category = assignCategory(finalKeyword);
@@ -372,17 +368,13 @@
             init() {
                 try {
                     const hash = window.location.hash;
-                    let paramVal = null;
                     if (hash.includes('keyword=')) {
                         const kw = decodeURIComponent(hash.split('keyword=')[1]); const item = DB.find(d => d.keyword === kw);
                         if (item) { this.current = 'search'; this.render(); setTimeout(() => openDetail(item.id, false), 50); return; }
                     }
                     if (hash.includes('view=')) {
                         const params = new URLSearchParams(hash.replace('#', ''));
-                        this.current = params.get('view') || 'home'; 
-                        paramVal = params.get('param') ? decodeURIComponent(params.get('param')) : null;
-                        if (paramVal === 'null') paramVal = null;
-                        this.param = paramVal;
+                        this.current = params.get('view') || 'home'; this.param = params.get('param') ? decodeURIComponent(params.get('param')) : null;
                     }
                     this.render();
                 } catch(e) { console.error("Init Error", e); this.renderError(e); }
@@ -436,22 +428,17 @@
         });
 
         // ----------------------------------------------------
-        // 4. 화면 렌더링 함수들
+        // 4. 화면 렌더링 세부 함수들 (스크롤 잘림 및 텍스트 표시 해결)
         // ----------------------------------------------------
         function renderHome(container) {
-            const d = new Date(); 
-            // [버그 수정 완료] HashStr(고유 번호 생성용 텍스트)을 YYYY-MM-DD 형식으로 통일
-            const hashStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-            const todayStr = `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
-            const cardIndex = Math.abs(hashCode(hashStr)) % DB.length; 
-            const todaysCard = DB[cardIndex] || DB[0];
-            const quote = (QUOTES && QUOTES.length > 0) ? QUOTES[Math.abs(hashCode(hashStr)) % QUOTES.length] : "선생님의 오늘 하루도 아이들에게는 우주입니다.";
-
+            const d = new Date(); const todayStr = `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
+            const cardIndex = Math.abs(hashCode(todayStr)) % DB.length; const todaysCard = DB[cardIndex] || DB[0];
+            const quote = (QUOTES && QUOTES.length > 0) ? QUOTES[Math.abs(hashCode(todayStr)) % QUOTES.length] : "선생님의 오늘 하루도 아이들에게는 우주입니다.";
             const year = d.getFullYear(); let vacName = "여름방학"; let vacDate = new Date(year, 6, 20); 
             if (d > vacDate) { vacName = "겨울방학"; vacDate = new Date(year + 1, 0, 5); }
             const diffDays = Math.max(0, Math.ceil((vacDate - d) / (1000 * 60 * 60 * 24)));
 
-            const recentSearches = Storage.get('recent_searches', []).filter(k => k && String(k).trim() !== 'null').slice(0, 5);
+            const recentSearches = Storage.get('recent_searches', []).slice(0, 5);
             const monthTasksCount = (YEAR_TASKS[d.getMonth() + 1] || []).length;
             const checkedState = Storage.get(`checklist_${d.getMonth() + 1}`, {});
             let completedCount = 0; for (let i = 0; i < monthTasksCount; i++) if (checkedState[i]) completedCount++;
@@ -714,10 +701,10 @@
                     </div>
                     <div class="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-2xl flex flex-col md:flex-row items-center gap-3">
                         <span class="text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0"><i class="fa-solid fa-download"></i> 템플릿 불러오기</span>
-                        <div class="flex gap-2 overflow-x-auto w-full hide-scrollbar">
-                            <button onclick="loadBoardPreset('openClass')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition">공개 수업 세팅</button>
-                            <button onclick="loadBoardPreset('sportsDay')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition">가을 체육대회</button>
-                            <button onclick="loadBoardPreset('recordsEnd')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition">학기말 생기부 마감</button>
+                        <div class="flex gap-2 overflow-x-auto w-full hide-scrollbar pr-4">
+                            <button onclick="loadBoardPreset('openClass')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition whitespace-nowrap">공개 수업 세팅</button>
+                            <button onclick="loadBoardPreset('sportsDay')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition whitespace-nowrap">가을 체육대회</button>
+                            <button onclick="loadBoardPreset('recordsEnd')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition whitespace-nowrap">학기말 생기부 마감</button>
                         </div>
                     </div>
                     <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700 shadow-sm">
@@ -785,6 +772,7 @@
         }
 
         function renderSearch(container, initialQuery = '') {
+            // [검색창 null 버그 완벽 보완] 초기값이 없거나 'null' 문자열로 넘어올 경우 빈칸으로 안전 처리
             const queryStr = (initialQuery && initialQuery !== 'null') ? initialQuery : '';
             
             container.innerHTML = `
@@ -797,9 +785,9 @@
                             <button onclick="clearSearch()" id="clear-search-btn" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 hidden" aria-label="검색어 지우기"><i class="fa-solid fa-circle-xmark"></i></button>
                             <div id="autocomplete-box" class="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 hidden z-30 overflow-hidden"></div>
                         </div>
-                        <div class="flex gap-2 overflow-x-auto pb-2 hide-scrollbar">
-                            <button onclick="filterCategory('전체')" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 bg-blue-600 text-white" data-cat="전체">전체 (${DB.length})</button>
-                            ${CATEGORIES.map(cat => `<button onclick="filterCategory('${cat}')" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300" data-cat="${cat}">${cat}</button>`).join('')}
+                        <div class="flex gap-2 overflow-x-auto pb-2 hide-scrollbar pr-4">
+                            <button onclick="filterCategory('전체')" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 bg-blue-600 text-white whitespace-nowrap" data-cat="전체">전체 (${DB.length})</button>
+                            ${CATEGORIES.map(cat => `<button onclick="filterCategory('${cat}')" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 whitespace-nowrap" data-cat="${cat}">${cat}</button>`).join('')}
                         </div>
                     </div>
                     <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-1">
@@ -825,8 +813,8 @@
         function filterCategory(cat) {
             currentCategoryFilter = cat; searchDisplayLimit = 60;
             document.querySelectorAll('.cat-btn').forEach(btn => {
-                if (btn.getAttribute('data-cat') === cat) btn.className = "cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 bg-blue-600 text-white";
-                else btn.className = "cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition";
+                if (btn.getAttribute('data-cat') === cat) btn.className = "cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 bg-blue-600 text-white whitespace-nowrap";
+                else btn.className = "cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition whitespace-nowrap";
             });
             handleSearch();
         }
@@ -863,7 +851,7 @@
             const clearBtn = document.getElementById('clear-search-btn');
             if (clearBtn) { if (query) clearBtn.classList.remove('hidden'); else clearBtn.classList.add('hidden'); }
             
-            // [오류 수정 반영] null 저장 원천 차단
+            // [오류 수정 반영] 검색어 기록에 null 문자열이 절대 저장되지 않도록 강제 필터링
             if(query.length > 1 && query !== 'null') { 
                 let recents = Storage.get('recent_searches', []).filter(q => q && String(q).trim() !== 'null'); 
                 recents = [query, ...recents.filter(q => q !== query)].slice(0, 20); 
@@ -1129,6 +1117,28 @@
             const state = Storage.get(`checklist_${month}`, {});
             state[idx] = !state[idx]; Storage.set(`checklist_${month}`, state);
             showToast('체크리스트가 반영되었습니다.', 'success'); router.render();
+        }
+
+        function renderCareer(container) {
+            container.innerHTML = `
+                <div class="space-y-6 animate-fade-in">
+                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">교직 커리어맵</h2><p class="text-sm text-slate-500 dark:text-slate-400">교사의 다양한 성장 경로와 직위별 발전 방향을 확인하세요.</p></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex flex-col justify-between">
+                            <div><span class="text-[10px] font-bold px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg mb-3 inline-block">수업 전문성</span><h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">수업전문가 / 수석교사</h3><p class="text-xs text-slate-500 dark:text-slate-400 mb-6">교실 수업 개선을 주도하고 후배 교사의 멘토가 되는 현장 전문가 경로</p></div>
+                            <button onclick="openCareerInfo('수석교사')" class="w-full py-3 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-xl text-xs font-bold transition hover:bg-blue-100 dark:hover:bg-blue-900/60">제도 상세 안내 보기 →</button>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex flex-col justify-between">
+                            <div><span class="text-[10px] font-bold px-3 py-1 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-lg mb-3 inline-block">교육행정 및 지원</span><h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">교육전문직 (장학사)</h3><p class="text-xs text-slate-500 dark:text-slate-400 mb-6">교육청 및 직속기관에서 교육 정책 기획 및 학교 지원 업무 수행</p></div>
+                            <button onclick="openCareerInfo('장학사')" class="w-full py-3 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-xl text-xs font-bold transition hover:bg-indigo-100 dark:hover:bg-indigo-900/60">제도 상세 안내 보기 →</button>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex flex-col justify-between">
+                            <div><span class="text-[10px] font-bold px-3 py-1 bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 rounded-lg mb-3 inline-block">학교 경영</span><h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">교감 / 교장</h3><p class="text-xs text-slate-500 dark:text-slate-400 mb-6">학교 행정의 총괄 관리자로서 교육 비전을 실현하는 리더십 경로</p></div>
+                            <button onclick="openCareerInfo('교감')" class="w-full py-3 bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 rounded-xl text-xs font-bold transition hover:bg-purple-100 dark:hover:bg-purple-900/60">제도 상세 안내 보기 →</button>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
         let quizState = { active: false, count: 10, index: 0, score: 0, items: [], answers: [], level: "" };
