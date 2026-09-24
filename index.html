@@ -1763,18 +1763,24 @@
             if (m) m.classList.add('hidden');
         }
 
-        function debounce(getFunc, wait) {
+        function debounce(func, wait) {
             let timeout;
             return function(...args) {
                 clearTimeout(timeout);
-                timeout = setTimeout(() => getFunc.apply(this, args), wait);
+                timeout = setTimeout(() => func.apply(this, args), wait);
             };
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
+        // [오류 수정 반영] DOM 로딩 상태를 체크하여 이미 로드된 경우 즉시 안전하게 앱을 초기화하도록 개선
+        if (document.readyState === 'loading') {
+            window.addEventListener('DOMContentLoaded', () => {
+                applyThemeMode();
+                router.init();
+            });
+        } else {
             applyThemeMode();
             router.init();
-        });
+        }
     </script>
 </body>
 </html>
