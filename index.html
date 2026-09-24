@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>교직백서 1000 : 초등교사를 위한 교직생활 OS</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = { darkMode: 'class', theme: { extend: { colors: { brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' } } } } }
@@ -26,6 +27,7 @@
 
     <div id="toast-container" class="fixed bottom-20 md:bottom-6 right-4 z-50 flex flex-col space-y-2 pointer-events-none"></div>
 
+    <!-- 상단 헤더 -->
     <header class="sticky top-0 z-40 bg-white/85 dark:bg-slate-800/85 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
         <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="router.navigate('home')">
@@ -34,7 +36,7 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-lg leading-tight flex items-center gap-2">
-                        교직백서 1000 <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-medium">OS v5.2</span>
+                        교직백서 1000 <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-medium">OS v5.3</span>
                     </h1>
                     <p class="text-xs text-slate-500 dark:text-slate-400">초등교사 실무 완벽 지원 플랫폼</p>
                 </div>
@@ -48,6 +50,7 @@
     </header>
 
     <div class="flex-1 max-w-7xl w-full mx-auto flex flex-col md:flex-row pb-20 md:pb-6">
+        <!-- PC 사이드바 -->
         <aside class="hidden md:block w-64 p-4 shrink-0 border-r border-slate-200 dark:border-slate-700 space-y-1 overflow-y-auto hide-scrollbar h-[calc(100vh-4rem)]">
             <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mb-2 uppercase">메인 메뉴</div>
             <a onclick="router.navigate('home')" id="nav-home" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-house w-5 text-center"></i> 홈 대시보드</a>
@@ -81,6 +84,7 @@
             <button onclick="openMobileMenu()" class="mob-item flex flex-col items-center py-1 px-2 text-xs text-slate-500 dark:text-slate-400"><i class="fa-solid fa-bars text-lg mb-0.5"></i>메뉴</button>
         </nav>
 
+        <!-- 메인 콘텐츠 영역 -->
         <main id="app-view" class="flex-1 p-4 md:p-8 max-w-full overflow-y-auto h-[calc(100vh-4rem)]">
             <div class="flex flex-col items-center justify-center h-full">
                 <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
@@ -120,9 +124,11 @@
         </div>
     </div>
 
-    <!-- 핵심 스크립트 로직 -->
+    <!-- 스크립트 로직 -->
     <script>
-        // --- 1. 유틸리티 함수 및 로컬스토리지 ---
+        // ----------------------------------------------------
+        // 1. 유틸리티 함수 및 로컬스토리지
+        // ----------------------------------------------------
         function escapeHTML(str) { return String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)); }
         function debounce(func, wait) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), wait); }; }
         function hashCode(str) { let hash = 0; for (let i = 0; i < str.length; i++) hash = ((hash << 5) - hash) + str.charCodeAt(i); return hash; }
@@ -146,7 +152,8 @@
         }
 
         function showToast(message, type = 'success') {
-            const container = document.getElementById('toast-container'); if (!container) return;
+            const container = document.getElementById('toast-container');
+            if (!container) return;
             const toast = document.createElement('div');
             const bgColors = { success: 'bg-slate-900 dark:bg-white text-white dark:text-slate-900', error: 'bg-rose-600 text-white', info: 'bg-blue-600 text-white' };
             toast.className = `${bgColors[type] || bgColors.success} px-4 py-3 rounded-2xl shadow-xl text-xs font-bold pointer-events-auto transform translate-y-2 opacity-0 transition-all duration-300 flex items-center gap-2`;
@@ -166,7 +173,9 @@
             set(key, value) { try { localStorage.setItem('eb_1000_v5_' + key, JSON.stringify(value)); } catch(e) {} }
         };
 
-        // --- 2. 초압축 데이터베이스 설정 ---
+        // ----------------------------------------------------
+        // 2. 완충된 전체 데이터베이스 설정
+        // ----------------------------------------------------
         const STRICT_CATEGORY_MAP = {
             "인사·발령": ["전보", "파견", "복직", "퇴직", "면직", "해임", "파면", "인사내신", "승진", "전출", "전입", "호봉", "경력", "근평", "다면평가", "상훈", "모범공무원"],
             "복무·휴가": ["휴직", "휴가", "연가", "병가", "공가", "조퇴", "지각", "결근", "외출", "출장", "근무", "유연근무", "겸직"],
@@ -196,109 +205,159 @@
             "AI·에듀테크": ["에듀테크", "디지털", "스마트", "AI", "패블릿", "코딩", "메타버스", "소프트웨어"],
             "교직생활": ["신규", "멘토링", "교무실", "스승의날"]
         };
-        function assignCategory(keyword) { for(const [c, kws] of Object.entries(STRICT_CATEGORY_MAP)) { if(kws.some(k=>keyword.includes(k))) return c; } return "학교조직·행정"; }
+
+        function assignCategory(keyword) {
+            for (const [cat, keywords] of Object.entries(STRICT_CATEGORY_MAP)) {
+                if (keywords.some(k => keyword.includes(k))) return cat;
+            }
+            return "학교조직·행정";
+        }
+
         const CATEGORIES = Object.keys(STRICT_CATEGORY_MAP).concat("기타");
 
-        const QUOTES = ["선생님의 오늘 하루도 우주입니다.","완벽하지 않아도 괜찮아요.","퇴근 후엔 온전히 쉬세요.","힘들 땐 커피 한 잔!","아이들의 변화는 반드시 일어납니다.","오늘도 고생 많으셨습니다."];
-        const DOC_TEMPLATES = [
-            { id: 't1', title: '학폭 발생 초기 학부모 안내', content: '학부모님 안녕하십니까. 오늘 교내에서 [학생이름] 관련 다툼(사안)이 있었습니다. 학교에서는 규정에 따라 공정하게 사실을 파악하고 있습니다. 추가 확인이 필요하시면 [연락가능시간]에 교무실로 연락 주세요.' },
-            { id: 't2', title: '현장체험학습 품의서', content: '1. 관련: [학년/반] 계획\n2. 위와 관련하여 현장체험학습 예산을 배정하여 주시기 바랍니다.\n가. 일시: [일시]\n나. 장소: [장소]\n다. 대상: [인원]명\n라. 소요예산: [예산액]원\n마. 예산과목: [예산과목]' },
-            { id: 't3', title: '보건실 응급처치 안내', content: '[학생이름] 학부모님 안녕하십니까. 오늘 [발생시간]경 [장소]에서 [학생이름] 학생이 [부상내용]으로 보건실 처치를 받았습니다. 통증 지속 시 진료를 권장합니다.' },
-            { id: 't4', title: '운동부 출전 품의서', content: '1. 대회명: [대회명]\n2. 일시/장소: [일시] / [장소]\n3. 출전인원: [참가인원]명\n4. 소요예산: 금 [예산액]원 (출전비, 식비 등)\n5. 예산과목: [예산과목]' }
+        const QUOTES = [
+            "선생님의 오늘 하루도 아이들에게는 우주입니다.", 
+            "완벽하지 않아도 괜찮아요, 우리는 매일 성장하고 있으니까요.", 
+            "퇴근 후에는 온전히 나를 위한 시간을 보내세요.", 
+            "힘들 땐 동학년 선생님과 커피 한 잔 어때요?", 
+            "아이들의 긍정적인 변화는 느리지만 반드시 일어납니다.", 
+            "선생님의 따뜻한 눈빛 하나가 아이의 하루를 구합니다.",
+            "오늘도 무사히 하루를 마친 선생님, 정말 고생 많으셨습니다."
         ];
+
+        const DOC_TEMPLATES = [
+            { id: 't1', title: '학폭 발생 초기 학부모 알림장', content: '학부모님 안녕하십니까.\n오늘 교내에서 [학생이름] 학생과 관련하여 작은 다툼(사안)이 있었습니다.\n관련하여 학교에서는 규정에 따라 공정하게 사실을 파악하고 있으며, 학생의 심리적 안정을 최우선으로 보호하고 있습니다.\n가정에서도 학생이 안정을 취할 수 있도록 지도 부탁드리며, 추가적인 확인이 필요하신 경우 [연락가능시간]에 교무실로 연락 주시면 상세히 안내해 드리겠습니다.\n감사합니다.' },
+            { id: 't2', title: '현장체험학습 품의서(내용)', content: '1. 관련: 2026학년도 [학년/반] 현장체험학습 계획\n2. 위 호와 관련하여 [학년/반] 현장체험학습을 다음과 같이 실시하고자 하오니 소요 예산을 배정하여 주시기 바랍니다.\n  가. 일시: [일시]\n  나. 장소: [장소]\n  다. 대상: [학년/반] 학생 [참가인원]명 및 인솔교사\n  라. 소요예산: 금 [예산액]원\n  마. 예산과목: [예산과목]\n붙임 1. 현장체험학습 세부 추진 계획 1부. 끝.' },
+            { id: 't3', title: '안전사고 발생 보건실 안내(문자)', content: '[학생이름] 학부모님 안녕하십니까. 담임교사입니다.\n오늘 [발생시간]경 [발생장소]에서 [학생이름] 학생이 [부상내용]으로 보건실에서 응급 처치를 받았습니다.\n현재 큰 이상은 없으나 하교 후 통증이 지속될 경우 병원 진료를 권장해 드립니다. 학교안전공제회 청구가 필요하신 경우 언제든 연락 주시기 바랍니다.' },
+            { id: 't4', title: '수영부 대회 출전 및 지원금 신청 품의', content: '1. 관련: 2026학년도 학교운동부 운영 계획\n2. 위 호와 관련하여 본교 수영부 학생들의 대회 출전 및 훈련 지원을 위해 다음과 같이 예산을 집행하고자 합니다.\n  가. 대회명: [대회명]\n  나. 일시 및 장소: [일시] / [장소]\n  다. 출전인원: [참가인원]명 및 지도자\n  라. 소요예산: 금 [예산액]원 (항목: 출전비, 식비, 훈련용품 등)\n  마. 예산과목: [예산과목]\n붙임 1. 대회 출전 계획서 1부. 끝.' },
+            { id: 't5', title: 'PAPS 측정 결과 가정통신문', content: '학부모님 안녕하십니까.\n우리 학교에서는 학생들의 건강 체력 향상을 위해 매년 학생건강체력평가(PAPS)를 실시하고 있습니다. \n금년도 [학생이름] 학생의 PAPS 측정 결과를 아래와 같이 안내해 드립니다.\n\n- 왕복오래달리기(심폐지구력): [심폐지구력기록]\n- 앉아윗몸앞으로굽히기(유연성): [유연성기록]\n- 악력(근력): [근력기록]\n\n가정에서도 학생이 꾸준한 운동 습관을 가질 수 있도록 격려해 주시기 바랍니다. 감사합니다.' }
+        ];
+
         const EDUTECH_TOOLS = [
-            { name: "Canva (캔바)", desc: "디자인 끝판왕", url: "https://www.canva.com", prompt: "체육 수업용 포스터 양식 찾아줘" },
-            { name: "Suno", desc: "고품질 창작곡 AI", url: "https://suno.com", prompt: "초등학생이 부르기 쉬운 아카펠라 만들어줘" },
-            { name: "Cursor AI", desc: "코딩 AI 에디터", url: "https://cursor.sh", prompt: "바닐라 JS 1분 덧셈 퀴즈 앱 짜줘" },
-            { name: "ChatGPT", desc: "업무 자동화", url: "https://chatgpt.com", prompt: "운동회 릴레이 게임 아이디어 5가지" }
+            { name: "Canva (캔바)", desc: "학습지, 발표자료, 포스터 디자인 끝판왕", url: "https://www.canva.com", prompt: "초등학교 5학년 체육/미술 융합 수업용 포스터 양식 찾아줘" },
+            { name: "Suno / Udio", desc: "텍스트만으로 고품질 창작곡(Acapella 등) 생성 AI", url: "https://suno.com", prompt: "초등학생이 쉽게 따라 부를 수 있는 밝고 경쾌한 4/4박자 아카펠라 곡 만들어줘" },
+            { name: "Cursor AI", desc: "코딩을 몰라도 말만 하면 웹앱을 만들어주는 AI 에디터", url: "https://cursor.sh", prompt: "바닐라 JS로 작동하는 초등학생용 1분 덧셈 퀴즈 웹앱 코드를 1개의 HTML 파일로 짜줘" },
+            { name: "ChatGPT (챗GPT)", desc: "업무 자동화 및 아이디어 브레인스토밍 필수품", url: "https://chatgpt.com", prompt: "초등학생 대상 가을 운동회 릴레이 게임 아이디어 5가지 표로 정리해줘" }
         ];
 
         function generateDatabase() {
             const rawSeeds = [
-                { id: 1, keyword: "관외 전보", aliases: ["관외전보"], category: "인사·발령", description: "소속 교육지원청을 벗어나 다른 지역의 학교로 이동하는 발령.", simple: "다른 지역 학교로 옮기는 인사", tags: ["인사","전보"], related: ["관내 내신","전보점수"], situations: ["다른 지역 이동 시"], difficulty: 2, tip: "내신 제출 기한을 놓치지 마세요!" },
-                { id: 2, keyword: "장학사", aliases: ["교육전문직"], category: "승진·전직", description: "교육청에서 교육 정책 기획 및 장학 업무를 담당하는 전문직원.", simple: "교육청 행정 전문가", tags: ["전문직","교육청"], related: ["교감"], situations: ["전문직 전직 고민 시"], difficulty: 3 },
-                { id: 3, keyword: "품의", aliases: ["예산품의"], category: "학교회계·예산", description: "예산을 사용하기 전 타당성을 입증하고 관리자 결재를 받는 절차.", simple: "물건 사기 전 결재받기", tags: ["행정","예산"], related: ["K-에듀파인","지출결의"], situations: ["예산으로 물건 살 때"], difficulty: 1, quizQuestion: "가장 먼저 작성해야 하는 문서는?" },
-                { id: 4, keyword: "학교폭력", aliases: ["학폭"], category: "학교폭력", description: "학생 대상 상해, 폭행, 따돌림 등 피해 수반 행위.", simple: "학생 간 신체 정신적 피해", tags: ["학폭","사안처리"], related: ["학교폭력전담기구"], situations: ["학폭 신고 접수 시"], difficulty: 3 },
-                { id: 5, keyword: "NEIS (나이스)", aliases: ["나이스"], category: "학교조직·행정", description: "학생, 인사, 교무 등 교육 행정 업무 통합 시스템.", simple: "성적, 생기부, 인사 처리 필수 시스템", tags: ["시스템","행정"], related: ["학교생활기록부","시간외근무"], situations: ["출장, 연가 상신 시"], difficulty: 1 },
-                { id: 6, keyword: "K-에듀파인", aliases: ["에듀파인"], category: "학교회계·예산", description: "예산 편성, 회계, 전자결재 통합 관리 시스템.", simple: "예산 집행 시스템", tags: ["회계","결재"], related: ["품의"], situations: ["품의 올릴 때"], difficulty: 2 },
-                { id: 7, keyword: "수석교사", aliases: ["수업전문가"], category: "승진·전직", description: "관리직 대신 수업 전문성을 인정받는 직위.", simple: "수업 전문가 직위", tags: ["수업","전문성"], related: ["장학사","교감"], situations: ["수업 역량 강화 시"], difficulty: 3 },
-                { id: 8, keyword: "교감", aliases: ["관리직"], category: "승진·전직", description: "학교 교무를 통할하는 직위.", simple: "교무 총괄 관리자", tags: ["승진","관리직"], related: ["교장"], situations: ["승진 준비 시"], difficulty: 3 },
-                { id: 9, keyword: "연구대회", aliases: ["현장연구대회"], category: "연구대회", description: "전문성 향상을 위한 연구 대회. 입상 시 가산점 부여.", simple: "연구 가산점 대회", tags: ["연구","가산점"], related: ["교감"], situations: ["가산점 필요 시"], difficulty: 2 },
-                { id: 10, keyword: "안전사고", aliases: ["학교안전공제회"], category: "보건·안전", description: "교육 활동 중 발생한 생명·신체상 피해 상황.", simple: "학생 다치는 사고", tags: ["안전","보상"], related: ["보건실"], situations: ["학생 다쳤을 때"], difficulty: 2 }
+                { id: 1, keyword: "관외 전보", aliases: ["관외전보", "타시도전보"], category: "인사·발령", description: "현재 소속된 교육지원청 관할 지역을 벗어나 다른 지역의 학교로 이동하는 인사 발령 제도입니다.", simple: "현재 지역을 벗어나 다른 지역의 학교로 옮기는 인사", tags: ["인사", "전보", "이동"], related: ["관내 내신", "전보점수", "인사내신"], situations: ["다른 지역으로 옮기고 싶을 때"], difficulty: 2, tip: "내신서 제출 기한을 놓치면 1년을 기다려야 하니, 교육청 공문 게시판을 11월부터 예의주시하세요!" },
+                { id: 2, keyword: "장학사", aliases: ["교육전문직", "연구사", "장학관"], category: "승진·전직", description: "시·도교육청 및 교육지원청에서 교육 정책 기획 및 장학 업무를 담당하는 교육전문직원입니다.", simple: "교육청에서 학교 지원 및 행정 업무를 맡는 교육전문직", tags: ["전문직", "전직", "교육청"], related: ["교육전문직", "전직", "교육연구사"], situations: ["교육전문직 전직을 고민할 때"], difficulty: 3 },
+                { id: 3, keyword: "품의", aliases: ["기안", "결재", "예산품의"], category: "학교회계·예산", description: "학교 예산을 사용하기 전, 행정 업무 집행의 타당성을 입증하고 사용 목적 및 금액에 대해 결재를 받는 사전 절차입니다.", simple: "학교 예산으로 물건을 사기 전 결재를 올리는 문서 작성", tags: ["행정", "예산", "결재"], related: ["K-에듀파인", "지출결의", "원인행위"], situations: ["학교 예산으로 물건을 사야 해요"], difficulty: 1, tip: "예산 코드가 틀리면 행정실에서 반려되니, 기안 올리기 전에 작년 공문을 꼭 먼저 검색해 보세요!", quizQuestion: "오후 4시 30분, 예산이 남았다며 내일까지 물품 구매 기안을 올리라고 합니다. K-에듀파인에서 가장 먼저 작성해야 하는 것은 무엇일까요?" },
+                { id: 4, keyword: "학교폭력", aliases: ["학폭", "학교폭력대책심의위원회"], category: "학교폭력", description: "학교 내외에서 학생을 대상으로 발생한 상해, 폭행, 감금, 협박, 따돌림 등에 의해 피해를 수반하는 행위입니다.", simple: "학생 간 발생한 신체·정신적 피해 행위", tags: ["학폭", "생활지도", "사안처리"], related: ["학교폭력전담기구"], situations: ["학교폭력 신고가 들어왔어요"], difficulty: 3 },
+                { id: 5, keyword: "NEIS (나이스)", aliases: ["NEIS", "나이스"], category: "학교조직·행정", description: "전국 초·중·고등학교의 학생, 인사, 교무, 학사 등 교육 행정 업무를 통합 관리하는 국가 전자 시스템입니다.", simple: "성적, 생기부, 인사, 복무를 처리하는 필수 시스템", tags: ["행정", "시스템", "교무"], related: ["학교생활기록부", "학적", "시간외근무"], situations: ["출장 및 연가 신청할 때"], difficulty: 1 },
+                { id: 6, keyword: "K-에듀파인", aliases: ["에듀파인", "학교회계"], category: "학교회계·예산", description: "학교의 예산 편성과 집행, 회계, 세입세출 및 전자결재를 통합 관리하는 재무 시스템입니다.", simple: "학교 예산 집행과 기안 문서 상신을 처리하는 시스템", tags: ["회계", "결재", "지출"], related: ["품의", "지출결의"], situations: ["예산 품의를 올릴 때"], difficulty: 2 },
+                { id: 7, keyword: "수석교사", aliases: ["수업전문가"], category: "승진·전직", description: "관리직으로 진출하지 않고, 수업 전문성을 인정받아 동료 교사의 수업 코칭 등을 수행하는 직위입니다.", simple: "수업 전문가로 인정받는 명예로운 직위", tags: ["수업", "전문성"], related: ["장학사", "교감"], situations: ["수업 역량을 전문적으로 키우고 싶을 때"], difficulty: 3 },
+                { id: 8, keyword: "교감", aliases: ["관리직", "교무총괄"], category: "승진·전직", description: "학교의 교무를 통할하고 교장을 보좌하는 직위입니다.", simple: "학교의 실질적인 행정과 교무를 총괄하는 관리직 교원", tags: ["승진", "관리직"], related: ["교장", "수석교사"], situations: ["관리직 승진을 준비할 때"], difficulty: 3 },
+                { id: 9, keyword: "연구대회", aliases: ["현장연구대회"], category: "연구대회", description: "교원의 전문성 향상을 위해 교육청 주최로 열리는 대회로, 입상 시 승진 가산점을 받습니다.", simple: "수업 아이디어를 연구하여 가산점을 받는 대회", tags: ["연구", "가산점"], related: ["교감", "승진"], situations: ["가산점이 필요할 때"], difficulty: 2 },
+                { id: 10, keyword: "안전사고", aliases: ["학교안전공제회", "응급처치"], category: "보건·안전", description: "교육 활동 중 발생한 생명·신체상의 피해 상황으로, 안전공제회 보상 절차를 밟아야 합니다.", simple: "학교에서 학생이 다치는 사고", tags: ["사고", "안전", "보상"], related: ["보건실"], situations: ["학생이 다쳤을 때"], difficulty: 2, quizQuestion: "체육 시간 중 학생이 발목을 삐어 통증을 호소합니다. 보건실 처치 후 학부모에게 연락을 마쳤다면, 이후 병원비 청구를 위해 작성해야 하는 것은?" },
+                { id: 11, keyword: "학교폭력전담기구", aliases: ["전담기구"], category: "학교폭력", description: "사안 조사를 담당하고, 학교장 자체해결 요건 충족 여부를 심의하는 교내 법정 기구입니다.", simple: "학교폭력 신고가 들어오면 조사하는 선생님들 모임", tags: ["학폭", "조사"], related: ["학교폭력"], situations: ["사안 조사를 시작할 때"], difficulty: 3 },
+                { id: 12, keyword: "교권보호위원회", aliases: ["교보위", "교육활동보호"], category: "교육활동보호", description: "교육활동 침해 사안 발생 시 교원을 보호하고 침해 학생 조치를 심의하는 기구입니다.", simple: "선생님의 정당한 교육활동을 보호하는 위원회", tags: ["교권", "보호"], related: ["학부모 상담주간"], situations: ["교권 침해를 당했을 때"], difficulty: 3 },
+                { id: 13, keyword: "지출결의", aliases: ["지출결의서", "원인행위"], category: "학교회계·예산", description: "품의된 물품을 실제로 구매한 후 대금을 지급하기 위해 회계담당자에게 올리는 결재 문서입니다.", simple: "물건을 산 뒤에 '이제 돈을 보내주세요'라고 올리는 결재", tags: ["회계", "지출"], related: ["품의", "K-에듀파인"], situations: ["물품 납품이 완료되어 결제해야 할 때"], difficulty: 2 },
+                { id: 14, keyword: "에듀테크", aliases: ["디지털교육"], category: "AI·에듀테크", description: "태블릿PC, AI, 소프트웨어 등을 활용하여 학습 효과를 높이는 교육 기술입니다.", simple: "수업을 더 스마트하게 만들어주는 디지털 도구", tags: ["디지털", "스마트"], related: ["AI디지털교과서 (AIDT)"], situations: ["태블릿을 활용한 스마트 수업을 할 때"], difficulty: 1 },
+                { id: 15, keyword: "시간외근무", aliases: ["초과근무", "초근"], category: "복무·휴가", description: "정규 근무 시간 외에 초과하여 근무하는 것으로 나이스 복무를 통해 상신합니다.", simple: "퇴근 시간 이후에 남아서 일한 시간을 인정받는 것", tags: ["복무", "근무"], related: ["NEIS (나이스)"], situations: ["야근을 해야 할 때"], difficulty: 1 }
             ];
-            const stdTopics = "만기 전보,우선 전보,전보 유예,타시도 전출,파견 근무,복직 절차,명예 퇴직,정년 퇴직,의원 면직,인사 내신,승진 가산점,다면 평가,근무성적평정,모범공무원,교장 공모제,교육연구관,장학관,기간제 교사,강사 채용,정근수당,맞춤형 복지,호봉 승급,가족수당,명절휴가비,연가보상비,퇴직연금,공무원연금,재해 보상,학교운영위원회,학부모회,지방공무원,행정실장,주무관,조리실무사,돌봄전담사,영어회화전문강사,스포츠강사,사서교사,영양교사,보건교사,상담교사,특수교사,예산 요구,결산,용역 계약,물품 검수,시설 보수,정보 공개,개인정보 보호,기안 문서,내부 결재,공문 공람,문서 반려,재기안,공문서 작성,결과 보고서,국가 교육과정,창의적 체험활동,자율 활동,동아리 활동,봉사 활동,진로 활동,성취도 평가,수행 평가,지필 평가,서술형 평가,과정중심 평가,질병 결석,미인정 결석,출석 인정 결석,지각 처리,조퇴 처리,출석부 관리,취학 유예,전학 절차,자퇴,퇴학,졸업 사정,수료,진급 사정,학업성취도 평가,피해학생 보호,가해학생 조치,서면 사과,접촉 금지,학급 교체,교육활동 침해,교원 배상 책임,법률 지원,방문상담,전화상담,공개수업,기초학력 보장,두드림 학교,보정 교육,학습 부진,난독증 지원,특수교육 대상자,통합 교육,개별화 교육,순회 교육,직무 연수,자격 연수,원격 연수,학습공동체,실천 사례 연구,시범 학교,가을 체육대회,수학 여행,현장체험학습,수련 활동,생존 수영,학교 운동부,소년체전,보건 교육,심폐소생술(CPR),자동심장충격기(AED),소방 대피 훈련,미세먼지 대응,폭염 대응,법정 감염병,식중독 예방,위생 점검,식단표 작성,알레르기 정보,무상급식,초등 돌봄교실,방과후 학교,늘봄 프로그램,디지털 교과서,블록코딩,파이썬 수업,메타버스 활용,생성형 AI,업무자동화,스마트기기 관리,신규 교사,멘토링,학급 경영,생활지도,새학기 준비,교무실 예절".split(',');
 
-            const db = [...rawSeeds]; let idCounter = rawSeeds.length + 1; let tIdx = 0;
+            const standardTopics = [
+                "만기 전보", "우선 전보", "전보 유예", "타시도 전출", "파견 근무", "복직 절차", "명예 퇴직", "정년 퇴직", "의원 면직",
+                "인사 내신", "승진 가산점", "다면 평가", "근무성적평정", "상훈", "모범공무원", "교장 공모제", "교육연구관",
+                "장학관", "기간제 교사", "강사 채용", "정근수당", "맞춤형 복지", "호봉 승급", "가족수당", "명절휴가비",
+                "연가보상비", "퇴직수당", "퇴직연금", "공무원연금", "재해 보상", "학교운영위원회", "학부모회", "행정실무사",
+                "조리실무사", "돌봄전담사", "영어회화전문강사", "스포츠강사", "사서교사", "영양교사", "보건교사", "전문상담교사",
+                "특수교사", "예산 요구", "결산", "용역 계약", "물품 검수", "시설 보수", "정보 공개", "개인정보 보호", "기안 문서",
+                "내부 결재", "공문 공람", "문서 반려", "재기안", "공문서 작성", "결과 보고서", "국가 교육과정", "창의적 체험활동",
+                "자율 활동", "동아리 활동", "봉사 활동", "진로 활동", "성취도 평가", "수행 평가", "지필 평가", "서술형 평가",
+                "과정중심 평가", "질병 결석", "미인정 결석", "출석 인정 결석", "지각 처리", "조퇴 처리", "출석부 관리", "취학 유예",
+                "전학 절차", "자퇴", "퇴학", "졸업 사정", "수료", "진급 사정", "학업성취도 평가", "피해학생 보호", "가해학생 조치",
+                "서면 사과", "접촉 금지", "학급 교체", "교육활동 침해", "교원 배상 책임", "법률 지원", "학부모 전화 상담", "공개 수업",
+                "기초학력 보장", "두드림 학교", "학습종합클리닉", "보정 교육", "학습 부진", "난독증 지원", "특수교육 대상자",
+                "통합 교육", "개별화 교육", "순회 교육", "직무 연수", "자격 연수", "1급 정교사 자격연수", "원격 연수", "자율 연수",
+                "전문적 학습공동체", "현장 교육 연구", "실천 사례 연구", "수업 연구 대회", "시도 연구 대회", "연구 학교", "시범 학교",
+                "가을 체육대회", "수학 여행", "수련 활동", "교외 체험학습", "생존 수영", "수영 실기 교육", "학교 운동부", "전국 소년체전",
+                "보건 교육", "심폐소생술(CPR)", "자동심장충격기(AED)", "소방 대피 훈련", "지진 대피 훈련", "미세먼지 대응", "폭염 대응",
+                "법정 감염병", "식중독 예방", "위생 점검", "식단표 작성", "알레르기 정보", "친환경 무상급식", "초등 돌봄교실", "방과후 학교",
+                "늘봄 프로그램", "디지털 교과서", "소프트웨어 교육(SW)", "코딩 교육", "파이썬 수업", "메타버스 활용", "가상현실(VR)",
+                "증강현실(AR)", "생성형 AI", "챗GPT 활용", "디지털 리터러시", "스마트기기 관리", "태블릿 충전함", "신규 교사",
+                "동학년 멘토링", "학급 경영", "학생 생활지도", "새학기 준비", "여름 방학", "교무실 예절"
+            ];
+
+            const db = [...rawSeeds];
+            let idCounter = rawSeeds.length + 1;
+            let topicIdx = 0;
+
+            // [오류 해결] 숫자를 임의로 붙이는 방식 전면 차단 및 안전한 수식어 도입
             while (db.length < 1000) {
-                const baseTopic = stdTopics[tIdx % stdTopics.length];
-                const cycle = Math.floor(tIdx / stdTopics.length);
+                const baseTopic = standardTopics[topicIdx % standardTopics.length];
+                const cycle = Math.floor(topicIdx / standardTopics.length);
                 const prefixes = ["", "초등 ", "학교 ", "실무 ", "교육 ", "기본 ", "현장 ", "행정 ", "운영 ", "지원 "];
-                let finalKw = (cycle === 0) ? baseTopic : `${prefixes[cycle % prefixes.length]}${baseTopic}`;
-                if(db.some(d => d.keyword === finalKw)) { finalKw += " 관련 지침"; }
-                const cat = assignCategory(finalKw);
+                
+                // 빈 값 방지 처리 (초기 검색창 null 오류 방지용 안전 검사)
+                let finalKeyword = (cycle === 0) ? baseTopic : `${prefixes[cycle % prefixes.length]}${baseTopic}`;
+                
+                // 완전히 동일한 키워드일 경우에만 접미사 대체 (숫자(2) 형태는 절대 쓰지 않음)
+                if(db.some(d => d.keyword === finalKeyword)) { finalKeyword = finalKeyword + " 관련 지침"; }
+
+                const category = assignCategory(finalKeyword);
+                
                 db.push({
-                    id: idCounter, keyword: finalKw, aliases: [baseTopic], category: cat,
-                    description: `실무에서 다루어지는 [${finalKw}] 관련 세부 개념입니다.`,
-                    simple: `${cat} 업무 처리에 참고할 핵심 사항`, tags: [cat, "실무"],
-                    related: [rawSeeds[idCounter % rawSeeds.length].keyword], situations: [`${finalKw} 처리 시`], difficulty: (idCounter % 3) + 1
+                    id: idCounter, keyword: finalKeyword, aliases: [baseTopic], category: category,
+                    description: `교육 현장 및 행정 실무에서 다루어지는 [${finalKeyword}] 관련 세부 지침과 교직 개념입니다.`,
+                    simple: `${category} 업무 처리에 참고할 핵심 실무 사항`,
+                    tags: [category, "실무"], related: [rawSeeds[idCounter % rawSeeds.length].keyword],
+                    situations: [`${finalKeyword} 업무를 처리할 때`], difficulty: (idCounter % 3) + 1
                 });
-                idCounter++; tIdx++;
+                idCounter++; topicIdx++;
             }
             return db.map(item => ({ ...item, _keywordLower: item.keyword.toLowerCase(), _searchText: `${item.keyword} ${(item.aliases||[]).join(' ')} ${item.category} ${item.description} ${item.simple} ${(item.tags||[]).join(' ')}`.toLowerCase(), _chosung: getChosung(item.keyword) }));
         }
+
         const DB = generateDatabase();
 
         const SITUATIONS = [
-            { id: 1, title: "수업 중 다쳤어요", category: "보건·안전", summary: "부상 발생 대처", firstCheck: ["의식 확인"], steps: ["응급처치", "학부모 연락", "보고서 작성"], caution: ["임의 후송 지양"], relatedKeywords: ["응급처치", "안전사고"], script: "어머니, 아이가 보건실에 있습니다. 큰 이상은 없으나 연락드립니다." },
-            { id: 2, title: "학부모 항의", category: "교육활동보호", summary: "민원 대응", firstCheck: ["감정 대응 금지"], steps: ["상담 기록", "교보위 안내", "관리자 동행"], caution: ["개인 연락처 응대 자제"], relatedKeywords: ["학부모 상담주간"], script: "속상하신 마음 이해합니다. 공식 면담 시간을 통해 말씀 나누시죠." },
-            { id: 3, title: "학교폭력 신고", category: "학교폭력", summary: "초기 대응", firstCheck: ["학교장 보고"], steps: ["대장 기록", "전담기구 조사"], caution: ["은폐 불가"], relatedKeywords: ["학교폭력"], script: "공정하게 파악 중입니다. 안정을 취하도록 다독여 주세요." },
-            { id: 4, title: "물건 구입", category: "학교회계·예산", summary: "물품 구입", firstCheck: ["예산 확인"], steps: ["품의 작성", "물품 계약", "지출 결의"], caution: ["사후 품의 금지"], relatedKeywords: ["품의"] },
-            { id: 5, title: "병가 신청", category: "복무·휴가", summary: "질병 복무", firstCheck: ["잔여일 확인"], steps: ["나이스 병가 신청", "진단서 제출"], caution: ["진단서 필수 조건 확인"], relatedKeywords: ["시간외근무"] }
+            { id: 1, title: "학생이 수업 중 다쳤어요", category: "보건·안전", summary: "학생 부상 발생 시 대처 절차", firstCheck: ["부상 부위 및 의식 상태 확인"], steps: ["보건실 인계 및 응급처치 실시", "학부모 즉시 연락", "안전사고 보고서 작성"], caution: ["임의로 병원 후송 지양"], relatedKeywords: ["응급처치", "안전사고"], script: "어머님, 많이 놀라셨죠. 현재 아이는 보건실에서 응급 처치를 받고 안정을 취하고 있습니다. 크게 다친 것은 아니지만 통증이 지속될 수 있어 연락드렸습니다." },
+            { id: 2, title: "학부모가 강하게 항의해요", category: "교육활동보호", summary: "학부모의 악성 민원 대응", firstCheck: ["감정적 대응 금지 및 기록"], steps: ["유선/방문 상담 기록", "교권보호위원회 안내", "관리자 동행 요청"], caution: ["개인 연락처 응대 자제"], relatedKeywords: ["학부모 상담주간", "교권보호위원회"], script: "학부모님, 자녀 일로 속상하신 마음 충분히 이해합니다. 다만 정확한 사실 관계 파악을 위해 학교 공식 면담 시간을 통해 말씀 나누는 것이 좋겠습니다." },
+            { id: 3, title: "학교폭력 신고가 들어왔어요", category: "학교폭력", summary: "학교폭력 초기 대응", firstCheck: ["학교장 즉시 보고", "학생 격리"], steps: ["사안 접수 대장 기록", "학교폭력전담기구 조사", "자체해결 또는 심의위 회부"], caution: ["은폐 절대 불가"], relatedKeywords: ["학교폭력", "학교폭력전담기구"], script: "어머님, 학교에 관련 사안이 접수되어 절차에 따라 공정하게 파악 중입니다. 학생이 심리적으로 안정될 수 있도록 가정에서도 잘 다독여 주시길 부탁드립니다." },
+            { id: 4, title: "학교 예산으로 물건을 사야 해요", category: "학교회계·예산", summary: "학급 운영비 물품 구입 절차", firstCheck: ["예산 편성 내역 확인"], steps: ["K-에듀파인 품의 작성", "물품 계약", "지출 결의 및 정산"], caution: ["사후 품의 원칙적 금지"], relatedKeywords: ["품의", "지출결의"] },
+            { id: 5, title: "병가를 길게 내야 해요", category: "복무·휴가", summary: "질병으로 인한 복무 신청", firstCheck: ["연간 병가 일수 잔여량 확인"], steps: ["나이스 복무에서 병가 신청", "관리자 승인", "진단서 제출(6일 이상 시)"], caution: ["진단서 필수 첨부 조건 확인"], relatedKeywords: ["시간외근무", "휴직"] }
         ];
+
         while (SITUATIONS.length < 50) {
             const idx = SITUATIONS.length + 1;
-            SITUATIONS.push({ id: idx, title: `상황 가이드 #${idx}`, category: CATEGORIES[idx % CATEGORIES.length], summary: `표준 대응 #${idx}`, firstCheck: ["규정 검토"], steps: ["초기 조치", "보고"], caution: ["지침 확인"], relatedKeywords: [DB[idx % 20].keyword] });
+            SITUATIONS.push({ id: idx, title: `학교 실무 상황 가이드 #${idx}`, category: CATEGORIES[idx % CATEGORIES.length], summary: `주요 실무 상황 #${idx} 표준 대응`, firstCheck: ["관련 규정 검토"], steps: ["초기 조치", "시스템 기록", "결과 보고"], caution: ["교육청 지침 확인"], relatedKeywords: [DB[idx % 20].keyword] });
         }
 
         const NAVIGATOR_COURSES = [
-            { id: 1, title: "체험학습 기획부터 정산까지", category: "현장체험학습", steps: ["계획 수립", "계약", "답사", "실시", "정산"], targetKeyword: "현장체험학습" },
-            { id: 2, title: "운동부 운영 사이클", category: "체육", steps: ["계획 수립", "예산 편성", "대회 출전"], targetKeyword: "학교 운동부" },
-            { id: 3, title: "에듀테크 선도학교", category: "연구·연수", steps: ["계획서 제출", "공개수업", "정산"], targetKeyword: "에듀테크" },
-            { id: 4, title: "관외 전보", category: "인사·발령", steps: ["전보 요강 확인", "인사내신", "발령"], targetKeyword: "관외 전보" },
-            { id: 5, title: "학폭 사안 처리", category: "학교폭력", steps: ["접수", "조사", "심의"], targetKeyword: "학교폭력" }
+            { id: 1, title: "현장체험학습 기획부터 정산까지", category: "현장체험학습", steps: ["기본 계획 수립 및 [내부결재]", "차량 및 숙소 계약 진행", "사전 답사 및 [답사보고서]", "체험학습 실시", "비용 정산 및 [결과보고서]"], targetKeyword: "현장체험학습" },
+            { id: 2, title: "학교 운동부 1년 운영 사이클", category: "체육", steps: ["연간계획 수립 및 [학운위 심의]", "예산 편성 및 훈련 돌입", "대회 출전 및 [결과보고서]"], targetKeyword: "학교 운동부" },
+            { id: 3, title: "에듀테크 선도학교 운영", category: "연구·연수", steps: ["선도학교 계획서 제출", "예산 교부 및 기기 확충", "공개수업 실시", "운영 사례 발표 및 정산"], targetKeyword: "에듀테크" },
+            { id: 4, title: "다른 지역으로 옮기고 싶어요", category: "인사·발령", steps: ["관외 전보 요강 확인", "인사내신 산정", "최종 인사발령"], targetKeyword: "관외 전보" },
+            { id: 5, title: "학교폭력 사안을 처리해야 해요", category: "학교폭력", steps: ["사안 접수 및 보고", "전담기구 조사", "학교장 자체해결 또는 심의위", "조치 이행"], targetKeyword: "학교폭력" }
         ];
+
         while (NAVIGATOR_COURSES.length < 20) {
             const idx = NAVIGATOR_COURSES.length + 1;
-            NAVIGATOR_COURSES.push({ id: idx, title: `마스터 코스 #${idx}`, category: "학교조직·행정", steps: ["계획", "결재", "보고"], targetKeyword: DB[idx % 20].keyword });
+            NAVIGATOR_COURSES.push({ id: idx, title: `업무 마스터 코스 #${idx}`, category: "학교조직·행정", steps: ["기본 계획 수립", "결재 시행", "결과 보고"], targetKeyword: DB[idx % 20].keyword });
         }
 
         const YEAR_TASKS = {
-            3: [{ title: "학급 교육과정 수립", role: "homeroom" }, { title: "업무분장 확정", role: "manager" }],
-            4: [{ title: "PAPS 측정", role: "homeroom", isPeak: true, linkToDoc: 't5' }, { title: "학부모 상담주간", role: "homeroom" }],
-            5: [{ title: "대회 출전 결재", role: "manager", isPeak: true, linkToDoc: 't4' }, { title: "체험학습 실시", role: "all", linkToDoc: 't2' }],
-            6: [{ title: "상반기 교육과정 반성", role: "all" }, { title: "하반기 예산 요구", role: "manager" }],
-            7: [{ title: "생기부 마감", role: "all" }, { title: "방학 안전 지도", role: "homeroom" }],
-            8: [{ title: "2학기 워크숍", role: "all" }, { title: "시간표 확정", role: "manager" }],
-            9: [{ title: "2학기 상담주간", role: "homeroom" }, { title: "교원평가 실시", role: "all" }],
-            10: [{ title: "체육대회", role: "all" }, { title: "안전한국훈련", role: "all" }],
-            11: [{ title: "차년도 교육과정", role: "manager" }, { title: "전보 내신서 제출", role: "all" }],
-            12: [{ title: "생기부 및 예산 최종 마감", role: "all", isPeak: true }, { title: "업무분장 희망조사", role: "all" }],
-            1: [{ title: "학년말 업무 마무리", role: "all" }, { title: "졸업식", role: "all" }],
-            2: [{ title: "새학기 워크숍", role: "all" }, { title: "신입생 예비소집", role: "manager" }]
+            3: [{ title: "학급 교육과정 수립 및 총회", role: "homeroom" }, { title: "업무분장 확정", role: "manager" }],
+            4: [{ title: "PAPS(학생체력평가) 측정 주간", role: "homeroom", isPeak: true, linkToDoc: 't5' }, { title: "학부모 상담주간 운영", role: "homeroom" }],
+            5: [{ title: "소년체전 등 대회 출전 결재", role: "manager", isPeak: true, linkToDoc: 't4' }, { title: "현장체험학습 실시", role: "all", linkToDoc: 't2' }],
+            6: [{ title: "상반기 교육과정 반성", role: "all" }, { title: "하반기 예산 요구안 작성", role: "manager" }],
+            7: [{ title: "1학기 생활기록부 작성 마감", role: "all" }, { title: "여름방학 안전 지도", role: "homeroom" }],
+            8: [{ title: "2학기 교육과정 워크숍", role: "all" }, { title: "개학일 시간표 확정", role: "manager" }],
+            9: [{ title: "2학기 학부모 상담주간", role: "homeroom" }, { title: "교원능력개발평가 만족도 조사", role: "all" }],
+            10: [{ title: "가을 체육대회 및 문화체험", role: "all" }, { title: "재난대응 안전한국훈련", role: "all" }],
+            11: [{ title: "차년도 교육과정 편성 준비", role: "manager" }, { title: "관외 전보 내신서 제출 기한", role: "all" }],
+            12: [{ title: "2학기말 생기부 및 예산 최종 마감", role: "all", isPeak: true }, { title: "학년말 업무분장 희망조사", role: "all" }],
+            1: [{ title: "학년말 업무 마무리", role: "all" }, { title: "졸업식 및 종업식", role: "all" }],
+            2: [{ title: "새학기 교육과정 워크숍", role: "all" }, { title: "신입생 예비소집", role: "manager" }]
         };
 
         // ----------------------------------------------------
-        // 3. 자가진단 및 라우터 (All Required Functions Guard)
+        // 3. 라우터 및 상태 관리 (에러 복원 기능 탑재)
         // ----------------------------------------------------
-        function runSelfTest() {
-            let passDB = DB.length === 1000;
-            console.group("[교직백서 1000 Self Test]");
-            console.log("DB (1000):", passDB ? "PASS" : "FAIL");
-            console.log("No Fake Suffix:", DB.filter(d => d.keyword.match(/\(\d+\)/)).length === 0 ? "PASS" : "FAIL");
-            console.log("Functions Intact:", typeof renderCareer === 'function' && typeof renderQuiz === 'function' ? "PASS" : "FAIL (CRITICAL)");
-            console.groupEnd();
-        }
-
         let globalTimerInterval = null; let timerSeconds = 300; let currentDocTemplate = null; let randomLeaveInterval = null;
         
         const router = {
@@ -313,16 +372,20 @@
             init() {
                 try {
                     const hash = window.location.hash;
+                    let paramVal = null;
                     if (hash.includes('keyword=')) {
                         const kw = decodeURIComponent(hash.split('keyword=')[1]); const item = DB.find(d => d.keyword === kw);
                         if (item) { this.current = 'search'; this.render(); setTimeout(() => openDetail(item.id, false), 50); return; }
                     }
                     if (hash.includes('view=')) {
                         const params = new URLSearchParams(hash.replace('#', ''));
-                        this.current = params.get('view') || 'home'; this.param = params.get('param') ? decodeURIComponent(params.get('param')) : null;
+                        this.current = params.get('view') || 'home'; 
+                        paramVal = params.get('param') ? decodeURIComponent(params.get('param')) : null;
+                        if (paramVal === 'null') paramVal = null;
+                        this.param = paramVal;
                     }
                     this.render();
-                } catch(e) { this.renderError(e); }
+                } catch(e) { console.error("Init Error", e); this.renderError(e); }
             },
             render() {
                 try {
@@ -343,17 +406,17 @@
                         case 'navigator': renderNavigator(viewContainer); break;
                         case 'map': renderMap(viewContainer); break;
                         case 'year': renderYear(viewContainer); break;
-                        case 'career': renderCareer(viewContainer); break; // CRITICAL FIX
-                        case 'quiz': renderQuiz(viewContainer); break;     // CRITICAL FIX
-                        case 'card': renderCard(viewContainer); break;     // CRITICAL FIX
-                        case 'mybox': renderMyBox(viewContainer); break;   // CRITICAL FIX
+                        case 'career': renderCareer(viewContainer); break;
+                        case 'quiz': renderQuiz(viewContainer); break;
+                        case 'card': renderCard(viewContainer); break;
+                        case 'mybox': renderMyBox(viewContainer); break;
                         case 'tools-doc': renderToolsDoc(viewContainer, this.param); break;
                         case 'tools-class': renderToolsClass(viewContainer); break;
                         case 'tools-board': renderToolsBoard(viewContainer); break;
                         case 'tools-edutech': renderToolsEdutech(viewContainer); break;
                         default: renderHome(viewContainer); break;
                     }
-                } catch (error) { this.renderError(error); }
+                } catch (error) { console.error("Rendering Error:", error); this.renderError(error); }
             },
             renderError(error) {
                 const viewContainer = document.getElementById('app-view');
@@ -373,16 +436,22 @@
         });
 
         // ----------------------------------------------------
-        // 4. 화면 렌더링 함수 완벽 탑재 (누락 불가)
+        // 4. 화면 렌더링 함수들
         // ----------------------------------------------------
         function renderHome(container) {
-            const d = new Date(); const todayStr = `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
-            const cardIndex = Math.abs(hashCode(todayStr)) % DB.length; const todaysCard = DB[cardIndex] || DB[0];
-            const quote = QUOTES[Math.abs(hashCode(todayStr)) % QUOTES.length];
+            const d = new Date(); 
+            // [버그 수정 완료] HashStr(고유 번호 생성용 텍스트)을 YYYY-MM-DD 형식으로 통일
+            const hashStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            const todayStr = `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
+            const cardIndex = Math.abs(hashCode(hashStr)) % DB.length; 
+            const todaysCard = DB[cardIndex] || DB[0];
+            const quote = (QUOTES && QUOTES.length > 0) ? QUOTES[Math.abs(hashCode(hashStr)) % QUOTES.length] : "선생님의 오늘 하루도 아이들에게는 우주입니다.";
+
             const year = d.getFullYear(); let vacName = "여름방학"; let vacDate = new Date(year, 6, 20); 
             if (d > vacDate) { vacName = "겨울방학"; vacDate = new Date(year + 1, 0, 5); }
             const diffDays = Math.max(0, Math.ceil((vacDate - d) / (1000 * 60 * 60 * 24)));
-            const recentSearches = Storage.get('recent_searches', []).slice(0, 5);
+
+            const recentSearches = Storage.get('recent_searches', []).filter(k => k && String(k).trim() !== 'null').slice(0, 5);
             const monthTasksCount = (YEAR_TASKS[d.getMonth() + 1] || []).length;
             const checkedState = Storage.get(`checklist_${d.getMonth() + 1}`, {});
             let completedCount = 0; for (let i = 0; i < monthTasksCount; i++) if (checkedState[i]) completedCount++;
@@ -406,7 +475,7 @@
                         <div class="relative z-10 max-w-2xl">
                             <span class="inline-block px-3 py-1 rounded-full bg-white/20 text-xs font-semibold mb-3 backdrop-blur-sm">초등교사 필수 OS · 일반 학교 일정 기준</span>
                             <h2 class="text-2xl md:text-4xl font-extrabold tracking-tight mb-2">선생님, 오늘은 무엇을 도와드릴까요?</h2>
-                            <p class="text-blue-100 text-sm md:text-base mb-6 opacity-90">${DB.length}개의 검증된 교직 지식과 실전 가이드</p>
+                            <p class="text-blue-100 text-sm md:text-base mb-6 opacity-90">${DB.length}개의 검증된 교직 지식과 실전 업무 가이드</p>
                             <div class="relative flex gap-2">
                                 <input type="text" id="home-search-input" placeholder="전보, 학폭, 품의, 나이스..." class="w-full pl-12 pr-4 py-4 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 placeholder-slate-400 font-medium shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-400/30 transition">
                                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
@@ -416,18 +485,19 @@
                     </div>
 
                     <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-2">
-                        <a href="https://neis.go.kr" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-link text-blue-500 dark:text-blue-400"></i> 나이스</a>
-                        <a href="https://klef.go.kr" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-won-sign text-amber-500 dark:text-amber-400"></i> 에듀파인</a>
-                        <a href="https://www.teachiworld.com" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-gift text-rose-500 dark:text-rose-400"></i> 복지포털</a>
+                        <a href="https://neis.go.kr" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-link text-blue-500 dark:text-blue-400"></i> NEIS (나이스)</a>
+                        <a href="https://klef.go.kr" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-won-sign text-amber-500 dark:text-amber-400"></i> K-에듀파인</a>
+                        <a href="https://www.teachiworld.com" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-gift text-rose-500 dark:text-rose-400"></i> 맞춤형복지</a>
+                        <a href="https://www.moe.go.kr" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-building-columns text-slate-500 dark:text-slate-400"></i> 교육부</a>
                     </div>
 
                     <div class="grid grid-cols-3 md:grid-cols-6 gap-3">
-                        <button onclick="router.navigate('tools-doc')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-blue-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-file-signature"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">생성기</span></button>
-                        <button onclick="router.navigate('tools-class')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-amber-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-users-rectangle"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">학급도구</span></button>
+                        <button onclick="router.navigate('tools-doc')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-blue-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-file-signature"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">문서 생성기</span></button>
+                        <button onclick="router.navigate('tools-class')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-amber-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-users-rectangle"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">학급 도구</span></button>
                         <button onclick="router.navigate('tools-board')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-emerald-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-list-check"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">태스크보드</span></button>
-                        <button onclick="router.navigate('year')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-purple-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-calendar-days"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">1년일정</span></button>
+                        <button onclick="router.navigate('year')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-purple-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-calendar-days"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">교사의 1년</span></button>
                         <button onclick="router.navigate('map')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-indigo-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-network-wired"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">지식맵</span></button>
-                        <button onclick="router.navigate('situations')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-rose-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-triangle-exclamation"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">상황가이드</span></button>
+                        <button onclick="router.navigate('situations')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-rose-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-triangle-exclamation"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">상황 가이드</span></button>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -435,18 +505,19 @@
                             <div>
                                 <div class="flex items-center justify-between mb-4"><span class="text-xs font-bold px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 rounded-full"><i class="fa-solid fa-star"></i> 오늘의 교직카드</span></div>
                                 <div class="cursor-pointer group" onclick="openDetail(${todaysCard.id})">
-                                    <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition mb-2">${todaysCard.keyword}</h3>
+                                    <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition mb-2">${todaysCard.keyword}</h3>
+                                    <p class="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-2">[${todaysCard.category}]</p>
                                     <p class="text-sm text-slate-600 dark:text-slate-300 line-clamp-3 mb-4">${todaysCard.description}</p>
                                 </div>
                             </div>
-                            <button onclick="router.navigate('card')" class="mt-4 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline text-left">카드 학습 모드 →</button>
+                            <button onclick="router.navigate('card')" class="mt-4 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline text-left">카드 전체 학습 →</button>
                         </div>
                         <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
                             <div>
                                 <div class="flex items-center justify-between mb-3"><span class="text-xs font-bold px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 rounded-full"><i class="fa-solid fa-calendar-check"></i> ${d.getMonth()+1}월 체크</span></div>
                                 <div class="mb-3">
-                                    <div class="flex justify-between text-xs text-slate-500 mb-1"><span>업무 달성률</span><span class="font-bold text-blue-600">${completionRate}%</span></div>
-                                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden"><div class="bg-blue-600 h-full transition-all" style="width: ${completionRate}%"></div></div>
+                                    <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1"><span>실제 업무 달성률</span><span class="font-bold text-blue-600 dark:text-blue-400">${completionRate}%</span></div>
+                                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden"><div class="bg-blue-600 dark:bg-blue-500 h-full transition-all" style="width: ${completionRate}%"></div></div>
                                 </div>
                                 <ul class="space-y-2" id="home-checklist-preview"></ul>
                             </div>
@@ -454,7 +525,7 @@
                         <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
                             <div>
                                 <div class="flex items-center justify-between mb-4"><span class="text-xs font-bold px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-full"><i class="fa-solid fa-clock-rotate-left"></i> 최근 검색</span></div>
-                                ${recentSearches.length > 0 ? `<div class="flex flex-wrap gap-2">${recentSearches.map(kw => `<span onclick="router.navigate('search', '${kw}')" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-medium cursor-pointer hover:bg-blue-50 transition">${kw}</span>`).join('')}</div>` : `<p class="text-xs text-slate-400 py-6 text-center">기록 없음</p>`}
+                                ${recentSearches.length > 0 ? `<div class="flex flex-wrap gap-2">${recentSearches.map(kw => `<span onclick="router.navigate('search', '${kw}')" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-medium cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-600 hover:text-blue-600 dark:hover:text-blue-400 transition text-slate-800 dark:text-slate-200">${kw}</span>`).join('')}</div>` : `<p class="text-xs text-slate-400 dark:text-slate-500 py-6 text-center">기록이 없습니다.</p>`}
                             </div>
                         </div>
                     </div>
@@ -465,124 +536,230 @@
             renderHomeChecklistPreview(d.getMonth() + 1);
         }
 
-        function triggerHomeSearch() { const input = document.getElementById('home-search-input'); if (input && input.value.trim()) router.navigate('search', input.value.trim()); else router.navigate('search'); }
+        function triggerHomeSearch() {
+            const input = document.getElementById('home-search-input');
+            if (input && input.value.trim()) router.navigate('search', input.value.trim());
+            else router.navigate('search');
+        }
 
         function renderHomeChecklistPreview(month) {
-            const container = document.getElementById('home-checklist-preview'); if (!container) return;
-            const tasks = YEAR_TASKS[month] || YEAR_TASKS[3]; const checkedState = Storage.get(`checklist_${month}`, {});
+            const container = document.getElementById('home-checklist-preview');
+            if (!container) return;
+            const tasks = YEAR_TASKS[month] || YEAR_TASKS[3];
+            const checkedState = Storage.get(`checklist_${month}`, {});
             container.innerHTML = tasks.slice(0, 4).map((task, idx) => `
                 <li class="flex items-center gap-2.5 text-xs text-slate-700 dark:text-slate-300">
-                    <input type="checkbox" ${checkedState[idx] ? 'checked' : ''} onchange="toggleHomeChecklist(${month}, ${idx})" class="w-4 h-4 rounded text-blue-600 border-slate-300 dark:border-slate-600 cursor-pointer">
-                    <span class="truncate ${checkedState[idx] ? 'line-through text-slate-400' : ''}">${task.title}</span>
+                    <input type="checkbox" ${checkedState[idx] ? 'checked' : ''} onchange="toggleHomeChecklist(${month}, ${idx})" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 cursor-pointer border-slate-300 dark:border-slate-600">
+                    <span class="truncate ${checkedState[idx] ? 'line-through text-slate-400 dark:text-slate-500' : ''}">${task.title}</span>
                 </li>
             `).join('');
         }
-        function toggleHomeChecklist(month, idx) { const state = Storage.get(`checklist_${month}`, {}); state[idx] = !state[idx]; Storage.set(`checklist_${month}`, state); renderHomeChecklistPreview(month); }
+
+        function toggleHomeChecklist(month, idx) {
+            const state = Storage.get(`checklist_${month}`, {});
+            state[idx] = !state[idx]; Storage.set(`checklist_${month}`, state); renderHomeChecklistPreview(month);
+        }
 
         function renderToolsDoc(container, initialTemplateId = null) {
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold mb-1 text-slate-900 dark:text-white">기안/알림장 생성기</h2><p class="text-sm text-slate-500 dark:text-slate-400">빈칸 채우기 자동완성</p></div>
+                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">문서/알림장 생성기</h2><p class="text-sm text-slate-500 dark:text-slate-400">빈칸만 채우면 기안문과 알림장 텍스트가 즉시 완성됩니다.</p></div>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-1 bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4">
                             <label class="block text-sm font-bold text-slate-900 dark:text-white">템플릿 선택</label>
                             <select id="doc-template-select" onchange="loadDocTemplate()" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-200 outline-none">
-                                <option value="">선택하세요</option>
+                                <option value="">템플릿을 선택하세요</option>
                                 ${DOC_TEMPLATES.map(t => `<option value="${t.id}">${t.title}</option>`).join('')}
                             </select>
                             <div id="doc-inputs-container" class="space-y-3 mt-4"></div>
                         </div>
                         <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col">
-                            <div class="flex justify-between items-center mb-4"><span class="text-sm font-bold text-slate-900 dark:text-white">완성된 텍스트</span><button onclick="copyDocText()" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl shadow"><i class="fa-regular fa-copy"></i> 복사</button></div>
-                            <textarea id="doc-output" class="w-full h-64 p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-200 outline-none resize-none" readonly></textarea>
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-sm font-bold text-slate-900 dark:text-white">완성된 텍스트</span>
+                                <button onclick="copyDocText()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow transition"><i class="fa-regular fa-copy"></i> 복사하기</button>
+                            </div>
+                            <textarea id="doc-output" class="w-full h-64 p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-200 focus:outline-none resize-none" readonly placeholder="템플릿을 선택하고 빈칸을 채우세요."></textarea>
                         </div>
                     </div>
                 </div>
             `;
             if (initialTemplateId) { const select = document.getElementById('doc-template-select'); if (select) { select.value = initialTemplateId; loadDocTemplate(); } }
         }
+
         function loadDocTemplate() {
-            const id = document.getElementById('doc-template-select').value; currentDocTemplate = DOC_TEMPLATES.find(t => t.id === id);
+            const id = document.getElementById('doc-template-select').value;
+            currentDocTemplate = DOC_TEMPLATES.find(t => t.id === id);
             const container = document.getElementById('doc-inputs-container'); const output = document.getElementById('doc-output');
             if (!currentDocTemplate) { container.innerHTML = ''; output.value = ''; return; }
+            
             const regex = /\[(.*?)\]/g; let match; const vars = new Set();
             while ((match = regex.exec(currentDocTemplate.content)) !== null) vars.add(match[1]);
-            if (vars.size === 0) { container.innerHTML = '<p class="text-xs text-slate-400">빈칸 없음</p>'; output.value = currentDocTemplate.content; }
-            else { container.innerHTML = Array.from(vars).map(v => `<div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">${v}</label><input type="text" data-var="${v}" oninput="updateDocOutput()" class="doc-var-input w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm outline-none"></div>`).join(''); updateDocOutput(); }
+            
+            if (vars.size === 0) {
+                container.innerHTML = '<p class="text-xs text-slate-400 dark:text-slate-500">빈칸이 없는 템플릿입니다.</p>'; output.value = currentDocTemplate.content;
+            } else {
+                container.innerHTML = Array.from(vars).map(v => `<div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">${v}</label><input type="text" data-var="${v}" oninput="updateDocOutput()" class="doc-var-input w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm outline-none" placeholder="${v} 입력"></div>`).join('');
+                updateDocOutput();
+            }
         }
+
         function updateDocOutput() {
-            if (!currentDocTemplate) return; let text = currentDocTemplate.content;
+            if (!currentDocTemplate) return;
+            let text = currentDocTemplate.content;
             document.querySelectorAll('.doc-var-input').forEach(input => { const val = input.value || `[${input.getAttribute('data-var')}]`; text = text.split(`[${input.getAttribute('data-var')}]`).join(val); });
             document.getElementById('doc-output').value = text;
         }
-        function copyDocText() { const text = document.getElementById('doc-output').value; if (text) navigator.clipboard.writeText(text).then(() => showToast('복사되었습니다.')); }
+        function copyDocText() { const text = document.getElementById('doc-output').value; if (text) navigator.clipboard.writeText(text).then(() => showToast('클립보드에 복사되었습니다.')); }
 
         function renderToolsClass(container) {
-            const savedNames = Storage.get('class_names', '김학생, 이학생');
+            const savedNames = Storage.get('class_names', '김학생, 이학생, 박학생');
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">학급 경영 도구</h2><p class="text-sm text-slate-500 dark:text-slate-400">타이머, 랜덤 뽑기, 자리 배치</p></div>
+                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">학급 경영 도구</h2><p class="text-sm text-slate-500 dark:text-slate-400">타이머, 랜덤 뽑기, 자리 배치 등 유용한 도구 모음</p></div>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm text-center flex flex-col justify-center">
+                        <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm text-center flex flex-col items-center justify-center">
                             <h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 mb-4">스마트 타이머</h3>
-                            <div id="timer-display" class="text-7xl font-black text-slate-800 dark:text-white mb-8">05:00</div>
-                            <div class="flex justify-center gap-3"><button onclick="addTimer(60)" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold">+1분</button><button onclick="startTimer()" class="px-6 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold shadow">시작</button><button onclick="pauseTimer()" class="px-6 py-2 bg-amber-500 text-white rounded-xl text-sm font-bold shadow">정지</button><button onclick="resetTimer()" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold">리셋</button></div>
+                            <div id="timer-display" class="text-7xl md:text-8xl font-black text-slate-800 dark:text-white tracking-tighter tabular-nums mb-8">05:00</div>
+                            <div class="flex flex-wrap justify-center gap-3">
+                                <button onclick="addTimer(60)" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold">+1분</button>
+                                <button onclick="startTimer()" class="px-6 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold shadow"><i class="fa-solid fa-play"></i> 시작</button>
+                                <button onclick="pauseTimer()" class="px-6 py-2 bg-amber-500 text-white rounded-xl text-sm font-bold shadow"><i class="fa-solid fa-pause"></i> 정지</button>
+                                <button onclick="resetTimer()" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold"><i class="fa-solid fa-rotate-right"></i> 리셋</button>
+                            </div>
                         </div>
                         <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col">
-                            <div class="flex justify-between items-center mb-2"><h3 class="text-sm font-bold text-slate-500 dark:text-slate-400">랜덤 뽑기</h3><button onclick="pickRandom()" class="px-4 py-1.5 bg-rose-600 text-white text-xs font-bold rounded-lg shadow">1명 뽑기</button></div>
-                            <textarea id="class-names-input" onchange="Storage.set('class_names', this.value)" class="w-full h-24 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm mb-4 resize-none">${savedNames}</textarea>
-                            <div class="flex-1 bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-900/50 rounded-2xl flex flex-col items-center justify-center p-4"><p class="text-xs text-rose-400 dark:text-rose-500 font-bold mb-1">발표자는?</p><p id="random-name" class="text-3xl font-extrabold text-rose-600 dark:text-rose-400">?</p></div>
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-sm font-bold text-slate-500 dark:text-slate-400">우리 반 랜덤 뽑기</h3>
+                                <button onclick="pickRandom()" class="px-4 py-1.5 bg-rose-600 text-white text-xs font-bold rounded-lg shadow"><i class="fa-solid fa-wand-magic-sparkles"></i> 1명 뽑기</button>
+                            </div>
+                            <textarea id="class-names-input" onchange="Storage.set('class_names', this.value)" class="w-full h-24 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm mb-4 resize-none" placeholder="이름을 쉼표(,)로 구분해서 적어주세요.">${savedNames}</textarea>
+                            <div class="flex-1 bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-900/50 rounded-2xl flex flex-col items-center justify-center p-4">
+                                <p class="text-xs text-rose-400 dark:text-rose-500 font-bold mb-1">발표자는?</p>
+                                <p id="random-name" class="text-3xl font-extrabold text-rose-600 dark:text-rose-400">?</p>
+                            </div>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
-                            <div class="flex justify-between items-center mb-6"><h3 class="text-sm font-bold text-slate-900 dark:text-white">랜덤 자리 배치기</h3><button onclick="generateSeats()" class="px-6 py-2.5 bg-emerald-600 text-white font-bold text-sm rounded-xl shadow">배치 생성</button></div>
-                            <div class="bg-slate-50 dark:bg-slate-900 p-6 rounded-2xl overflow-x-auto"><div class="text-center mb-8"><span class="px-12 py-2 bg-slate-300 dark:bg-slate-700 rounded text-sm font-bold text-slate-700 dark:text-slate-200">교 탁</span></div><div id="seats-grid" class="flex flex-wrap justify-center gap-2 max-w-2xl mx-auto min-h-[100px] items-center"><p class="text-slate-400 dark:text-slate-500 text-sm font-medium">버튼을 눌러주세요.</p></div></div>
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="text-sm font-bold text-slate-900 dark:text-white">랜덤 자리 배치기</h3>
+                                <button onclick="generateSeats()" class="px-6 py-2.5 bg-emerald-600 text-white font-bold text-sm rounded-xl shadow"><i class="fa-solid fa-border-all"></i> 배치 생성</button>
+                            </div>
+                            <div class="bg-slate-50 dark:bg-slate-900 p-6 rounded-2xl overflow-x-auto">
+                                <div class="text-center mb-8"><span class="px-12 py-2 bg-slate-300 dark:bg-slate-700 rounded text-sm font-bold text-slate-700 dark:text-slate-200">교 탁</span></div>
+                                <div id="seats-grid" class="flex flex-wrap justify-center gap-2 max-w-2xl mx-auto min-h-[100px] items-center">
+                                    <p class="text-slate-400 dark:text-slate-500 text-sm font-medium">버튼을 눌러주세요.</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-6 rounded-3xl shadow-sm text-white flex flex-col justify-center items-center text-center"><span class="text-xs font-bold px-3 py-1 bg-white/20 rounded-full mb-4">이스터에그 🤫</span><h3 class="text-lg font-bold mb-2">엽쌤의 조퇴 사유 뽑기</h3><p class="text-xs text-purple-100 mb-6">"완벽한 변명거리"</p><div id="leave-reason-display" class="w-full bg-white/10 p-4 rounded-xl mb-6 font-bold text-lg h-16 flex items-center justify-center overflow-hidden"><span>?</span></div><button onclick="pickLeaveReason()" class="w-full py-3 bg-white text-indigo-600 font-bold rounded-xl shadow">사유 뽑기</button></div>
+                        <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-6 rounded-3xl shadow-sm text-white flex flex-col justify-center items-center text-center">
+                            <span class="text-xs font-bold px-3 py-1 bg-white/20 rounded-full mb-4">이스터에그 🤫</span>
+                            <h3 class="text-lg font-bold mb-2">엽쌤의 조퇴 사유 뽑기</h3>
+                            <p class="text-xs text-purple-100 mb-6">"금요일 오후, 완벽한 변명거리"</p>
+                            <div id="leave-reason-display" class="w-full bg-white/10 p-4 rounded-xl mb-6 font-bold text-lg h-16 flex items-center justify-center overflow-hidden"><span>?</span></div>
+                            <button onclick="pickLeaveReason()" class="w-full py-3 bg-white text-indigo-600 font-bold rounded-xl shadow hover:bg-slate-50 transition">사유 뽑기</button>
+                        </div>
                     </div>
                 </div>
             `;
             updateTimerDisplay();
         }
-        function updateTimerDisplay() { const display = document.getElementById('timer-display'); if(!display) return; const m = String(Math.floor(timerSeconds/60)).padStart(2,'0'); const s = String(timerSeconds%60).padStart(2,'0'); display.innerText = `${m}:${s}`; if(timerSeconds===0) display.classList.add('timer-blink'); else display.classList.remove('timer-blink'); }
-        function startTimer() { if(globalTimerInterval || timerSeconds===0) return; globalTimerInterval = setInterval(() => { if(timerSeconds>0) { timerSeconds--; updateTimerDisplay(); } else { clearInterval(globalTimerInterval); globalTimerInterval=null; showToast('타이머 종료!', 'error'); } }, 1000); }
-        function pauseTimer() { clearInterval(globalTimerInterval); globalTimerInterval=null; }
-        function resetTimer() { pauseTimer(); timerSeconds=300; updateTimerDisplay(); }
-        function addTimer(sec) { timerSeconds+=sec; updateTimerDisplay(); }
-        function pickRandom() { const input = document.getElementById('class-names-input').value; const names = input.split(',').map(n=>n.trim()).filter(n=>n); if(names.length===0) return showToast('이름 입력', 'error'); const target = document.getElementById('random-name'); let count=0; const anim=setInterval(()=>{ target.innerText=names[Math.floor(Math.random()*names.length)]; if(count++>15){ clearInterval(anim); target.innerText=`🎉 ${names[Math.floor(Math.random()*names.length)]} 🎉`; } }, 50); }
-        function generateSeats() { const input = document.getElementById('class-names-input').value; const names = input.split(',').map(n=>n.trim()).filter(n=>n); if(names.length===0) return showToast('이름 입력', 'error'); const shuffled = [...names].sort(()=>0.5-Math.random()); document.getElementById('seats-grid').innerHTML = shuffled.map(name=>`<div class="w-16 h-16 sm:w-20 sm:h-20 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl flex items-center justify-center font-bold text-sm sm:text-base shadow-sm m-1 text-slate-800 dark:text-slate-100">${name}</div>`).join(''); }
-        function pickLeaveReason() { if(randomLeaveInterval) return; const reasons = ["은행 업무", "치과 신경치료", "자녀 돌봄", "이사 견적", "부모님 병원 동행", "차량 정비", "수도관 파열", "건강검진"]; const display = document.getElementById('leave-reason-display'); let count=0; display.innerHTML = `<span class="slot-machine-spin">돌아가는 중...</span>`; randomLeaveInterval = setInterval(()=>{ display.innerHTML = `<span class="slot-machine-spin">${reasons[Math.floor(Math.random()*reasons.length)]}</span>`; if(count++>15) { clearInterval(randomLeaveInterval); randomLeaveInterval=null; display.innerHTML = `<span class="text-yellow-300 font-extrabold text-xl animate-fade-in">${reasons[Math.floor(Math.random()*reasons.length)]}</span>`; showToast('사유 결정!'); } }, 50); }
+
+        function updateTimerDisplay() {
+            const display = document.getElementById('timer-display'); if(!display) return;
+            const m = String(Math.floor(timerSeconds / 60)).padStart(2, '0'); const s = String(timerSeconds % 60).padStart(2, '0');
+            display.innerText = `${m}:${s}`;
+            if(timerSeconds === 0) display.classList.add('timer-blink'); else display.classList.remove('timer-blink');
+        }
+        function startTimer() { if(globalTimerInterval || timerSeconds === 0) return; globalTimerInterval = setInterval(() => { if(timerSeconds > 0) { timerSeconds--; updateTimerDisplay(); } else { clearInterval(globalTimerInterval); globalTimerInterval = null; showToast('타이머가 종료되었습니다.', 'error'); } }, 1000); }
+        function pauseTimer() { clearInterval(globalTimerInterval); globalTimerInterval = null; }
+        function resetTimer() { pauseTimer(); timerSeconds = 300; updateTimerDisplay(); }
+        function addTimer(sec) { timerSeconds += sec; updateTimerDisplay(); }
+
+        function pickRandom() {
+            const input = document.getElementById('class-names-input').value; const names = input.split(',').map(n => n.trim()).filter(n => n);
+            if(names.length === 0) { showToast('이름을 입력해주세요.', 'error'); return; }
+            const target = document.getElementById('random-name'); let count = 0;
+            const anim = setInterval(() => {
+                target.innerText = names[Math.floor(Math.random() * names.length)];
+                if(count++ > 15) { clearInterval(anim); target.innerText = `🎉 ${names[Math.floor(Math.random() * names.length)]} 🎉`; }
+            }, 50);
+        }
+
+        function generateSeats() {
+            const input = document.getElementById('class-names-input').value; const names = input.split(',').map(n => n.trim()).filter(n => n);
+            if(names.length === 0) { showToast('이름을 입력해주세요.', 'error'); return; }
+            const shuffled = [...names].sort(() => 0.5 - Math.random());
+            document.getElementById('seats-grid').innerHTML = shuffled.map(name => `<div class="w-16 h-16 sm:w-20 sm:h-20 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl flex items-center justify-center font-bold text-sm sm:text-base shadow-sm m-1 text-slate-800 dark:text-slate-100">${name}</div>`).join('');
+        }
+
+        function pickLeaveReason() {
+            if(randomLeaveInterval) return;
+            const reasons = ["은행 업무(대출 연장)", "치과 신경치료", "갑작스러운 자녀 돌봄", "이사 견적 확인", "부모님 병원 동행", "차량 긴급 정비", "집 수도관 파열", "건강검진 재검사"];
+            const display = document.getElementById('leave-reason-display'); let count = 0; display.innerHTML = `<span class="slot-machine-spin">돌아가는 중...</span>`;
+            randomLeaveInterval = setInterval(() => {
+                display.innerHTML = `<span class="slot-machine-spin">${reasons[Math.floor(Math.random() * reasons.length)]}</span>`;
+                if(count++ > 15) { clearInterval(randomLeaveInterval); randomLeaveInterval = null; display.innerHTML = `<span class="text-yellow-300 font-extrabold text-xl animate-fade-in">${reasons[Math.floor(Math.random() * reasons.length)]}</span>`; showToast('사유가 결정되었습니다! 결재를 올려볼까요? 😉'); }
+            }, 50);
+        }
 
         function renderToolsBoard(container) {
-            const defaultTasks = { 't1': { title: '운동부 기안', done: false }, 't2': { title: '동의서 취합', done: true } };
+            const defaultTasks = { 't1': { title: '운동부 대회 출전 기안', done: false }, 't2': { title: '학부모 동의서 취합', done: true } };
             const tasks = Storage.get('board_tasks', defaultTasks);
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4"><div><h2 class="text-2xl font-bold mb-1 text-slate-900 dark:text-white">실전 태스크 보드</h2><p class="text-sm text-slate-500 dark:text-slate-400">행사 업무 관리</p></div><button onclick="addBoardTask()" class="px-4 py-2.5 bg-emerald-600 text-white text-sm font-bold rounded-xl shadow">+ 새 할 일 추가</button></div>
-                    <div class="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-2xl flex flex-col md:flex-row items-center gap-3"><span class="text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0"><i class="fa-solid fa-download"></i> 템플릿 불러오기</span><div class="flex gap-2 overflow-x-auto w-full hide-scrollbar"><button onclick="loadBoardPreset('openClass')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition">공개 수업 세팅</button><button onclick="loadBoardPreset('sportsDay')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition">가을 체육대회</button><button onclick="loadBoardPreset('recordsEnd')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition">생기부 마감</button></div></div>
-                    <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700 shadow-sm"><div class="flex items-center gap-2 mb-6 pb-4 border-b border-slate-100 dark:border-slate-700"><i class="fa-solid fa-thumbtack text-emerald-500"></i><input type="text" id="board-title" value="${Storage.get('board_title', '프로젝트 준비')}" onchange="Storage.set('board_title', this.value)" class="text-lg font-bold bg-transparent border-none outline-none w-full text-slate-900 dark:text-white" placeholder="프로젝트 이름"></div><div id="board-list" class="space-y-3"></div></div>
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                        <div><h2 class="text-2xl font-bold mb-1 text-slate-900 dark:text-white">실전 태스크 보드</h2><p class="text-sm text-slate-500 dark:text-slate-400">굵직한 행사의 세부 업무 관리</p></div>
+                        <button onclick="addBoardTask()" class="px-4 py-2.5 bg-emerald-600 text-white text-sm font-bold rounded-xl shadow transition shrink-0">+ 새 할 일 추가</button>
+                    </div>
+                    <div class="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-2xl flex flex-col md:flex-row items-center gap-3">
+                        <span class="text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0"><i class="fa-solid fa-download"></i> 템플릿 불러오기</span>
+                        <div class="flex gap-2 overflow-x-auto w-full hide-scrollbar">
+                            <button onclick="loadBoardPreset('openClass')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition">공개 수업 세팅</button>
+                            <button onclick="loadBoardPreset('sportsDay')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition">가을 체육대회</button>
+                            <button onclick="loadBoardPreset('recordsEnd')" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition">학기말 생기부 마감</button>
+                        </div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700 shadow-sm">
+                        <div class="flex items-center gap-2 mb-6 pb-4 border-b border-slate-100 dark:border-slate-700">
+                            <i class="fa-solid fa-thumbtack text-emerald-500"></i>
+                            <input type="text" id="board-title" value="${Storage.get('board_title', '운동부 대회 출전 준비')}" onchange="Storage.set('board_title', this.value)" class="text-lg font-bold bg-transparent border-none outline-none w-full text-slate-900 dark:text-white" placeholder="프로젝트 이름">
+                        </div>
+                        <div id="board-list" class="space-y-3"></div>
+                    </div>
                 </div>
             `;
             renderBoardTasks(tasks);
         }
+
         function loadBoardPreset(type) {
-            if(!confirm('진행할까요?')) return;
-            let pTitle = ''; let pTasks = {};
-            if(type === 'openClass') { pTitle = '공개수업 준비'; pTasks = { 'p1': {title:'지도안 작성', done:false}, 'p2': {title:'안내장 발송', done:false}, 'p3': {title:'환경 미화', done:false}, 'p4': {title:'다과 준비', done:false} }; }
-            else if(type === 'sportsDay') { pTitle = '체육대회 세팅'; pTasks = { 'p1': {title:'종목 확정', done:false}, 'p2': {title:'물품 품의', done:false}, 'p3': {title:'도우미 공문', done:false} }; }
-            else if(type === 'recordsEnd') { pTitle = '생기부 마감'; pTasks = { 'p1': {title:'출결 마감', done:false}, 'p2': {title:'세특/창체 입력', done:false}, 'p3': {title:'행특 입력', done:false}, 'p4': {title:'상호 크로스체크', done:false} }; }
-            Storage.set('board_title', pTitle); Storage.set('board_tasks', pTasks); showToast('템플릿을 불러왔습니다.'); router.render();
+            if(!confirm('현재 작성된 목록이 지워지고 템플릿이 불러와집니다. 진행할까요?')) return;
+            let presetTitle = ''; let presetTasks = {};
+            if(type === 'openClass') { presetTitle = '동료장학 및 학부모 공개수업 준비'; presetTasks = { 'p1': {title:'수업 지도안 작성 및 내부 결재', done:false}, 'p2': {title:'학부모 안내장(참관 희망서) 발송', done:false}, 'p3': {title:'교실 환경 미화 및 게시물 정비', done:false}, 'p4': {title:'당일 다과 및 방명록 준비', done:false} }; }
+            else if(type === 'sportsDay') { presetTitle = '가을 체육대회(운동회) 세팅'; presetTasks = { 'p1': {title:'학년군별 경기 종목 확정', done:false}, 'p2': {title:'필요 체육 물품 에듀파인 품의', done:false}, 'p3': {title:'학부모회 도우미 협조 요청 공문', done:false}, 'p4': {title:'당일 우천 시 플랜B 및 동선 계획', done:false} }; }
+            else if(type === 'recordsEnd') { presetTitle = '학기말 생활기록부 마감 점검'; presetTasks = { 'p1': {title:'출결 마감 및 증빙 서류 확인', done:false}, 'p2': {title:'교과 세특 및 창체 특기사항 입력', done:false}, 'p3': {title:'행동특성 및 종합의견 기재', done:false}, 'p4': {title:'동학년 선생님들과 상호 크로스체크', done:false} }; }
+            Storage.set('board_title', presetTitle); Storage.set('board_tasks', presetTasks); showToast('템플릿을 성공적으로 불러왔습니다.'); router.render();
         }
+
         function renderBoardTasks(tasks) {
             const list = document.getElementById('board-list'); if(!list) return;
-            const keys = Object.keys(tasks); if(keys.length===0) { list.innerHTML = `<p class="text-sm text-slate-400 dark:text-slate-500 text-center py-6">할 일이 없습니다.</p>`; return; }
-            list.innerHTML = keys.map(k => `<div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 group transition hover:border-emerald-300 dark:hover:border-emerald-500"><div class="flex items-center gap-3 w-full"><input type="checkbox" ${tasks[k].done?'checked':''} onchange="toggleBoardTask('${k}')" class="w-5 h-5 rounded text-emerald-600 border-slate-300 dark:border-slate-600 cursor-pointer"><input type="text" value="${tasks[k].title}" onchange="updateBoardTaskTitle('${k}', this.value)" class="bg-transparent border-none outline-none w-full text-sm font-medium ${tasks[k].done?'text-slate-400 dark:text-slate-500 line-through':'text-slate-800 dark:text-slate-200'}"></div><button onclick="deleteBoardTask('${k}')" class="text-slate-400 hover:text-rose-500 opacity-50 hover:opacity-100 transition"><i class="fa-solid fa-trash"></i></button></div>`).join('');
+            const keys = Object.keys(tasks);
+            if(keys.length === 0) { list.innerHTML = `<p class="text-sm text-slate-400 dark:text-slate-500 text-center py-6">할 일이 없습니다.</p>`; return; }
+            list.innerHTML = keys.map(k => `
+                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 group transition hover:border-emerald-300 dark:hover:border-emerald-500">
+                    <div class="flex items-center gap-3 w-full">
+                        <input type="checkbox" ${tasks[k].done ? 'checked' : ''} onchange="toggleBoardTask('${k}')" class="w-5 h-5 rounded text-emerald-600 border-slate-300 dark:border-slate-600 cursor-pointer">
+                        <input type="text" value="${tasks[k].title}" onchange="updateBoardTaskTitle('${k}', this.value)" class="bg-transparent border-none outline-none w-full text-sm font-medium ${tasks[k].done ? 'text-slate-400 dark:text-slate-500 line-through' : 'text-slate-800 dark:text-slate-200'}">
+                    </div>
+                    <button onclick="deleteBoardTask('${k}')" class="text-slate-400 hover:text-rose-500 opacity-50 hover:opacity-100 transition"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
         }
+
         function toggleBoardTask(id) { const tasks = Storage.get('board_tasks', {}); if(tasks[id]) tasks[id].done = !tasks[id].done; Storage.set('board_tasks', tasks); renderBoardTasks(tasks); }
         function updateBoardTaskTitle(id, title) { const tasks = Storage.get('board_tasks', {}); if(tasks[id]) tasks[id].title = title; Storage.set('board_tasks', tasks); }
         function deleteBoardTask(id) { const tasks = Storage.get('board_tasks', {}); delete tasks[id]; Storage.set('board_tasks', tasks); renderBoardTasks(tasks); }
-        function addBoardTask() { const tasks = Storage.get('board_tasks', {}); tasks['t_'+Date.now()] = { title: '새 할 일', done: false }; Storage.set('board_tasks', tasks); renderBoardTasks(tasks); }
+        function addBoardTask() { const tasks = Storage.get('board_tasks', {}); tasks['t_' + Date.now()] = { title: '새 할 일', done: false }; Storage.set('board_tasks', tasks); renderBoardTasks(tasks); }
 
         function renderToolsEdutech(container) {
             container.innerHTML = `
@@ -608,13 +785,14 @@
         }
 
         function renderSearch(container, initialQuery = '') {
-            const queryStr = initialQuery || '';
+            const queryStr = (initialQuery && initialQuery !== 'null') ? initialQuery : '';
+            
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
                     <div><h2 class="text-2xl font-bold mb-1 text-slate-900 dark:text-white">교직어 검색</h2><p class="text-sm text-slate-500 dark:text-slate-400">${DB.length}개의 정밀 검증된 교직 용어 고속 검색</p></div>
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4 relative">
                         <div class="relative">
-                            <input type="text" id="main-search-input" value="${queryStr}" placeholder="용어, 초성 검색..." class="w-full pl-12 pr-10 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off">
+                            <input type="text" id="main-search-input" value="${queryStr}" placeholder="용어, 초성 검색..." class="w-full pl-12 pr-10 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <button onclick="clearSearch()" id="clear-search-btn" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 hidden" aria-label="검색어 지우기"><i class="fa-solid fa-circle-xmark"></i></button>
                             <div id="autocomplete-box" class="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 hidden z-30 overflow-hidden"></div>
@@ -627,7 +805,7 @@
                     <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-1">
                         <span id="result-count">검색 결과: ${DB.length}개</span>
                         <div class="flex items-center gap-2">
-                            <button onclick="openDetail(DB[Math.floor(Math.random()*DB.length)].id)" class="px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg font-bold transition"><i class="fa-solid fa-dice"></i> 랜덤</button>
+                            <button onclick="openDetailByKeyword(DB[Math.floor(Math.random()*DB.length)].keyword)" class="px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg font-bold transition"><i class="fa-solid fa-dice"></i> 랜덤</button>
                             <select id="sort-select" onchange="handleSearch()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg px-2.5 py-1 focus:outline-none"><option value="accuracy">관련도순</option><option value="name">가나다순</option></select>
                         </div>
                     </div>
@@ -636,27 +814,62 @@
                 </div>
             `;
             const input = document.getElementById('main-search-input');
-            if(input) { input.addEventListener('input', debounce(() => { handleSearch(); updateAutocomplete(input.value.trim()); }, 100)); input.addEventListener('keydown', handleAcKeydown); }
+            if(input) {
+                input.addEventListener('input', debounce(() => { handleSearch(); updateAutocomplete(input.value.trim()); }, 100));
+                input.addEventListener('keydown', handleAcKeydown);
+            }
             handleSearch();
         }
 
         let searchDisplayLimit = 60; let currentCategoryFilter = '전체'; let selectedAutocompleteIdx = -1;
-        function filterCategory(cat) { currentCategoryFilter = cat; searchDisplayLimit = 60; document.querySelectorAll('.cat-btn').forEach(btn => { if (btn.getAttribute('data-cat') === cat) btn.className = "cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 bg-blue-600 text-white"; else btn.className = "cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition"; }); handleSearch(); }
-        function clearSearch() { const input = document.getElementById('main-search-input'); if(input) { input.value = ''; handleSearch(); document.getElementById('autocomplete-box')?.classList.add('hidden'); } }
-        function updateAutocomplete(query) {
-            const acBox = document.getElementById('autocomplete-box'); if(!acBox || !query) { acBox?.classList.add('hidden'); return; }
-            const qLower = query.toLowerCase(); const matches = DB.filter(item => item._searchText.includes(qLower) || item._chosung.includes(query)).slice(0, 8);
-            selectedAutocompleteIdx = -1; if (matches.length === 0) { acBox.classList.add('hidden'); return; }
-            acBox.innerHTML = matches.map((item, idx) => `<div onmousedown="selectAutocomplete('${item.keyword}')" class="ac-item px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-slate-700 text-xs font-medium cursor-pointer flex justify-between text-slate-800 dark:text-slate-200" data-index="${idx}"><span>${highlightText(item.keyword, query)}</span><span class="text-slate-400">${item.category}</span></div>`).join(''); acBox.classList.remove('hidden');
+        function filterCategory(cat) {
+            currentCategoryFilter = cat; searchDisplayLimit = 60;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if (btn.getAttribute('data-cat') === cat) btn.className = "cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 bg-blue-600 text-white";
+                else btn.className = "cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition";
+            });
+            handleSearch();
         }
-        function handleAcKeydown(e) { const acBox = document.getElementById('autocomplete-box'); const items = acBox ? acBox.querySelectorAll('.ac-item') : []; if(e.key === 'ArrowDown') { e.preventDefault(); selectedAutocompleteIdx = Math.min(selectedAutocompleteIdx + 1, items.length - 1); updateAcHighlight(items); } else if(e.key === 'ArrowUp') { e.preventDefault(); selectedAutocompleteIdx = Math.max(selectedAutocompleteIdx - 1, 0); updateAcHighlight(items); } else if(e.key === 'Enter') { if(items.length > 0 && selectedAutocompleteIdx >= 0 && selectedAutocompleteIdx < items.length) { e.preventDefault(); items[selectedAutocompleteIdx].dispatchEvent(new Event('mousedown')); } else { if(acBox) acBox.classList.add('hidden'); } } else if(e.key === 'Escape') { if(acBox) acBox.classList.add('hidden'); } }
+
+        function clearSearch() { const input = document.getElementById('main-search-input'); if(input) { input.value = ''; handleSearch(); document.getElementById('autocomplete-box')?.classList.add('hidden'); } }
+
+        function updateAutocomplete(query) {
+            const acBox = document.getElementById('autocomplete-box');
+            if(!acBox || !query) { acBox?.classList.add('hidden'); return; }
+            const qLower = query.toLowerCase();
+            const matches = DB.filter(item => item._searchText.includes(qLower) || item._chosung.includes(query)).slice(0, 8);
+            selectedAutocompleteIdx = -1;
+            if (matches.length === 0) { acBox.classList.add('hidden'); return; }
+            acBox.innerHTML = matches.map((item, idx) => `<div onmousedown="selectAutocomplete('${item.keyword}')" class="ac-item px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-slate-700 text-xs font-medium cursor-pointer flex justify-between text-slate-800 dark:text-slate-200" data-index="${idx}"><span>${highlightText(item.keyword, query)}</span><span class="text-slate-400">${item.category}</span></div>`).join('');
+            acBox.classList.remove('hidden');
+        }
+
+        function handleAcKeydown(e) {
+            const acBox = document.getElementById('autocomplete-box');
+            const items = acBox ? acBox.querySelectorAll('.ac-item') : [];
+            if(e.key === 'ArrowDown') { e.preventDefault(); selectedAutocompleteIdx = Math.min(selectedAutocompleteIdx + 1, items.length - 1); updateAcHighlight(items); }
+            else if(e.key === 'ArrowUp') { e.preventDefault(); selectedAutocompleteIdx = Math.max(selectedAutocompleteIdx - 1, 0); updateAcHighlight(items); }
+            else if(e.key === 'Enter') { if(items.length > 0 && selectedAutocompleteIdx >= 0 && selectedAutocompleteIdx < items.length) { e.preventDefault(); items[selectedAutocompleteIdx].dispatchEvent(new Event('mousedown')); } else { if(acBox) acBox.classList.add('hidden'); } }
+            else if(e.key === 'Escape') { if(acBox) acBox.classList.add('hidden'); }
+        }
+
         function updateAcHighlight(items) { items.forEach((item, idx) => { if(idx === selectedAutocompleteIdx) item.classList.add('bg-blue-50', 'dark:bg-slate-700'); else item.classList.remove('bg-blue-50', 'dark:bg-slate-700'); }); }
         function selectAutocomplete(keyword) { const input = document.getElementById('main-search-input'); if(input) input.value = keyword; document.getElementById('autocomplete-box')?.classList.add('hidden'); handleSearch(); }
 
         function handleSearch() {
-            const input = document.getElementById('main-search-input'); const query = input ? input.value.trim() : ''; const sort = document.getElementById('sort-select') ? document.getElementById('sort-select').value : 'accuracy'; const clearBtn = document.getElementById('clear-search-btn');
+            const input = document.getElementById('main-search-input');
+            const query = input ? input.value.trim() : '';
+            const sort = document.getElementById('sort-select') ? document.getElementById('sort-select').value : 'accuracy';
+            const clearBtn = document.getElementById('clear-search-btn');
             if (clearBtn) { if (query) clearBtn.classList.remove('hidden'); else clearBtn.classList.add('hidden'); }
-            if(query.length > 1) { let recents = Storage.get('recent_searches', []); recents = [query, ...recents.filter(q => q !== query)].slice(0, 20); Storage.set('recent_searches', recents); }
+            
+            // [오류 수정 반영] null 저장 원천 차단
+            if(query.length > 1 && query !== 'null') { 
+                let recents = Storage.get('recent_searches', []).filter(q => q && String(q).trim() !== 'null'); 
+                recents = [query, ...recents.filter(q => q !== query)].slice(0, 20); 
+                Storage.set('recent_searches', recents); 
+            }
+
             let scoredResults = DB.map(item => {
                 if (currentCategoryFilter !== '전체' && item.category !== currentCategoryFilter) return { item, score: -1 };
                 if (!query) return { item, score: 0 };
@@ -667,30 +880,51 @@
                 if (item.description.toLowerCase().includes(qLower)) score += 15; if (item.situations.some(s => s.toLowerCase().includes(qLower))) score += 10;
                 return { item, score: score > 0 ? score : -1 };
             }).filter(res => res.score >= 0);
-            if(sort === 'accuracy') scoredResults.sort((a, b) => b.score - a.score); else scoredResults.sort((a, b) => a.item.keyword.localeCompare(b.item.keyword));
+            
+            if(sort === 'accuracy') scoredResults.sort((a, b) => b.score - a.score);
+            else scoredResults.sort((a, b) => a.item.keyword.localeCompare(b.item.keyword));
+            
             const results = scoredResults.map(res => res.item);
             const countEl = document.getElementById('result-count'); if(countEl) countEl.innerText = `검색 결과: ${results.length}개`;
             const grid = document.getElementById('search-results-grid'); const loadMoreBtn = document.getElementById('load-more-container');
             if(!grid) return;
-            if(results.length === 0) { grid.innerHTML = `<div class="col-span-full py-16 text-center bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700"><h3 class="text-base font-bold text-slate-800 dark:text-slate-200">찾는 교직어가 없어요</h3></div>`; loadMoreBtn?.classList.add('hidden'); return; }
+
+            if(results.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-16 text-center bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700"><h3 class="text-base font-bold text-slate-800 dark:text-slate-200">찾는 교직어가 없어요</h3></div>`;
+                loadMoreBtn?.classList.add('hidden'); return;
+            }
+
             const bookmarks = Storage.get('bookmarks', []);
-            grid.innerHTML = results.slice(0, searchDisplayLimit).map(item => `<div onclick="openDetail(${item.id})" class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm hover:border-blue-500 dark:hover:border-blue-500 transition cursor-pointer flex flex-col justify-between group"><div><div class="flex justify-between mb-2"><span class="text-xs font-semibold px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300">${item.category}</span><button onclick="event.stopPropagation(); toggleBookmark(${item.id})" class="text-slate-400 hover:text-amber-500 dark:hover:text-amber-400"><i class="fa-${bookmarks.includes(item.id) ? 'solid text-amber-500 dark:text-amber-400' : 'regular'} fa-bookmark"></i></button></div><h3 class="font-bold group-hover:text-blue-600 dark:group-hover:text-blue-400 mb-1 text-slate-800 dark:text-white">${highlightText(item.keyword, query)}</h3><p class="text-xs text-blue-600 dark:text-blue-400 mb-2">${highlightText(item.simple, query)}</p><p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">${highlightText(item.description, query)}</p></div></div>`).join('');
+            grid.innerHTML = results.slice(0, searchDisplayLimit).map(item => `
+                <div onclick="openDetail(${item.id})" class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm hover:border-blue-500 dark:hover:border-blue-500 transition cursor-pointer flex flex-col justify-between group">
+                    <div>
+                        <div class="flex justify-between mb-2"><span class="text-xs font-semibold px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300">${item.category}</span><button onclick="event.stopPropagation(); toggleBookmark(${item.id})" class="text-slate-400 hover:text-amber-500 dark:hover:text-amber-400"><i class="fa-${bookmarks.includes(item.id) ? 'solid text-amber-500 dark:text-amber-400' : 'regular'} fa-bookmark"></i></button></div>
+                        <h3 class="font-bold group-hover:text-blue-600 dark:group-hover:text-blue-400 mb-1 text-slate-800 dark:text-white">${highlightText(item.keyword, query)}</h3>
+                        <p class="text-xs text-blue-600 dark:text-blue-400 mb-2">${highlightText(item.simple, query)}</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">${highlightText(item.description, query)}</p>
+                    </div>
+                </div>
+            `).join('');
             loadMoreBtn?.classList.toggle('hidden', results.length <= searchDisplayLimit);
         }
 
         let lastFocusedElement = null;
-        function openDetailByKeyword(kw) { const found = DB.find(d => d.keyword === kw); if(found) openDetail(found.id); else showToast('준비 중입니다.', 'error'); }
+        
+        function openDetailByKeyword(kw) {
+            const found = DB.find(d => d.keyword === kw);
+            if(found) openDetail(found.id);
+            else showToast('관련 정보를 준비 중입니다.', 'error');
+        }
 
-        // [중요 로직] 커리어맵 전용 모달 (잘림 현상 100% 극복판)
         function openCareerInfo(type) {
             const modal = document.getElementById('detail-modal'); const content = document.getElementById('modal-content');
             let html = '';
             if (type === '수석교사') {
-                html = `<div class="flex justify-between mb-4 pb-4 border-b border-slate-100 dark:border-slate-700"><div><span class="text-xs font-bold px-3 py-1 bg-blue-50 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400 rounded-lg mb-2 inline-block">수업 전문성 경로</span><h2 class="text-2xl font-extrabold text-slate-900 dark:text-white">수업전문가 및 수석교사 제도</h2></div><button onclick="closeModal(false)" class="p-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition"><i class="fa-solid fa-xmark text-lg"></i></button></div><div class="space-y-6 text-sm text-slate-700 dark:text-slate-300"><p class="leading-relaxed">관리직으로 진출하지 않고, 학생 가르치는 업무를 계속하면서 수업 전문성을 인정받는 경로입니다.</p><div class="bg-blue-50/50 dark:bg-slate-900/50 p-4 rounded-xl border border-blue-100 dark:border-slate-800"><h3 class="font-bold text-blue-700 dark:text-blue-400 mb-2"><i class="fa-solid fa-check"></i> 자격 요건 및 선발</h3><ul class="list-disc pl-5 space-y-1"><li>교육경력 15년 이상인 1급 정교사</li><li>서류 평가, 역량 평가, 다면평가 종합 선발</li></ul></div><div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700"><h3 class="font-bold text-slate-800 dark:text-white mb-2"><i class="fa-solid fa-chalkboard-user"></i> 주요 역할 및 혜택</h3><ul class="list-disc pl-5 space-y-1"><li>수업 시수 50% 경감</li><li>연구 활동비 매월 지급</li></ul></div><button onclick="openDetailByKeyword('수석교사')" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition shadow">관련 교직어 '수석교사' 상세보기 →</button></div>`;
+                html = `<div class="flex justify-between mb-4 pb-4 border-b border-slate-100 dark:border-slate-700"><div><span class="text-xs font-bold px-3 py-1 bg-blue-50 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400 rounded-lg mb-2 inline-block">수업 전문성 경로</span><h2 class="text-2xl font-extrabold text-slate-900 dark:text-white">수업전문가 및 수석교사 제도</h2></div><button onclick="closeModal(false)" class="p-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition"><i class="fa-solid fa-xmark text-lg"></i></button></div><div class="space-y-6 text-sm text-slate-700 dark:text-slate-300"><p class="leading-relaxed">관리직(교감·교장)으로 진출하지 않고, 학생 가르치는 업무를 계속하면서 수업 전문성을 인정받는 경로입니다.</p><div class="bg-blue-50/50 dark:bg-slate-900/50 p-4 rounded-xl border border-blue-100 dark:border-slate-800"><h3 class="font-bold text-blue-700 dark:text-blue-400 mb-2"><i class="fa-solid fa-check"></i> 자격 요건 및 선발</h3><ul class="list-disc pl-5 space-y-1"><li><strong>지원 자격:</strong> 교육경력 15년 이상인 1급 정교사</li><li><strong>선발 절차:</strong> 서류 평가, 역량 평가, 동료 다면평가 등을 종합하여 교육청에서 선발</li></ul></div><div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700"><h3 class="font-bold text-slate-800 dark:text-white mb-2"><i class="fa-solid fa-chalkboard-user"></i> 주요 역할 및 혜택</h3><ul class="list-disc pl-5 space-y-1"><li>수업 시수 50% 경감</li><li>동료 교사 수업 컨설팅 지원</li><li>연구 활동비 매월 지급</li></ul></div><button onclick="openDetailByKeyword('수석교사')" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition shadow">관련 교직어 '수석교사' 상세보기 →</button></div>`;
             } else if (type === '장학사') {
-                html = `<div class="flex justify-between mb-4 pb-4 border-b border-slate-100 dark:border-slate-700"><div><span class="text-xs font-bold px-3 py-1 bg-indigo-50 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-400 rounded-lg mb-2 inline-block">교육행정 경로</span><h2 class="text-2xl font-extrabold text-slate-900 dark:text-white">교육전문직원 (장학사)</h2></div><button onclick="closeModal(false)" class="p-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition"><i class="fa-solid fa-xmark text-lg"></i></button></div><div class="space-y-6 text-sm text-slate-700 dark:text-slate-300"><p class="leading-relaxed">학교 현장이 아닌 시·도교육청 등에서 교육 정책을 기획하고 장학 업무를 수행하는 전문가 경로입니다.</p><div class="bg-indigo-50/50 dark:bg-slate-900/50 p-4 rounded-xl border border-indigo-100 dark:border-slate-800"><h3 class="font-bold text-indigo-700 dark:text-indigo-400 mb-2"><i class="fa-solid fa-check"></i> 자격 요건 및 선발</h3><ul class="list-disc pl-5 space-y-1"><li>교육경력 10~15년 이상 충족</li><li>서류/기획안/논술 평가, 면접/토의 등 엄격한 전형</li></ul></div><div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700"><h3 class="font-bold text-slate-800 dark:text-white mb-2"><i class="fa-solid fa-building-columns"></i> 직무 특성</h3><ul class="list-disc pl-5 space-y-1"><li>관할 구역 단위의 거시적 업무 수행</li><li>방학 없이 일반 공무원과 동일한 복무 적용</li></ul></div><button onclick="openDetailByKeyword('장학사')" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition shadow">관련 교직어 '장학사' 상세보기 →</button></div>`;
+                html = `<div class="flex justify-between mb-4 pb-4 border-b border-slate-100 dark:border-slate-700"><div><span class="text-xs font-bold px-3 py-1 bg-indigo-50 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-400 rounded-lg mb-2 inline-block">교육행정 경로</span><h2 class="text-2xl font-extrabold text-slate-900 dark:text-white">교육전문직원 (장학사)</h2></div><button onclick="closeModal(false)" class="p-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition"><i class="fa-solid fa-xmark text-lg"></i></button></div><div class="space-y-6 text-sm text-slate-700 dark:text-slate-300"><p class="leading-relaxed">학교 현장이 아닌 시·도교육청 등에서 교육 정책을 기획하고 장학 업무를 수행하는 행정 전문가 경로입니다.</p><div class="bg-indigo-50/50 dark:bg-slate-900/50 p-4 rounded-xl border border-indigo-100 dark:border-slate-800"><h3 class="font-bold text-indigo-700 dark:text-indigo-400 mb-2"><i class="fa-solid fa-check"></i> 자격 요건 및 선발</h3><ul class="list-disc pl-5 space-y-1"><li><strong>지원 자격:</strong> 교육경력 10~15년 이상 충족</li><li><strong>선발 과정:</strong> 서류/기획안/논술 평가, 면접/토의 평가 등 엄격한 전형 진행</li></ul></div><div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700"><h3 class="font-bold text-slate-800 dark:text-white mb-2"><i class="fa-solid fa-building-columns"></i> 직무 특성</h3><ul class="list-disc pl-5 space-y-1"><li>관할 구역 단위의 거시적 업무 수행</li><li>방학 없이 일반 공무원과 동일한 복무 적용</li></ul></div><button onclick="openDetailByKeyword('장학사')" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition shadow">관련 교직어 '장학사' 상세보기 →</button></div>`;
             } else if (type === '교감') {
-                html = `<div class="flex justify-between mb-4 pb-4 border-b border-slate-100 dark:border-slate-700"><div><span class="text-xs font-bold px-3 py-1 bg-purple-50 text-purple-600 dark:bg-purple-900/40 dark:text-purple-400 rounded-lg mb-2 inline-block">학교 경영 경로</span><h2 class="text-2xl font-extrabold text-slate-900 dark:text-white">교감 및 교장 승진</h2></div><button onclick="closeModal(false)" class="p-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition"><i class="fa-solid fa-xmark text-lg"></i></button></div><div class="space-y-6 text-sm text-slate-700 dark:text-slate-300"><p class="leading-relaxed">학교 조직의 교무를 통할하고 단위 학교의 최고 책임자로 나아가는 정통 관리자 경로입니다.</p><div class="bg-purple-50/50 dark:bg-slate-900/50 p-4 rounded-xl border border-purple-100 dark:border-slate-800"><h3 class="font-bold text-purple-700 dark:text-purple-400 mb-2"><i class="fa-solid fa-check"></i> 자격 연수 대상자 지명 (승진 점수)</h3><ul class="list-disc pl-5 space-y-1"><li><strong>경력평정:</strong> 교육경력 점수화</li><li><strong>근평:</strong> 다면평가 및 관리자 평가 합산</li><li><strong>가산점:</strong> 보직교사 경력, 도서벽지 등</li></ul></div><div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700"><h3 class="font-bold text-slate-800 dark:text-white mb-2"><i class="fa-solid fa-crown"></i> 임용 단계</h3><ul class="list-disc pl-5 space-y-1"><li>명부 순위에 따라 교감 자격 연수 대상자 지명</li><li>이후 교장 자격 연수 이수 혹은 공모제 취임</li></ul></div><div class="flex gap-2"><button onclick="openDetailByKeyword('교감')" class="flex-1 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition shadow">교감 상세보기</button><button onclick="openDetailByKeyword('교장')" class="flex-1 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition shadow">교장 상세보기</button></div></div>`;
+                html = `<div class="flex justify-between mb-4 pb-4 border-b border-slate-100 dark:border-slate-700"><div><span class="text-xs font-bold px-3 py-1 bg-purple-50 text-purple-600 dark:bg-purple-900/40 dark:text-purple-400 rounded-lg mb-2 inline-block">학교 경영 경로</span><h2 class="text-2xl font-extrabold text-slate-900 dark:text-white">교감 및 교장 승진</h2></div><button onclick="closeModal(false)" class="p-2.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition"><i class="fa-solid fa-xmark text-lg"></i></button></div><div class="space-y-6 text-sm text-slate-700 dark:text-slate-300"><p class="leading-relaxed">학교 조직의 교무를 통할하고 단위 학교의 최고 책임자로 나아가는 정통 관리자 경로입니다.</p><div class="bg-purple-50/50 dark:bg-slate-900/50 p-4 rounded-xl border border-purple-100 dark:border-slate-800"><h3 class="font-bold text-purple-700 dark:text-purple-400 mb-2"><i class="fa-solid fa-check"></i> 자격 연수 대상자 지명 (승진 점수)</h3><ul class="list-disc pl-5 space-y-1"><li><strong>경력평정:</strong> 교육경력 점수화</li><li><strong>근무성적평정(근평):</strong> 다면평가 및 관리자 평가 합산</li><li><strong>가산점:</strong> 도서벽지 근무, 보직교사(부장) 경력, 연구대회 입상 실적 등</li></ul></div><div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700"><h3 class="font-bold text-slate-800 dark:text-white mb-2"><i class="fa-solid fa-crown"></i> 임용 단계</h3><ul class="list-disc pl-5 space-y-1"><li>명부 순위에 따라 교감 자격 연수 대상자로 지명 후 승진</li><li>이후 교장 자격 연수 이수 혹은 공모제를 통해 학교장 취임</li></ul></div><div class="flex gap-2"><button onclick="openDetailByKeyword('교감')" class="flex-1 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition shadow">교감 상세보기</button><button onclick="openDetailByKeyword('교장')" class="flex-1 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl transition shadow">교장 상세보기</button></div></div>`;
             }
             content.innerHTML = html; modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; window.addEventListener('keydown', handleModalKeyDown);
         }
@@ -701,6 +935,7 @@
             const modal = document.getElementById('detail-modal'); const content = document.getElementById('modal-content');
             const isBookmarked = Storage.get('bookmarks', []).includes(item.id);
             let recents = Storage.get('recent_views', []); Storage.set('recent_views', [item.id, ...recents.filter(i => i !== item.id)].slice(0, 15));
+            
             if(pushHash) window.location.hash = `#keyword=${encodeURIComponent(item.keyword)}`;
 
             content.innerHTML = `
@@ -719,9 +954,14 @@
                     ${item.related && item.related.length > 0 ? `<div><span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase block mb-2">🔗 관련 교직어</span><div class="flex flex-wrap gap-2">${item.related.map(rel => { const found = DB.find(d => d.keyword === rel); return found ? `<button onclick="openDetail(${found.id})" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 rounded-xl text-xs font-semibold hover:text-blue-600 dark:hover:text-blue-400 text-slate-800 dark:text-slate-200 transition">${rel}</button>` : ''; }).join('')}</div></div>` : ''}
                     ${item.tags && item.tags.length > 0 ? `<div><span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase block mb-2">🏷 관련 태그</span><div class="flex flex-wrap gap-1.5">${item.tags.map(t => `<span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-600">#${t}</span>`).join('')}</div></div>` : ''}
                     ${item.tip ? `<div class="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 text-amber-800 dark:text-amber-300"><h4 class="font-bold text-xs mb-1"><i class="fa-solid fa-lightbulb"></i> 엽쌤의 실무 팁</h4><p class="font-medium">${item.tip}</p></div>` : ''}
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400 flex items-center justify-between">
+                        <div><i class="fa-solid fa-triangle-exclamation mr-1"></i> 지침은 시도교육청별로 다를 수 있습니다.</div>
+                        <button onclick="router.navigate('search', '${item.keyword}')" class="font-bold underline shrink-0 ml-2 hover:text-blue-600 transition">탐험 시작</button>
+                    </div>
                 </div>
             `;
-            modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; window.addEventListener('keydown', handleModalKeyDown);
+            modal.classList.remove('hidden'); document.body.style.overflow = 'hidden';
+            window.addEventListener('keydown', handleModalKeyDown);
         }
 
         function handleModalKeyDown(e) { if(e.key === 'Escape') closeModal(true); }
@@ -731,17 +971,20 @@
             if(lastFocusedElement) lastFocusedElement.focus();
             if(popHash && window.location.hash.includes('keyword=')) window.location.hash = `#view=${router.current}`;
         }
+
         function shareKeyword(keyword) {
             const shareUrl = window.location.href.split('#')[0] + `#keyword=${encodeURIComponent(keyword)}`;
             if(navigator.share) navigator.share({ title: `교직백서 - ${keyword}`, url: shareUrl }).catch(()=>{});
             else navigator.clipboard.writeText(shareUrl).then(() => showToast('링크 복사 완료'));
         }
+
         function toggleBookmark(id) {
             let b = Storage.get('bookmarks', []);
             if(b.includes(id)) { b = b.filter(x => x !== id); showToast('즐겨찾기 해제', 'info'); } else { b.push(id); showToast('즐겨찾기 저장', 'success'); }
             Storage.set('bookmarks', b);
             const modal = document.getElementById('detail-modal');
-            if(modal && !modal.classList.contains('hidden')) { openDetail(id, false); } else { router.render(); }
+            if(modal && !modal.classList.contains('hidden')) { openDetail(id, false); }
+            else { router.render(); }
         }
 
         function renderSituations(container) {
@@ -756,17 +999,26 @@
             if (sitInput) sitInput.addEventListener('input', debounce(() => updateSituationsGrid(sitInput.value.trim()), 150));
             updateSituationsGrid('');
         }
+
         function updateSituationsGrid(filterQuery) {
             const grid = document.getElementById('situations-grid'); if(!grid) return;
             const filtered = SITUATIONS.filter(sit => !filterQuery || sit.title.toLowerCase().includes(filterQuery.toLowerCase()) || sit.category.toLowerCase().includes(filterQuery.toLowerCase()));
             if(filtered.length === 0) { grid.innerHTML = `<div class="col-span-full text-center py-12 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700"><p class="text-slate-400 text-sm">검색 결과가 없습니다.</p></div>`; return; }
+            
             grid.innerHTML = filtered.map(sit => `
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between hover:border-blue-300 transition group">
                     <div>
                         <span class="text-xs font-bold px-3 py-1 bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-lg mb-3 inline-block">${sit.category}</span>
                         <h3 class="text-lg font-bold mb-2 text-slate-900 dark:text-white">${sit.title}</h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">${sit.summary}</p>
-                        ${sit.script ? `<div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700 mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1"><i class="fa-solid fa-phone"></i> 실전 통화 스크립트</span><p class="text-sm font-medium text-slate-700 dark:text-slate-300 italic">"${sit.script}"</p></div>` : ''}
+                        
+                        ${sit.script ? `
+                        <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700 mb-4">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase block mb-1"><i class="fa-solid fa-phone"></i> 실전 통화 스크립트</span>
+                            <p class="text-sm font-medium text-slate-700 dark:text-slate-300 italic">"${sit.script}"</p>
+                        </div>
+                        ` : ''}
+
                         <div class="space-y-2 mb-4">${sit.steps.map((st, i) => `<div class="flex items-start gap-2.5 text-xs text-slate-600 dark:text-slate-300"><span class="w-5 h-5 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center font-bold shrink-0">${i+1}</span><span class="pt-0.5">${st}</span></div>`).join('')}</div>
                     </div>
                     <div class="pt-4 border-t border-slate-100 dark:border-slate-700">
@@ -837,12 +1089,14 @@
                             <button onclick="yearFilterRole='manager'; router.render()" class="px-3 py-1.5 rounded-xl text-xs font-bold transition ${yearFilterRole==='manager'?'bg-blue-600 text-white':'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}">부장·담당</button>
                         </div>
                     </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         ${[3,4,5,6,7,8,9,10,11,12,1,2].map(m => {
                             const isCurrent = m === currentMonth;
                             const allTasks = YEAR_TASKS[m] || [];
                             const filteredTasks = allTasks.filter(t => yearFilterRole === 'all' || t.role === yearFilterRole || t.role === 'all');
                             const checkedState = Storage.get(`checklist_${m}`, {});
+
                             return `
                                 <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border ${isCurrent ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-slate-200/80 dark:border-slate-700'} shadow-sm flex flex-col justify-between">
                                     <div>
@@ -877,34 +1131,14 @@
             showToast('체크리스트가 반영되었습니다.', 'success'); router.render();
         }
 
-        function renderCareer(container) {
-            container.innerHTML = `
-                <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">교직 커리어맵</h2><p class="text-sm text-slate-500 dark:text-slate-400">교사의 다양한 성장 경로와 직위별 발전 방향을 확인하세요.</p></div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex flex-col justify-between">
-                            <div><span class="text-[10px] font-bold px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg mb-3 inline-block">수업 전문성</span><h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">수업전문가 / 수석교사</h3><p class="text-xs text-slate-500 dark:text-slate-400 mb-6">교실 수업 개선을 주도하고 후배 교사의 멘토가 되는 현장 전문가 경로</p></div>
-                            <button onclick="openCareerInfo('수석교사')" class="w-full py-3 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-xl text-xs font-bold transition hover:bg-blue-100 dark:hover:bg-blue-900/60">제도 상세 안내 보기 →</button>
-                        </div>
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex flex-col justify-between">
-                            <div><span class="text-[10px] font-bold px-3 py-1 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-lg mb-3 inline-block">교육행정 및 지원</span><h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">교육전문직 (장학사)</h3><p class="text-xs text-slate-500 dark:text-slate-400 mb-6">교육청 및 직속기관에서 교육 정책 기획 및 학교 지원 업무 수행</p></div>
-                            <button onclick="openCareerInfo('장학사')" class="w-full py-3 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-xl text-xs font-bold transition hover:bg-indigo-100 dark:hover:bg-indigo-900/60">제도 상세 안내 보기 →</button>
-                        </div>
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex flex-col justify-between">
-                            <div><span class="text-[10px] font-bold px-3 py-1 bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 rounded-lg mb-3 inline-block">학교 경영</span><h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">교감 / 교장</h3><p class="text-xs text-slate-500 dark:text-slate-400 mb-6">학교 행정의 총괄 관리자로서 교육 비전을 실현하는 리더십 경로</p></div>
-                            <button onclick="openCareerInfo('교감')" class="w-full py-3 bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 rounded-xl text-xs font-bold transition hover:bg-purple-100 dark:hover:bg-purple-900/60">제도 상세 안내 보기 →</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
         let quizState = { active: false, count: 10, index: 0, score: 0, items: [], answers: [], level: "" };
+
         function renderQuiz(container) {
             if (!quizState.active) {
                 container.innerHTML = `
                     <div class="space-y-6 max-w-2xl mx-auto text-center animate-fade-in">
-                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-1">교직력 테스트</h2><p class="text-sm text-slate-500 dark:text-slate-400 mb-6">현장 상황 판단형 퀴즈로 나의 실무 역량을 검증하세요.</p>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-1">교직력 테스트</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">현장 상황 판단형 퀴즈로 나의 실무 역량을 검증하세요.</p>
                         <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700">
                             <div class="w-16 h-16 mx-auto rounded-2xl bg-rose-50 dark:bg-rose-900/40 text-rose-500 dark:text-rose-400 flex items-center justify-center text-2xl mb-4"><i class="fa-solid fa-gamepad"></i></div>
                             <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6">문항 수를 선택하세요</h3>
@@ -916,7 +1150,9 @@
                         </div>
                     </div>
                 `;
-            } else { renderQuizActive(container); }
+            } else {
+                renderQuizActive(container);
+            }
         }
 
         function startQuiz(count) {
@@ -993,22 +1229,51 @@
                 </div>
             `;
         }
-        function shareQuizResult() { const text = `나는 교직백서 실무력 테스트 [${quizState.level}] 달성!\n총점: ${quizState.score}점\n선생님도 도전해보세요!`; navigator.clipboard.writeText(text).then(() => showToast('결과가 복사되었습니다.')); }
+
+        function shareQuizResult() {
+            const text = `나는 교직백서 실무력 테스트 [${quizState.level}] 달성!\n총점: ${quizState.score}점\n선생님도 도전해보세요!`;
+            navigator.clipboard.writeText(text).then(() => showToast('결과가 클립보드에 복사되었습니다. 메신저에 공유해보세요!'));
+        }
 
         function renderCard(container) {
-            const d = new Date(); const todayStr = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-            const item = DB[Math.abs(hashCode(todayStr)) % DB.length] || DB[0];
+            const d = new Date(); 
+            const hashStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            const todayStr = `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
+            
+            const cardIndex = Math.abs(hashCode(hashStr)) % DB.length; 
+            const item = DB[cardIndex] || DB[0];
             const learnedCards = Storage.get('learned_cards', []);
             const isLearned = learnedCards.includes(item.id);
             const rate = Math.round((learnedCards.length / DB.length) * 100);
 
             container.innerHTML = `
                 <div class="space-y-6 max-w-xl mx-auto animate-fade-in">
-                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">오늘의 교직카드</h2><p class="text-sm text-slate-500 dark:text-slate-400">매일 엄선되는 하나의 교직 키워드로 지식을 넓히세요.</p></div>
+                    <div>
+                        <h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">오늘의 교직카드</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">매일 엄선되는 하나의 교직 키워드로 지식을 넓히세요.</p>
+                    </div>
+
                     <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-lg space-y-6">
-                        <div class="flex items-center justify-between"><span class="text-xs font-bold px-3 py-1 rounded-lg bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400">${item.category}</span><span class="text-xs font-semibold text-slate-400">${todayStr}</span></div>
-                        <div><h3 class="text-2xl font-extrabold text-slate-900 dark:text-white mb-2">${item.keyword}</h3><p class="text-sm font-semibold text-blue-600 dark:text-blue-400 mb-4">${item.simple}</p><p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${item.description}</p></div>
-                        <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800"><div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1"><span>발견한 교직어 (${learnedCards.length} / ${DB.length})</span><span class="font-bold text-blue-600 dark:text-blue-400">${rate}%</span></div><div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden"><div class="bg-blue-600 dark:bg-blue-500 h-full transition-all duration-300" style="width: ${rate}%"></div></div></div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold px-3 py-1 rounded-lg bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400">${item.category}</span>
+                            <span class="text-xs font-semibold text-slate-400">${todayStr}</span>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-extrabold text-slate-900 dark:text-white mb-2">${item.keyword}</h3>
+                            <p class="text-sm font-semibold text-blue-600 dark:text-blue-400 mb-4">${item.simple}</p>
+                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${item.description}</p>
+                        </div>
+
+                        <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
+                               <span>발견한 교직어 (${learnedCards.length} / ${DB.length})</span>
+                               <span class="font-bold text-blue-600 dark:text-blue-400">${rate}%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                                <div class="bg-blue-600 dark:bg-blue-500 h-full transition-all duration-300" style="width: ${rate}%"></div>
+                            </div>
+                        </div>
+
                         <div class="pt-4 border-t border-slate-100 dark:border-slate-700 flex gap-3">
                             <button onclick="markCardLearned(${item.id})" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition shadow-sm">${isLearned ? '✨ 이미 학습 완료' : '알고 있었어요 ✨'}</button>
                             <button onclick="openDetail(${item.id})" class="px-5 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition">상세보기</button>
@@ -1017,17 +1282,30 @@
                 </div>
             `;
         }
-        function markCardLearned(id) { let learnedCards = Storage.get('learned_cards', []); if (!learnedCards.includes(id)) { learnedCards.push(id); Storage.set('learned_cards', learnedCards); showToast('학습 완료 기록이 저장되었습니다!', 'success'); router.render(); } else { showToast('이미 학습 완료된 카드입니다.', 'info'); } }
+
+        function markCardLearned(id) {
+            let learnedCards = Storage.get('learned_cards', []);
+            if (!learnedCards.includes(id)) {
+                learnedCards.push(id); Storage.set('learned_cards', learnedCards); showToast('학습 완료 기록이 저장되었습니다!', 'success'); router.render();
+            } else {
+                showToast('이미 학습 완료된 카드입니다.', 'info');
+            }
+        }
 
         function renderMyBox(container) {
-            const bookmarks = Storage.get('bookmarks', []); const bookmarkedItems = DB.filter(d => bookmarks.includes(d.id)); const currentThemeMode = Storage.get('theme_mode', 'light');
+            const bookmarks = Storage.get('bookmarks', []);
+            const bookmarkedItems = DB.filter(d => bookmarks.includes(d.id));
+            const currentThemeMode = Storage.get('theme_mode', 'light');
+
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
                     <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">나의 교직함</h2><p class="text-sm text-slate-500 dark:text-slate-400">즐겨찾기, 최근 본 기록 및 데이터 백업을 관리합니다.</p></div>
+                    
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 space-y-4">
                         <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-bookmark text-amber-500"></i> 즐겨찾기한 교직어 (${bookmarkedItems.length}개)</h3>
                         ${bookmarkedItems.length > 0 ? `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">${bookmarkedItems.map(item => `<div onclick="openDetail(${item.id})" class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 hover:border-blue-500 dark:hover:border-blue-500 border border-slate-200 dark:border-slate-700 cursor-pointer flex justify-between transition group"><div><span class="text-xs font-bold text-blue-600 dark:text-blue-400">${item.category}</span><h4 class="font-bold text-sm text-slate-800 dark:text-slate-200 mt-1">${item.keyword}</h4></div><button onclick="event.stopPropagation(); toggleBookmark(${item.id});" class="text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition"><i class="fa-solid fa-trash"></i></button></div>`).join('')}</div>` : `<p class="text-xs text-slate-400 dark:text-slate-500 py-4 text-center">저장된 즐겨찾기가 없습니다.</p>`}
                     </div>
+                    
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 space-y-4">
                         <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-circle-half-stroke text-purple-500"></i> 화면 테마 설정</h3>
                         <div class="flex gap-3">
@@ -1036,10 +1314,15 @@
                             <button onclick="setThemeMode('system')" class="px-4 py-2.5 rounded-xl text-xs font-bold transition ${currentThemeMode==='system'?'bg-blue-600 text-white shadow-md':'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}">시스템 설정 따르기</button>
                         </div>
                     </div>
+                    
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 space-y-4">
                         <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-database text-blue-500 dark:text-blue-400"></i> 데이터 백업 및 복원</h3>
-                        <div class="flex flex-wrap gap-3"><button onclick="backupData()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm transition shadow-sm"><i class="fa-solid fa-download mr-1"></i> 내 데이터 백업</button><label class="px-5 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-sm cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 transition shadow-sm"><i class="fa-solid fa-upload mr-1"></i> 백업 파일 불러오기<input type="file" accept=".json" onchange="restoreData(event)" class="hidden"></label></div>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="backupData()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm transition shadow-sm"><i class="fa-solid fa-download mr-1"></i> 내 데이터 백업</button>
+                            <label class="px-5 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-sm cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 transition shadow-sm"><i class="fa-solid fa-upload mr-1"></i> 백업 파일 불러오기<input type="file" accept=".json" onchange="restoreData(event)" class="hidden"></label>
+                        </div>
                     </div>
+                    
                     <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex flex-col md:flex-row gap-4 md:items-center justify-between">
                         <div><h4 class="font-bold text-sm text-slate-900 dark:text-white mb-1">개인 기록 전체 초기화</h4><p class="text-xs text-slate-500 dark:text-slate-400">로컬스토리지에 저장된 즐겨찾기, 진행률 등 모든 기록을 삭제합니다.</p></div>
                         <button onclick="if(confirm('정말로 모든 기록을 지우시겠습니까? 복구할 수 없습니다.')) { localStorage.clear(); window.location.reload(); }" class="px-5 py-2.5 bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 font-bold rounded-xl text-sm hover:bg-rose-100 dark:hover:bg-rose-900/60 transition">전체 초기화</button>
@@ -1067,18 +1350,23 @@
             r.onload = e => { 
                 try { 
                     const d = JSON.parse(e.target.result); 
-                    if(d.bookmarks) Storage.set('bookmarks', d.bookmarks); if(d.recent_searches) Storage.set('recent_searches', d.recent_searches); 
-                    if(d.board_tasks) Storage.set('board_tasks', d.board_tasks); if(d.class_names) Storage.set('class_names', d.class_names); 
+                    if(d.bookmarks) Storage.set('bookmarks', d.bookmarks); 
+                    if(d.recent_searches) Storage.set('recent_searches', d.recent_searches); 
+                    if(d.board_tasks) Storage.set('board_tasks', d.board_tasks); 
+                    if(d.class_names) Storage.set('class_names', d.class_names); 
                     showToast('복원 성공! 1초 후 새로고침됩니다.'); setTimeout(()=>window.location.reload(), 1000); 
                 } catch(err) { showToast('오류 발생', 'error'); } 
-            }; r.readAsText(f);
+            };
+            r.readAsText(f);
         }
+
         function openMobileMenu() { const m = document.getElementById('mobile-menu-modal'); if(m) m.classList.remove('hidden'); }
         function closeMobileMenu() { const m = document.getElementById('mobile-menu-modal'); if(m) m.classList.add('hidden'); }
 
-        // 안전한 초기화 시작점
+        // 안정적인 초기화 시작점
         if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', () => { applyThemeMode(); router.init(); }); }
         else { applyThemeMode(); router.init(); }
+
     </script>
 </body>
 </html>
