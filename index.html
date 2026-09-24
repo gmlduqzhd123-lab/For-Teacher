@@ -43,7 +43,7 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-lg leading-tight flex items-center gap-2">
-                        교직백서 1000 <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-medium">OS v4.0</span>
+                        교직백서 1000 <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-medium">OS v4.1</span>
                     </h1>
                     <p class="text-xs text-slate-500 dark:text-slate-400">초등교사를 위한 교직생활 통합 플랫폼</p>
                 </div>
@@ -117,29 +117,30 @@
     <div id="mobile-menu-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden flex items-end md:hidden" onclick="if(event.target === this) closeMobileMenu()">
         <div class="bg-white dark:bg-slate-800 rounded-t-3xl w-full p-6 space-y-4 max-h-[85vh] overflow-y-auto">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
-                <h3 class="font-bold text-base">전체 메뉴</h3>
-                <button onclick="closeMobileMenu()" class="p-2 text-slate-400" aria-label="메뉴 닫기"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <h3 class="font-bold text-base text-slate-900 dark:text-white">전체 메뉴</h3>
+                <button onclick="closeMobileMenu()" class="p-2 text-slate-400 dark:text-slate-500" aria-label="메뉴 닫기"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="grid grid-cols-2 gap-3 text-sm">
-                <button onclick="closeMobileMenu(); router.navigate('home')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold flex items-center gap-2"><i class="fa-solid fa-house text-blue-500 w-4"></i> 홈</button>
-                <button onclick="closeMobileMenu(); router.navigate('search')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold flex items-center gap-2"><i class="fa-solid fa-magnifying-glass text-blue-500 w-4"></i> 검색</button>
-                <button onclick="closeMobileMenu(); router.navigate('tools-doc')" class="p-3 rounded-2xl bg-blue-50 dark:bg-slate-900 text-left font-semibold flex items-center gap-2 text-blue-600 dark:text-blue-400"><i class="fa-solid fa-file-signature w-4"></i> 문서생성기</button>
-                <button onclick="closeMobileMenu(); router.navigate('tools-class')" class="p-3 rounded-2xl bg-blue-50 dark:bg-slate-900 text-left font-semibold flex items-center gap-2 text-blue-600 dark:text-blue-400"><i class="fa-solid fa-users-rectangle w-4"></i> 학급도구</button>
-                <button onclick="closeMobileMenu(); router.navigate('tools-board')" class="p-3 rounded-2xl bg-blue-50 dark:bg-slate-900 text-left font-semibold flex items-center gap-2 text-blue-600 dark:text-blue-400"><i class="fa-solid fa-list-check w-4"></i> 태스크보드</button>
-                <button onclick="closeMobileMenu(); router.navigate('tools-edutech')" class="p-3 rounded-2xl bg-blue-50 dark:bg-slate-900 text-left font-semibold flex items-center gap-2 text-blue-600 dark:text-blue-400"><i class="fa-solid fa-laptop-code w-4"></i> 에듀테크</button>
-                <button onclick="closeMobileMenu(); router.navigate('situations')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation text-amber-500 w-4"></i> 상황가이드</button>
-                <button onclick="closeMobileMenu(); router.navigate('navigator')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold flex items-center gap-2"><i class="fa-solid fa-compass text-emerald-500 w-4"></i> 내비게이터</button>
-                <button onclick="closeMobileMenu(); router.navigate('map')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold flex items-center gap-2"><i class="fa-solid fa-network-wired text-indigo-500 w-4"></i> 지식맵</button>
-                <button onclick="closeMobileMenu(); router.navigate('year')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold flex items-center gap-2"><i class="fa-solid fa-calendar-days text-purple-500 w-4"></i> 교사의 1년</button>
-                <button onclick="closeMobileMenu(); router.navigate('career')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold flex items-center gap-2"><i class="fa-solid fa-route text-rose-500 w-4"></i> 커리어맵</button>
-                <button onclick="closeMobileMenu(); router.navigate('quiz')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold flex items-center gap-2"><i class="fa-solid fa-gamepad text-orange-500 w-4"></i> 퀴즈</button>
-                <button onclick="closeMobileMenu(); router.navigate('card')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold flex items-center gap-2"><i class="fa-solid fa-id-card text-teal-500 w-4"></i> 오늘의카드</button>
-                <button onclick="closeMobileMenu(); router.navigate('mybox')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold flex items-center gap-2"><i class="fa-solid fa-box-archive text-slate-500 w-4"></i> 교직함</button>
+                <!-- 메뉴 링크 생략 없이 모두 연결 -->
+                <button onclick="closeMobileMenu(); router.navigate('home')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-house text-blue-500 w-4"></i> 홈</button>
+                <button onclick="closeMobileMenu(); router.navigate('search')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-magnifying-glass text-blue-500 w-4"></i> 검색</button>
+                <button onclick="closeMobileMenu(); router.navigate('tools-doc')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-2"><i class="fa-solid fa-file-signature w-4"></i> 문서생성기</button>
+                <button onclick="closeMobileMenu(); router.navigate('tools-class')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-2"><i class="fa-solid fa-users-rectangle w-4"></i> 학급도구</button>
+                <button onclick="closeMobileMenu(); router.navigate('tools-board')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-2"><i class="fa-solid fa-list-check w-4"></i> 태스크보드</button>
+                <button onclick="closeMobileMenu(); router.navigate('tools-edutech')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-2"><i class="fa-solid fa-laptop-code w-4"></i> 에듀테크</button>
+                <button onclick="closeMobileMenu(); router.navigate('situations')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation text-amber-500 w-4"></i> 상황가이드</button>
+                <button onclick="closeMobileMenu(); router.navigate('navigator')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-compass text-emerald-500 w-4"></i> 내비게이터</button>
+                <button onclick="closeMobileMenu(); router.navigate('map')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-network-wired text-indigo-500 w-4"></i> 지식맵</button>
+                <button onclick="closeMobileMenu(); router.navigate('year')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-calendar-days text-purple-500 w-4"></i> 교사의 1년</button>
+                <button onclick="closeMobileMenu(); router.navigate('career')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-route text-rose-500 w-4"></i> 커리어맵</button>
+                <button onclick="closeMobileMenu(); router.navigate('quiz')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-gamepad text-orange-500 w-4"></i> 퀴즈</button>
+                <button onclick="closeMobileMenu(); router.navigate('card')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-id-card text-teal-500 w-4"></i> 오늘의카드</button>
+                <button onclick="closeMobileMenu(); router.navigate('mybox')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2"><i class="fa-solid fa-box-archive text-slate-500 w-4"></i> 교직함</button>
             </div>
         </div>
     </div>
 
-    <!-- 핵심 자바스크립트 -->
+    <!-- 스크립트: 데이터 로직 및 렌더러 -->
     <script>
         // ----------------------------------------------------
         // 1. 유틸리티 함수 및 로컬스토리지
@@ -189,11 +190,10 @@
         };
 
         // ----------------------------------------------------
-        // 2. 전체 데이터베이스 및 배열 설정 (누락 방지 완벽 점검)
+        // 2. 전체 데이터베이스 및 배열 설정
         // ----------------------------------------------------
         const CATEGORIES = ["인사·발령", "승진·전직", "복무·휴가", "급여·수당·연금", "학교조직·행정", "학교회계·예산", "교육과정", "수업", "평가", "학적·출결", "생활기록부", "학생생활", "학교폭력", "교육활동보호", "학부모", "상담", "기초학력", "특수교육", "연구·연수", "연구대회", "체육", "보건·안전", "급식", "늘봄·방과후", "현장체험학습", "시설·물품", "디지털", "AI·에듀테크", "교직생활", "기타"];
         
-        // 누락되었던 10대 기능용 데이터 100% 명시
         const QUOTES = [
             "선생님의 오늘 하루도 아이들에게는 우주입니다.", 
             "완벽하지 않아도 괜찮아요, 우리는 매일 성장하고 있으니까요.", 
@@ -228,7 +228,12 @@
                 { id: 7, keyword: "시간외근무", aliases: ["초과근무", "초근"], category: "복무·휴가", description: "정규 근무 시간 외에 국가의 명으로 초과하여 근무하는 것입니다.", simple: "방과 후나 휴일에 초과 근무한 시간을 인정받는 제도", tags: ["복무", "수당", "근무"], related: ["초과근무수당", "나이스복무", "조퇴"], situations: ["퇴근이 늦어졌을 때"], difficulty: 1 },
                 { id: 8, keyword: "학부모 상담주간", aliases: ["상담주간", "학부모상담"], category: "학부모", description: "학부모와 교원 간의 소통을 강화하고 학생 이해를 넓히기 위해 집중적으로 상담을 실시하는 기간입니다.", simple: "학기 초 학부모와 집중적으로 면담 및 상담을 진행하는 기간", tags: ["학부모", "상담", "소통"], related: ["학부모총회", "생활기록부", "교권"], situations: ["학부모 상담을 준비할 때"], difficulty: 2 },
                 { id: 9, keyword: "기초학력 진단평가", aliases: ["진단평가", "기초학력"], category: "기초학력", description: "학생들의 학습 결손을 예방하고 기초학력을 보장하기 위해 학기 초에 실시하는 진단 검사입니다.", simple: "학생들의 국어, 수학 등 기본 학습 능력을 점검하는 평가", tags: ["평가", "기초학력", "학습"], related: ["성취도평가", "보정교육", "학습지원"], situations: ["학기 초 학생들의 수준을 파악할 때"], difficulty: 1 },
-                { id: 10, keyword: "늘봄학교", aliases: ["늘봄", "초등돌봄"], category: "늘봄·방과후", description: "정규 수업 외에 학교와 지역사회의 자원을 활용하여 제공하는 종합 교육·돌봄 프로그램입니다.", simple: "아침부터 저녁까지 학교에서 돌봄과 교육을 제공하는 종합 프로그램", tags: ["돌봄", "방과후", "교육복지"], related: ["돌봄교실", "방과후학교", "교육부"], situations: ["늘봄 프로그램과 교실 운영을 맡았을 때"], difficulty: 2 }
+                { id: 10, keyword: "늘봄학교", aliases: ["늘봄", "초등돌봄"], category: "늘봄·방과후", description: "정규 수업 외에 학교와 지역사회의 자원을 활용하여 제공하는 종합 교육·돌봄 프로그램입니다.", simple: "아침부터 저녁까지 학교에서 돌봄과 교육을 제공하는 종합 프로그램", tags: ["돌봄", "방과후", "교육복지"], related: ["돌봄교실", "방과후학교", "교육부"], situations: ["늘봄 프로그램과 교실 운영을 맡았을 때"], difficulty: 2 },
+                { id: 11, keyword: "교원능력개발평가", aliases: ["교원평가"], category: "연구·연수", description: "교원의 전문성 향상을 지원하고 교육력을 제고하기 위하여 실시하는 평가 제도입니다.", simple: "동료교원, 학생, 학부모가 참여하는 교원 역량 개발 지원 제도", tags: ["평가", "전문성", "만족도"], related: ["맞춤형복지", "직무연수", "수업공개"], situations: ["교원평가 만족도 조사를 준비할 때"], difficulty: 2 },
+                { id: 12, keyword: "성과상여금", aliases: ["성과금"], category: "급여·수당·연금", description: "한 해 동안의 교육활동 실적을 평가하여 차등 지급하는 근무 성과 보상금입니다.", simple: "교원의 업무 실적에 따라 등급별로 차등 지급되는 상여금", tags: ["급여", "수당", "성과"], related: ["정근수당", "맞춤형복지", "호봉"], situations: ["성과상여금 이의신청 기간일 때"], difficulty: 2 },
+                { id: 13, keyword: "학교생활기록부", aliases: ["생기부"], category: "생활기록부", description: "학생의 학적, 출결, 수상, 진로희망, 창의적 체험활동 등을 종합 기록한 공식 문서입니다.", simple: "초등학생의 학교생활 전반을 기록하는 공식 장부", tags: ["생기부", "기재", "학적"], related: ["NEIS (나이스)", "성적처리", "출결"], situations: ["생활기록부 마감 및 수정할 때"], difficulty: 2 },
+                { id: 14, keyword: "응급처치", aliases: ["응급처치", "심폐소생술"], category: "보건·안전", description: "학교 내 안전사고 발생 시 전문 의료진 도착 전까지 실시하는 신속한 응급 조치입니다.", simple: "학교 안에서 다친 학생을 위해 즉시 취하는 안전 조치", tags: ["보건", "안전", "사고"], related: ["안전사고", "학교안전공제회", "보건실"], situations: ["학생이 수업 중 다쳤어요"], difficulty: 1 },
+                { id: 15, keyword: "AI디지털교과서 (AIDT)", aliases: ["AIDT", "AI교과서"], category: "AI·에듀테크", description: "인공지능 기술을 탑재하여 학생의 수준에 맞는 맞춤형 학습을 제공하는 디지털 기반 교과서입니다.", simple: "AI가 학생 수준을 분석해 맞춤형으로 가르쳐주는 디지털 교과서", tags: ["AI", "에듀테크", "디지털"], related: ["에듀테크", "디지털교과서", "소프트웨어교육"], situations: ["AI 디지털교과서를 수업에 도입할 때"], difficulty: 2 }
             ];
             const standardTopics = ["관내 내신", "만기전보", "우선전보", "전보유예", "전보점수", "타시도전출", "파견근무", "휴직", "복직", "명예퇴직", "정년퇴직", "의원면직", "파면", "해임", "정직", "감봉", "견책", "포상", "표창", "모범공무원", "수석교사", "교감자격연수", "교장공모제", "교육연구사", "장학관", "교육연구관", "교장", "교감", "기간제교사", "강사", "정근수당", "맞춤형복지", "호봉승급", "가족수당", "명절휴가비", "연가보상비", "퇴직연금", "사학연금", "공무원연금", "재해보상", "학교운영위원회", "학부모회", "지방공무원", "행정실장", "주무관", "조리실무사", "돌봄전담사", "영어회화전문강사", "스포츠강사", "사서교사", "영양교사", "보건교사", "상담교사", "특수교사", "보건실", "급식소", "체육관", "도서관", "시청각실", "컴퓨터실", "세입세출예산", "결산", "계약", "물품관리", "시설관리", "정보공개", "정보보안", "개인정보보호", "기안", "결재", "공람", "반려", "재기안", "공문서", "보고서", "교육과정", "국어", "수학", "바른생활", "슬기로운생활", "즐거운생활", "통합교과", "사회", "과학", "도덕", "음악", "미술", "실과", "체육", "영어", "창의적체험활동", "자율활동", "동아리활동", "봉사활동", "진로활동", "성취도평가", "수행평가", "지필평가", "서술형평가", "논술형평가", "과정중심평가", "학적", "출결", "결석", "조퇴", "지각", "외출", "출석부", "전학", "취학", "면제", "유예", "귀국", "자퇴", "퇴학", "졸업", "수료", "진급", "입학", "학업성취도", "학교폭력대책심의위원회", "학교폭력전담기구", "관계회복", "피해학생", "가해학생", "서면사과", "접촉금지", "학급교체", "전학", "퇴학", "교권보호위원회", "교육활동침해", "교원보호", "법률지원", "치료지원", "학부모상담", "방문상담", "전화상담", "공개수업", "참관", "기초학력보장", "두드림학교", "학습종합클리닉", "보정교육", "읽기부진", "수학부진", "난독증", "특수교육대상자", "통합교육", "개별화교육", "특수학급", "순회교육", "직무연수", "자격연수", "1정자격연수", "2정자격연수", "원격연수", "집합연수", "자율연수", "학습공동체", "연구대회", "현장연구", "실천연구", "시도대회", "전국대회", "연구학교", "시범학교", "체육대회", "소풍", "수학여행", "현장체험학습", "수련활동", "야영활동", "생존수영", "수영실기교육", "학교운동부", "육상부", "수영부", "축구부", "야구부", "보건교육", "심폐소생술", "자동제세동기", "AED", "소방훈련", "지진대피훈련", "미세먼지대응", "폭염대응", "감염병예방", "식중독예방", "위생점검", "식단표", "알레르기정보", "친환경급식", "무상급식", "돌봄교실", "초등돌봄", "방과후학교", "늘봄프로그램", "디지털교과서", "소프트웨어교육", "블록코딩", "파이썬", "메타버스", "가상현실", "증강현실", "XR", "VR", "AR", "챗봇", "생성형AI", "바이브코딩", "업무자동화", "노션", "캔바", "패블릿", "태블릿PC", "스마트기기", "충전함", "신규교사", "멘토링", "학급경영", "수업지도", "생활지도", "학기초", "방학", "교무실", "행정실", "교장실", "교감실"];
             const db = [...rawSeeds];
@@ -249,11 +254,11 @@
         const DB = generateDatabase();
 
         const SITUATIONS = [
-            { id: 1, title: "학생이 수업 중 다쳤어요", category: "보건·안전", summary: "교실 및 체육활동 중 학생 부상 발생 시 대처 절차", firstCheck: ["부상 부위 및 의식 상태 확인"], steps: ["보건실 인계 및 응급처치 실시", "학부모 즉시 연락", "안전사고 보고서 작성"], caution: ["임의로 병원 후송 지양"], relatedKeywords: ["응급처치", "보건실"] },
-            { id: 2, title: "학부모가 강하게 항의해요", category: "학부모", summary: "학부모의 악성 민원 대응", firstCheck: ["감정적 대응 금지 및 기록"], steps: ["방문/유선 상담 기록", "교권보호위원회 안내", "관리자 동행 요청"], caution: ["개인 연락처 응대 자제"], relatedKeywords: ["학부모 상담주간"] },
-            { id: 3, title: "학교폭력 신고가 들어왔어요", category: "학교폭력", summary: "학교폭력 사안 인지 및 초기 대응", firstCheck: ["학교장 즉시 보고", "학생 격리"], steps: ["사안 접수 대장 기록", "전담기구 조사", "자체해결 또는 심의위 회부"], caution: ["은폐 절대 불가"], relatedKeywords: ["학교폭력", "학교폭력전담기구"] },
-            { id: 4, title: "다른 지역으로 전보 가고 싶어요", category: "인사·발령", summary: "타 시·도 또는 관외 인사 이동", firstCheck: ["전보 지침 공문 확인"], steps: ["관외 전보 내신서 작성", "교육지원청 심사", "인사발령 확인"], caution: ["시도별 지침 필수 확인"], relatedKeywords: ["관외 전보", "전보점수"] },
-            { id: 5, title: "학교 예산으로 물건을 사야 해요", category: "학교회계·예산", summary: "학급 운영비 물품 구입 절차", firstCheck: ["예산 편성 내역 확인"], steps: ["K-에듀파인 품의 작성", "물품 계약", "지출 결의 및 정산"], caution: ["사후 품의 원칙적 금지"], relatedKeywords: ["품의", "K-에듀파인"] }
+            { id: 1, title: "학생이 수업 중 다쳤어요", category: "보건·안전", summary: "교실 및 체육활동 중 학생 부상 발생 시 대처 절차", firstCheck: ["부상 부위 및 의식 상태 확인", "2차 감염 및 추가 부상 방지"], steps: ["보건실 인계 및 응급처치 실시", "학부모 즉시 연락 및 상황 설명", "필요시 119 구급대 요청 및 병원 후송", "학교안전공제회 보상 절차 안내", "안전사고 보고서 작성 및 관리자 결재"], caution: ["학부모 연락 없이 임의로 병원 후송 시 책임 문제 발생 가능"], relatedKeywords: ["응급처치", "보건실", "안전사고"] },
+            { id: 2, title: "학부모가 강하게 항의해요", category: "학부모", summary: "학부모의 악성 민원 또는 과도한 항의 대응", firstCheck: ["감정적 대응 금지 및 경청 태도 유지", "통화 녹음 및 면담 내용 기록"], steps: ["방문 또는 유선 상담 시 대화 내용 기록", "교권보호위원회 및 민원처리 시스템 안내", "필요시 관리자(교감·교장) 동행 면담 요청", "민원 처리 결과 회신 및 상담 일지 보관"], caution: ["교사 개인 연락처로의 지속적 연락은 학교 공식 번호로 전환 요청"], relatedKeywords: ["학부모 상담주간", "교권보호위원회"] },
+            { id: 3, title: "학교폭력 신고가 들어왔어요", category: "학교폭력", summary: "교내외 학교폭력 사안 인지 및 초기 대응", firstCheck: ["사안 접수 즉시 학교장 보고", "피해·가해 학생 격리 및 보호 조치"], steps: ["학교폭력 사안 접수 대장 기록", "전담기구 사안 조사 실시", "학교장 자체해결 요건 심사 또는 교육지원청 심의위원회 회부", "피해학생 보호 및 가해학생 조치 결정"], caution: ["사안을 은폐하거나 임의로 종결 처리 절대 불가"], relatedKeywords: ["학교폭력", "학교폭력전담기구"] },
+            { id: 4, title: "다른 지역으로 전보 가고 싶어요", category: "인사·발령", summary: "타 시·도 또는 관외 교육지원청으로의 인사 이동", firstCheck: ["시·도교육청 관외 전보 지침 공문 확인", "근무 연한 및 전보 가산점 산정"], steps: ["관외 전보 내신서 작성 및 제출", "교육지원청 심사 및 승인 대기", "인사발령 공고 확인 후 신임 학교 부임", "인수인계서 작성 및 서류 이관"], caution: ["시도별 전보 규정이 상이하므로 최신 지침 필수 확인"], relatedKeywords: ["관외 전보", "관내 내신", "전보점수"] },
+            { id: 5, title: "학교 예산으로 물건을 사야 해요", category: "학교회계·예산", summary: "학급 운영비 및 교육과정 운영비 물품 구입 절차", firstCheck: ["예산 편성 내역 및 집행 가능 여부 확인", "소요 물품 규격 및 견적 비교"], steps: ["K-에듀파인 품의 작성 및 결재", "물품 계약 및 납품 확인", "검수조서 작성 및 물품등재", "지출 결의 및 정산 완료"], caution: ["사후 품의는 원칙적으로 금지되므로 반드시 사전 품의 실시"], relatedKeywords: ["품의", "K-에듀파인", "지출결의"] }
         ];
         while (SITUATIONS.length < 50) {
             const idx = SITUATIONS.length + 1;
@@ -322,7 +327,6 @@
             },
             render() {
                 try {
-                    // 사이드바 상태 초기화
                     document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('bg-blue-50', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400'));
                     document.querySelectorAll('.mob-item').forEach(el => el.classList.remove('text-blue-600', 'dark:text-blue-400', 'font-bold'));
                     
@@ -341,7 +345,6 @@
                     const viewContainer = document.getElementById('app-view');
                     if (!viewContainer) return;
 
-                    // 화면 분기
                     switch(this.current) {
                         case 'home': renderHome(viewContainer); break;
                         case 'search': renderSearch(viewContainer, this.param); break;
@@ -369,11 +372,11 @@
                 if (viewContainer) {
                     viewContainer.innerHTML = `
                         <div class="flex flex-col items-center justify-center h-full py-20 text-center animate-fade-in">
-                            <div class="w-16 h-16 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center text-2xl mb-4"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                            <h2 class="text-lg font-bold text-slate-800 mb-2">화면 로딩 오류</h2>
-                            <p class="text-sm text-slate-500 mb-2">데이터를 불러오는 중 문제가 발생했습니다.</p>
-                            <p class="text-xs text-rose-500 mb-6 font-mono">${error.message}</p>
-                            <button onclick="window.location.hash=''; window.location.reload();" class="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm shadow">다시 시도</button>
+                            <div class="w-16 h-16 rounded-2xl bg-rose-50 dark:bg-rose-900/40 text-rose-500 dark:text-rose-400 flex items-center justify-center text-2xl mb-4"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2">화면 로딩 오류</h2>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">데이터를 불러오는 중 문제가 발생했습니다.</p>
+                            <p class="text-xs text-rose-500 dark:text-rose-400 mb-6 font-mono">${error.message}</p>
+                            <button onclick="window.location.hash=''; window.location.reload();" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm shadow">다시 시도</button>
                         </div>
                     `;
                 }
@@ -394,22 +397,19 @@
         });
 
         // ----------------------------------------------------
-        // 4. 화면 렌더링 함수들 (QUOTES 참조 등 오류 원인 완전 해결)
+        // 4. 화면 렌더링 함수들 (Dark Mode 완벽 대응)
         // ----------------------------------------------------
         function renderHome(container) {
             const d = new Date();
             const todayStr = `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
             const cardIndex = Math.abs(hashCode(todayStr)) % DB.length;
             const todaysCard = DB[cardIndex] || DB[0];
-            
-            // 안전망: QUOTES 배열 검증
             const quote = (QUOTES && QUOTES.length > 0) ? QUOTES[Math.abs(hashCode(todayStr)) % QUOTES.length] : "선생님의 오늘 하루도 아이들에게는 우주입니다.";
 
-            // 방학 D-Day 계산 (오류 안 나게 안전하게 설계)
             const year = d.getFullYear();
             let vacName = "여름방학";
-            let vacDate = new Date(year, 6, 20); // 7월 20일
-            if (d > vacDate) { vacName = "겨울방학"; vacDate = new Date(year + 1, 0, 5); } // 다음해 1월 5일
+            let vacDate = new Date(year, 6, 20); 
+            if (d > vacDate) { vacName = "겨울방학"; vacDate = new Date(year + 1, 0, 5); }
             const diffDays = Math.max(0, Math.ceil((vacDate - d) / (1000 * 60 * 60 * 24)));
 
             const recentSearches = Storage.get('recent_searches', []).slice(0, 5);
@@ -423,7 +423,7 @@
                     <!-- 생존 명언 & 방학 위젯 -->
                     <div class="flex flex-col md:flex-row gap-3">
                         <div class="flex-1 bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-700 shadow-sm flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-900/40 text-rose-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-mug-hot"></i></div>
+                            <div class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-900/40 text-rose-500 dark:text-rose-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-mug-hot"></i></div>
                             <div><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">오늘의 멘탈 케어</p><p class="text-sm font-semibold text-slate-700 dark:text-slate-200">"${quote}"</p></div>
                         </div>
                         <div class="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl p-4 text-white shadow-sm flex items-center justify-between min-w-[200px]">
@@ -449,50 +449,47 @@
 
                     <!-- 런처 -->
                     <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-2">
-                        <a href="https://neis.go.kr" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-link text-blue-500"></i> NEIS (나이스)</a>
-                        <a href="https://klef.go.kr" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-won-sign text-amber-500"></i> K-에듀파인</a>
-                        <a href="https://www.teachiworld.com" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-gift text-rose-500"></i> 맞춤형복지</a>
-                        <a href="https://www.moe.go.kr" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-building-columns text-slate-500"></i> 교육부</a>
+                        <a href="https://neis.go.kr" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-link text-blue-500 dark:text-blue-400"></i> NEIS (나이스)</a>
+                        <a href="https://klef.go.kr" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-won-sign text-amber-500 dark:text-amber-400"></i> K-에듀파인</a>
+                        <a href="https://www.teachiworld.com" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-gift text-rose-500 dark:text-rose-400"></i> 맞춤형복지</a>
+                        <a href="https://www.moe.go.kr" target="_blank" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-building-columns text-slate-500 dark:text-slate-400"></i> 교육부</a>
                     </div>
 
                     <!-- 메뉴 -->
                     <div class="grid grid-cols-3 md:grid-cols-6 gap-3">
-                        <button onclick="router.navigate('tools-doc')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-blue-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-blue-50 dark:bg-blue-900/40 text-blue-600 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-file-signature"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">문서 생성기</span></button>
-                        <button onclick="router.navigate('tools-class')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-amber-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-amber-50 dark:bg-amber-900/40 text-amber-600 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-users-rectangle"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">학급 도구</span></button>
-                        <button onclick="router.navigate('tools-board')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-emerald-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-list-check"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">태스크보드</span></button>
-                        <button onclick="router.navigate('year')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-purple-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-purple-50 dark:bg-purple-900/40 text-purple-600 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-calendar-days"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">교사의 1년</span></button>
-                        <button onclick="router.navigate('map')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-indigo-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-network-wired"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">지식맵</span></button>
-                        <button onclick="router.navigate('situations')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-rose-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-rose-50 dark:bg-rose-900/40 text-rose-600 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-triangle-exclamation"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">상황 가이드</span></button>
+                        <button onclick="router.navigate('tools-doc')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-blue-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-file-signature"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">문서 생성기</span></button>
+                        <button onclick="router.navigate('tools-class')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-amber-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-users-rectangle"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">학급 도구</span></button>
+                        <button onclick="router.navigate('tools-board')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-emerald-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-list-check"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">태스크보드</span></button>
+                        <button onclick="router.navigate('year')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-purple-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-calendar-days"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">교사의 1년</span></button>
+                        <button onclick="router.navigate('map')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-indigo-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-network-wired"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">지식맵</span></button>
+                        <button onclick="router.navigate('situations')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-rose-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-triangle-exclamation"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">상황 가이드</span></button>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- 오늘 카드 -->
                         <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
                             <div>
-                                <div class="flex items-center justify-between mb-4"><span class="text-xs font-bold px-3 py-1 bg-amber-100 text-amber-700 rounded-full"><i class="fa-solid fa-star"></i> 오늘의 교직카드</span></div>
+                                <div class="flex items-center justify-between mb-4"><span class="text-xs font-bold px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 rounded-full"><i class="fa-solid fa-star"></i> 오늘의 교직카드</span></div>
                                 <div class="cursor-pointer group" onclick="openDetail(${todaysCard.id})">
-                                    <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition mb-2">${todaysCard.keyword}</h3>
+                                    <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition mb-2">${todaysCard.keyword}</h3>
                                     <p class="text-sm text-slate-600 dark:text-slate-300 line-clamp-3 mb-4">${todaysCard.description}</p>
                                 </div>
                             </div>
-                            <button onclick="router.navigate('card')" class="mt-4 text-xs font-bold text-blue-600 hover:underline text-left">카드 전체 학습 →</button>
+                            <button onclick="router.navigate('card')" class="mt-4 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline text-left">카드 전체 학습 →</button>
                         </div>
-                        <!-- 체크리스트 -->
                         <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
                             <div>
-                                <div class="flex items-center justify-between mb-3"><span class="text-xs font-bold px-3 py-1 bg-blue-100 text-blue-700 rounded-full"><i class="fa-solid fa-calendar-check"></i> ${d.getMonth()+1}월 체크</span></div>
+                                <div class="flex items-center justify-between mb-3"><span class="text-xs font-bold px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 rounded-full"><i class="fa-solid fa-calendar-check"></i> ${d.getMonth()+1}월 체크</span></div>
                                 <div class="mb-3">
-                                    <div class="flex justify-between text-xs text-slate-500 mb-1"><span>실제 업무 달성률</span><span class="font-bold text-blue-600">${completionRate}%</span></div>
-                                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden"><div class="bg-blue-600 h-full transition-all" style="width: ${completionRate}%"></div></div>
+                                    <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1"><span>실제 업무 달성률</span><span class="font-bold text-blue-600 dark:text-blue-400">${completionRate}%</span></div>
+                                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden"><div class="bg-blue-600 dark:bg-blue-500 h-full transition-all" style="width: ${completionRate}%"></div></div>
                                 </div>
                                 <ul class="space-y-2" id="home-checklist-preview"></ul>
                             </div>
                         </div>
-                        <!-- 최근 검색 -->
                         <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
                             <div>
                                 <div class="flex items-center justify-between mb-4"><span class="text-xs font-bold px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-full"><i class="fa-solid fa-clock-rotate-left"></i> 최근 검색</span></div>
-                                ${recentSearches.length > 0 ? `<div class="flex flex-wrap gap-2">${recentSearches.map(kw => `<span onclick="router.navigate('search', '${kw}')" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-medium cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition">${kw}</span>`).join('')}</div>` : `<p class="text-xs text-slate-400 py-6 text-center">기록이 없습니다.</p>`}
+                                ${recentSearches.length > 0 ? `<div class="flex flex-wrap gap-2">${recentSearches.map(kw => `<span onclick="router.navigate('search', '${kw}')" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-medium cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-600 hover:text-blue-600 dark:hover:text-blue-400 transition">${kw}</span>`).join('')}</div>` : `<p class="text-xs text-slate-400 py-6 text-center">기록이 없습니다.</p>`}
                             </div>
                         </div>
                     </div>
@@ -516,8 +513,8 @@
             const checkedState = Storage.get(`checklist_${month}`, {});
             container.innerHTML = tasks.slice(0, 4).map((task, idx) => `
                 <li class="flex items-center gap-2.5 text-xs text-slate-700 dark:text-slate-300">
-                    <input type="checkbox" ${checkedState[idx] ? 'checked' : ''} onchange="toggleHomeChecklist(${month}, ${idx})" class="w-4 h-4 rounded text-blue-600 cursor-pointer">
-                    <span class="truncate ${checkedState[idx] ? 'line-through text-slate-400' : ''}">${task.title}</span>
+                    <input type="checkbox" ${checkedState[idx] ? 'checked' : ''} onchange="toggleHomeChecklist(${month}, ${idx})" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 cursor-pointer">
+                    <span class="truncate ${checkedState[idx] ? 'line-through text-slate-400 dark:text-slate-500' : ''}">${task.title}</span>
                 </li>
             `).join('');
         }
@@ -529,7 +526,6 @@
             renderHomeChecklistPreview(month);
         }
 
-        // --- 10대 기능 세부 구현 ---
         function renderToolsDoc(container) {
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
@@ -539,7 +535,7 @@
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-1 bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4">
-                            <label class="block text-sm font-bold">템플릿 선택</label>
+                            <label class="block text-sm font-bold text-slate-900 dark:text-white">템플릿 선택</label>
                             <select id="doc-template-select" onchange="loadDocTemplate()" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm outline-none">
                                 <option value="">템플릿을 선택하세요</option>
                                 ${DOC_TEMPLATES.map(t => `<option value="${t.id}">${t.title}</option>`).join('')}
@@ -548,7 +544,7 @@
                         </div>
                         <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col">
                             <div class="flex justify-between items-center mb-4">
-                                <span class="text-sm font-bold">완성된 텍스트</span>
+                                <span class="text-sm font-bold text-slate-900 dark:text-white">완성된 텍스트</span>
                                 <button onclick="copyDocText()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow transition"><i class="fa-regular fa-copy"></i> 복사하기</button>
                             </div>
                             <textarea id="doc-output" class="w-full h-64 p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none resize-none" readonly placeholder="템플릿을 선택하고 빈칸을 채우세요."></textarea>
@@ -570,11 +566,11 @@
             while ((match = regex.exec(currentDocTemplate.content)) !== null) vars.add(match[1]);
             
             if (vars.size === 0) {
-                container.innerHTML = '<p class="text-xs text-slate-400">빈칸이 없는 템플릿입니다.</p>';
+                container.innerHTML = '<p class="text-xs text-slate-400 dark:text-slate-500">빈칸이 없는 템플릿입니다.</p>';
                 output.value = currentDocTemplate.content;
             } else {
                 container.innerHTML = Array.from(vars).map(v => `
-                    <div><label class="block text-xs font-semibold text-slate-500 mb-1">${v}</label>
+                    <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">${v}</label>
                     <input type="text" data-var="${v}" oninput="updateDocOutput()" class="doc-var-input w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm outline-none" placeholder="${v} 입력"></div>
                 `).join('');
                 updateDocOutput();
@@ -603,38 +599,38 @@
                 <div class="space-y-6 animate-fade-in">
                     <div>
                         <h2 class="text-2xl font-bold tracking-tight mb-1">학급 경영 도구</h2>
-                        <p class="text-sm text-slate-500">수업 타이머, 랜덤 뽑기, 자리 배치</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">수업 타이머, 랜덤 뽑기, 자리 배치</p>
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200/80 shadow-sm text-center flex flex-col items-center justify-center">
-                            <h3 class="text-sm font-bold text-slate-500 mb-4">스마트 타이머</h3>
-                            <div id="timer-display" class="text-7xl md:text-8xl font-black tracking-tighter tabular-nums mb-8">05:00</div>
+                        <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm text-center flex flex-col items-center justify-center">
+                            <h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 mb-4">스마트 타이머</h3>
+                            <div id="timer-display" class="text-7xl md:text-8xl font-black text-slate-800 dark:text-white tracking-tighter tabular-nums mb-8">05:00</div>
                             <div class="flex flex-wrap justify-center gap-3">
-                                <button onclick="addTimer(60)" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 rounded-xl text-xs font-bold">+1분</button>
+                                <button onclick="addTimer(60)" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold">+1분</button>
                                 <button onclick="startTimer()" class="px-6 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold shadow"><i class="fa-solid fa-play"></i> 시작</button>
                                 <button onclick="pauseTimer()" class="px-6 py-2 bg-amber-500 text-white rounded-xl text-sm font-bold shadow"><i class="fa-solid fa-pause"></i> 정지</button>
-                                <button onclick="resetTimer()" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 rounded-xl text-xs font-bold"><i class="fa-solid fa-rotate-right"></i> 리셋</button>
+                                <button onclick="resetTimer()" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold"><i class="fa-solid fa-rotate-right"></i> 리셋</button>
                             </div>
                         </div>
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col">
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col">
                             <div class="flex justify-between items-center mb-2">
-                                <h3 class="text-sm font-bold text-slate-500">우리 반 랜덤 뽑기</h3>
+                                <h3 class="text-sm font-bold text-slate-500 dark:text-slate-400">우리 반 랜덤 뽑기</h3>
                                 <button onclick="pickRandom()" class="px-4 py-1.5 bg-rose-600 text-white text-xs font-bold rounded-lg shadow"><i class="fa-solid fa-wand-magic-sparkles"></i> 1명 뽑기</button>
                             </div>
                             <textarea id="class-names-input" onchange="Storage.set('class_names', this.value)" class="w-full h-24 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm mb-4 resize-none" placeholder="이름을 쉼표(,)로 구분해서 적어주세요.">${savedNames}</textarea>
                             <div class="flex-1 bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-900/50 rounded-2xl flex flex-col items-center justify-center p-4">
-                                <p class="text-xs text-rose-400 font-bold mb-1">발표자는?</p>
+                                <p class="text-xs text-rose-400 dark:text-rose-500 font-bold mb-1">발표자는?</p>
                                 <p id="random-name" class="text-3xl font-extrabold text-rose-600 dark:text-rose-400">?</p>
                             </div>
                         </div>
                     </div>
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 shadow-sm">
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm">
                         <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-sm font-bold">랜덤 자리 배치기</h3>
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-white">랜덤 자리 배치기</h3>
                             <button onclick="generateSeats()" class="px-6 py-2.5 bg-emerald-600 text-white font-bold text-sm rounded-xl shadow"><i class="fa-solid fa-border-all"></i> 배치 생성</button>
                         </div>
                         <div class="bg-slate-50 dark:bg-slate-900 p-6 rounded-2xl overflow-x-auto">
-                            <div class="text-center mb-8"><span class="px-12 py-2 bg-slate-300 dark:bg-slate-700 rounded text-sm font-bold">교 탁</span></div>
+                            <div class="text-center mb-8"><span class="px-12 py-2 bg-slate-300 dark:bg-slate-700 rounded text-sm font-bold text-slate-700 dark:text-slate-200">교 탁</span></div>
                             <div id="seats-grid" class="flex flex-wrap justify-center gap-2 max-w-2xl mx-auto min-h-[100px] items-center">
                                 <p class="text-slate-400 text-sm font-medium">버튼을 눌러주세요.</p>
                             </div>
@@ -682,7 +678,7 @@
             const names = input.split(',').map(n => n.trim()).filter(n => n);
             if(names.length === 0) { showToast('이름을 입력해주세요.', 'error'); return; }
             const shuffled = [...names].sort(() => 0.5 - Math.random());
-            document.getElementById('seats-grid').innerHTML = shuffled.map(name => `<div class="w-16 h-16 sm:w-20 sm:h-20 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl flex items-center justify-center font-bold text-sm sm:text-base shadow-sm m-1">${name}</div>`).join('');
+            document.getElementById('seats-grid').innerHTML = shuffled.map(name => `<div class="w-16 h-16 sm:w-20 sm:h-20 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl flex items-center justify-center font-bold text-sm sm:text-base shadow-sm m-1 text-slate-800 dark:text-slate-100">${name}</div>`).join('');
         }
 
         function renderToolsBoard(container) {
@@ -691,13 +687,13 @@
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
                     <div class="flex justify-between items-center">
-                        <div><h2 class="text-2xl font-bold mb-1">실전 태스크 보드</h2><p class="text-sm text-slate-500">굵직한 행사의 세부 업무 관리</p></div>
+                        <div><h2 class="text-2xl font-bold mb-1">실전 태스크 보드</h2><p class="text-sm text-slate-500 dark:text-slate-400">굵직한 행사의 세부 업무 관리</p></div>
                         <button onclick="addBoardTask()" class="px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow">+ 할 일 추가</button>
                     </div>
-                    <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 shadow-sm">
+                    <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700 shadow-sm">
                         <div class="flex items-center gap-2 mb-6 pb-4 border-b border-slate-100 dark:border-slate-700">
                             <i class="fa-solid fa-thumbtack text-emerald-500"></i>
-                            <input type="text" id="board-title" value="${Storage.get('board_title', '운동부 대회 출전 준비')}" onchange="Storage.set('board_title', this.value)" class="text-lg font-bold bg-transparent border-none outline-none w-full" placeholder="프로젝트 이름">
+                            <input type="text" id="board-title" value="${Storage.get('board_title', '운동부 대회 출전 준비')}" onchange="Storage.set('board_title', this.value)" class="text-lg font-bold bg-transparent border-none outline-none w-full text-slate-900 dark:text-white" placeholder="프로젝트 이름">
                         </div>
                         <div id="board-list" class="space-y-3"></div>
                     </div>
@@ -715,9 +711,9 @@
                 <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 group">
                     <div class="flex items-center gap-3 w-full">
                         <input type="checkbox" ${tasks[k].done ? 'checked' : ''} onchange="toggleBoardTask('${k}')" class="w-5 h-5 rounded text-emerald-600 cursor-pointer">
-                        <input type="text" value="${tasks[k].title}" onchange="updateBoardTaskTitle('${k}', this.value)" class="bg-transparent border-none outline-none w-full text-sm font-medium ${tasks[k].done ? 'text-slate-400 line-through' : ''}">
+                        <input type="text" value="${tasks[k].title}" onchange="updateBoardTaskTitle('${k}', this.value)" class="bg-transparent border-none outline-none w-full text-sm font-medium ${tasks[k].done ? 'text-slate-400 dark:text-slate-500 line-through' : 'text-slate-800 dark:text-slate-200'}">
                     </div>
-                    <button onclick="deleteBoardTask('${k}')" class="text-slate-400 hover:text-rose-500 opacity-50 transition"><i class="fa-solid fa-trash"></i></button>
+                    <button onclick="deleteBoardTask('${k}')" class="text-slate-400 hover:text-rose-500 opacity-50 hover:opacity-100 transition"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `).join('');
         }
@@ -730,17 +726,17 @@
         function renderToolsEdutech(container) {
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold mb-1">에듀테크 큐레이션</h2><p class="text-sm text-slate-500">수업 적용 AI 및 프롬프트 추천</p></div>
+                    <div><h2 class="text-2xl font-bold mb-1">에듀테크 큐레이션</h2><p class="text-sm text-slate-500 dark:text-slate-400">수업 적용 AI 및 프롬프트 추천</p></div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         ${EDUTECH_TOOLS.map(tool => `
-                            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
                                 <div class="mb-4">
-                                    <div class="flex justify-between items-start mb-2"><h3 class="text-lg font-bold flex items-center gap-2"><i class="fa-solid fa-cube text-blue-500"></i> ${tool.name}</h3><a href="${tool.url}" target="_blank" class="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded font-bold">바로가기</a></div>
-                                    <p class="text-xs font-semibold text-slate-500 mb-4">${tool.desc}</p>
+                                    <div class="flex justify-between items-start mb-2"><h3 class="text-lg font-bold flex items-center gap-2"><i class="fa-solid fa-cube text-blue-500"></i> ${tool.name}</h3><a href="${tool.url}" target="_blank" class="text-xs bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 px-2 py-1 rounded font-bold">바로가기</a></div>
+                                    <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-4">${tool.desc}</p>
                                     <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700 relative">
-                                        <span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">추천 프롬프트 예시</span>
-                                        <p class="text-sm italic pr-6">"${tool.prompt}"</p>
-                                        <button onclick="navigator.clipboard.writeText('${tool.prompt}'); showToast('복사되었습니다.');" class="absolute top-2 right-2 p-1.5 bg-white dark:bg-slate-800 border border-slate-200 rounded text-slate-400 hover:text-blue-500 shadow-sm"><i class="fa-solid fa-copy"></i></button>
+                                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase block mb-1">추천 프롬프트 예시</span>
+                                        <p class="text-sm italic pr-6 text-slate-700 dark:text-slate-300">"${tool.prompt}"</p>
+                                        <button onclick="navigator.clipboard.writeText('${tool.prompt}'); showToast('복사되었습니다.');" class="absolute top-2 right-2 p-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-slate-400 hover:text-blue-500 shadow-sm"><i class="fa-solid fa-copy"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -750,15 +746,13 @@
             `;
         }
 
-        // --- 기타 메뉴 화면 렌더링 ---
-        let searchDisplayLimit = 60; let currentCategoryFilter = '전체'; let selectedAutocompleteIdx = -1;
         function renderSearch(container, initialQuery = '') {
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold mb-1">교직어 검색</h2><p class="text-sm text-slate-500">${DB.length}개 용어 고속 검색</p></div>
-                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-4 relative">
+                    <div><h2 class="text-2xl font-bold mb-1">교직어 검색</h2><p class="text-sm text-slate-500 dark:text-slate-400">${DB.length}개 용어 고속 검색</p></div>
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4 relative">
                         <div class="relative">
-                            <input type="text" id="main-search-input" value="${initialQuery}" placeholder="용어, 초성 검색..." class="w-full pl-12 pr-10 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off">
+                            <input type="text" id="main-search-input" value="${initialQuery}" placeholder="용어, 초성 검색..." class="w-full pl-12 pr-10 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm outline-none focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-white" autocomplete="off">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <button onclick="clearSearch()" id="clear-search-btn" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hidden"><i class="fa-solid fa-circle-xmark"></i></button>
                             <div id="autocomplete-box" class="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 hidden z-30 overflow-hidden"></div>
@@ -768,12 +762,12 @@
                             ${CATEGORIES.map(cat => `<button onclick="filterCategory('${cat}')" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300" data-cat="${cat}">${cat}</button>`).join('')}
                         </div>
                     </div>
-                    <div class="flex justify-between text-xs text-slate-500 px-1">
+                    <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 px-1">
                         <span id="result-count">검색 결과: ${DB.length}개</span>
-                        <div class="flex gap-2"><button onclick="openDetail(DB[Math.floor(Math.random()*DB.length)].id)" class="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg font-bold"><i class="fa-solid fa-dice"></i> 랜덤</button></div>
+                        <div class="flex gap-2"><button onclick="openDetail(DB[Math.floor(Math.random()*DB.length)].id)" class="px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg font-bold"><i class="fa-solid fa-dice"></i> 랜덤</button></div>
                     </div>
                     <div id="search-results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-                    <div id="load-more-container" class="text-center pt-4 hidden"><button onclick="searchDisplayLimit+=60;handleSearch();" class="px-6 py-2.5 bg-slate-200 dark:bg-slate-700 font-bold text-xs rounded-xl">더 보기</button></div>
+                    <div id="load-more-container" class="text-center pt-4 hidden"><button onclick="searchDisplayLimit+=60;handleSearch();" class="px-6 py-2.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-xl">더 보기</button></div>
                 </div>
             `;
             const input = document.getElementById('main-search-input');
@@ -784,11 +778,12 @@
             handleSearch();
         }
 
+        let searchDisplayLimit = 60; let currentCategoryFilter = '전체'; let selectedAutocompleteIdx = -1;
         function filterCategory(cat) {
             currentCategoryFilter = cat; searchDisplayLimit = 60;
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 if (btn.getAttribute('data-cat') === cat) btn.className = "cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 bg-blue-600 text-white";
-                else btn.className = "cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300";
+                else btn.className = "cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition";
             });
             handleSearch();
         }
@@ -802,7 +797,7 @@
             const matches = DB.filter(item => item._searchText.includes(qLower) || item._chosung.includes(query)).slice(0, 8);
             selectedAutocompleteIdx = -1;
             if (matches.length === 0) { acBox.classList.add('hidden'); return; }
-            acBox.innerHTML = matches.map((item, idx) => `<div onmousedown="selectAutocomplete('${item.keyword}')" class="ac-item px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-slate-700 text-xs font-medium cursor-pointer flex justify-between" data-index="${idx}"><span>${highlightText(item.keyword, query)}</span><span class="text-slate-400">${item.category}</span></div>`).join('');
+            acBox.innerHTML = matches.map((item, idx) => `<div onmousedown="selectAutocomplete('${item.keyword}')" class="ac-item px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-slate-700 text-xs font-medium cursor-pointer flex justify-between text-slate-800 dark:text-slate-200" data-index="${idx}"><span>${highlightText(item.keyword, query)}</span><span class="text-slate-400">${item.category}</span></div>`).join('');
             acBox.classList.remove('hidden');
         }
 
@@ -821,7 +816,9 @@
         function handleSearch() {
             const input = document.getElementById('main-search-input');
             const query = input ? input.value.trim() : '';
-            document.getElementById('clear-search-btn')?.classList.toggle('hidden', !query);
+            const sort = document.getElementById('sort-select') ? document.getElementById('sort-select').value : 'accuracy';
+            const clearBtn = document.getElementById('clear-search-btn');
+            if (clearBtn) { if (query) clearBtn.classList.remove('hidden'); else clearBtn.classList.add('hidden'); }
             
             if(query.length > 1) { let recents = Storage.get('recent_searches', []); recents = [query, ...recents.filter(q => q !== query)].slice(0, 20); Storage.set('recent_searches', recents); }
 
@@ -836,26 +833,27 @@
                 return { item, score: score > 0 ? score : -1 };
             }).filter(res => res.score >= 0);
             
-            scoredResults.sort((a, b) => b.score - a.score);
-            const results = scoredResults.map(res => res.item);
+            if(sort === 'accuracy') scoredResults.sort((a, b) => b.score - a.score);
+            else scoredResults.sort((a, b) => a.item.keyword.localeCompare(b.item.keyword));
             
+            const results = scoredResults.map(res => res.item);
             const countEl = document.getElementById('result-count'); if(countEl) countEl.innerText = `검색 결과: ${results.length}개`;
             const grid = document.getElementById('search-results-grid'); const loadMoreBtn = document.getElementById('load-more-container');
             if(!grid) return;
 
             if(results.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-16 text-center bg-white rounded-3xl"><h3 class="text-base font-bold">찾는 교직어가 없어요</h3></div>`;
+                grid.innerHTML = `<div class="col-span-full py-16 text-center bg-white dark:bg-slate-800 rounded-3xl"><h3 class="text-base font-bold">찾는 교직어가 없어요</h3></div>`;
                 loadMoreBtn?.classList.add('hidden'); return;
             }
 
             const bookmarks = Storage.get('bookmarks', []);
             grid.innerHTML = results.slice(0, searchDisplayLimit).map(item => `
-                <div onclick="openDetail(${item.id})" class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:border-blue-500 cursor-pointer flex flex-col justify-between group">
+                <div onclick="openDetail(${item.id})" class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm hover:border-blue-500 dark:hover:border-blue-500 transition cursor-pointer flex flex-col justify-between group">
                     <div>
-                        <div class="flex justify-between mb-2"><span class="text-xs font-semibold px-2 py-1 bg-slate-100 rounded-lg text-slate-600">${item.category}</span><button onclick="event.stopPropagation(); toggleBookmark(${item.id})" class="text-slate-400 hover:text-amber-500"><i class="fa-${bookmarks.includes(item.id) ? 'solid text-amber-500' : 'regular'} fa-bookmark"></i></button></div>
-                        <h3 class="font-bold group-hover:text-blue-600 mb-1">${highlightText(item.keyword, query)}</h3>
-                        <p class="text-xs text-blue-600 mb-2">${highlightText(item.simple, query)}</p>
-                        <p class="text-xs text-slate-500 line-clamp-2">${highlightText(item.description, query)}</p>
+                        <div class="flex justify-between mb-2"><span class="text-xs font-semibold px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300">${item.category}</span><button onclick="event.stopPropagation(); toggleBookmark(${item.id})" class="text-slate-400 hover:text-amber-500 dark:hover:text-amber-400"><i class="fa-${bookmarks.includes(item.id) ? 'solid text-amber-500 dark:text-amber-400' : 'regular'} fa-bookmark"></i></button></div>
+                        <h3 class="font-bold group-hover:text-blue-600 dark:group-hover:text-blue-400 mb-1 text-slate-800 dark:text-white">${highlightText(item.keyword, query)}</h3>
+                        <p class="text-xs text-blue-600 dark:text-blue-400 mb-2">${highlightText(item.simple, query)}</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">${highlightText(item.description, query)}</p>
                     </div>
                 </div>
             `).join('');
@@ -873,19 +871,19 @@
             if(pushHash) window.location.hash = `#keyword=${encodeURIComponent(item.keyword)}`;
 
             content.innerHTML = `
-                <div class="flex justify-between mb-4 pb-4 border-b border-slate-100">
-                    <div><span class="text-xs font-bold px-3 py-1 bg-blue-50 text-blue-600 rounded-lg mb-2 inline-block">${item.category}</span><h2 class="text-2xl font-extrabold">${item.keyword}</h2></div>
-                    <div class="flex gap-2">
-                        <button onclick="shareKeyword('${item.keyword}')" class="p-2.5 bg-slate-100 rounded-xl hover:text-blue-500"><i class="fa-solid fa-share-nodes"></i></button>
-                        <button onclick="toggleBookmark(${item.id}); openDetail(${item.id}, false)" class="p-2.5 bg-slate-100 rounded-xl hover:text-amber-500"><i class="fa-${isBookmarked ? 'solid text-amber-500' : 'regular'} fa-bookmark"></i></button>
-                        <button onclick="closeModal(true)" class="p-2.5 bg-slate-100 rounded-xl hover:bg-slate-200"><i class="fa-solid fa-xmark"></i></button>
+                <div class="flex justify-between mb-4 pb-4 border-b border-slate-100 dark:border-slate-700">
+                    <div><span class="text-xs font-bold px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg mb-2 inline-block">${item.category}</span><h2 id="modal-title" class="text-2xl font-extrabold text-slate-900 dark:text-white">${item.keyword}</h2></div>
+                    <div class="flex gap-2 text-slate-600 dark:text-slate-300">
+                        <button onclick="shareKeyword('${item.keyword}')" class="p-2.5 bg-slate-100 dark:bg-slate-700 rounded-xl hover:text-blue-500 dark:hover:text-blue-400 transition"><i class="fa-solid fa-share-nodes"></i></button>
+                        <button onclick="toggleBookmark(${item.id}); openDetail(${item.id}, false)" class="p-2.5 bg-slate-100 dark:bg-slate-700 rounded-xl hover:text-amber-500 dark:hover:text-amber-400 transition"><i class="fa-${isBookmarked ? 'solid text-amber-500 dark:text-amber-400' : 'regular'} fa-bookmark"></i></button>
+                        <button onclick="closeModal(true)" class="p-2.5 bg-slate-100 dark:bg-slate-700 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                 </div>
-                <div class="space-y-6 text-sm">
-                    <div class="p-4 bg-blue-50/60 rounded-2xl"><span class="text-xs font-bold text-blue-600 block mb-1">💡 쉽게 말하면</span><p class="font-semibold">${item.simple}</p></div>
-                    <div><span class="text-xs font-bold text-slate-400 block mb-1">📖 기본 설명</span><p>${item.description}</p></div>
-                    ${item.situations.length > 0 ? `<div><span class="text-xs font-bold text-slate-400 block mb-2">🏫 언제 쓰나요?</span><div class="space-y-2">${item.situations.map(sit => `<div class="bg-slate-50 p-2 rounded-xl"><i class="fa-solid fa-circle-check text-blue-500 text-xs"></i> ${sit}</div>`).join('')}</div></div>` : ''}
-                    ${item.related.length > 0 ? `<div><span class="text-xs font-bold text-slate-400 block mb-2">🔗 관련 교직어</span><div class="flex flex-wrap gap-2">${item.related.map(rel => { const found = DB.find(d => d.keyword === rel); return found ? `<button onclick="openDetail(${found.id})" class="px-3 py-1.5 bg-slate-100 rounded-xl text-xs font-semibold hover:text-blue-600">${rel}</button>` : ''; }).join('')}</div></div>` : ''}
+                <div class="space-y-6 text-sm text-slate-700 dark:text-slate-300">
+                    <div class="p-4 bg-blue-50/60 dark:bg-slate-900/60 rounded-2xl border border-blue-100 dark:border-slate-800"><span class="text-xs font-bold text-blue-600 dark:text-blue-400 block mb-1">💡 쉽게 말하면</span><p class="font-semibold text-slate-900 dark:text-slate-100">${item.simple}</p></div>
+                    <div><span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase block mb-1">📖 기본 설명</span><p>${item.description}</p></div>
+                    ${item.situations.length > 0 ? `<div><span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase block mb-2">🏫 언제 쓰나요?</span><div class="space-y-2">${item.situations.map(sit => `<div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-500 dark:text-blue-400 text-xs"></i> <span class="font-medium">${sit}</span></div>`).join('')}</div></div>` : ''}
+                    ${item.related.length > 0 ? `<div><span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase block mb-2">🔗 관련 교직어</span><div class="flex flex-wrap gap-2">${item.related.map(rel => { const found = DB.find(d => d.keyword === rel); return found ? `<button onclick="openDetail(${found.id})" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 rounded-xl text-xs font-semibold hover:text-blue-600 dark:hover:text-blue-400 transition">${rel}</button>` : ''; }).join('')}</div></div>` : ''}
                 </div>
             `;
             modal.classList.remove('hidden'); document.body.style.overflow = 'hidden';
@@ -915,8 +913,8 @@
         function renderSituations(container) {
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold mb-1">이럴 땐 어떻게?</h2><p class="text-sm text-slate-500">${SITUATIONS.length}가지 실전 대응 가이드</p></div>
-                    <div class="relative max-w-md"><input type="text" id="situation-search-input" placeholder="다침, 학폭, 예산 검색" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm outline-none focus:ring-2 focus:ring-blue-500"><i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400"></i></div>
+                    <div><h2 class="text-2xl font-bold mb-1">이럴 땐 어떻게?</h2><p class="text-sm text-slate-500 dark:text-slate-400">${SITUATIONS.length}가지 실전 대응 가이드</p></div>
+                    <div class="relative max-w-md"><input type="text" id="situation-search-input" placeholder="다침, 학폭, 예산 검색" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm outline-none focus:ring-2 focus:ring-blue-500"><i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400"></i></div>
                     <div id="situations-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </div>
             `;
@@ -928,13 +926,18 @@
         function updateSituationsGrid(filterQuery) {
             const grid = document.getElementById('situations-grid'); if(!grid) return;
             const filtered = SITUATIONS.filter(sit => !filterQuery || sit.title.toLowerCase().includes(filterQuery.toLowerCase()) || sit.category.toLowerCase().includes(filterQuery.toLowerCase()));
-            if(filtered.length === 0) { grid.innerHTML = `<div class="col-span-full text-center py-10"><p class="text-slate-400 text-sm">결과 없음</p></div>`; return; }
+            if(filtered.length === 0) { grid.innerHTML = `<div class="col-span-full text-center py-10 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700"><p class="text-slate-400 text-sm">결과 없음</p></div>`; return; }
             grid.innerHTML = filtered.map(sit => `
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-                    <span class="text-xs font-bold px-3 py-1 bg-amber-50 text-amber-600 rounded-lg mb-3 inline-block">${sit.category}</span>
-                    <h3 class="text-lg font-bold mb-2">${sit.title}</h3>
-                    <div class="space-y-2 mb-4">${sit.steps.map((st, i) => `<div class="flex gap-2 text-xs text-slate-600"><span class="w-5 h-5 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold shrink-0">${i+1}</span><span class="pt-0.5">${st}</span></div>`).join('')}</div>
-                    <button onclick="searchKeywordByName('${sit.relatedKeywords[0]}')" class="text-xs font-bold text-blue-600 hover:underline">관련 키워드 보기 →</button>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-bold px-3 py-1 bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-lg mb-3 inline-block">${sit.category}</span>
+                        <h3 class="text-lg font-bold mb-2">${sit.title}</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">${sit.summary}</p>
+                        <div class="space-y-2 mb-4">${sit.steps.map((st, i) => `<div class="flex gap-2 text-xs text-slate-600 dark:text-slate-300"><span class="w-5 h-5 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center font-bold shrink-0">${i+1}</span><span class="pt-0.5">${st}</span></div>`).join('')}</div>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 dark:border-slate-700">
+                        <button onclick="searchKeywordByName('${sit.relatedKeywords[0]}')" class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline">관련 키워드 보기 →</button>
+                    </div>
                 </div>
             `).join('');
         }
@@ -943,16 +946,16 @@
         function renderNavigator(container) {
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold mb-1">교직 내비게이터</h2><p class="text-sm text-slate-500">업무 흐름 안내</p></div>
+                    <div><h2 class="text-2xl font-bold mb-1">교직 내비게이터</h2><p class="text-sm text-slate-500 dark:text-slate-400">업무 흐름 안내</p></div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         ${NAVIGATOR_COURSES.map(course => `
-                            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
                                 <div>
-                                    <span class="text-xs font-bold px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg mb-3 inline-block">${course.category}</span>
+                                    <span class="text-xs font-bold px-3 py-1 bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-lg mb-3 inline-block">${course.category}</span>
                                     <h3 class="text-lg font-bold mb-4">${course.title}</h3>
-                                    <div class="space-y-3 pl-4 border-l-2 border-emerald-500/30 my-4">${course.steps.map((st, i) => `<div><span class="text-xs font-bold text-slate-400">STEP ${i+1}</span><p class="font-bold text-sm">${st}</p></div>`).join('')}</div>
+                                    <div class="space-y-3 pl-4 border-l-2 border-emerald-500/30 my-4">${course.steps.map((st, i) => `<div><span class="text-xs font-bold text-slate-400 dark:text-slate-500">STEP ${i+1}</span><p class="font-bold text-sm text-slate-800 dark:text-slate-200">${st}</p></div>`).join('')}</div>
                                 </div>
-                                <button onclick="router.navigate('search', '${course.targetKeyword}')" class="w-full py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold">키워드 탐색</button>
+                                <button onclick="router.navigate('search', '${course.targetKeyword}')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition">키워드 탐색</button>
                             </div>
                         `).join('')}
                     </div>
@@ -967,18 +970,18 @@
             const surround = DB.filter(d => rels.includes(d.keyword) || d.category === centerItem.category).slice(0, 8);
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold mb-1">교직 지식맵</h2><p class="text-sm text-slate-500">네트워크 기반 개념 탐색</p></div>
-                    <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200/80 shadow-sm text-center relative min-h-[460px] flex flex-col items-center justify-center">
+                    <div><h2 class="text-2xl font-bold mb-1">교직 지식맵</h2><p class="text-sm text-slate-500 dark:text-slate-400">네트워크 기반 개념 탐색</p></div>
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm text-center relative min-h-[460px] flex flex-col items-center justify-center">
                         <div class="absolute top-4 left-4 flex gap-2">
-                            <button onclick="mapCenterKeyword='장학사'; router.render();" class="px-3 py-1 bg-slate-100 text-xs rounded-xl font-bold">초기화</button>
-                            <button onclick="mapCenterKeyword=DB[Math.floor(Math.random()*DB.length)].keyword; router.render();" class="px-3 py-1 bg-blue-50 text-blue-600 text-xs rounded-xl font-bold">랜덤 중심</button>
+                            <button onclick="mapCenterKeyword='장학사'; router.render();" class="px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded-xl font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition">기본</button>
+                            <button onclick="mapCenterKeyword=DB[Math.floor(Math.random()*DB.length)].keyword; router.render();" class="px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs rounded-xl font-bold">랜덤 중심</button>
                         </div>
                         <div onclick="openDetail(${centerItem.id})" class="mb-12 p-6 rounded-3xl bg-blue-600 text-white shadow-xl cursor-pointer hover:scale-105 transition max-w-xs mx-auto z-10">
                             <span class="text-xs font-bold uppercase block mb-1 opacity-80">${centerItem.category}</span>
                             <h3 class="text-xl font-bold">${centerItem.keyword}</h3>
                         </div>
                         <div class="flex flex-wrap justify-center gap-3 z-10">
-                            ${surround.map(item => `<button onclick="mapCenterKeyword='${item.keyword}'; router.render();" class="px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-700 text-xs font-bold hover:text-blue-600">${item.keyword}</button>`).join('')}
+                            ${surround.map(item => `<button onclick="mapCenterKeyword='${item.keyword}'; router.render();" class="px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold hover:text-blue-600 dark:hover:text-blue-400 transition">${item.keyword}</button>`).join('')}
                         </div>
                     </div>
                 </div>
@@ -991,11 +994,11 @@
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div><h2 class="text-2xl font-bold mb-1">교사의 1년 타임라인</h2><p class="text-sm text-slate-500">월별 학사 및 행정 업무 체크</p></div>
+                        <div><h2 class="text-2xl font-bold mb-1">교사의 1년 타임라인</h2><p class="text-sm text-slate-500 dark:text-slate-400">월별 학사 및 행정 업무 체크</p></div>
                         <div class="flex gap-2">
-                            <button onclick="yearFilterRole='all'; router.render()" class="px-3 py-1.5 rounded-xl text-xs font-bold ${yearFilterRole==='all'?'bg-blue-600 text-white':'bg-slate-100'}">전체</button>
-                            <button onclick="yearFilterRole='homeroom'; router.render()" class="px-3 py-1.5 rounded-xl text-xs font-bold ${yearFilterRole==='homeroom'?'bg-blue-600 text-white':'bg-slate-100'}">담임</button>
-                            <button onclick="yearFilterRole='manager'; router.render()" class="px-3 py-1.5 rounded-xl text-xs font-bold ${yearFilterRole==='manager'?'bg-blue-600 text-white':'bg-slate-100'}">부장·담당</button>
+                            <button onclick="yearFilterRole='all'; router.render()" class="px-3 py-1.5 rounded-xl text-xs font-bold ${yearFilterRole==='all'?'bg-blue-600 text-white':'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">전체</button>
+                            <button onclick="yearFilterRole='homeroom'; router.render()" class="px-3 py-1.5 rounded-xl text-xs font-bold ${yearFilterRole==='homeroom'?'bg-blue-600 text-white':'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">담임</button>
+                            <button onclick="yearFilterRole='manager'; router.render()" class="px-3 py-1.5 rounded-xl text-xs font-bold ${yearFilterRole==='manager'?'bg-blue-600 text-white':'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">부장·담당</button>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1004,11 +1007,11 @@
                             const tasks = (YEAR_TASKS[m] || []).filter(t => yearFilterRole === 'all' || t.role === yearFilterRole || t.role === 'all');
                             const checkedState = Storage.get(`checklist_${m}`, {});
                             return `
-                                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border ${isCurrent ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-slate-200/80'} shadow-sm">
-                                    <div class="flex justify-between mb-4"><span class="text-xs font-bold px-3 py-1 rounded-full ${isCurrent?'bg-blue-600 text-white':'bg-slate-100'}">${m}월</span>${isCurrent?'<span class="text-xs font-bold text-blue-600">현재 달 ✨</span>':''}</div>
+                                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border ${isCurrent ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-slate-200/80 dark:border-slate-700'} shadow-sm">
+                                    <div class="flex justify-between mb-4"><span class="text-xs font-bold px-3 py-1 rounded-full ${isCurrent?'bg-blue-600 text-white':'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}">${m}월</span>${isCurrent?'<span class="text-xs font-bold text-blue-600 dark:text-blue-400">현재 달 ✨</span>':''}</div>
                                     <div class="space-y-2.5">
                                         ${tasks.map((task, idx) => `
-                                            <label class="flex items-start gap-2.5 text-xs cursor-pointer"><input type="checkbox" ${checkedState[idx] ? 'checked' : ''} onchange="toggleYearChecklist(${m}, ${idx})" class="w-4 h-4 rounded text-blue-600"><span class="${checkedState[idx] ? 'line-through text-slate-400' : ''}">${task.title}</span></label>
+                                            <label class="flex items-start gap-2.5 text-xs cursor-pointer"><input type="checkbox" ${checkedState[idx] ? 'checked' : ''} onchange="toggleYearChecklist(${m}, ${idx})" class="w-4 h-4 mt-0.5 rounded text-blue-600"><span class="${checkedState[idx] ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}">${task.title}</span></label>
                                         `).join('')}
                                     </div>
                                 </div>
@@ -1023,11 +1026,11 @@
         function renderCareer(container) {
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold mb-1">교직 커리어맵</h2><p class="text-sm text-slate-500">교사의 다양한 성장 경로</p></div>
+                    <div><h2 class="text-2xl font-bold mb-1">교직 커리어맵</h2><p class="text-sm text-slate-500 dark:text-slate-400">교사의 다양한 성장 경로</p></div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80"><span class="text-xs font-bold px-3 py-1 bg-blue-50 text-blue-600 rounded-lg mb-3 inline-block">수업 전문성</span><h3 class="text-lg font-bold mb-2">수업전문가/수석교사</h3><button onclick="router.navigate('search', '수석교사')" class="w-full py-2 bg-blue-50 text-blue-600 rounded-xl text-xs font-bold mt-4">관련 제도 확인 →</button></div>
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80"><span class="text-xs font-bold px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg mb-3 inline-block">교육행정</span><h3 class="text-lg font-bold mb-2">교육전문직(장학사)</h3><button onclick="router.navigate('search', '장학사')" class="w-full py-2 bg-indigo-50 text-indigo-600 rounded-xl text-xs font-bold mt-4">관련 제도 확인 →</button></div>
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80"><span class="text-xs font-bold px-3 py-1 bg-purple-50 text-purple-600 rounded-lg mb-3 inline-block">학교 경영</span><h3 class="text-lg font-bold mb-2">교감/교장</h3><button onclick="router.navigate('search', '교감')" class="w-full py-2 bg-purple-50 text-purple-600 rounded-xl text-xs font-bold mt-4">관련 제도 확인 →</button></div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700"><span class="text-xs font-bold px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg mb-3 inline-block">수업 전문성</span><h3 class="text-lg font-bold mb-2">수업전문가/수석교사</h3><button onclick="router.navigate('search', '수석교사')" class="w-full py-2 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-xl text-xs font-bold mt-4 transition hover:bg-blue-100 dark:hover:bg-blue-900/60">관련 제도 확인 →</button></div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700"><span class="text-xs font-bold px-3 py-1 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-lg mb-3 inline-block">교육행정</span><h3 class="text-lg font-bold mb-2">교육전문직(장학사)</h3><button onclick="router.navigate('search', '장학사')" class="w-full py-2 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-xl text-xs font-bold mt-4 transition hover:bg-indigo-100 dark:hover:bg-indigo-900/60">관련 제도 확인 →</button></div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700"><span class="text-xs font-bold px-3 py-1 bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 rounded-lg mb-3 inline-block">학교 경영</span><h3 class="text-lg font-bold mb-2">교감/교장</h3><button onclick="router.navigate('search', '교감')" class="w-full py-2 bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 rounded-xl text-xs font-bold mt-4 transition hover:bg-purple-100 dark:hover:bg-purple-900/60">관련 제도 확인 →</button></div>
                     </div>
                 </div>
             `;
@@ -1040,18 +1043,20 @@
                 container.innerHTML = `
                     <div class="space-y-6 max-w-2xl mx-auto text-center animate-fade-in">
                         <h2 class="text-2xl font-bold">교직력 테스트</h2>
-                        <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200/80">
-                            <div class="w-16 h-16 mx-auto rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center text-2xl mb-4"><i class="fa-solid fa-gamepad"></i></div>
+                        <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700">
+                            <div class="w-16 h-16 mx-auto rounded-2xl bg-rose-50 dark:bg-rose-900/40 text-rose-500 dark:text-rose-400 flex items-center justify-center text-2xl mb-4"><i class="fa-solid fa-gamepad"></i></div>
                             <h3 class="text-xl font-bold mb-6">문항 수를 선택하세요</h3>
                             <div class="flex justify-center gap-3">
-                                <button onclick="startQuiz(10)" class="px-6 py-3 bg-rose-600 text-white font-bold rounded-xl shadow">10문제</button>
-                                <button onclick="startQuiz(20)" class="px-6 py-3 bg-slate-100 dark:bg-slate-700 font-bold rounded-xl">20문제</button>
-                                <button onclick="startQuiz(50)" class="px-6 py-3 bg-slate-100 dark:bg-slate-700 font-bold rounded-xl">50문제</button>
+                                <button onclick="startQuiz(10)" class="px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow transition">10문제</button>
+                                <button onclick="startQuiz(20)" class="px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 font-bold rounded-xl transition">20문제</button>
+                                <button onclick="startQuiz(50)" class="px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 font-bold rounded-xl transition">50문제</button>
                             </div>
                         </div>
                     </div>
                 `;
-            } else renderQuizActive(container);
+            } else {
+                renderQuizActive(container);
+            }
         }
 
         function startQuiz(count) {
@@ -1064,18 +1069,20 @@
             if (quizState.index >= quizState.items.length) { renderQuizResult(container); return; }
             const q = quizState.items[quizState.index];
             
-            // 안전장치: 오답 풀 보장
             let wrongOptionsData = DB.filter(d => d.id !== q.id && d.category === q.category).sort(() => 0.5 - Math.random());
-            if (wrongOptionsData.length < 3) wrongOptionsData = [...wrongOptionsData, ...DB.filter(d => d.id !== q.id && d.category !== q.category).sort(() => 0.5 - Math.random())];
+            if (wrongOptionsData.length < 3) {
+                const add = DB.filter(d => d.id !== q.id && d.category !== q.category).sort(() => 0.5 - Math.random());
+                wrongOptionsData = [...wrongOptionsData, ...add];
+            }
             const options = [...wrongOptionsData.slice(0, 3).map(d => d.keyword), q.keyword].sort(() => 0.5 - Math.random());
 
             container.innerHTML = `
                 <div class="space-y-6 max-w-2xl mx-auto animate-fade-in">
                     <div class="flex justify-between text-xs font-bold text-slate-400"><span>Q ${quizState.index + 1}/${quizState.count}</span><span>${q.category}</span></div>
-                    <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200/80">
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700">
                         <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl mb-6"><p class="text-base font-bold">${q.description}</p></div>
                         <div class="space-y-3">
-                            ${options.map(opt => `<button onclick="answerQuiz('${opt}', '${q.keyword}')" class="w-full text-left p-4 rounded-xl bg-slate-50 dark:bg-slate-900 hover:bg-rose-50 border border-slate-200 dark:border-slate-700 font-medium text-sm transition">${opt}</button>`).join('')}
+                            ${options.map(opt => `<button onclick="answerQuiz('${opt}', '${q.keyword}')" class="w-full text-left p-4 rounded-xl bg-slate-50 dark:bg-slate-900 hover:bg-rose-50 dark:hover:bg-rose-900/40 border border-slate-200 dark:border-slate-700 font-medium text-sm transition">${opt}</button>`).join('')}
                         </div>
                     </div>
                 </div>
@@ -1109,14 +1116,14 @@
 
             container.innerHTML = `
                 <div class="space-y-6 max-w-2xl mx-auto text-center animate-fade-in">
-                    <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200/80">
-                        <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center text-2xl mb-4"><i class="fa-solid fa-trophy"></i></div>
-                        <span class="text-xs font-bold px-3 py-1 rounded-full bg-rose-100 text-rose-600 mb-2 inline-block">${level}</span>
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700">
+                        <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-50 dark:bg-amber-900/40 text-amber-500 dark:text-amber-400 flex items-center justify-center text-2xl mb-4"><i class="fa-solid fa-trophy"></i></div>
+                        <span class="text-xs font-bold px-3 py-1 rounded-full bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 mb-2 inline-block">${level}</span>
                         <h3 class="text-2xl font-extrabold mb-1">퀴즈 완료!</h3>
-                        <p class="text-sm text-slate-500 mb-6">총점: <strong class="text-rose-600 text-lg">${quizState.score}점</strong></p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">총점: <strong class="text-rose-600 dark:text-rose-500 text-lg">${quizState.score}점</strong></p>
                         <div class="flex justify-center gap-3">
-                            <button onclick="shareQuizResult()" class="px-6 py-3 bg-emerald-600 text-white font-bold rounded-xl shadow"><i class="fa-solid fa-share-nodes"></i> 결과 공유</button>
-                            <button onclick="router.render()" class="px-6 py-3 bg-slate-100 dark:bg-slate-700 font-bold rounded-xl">다시 도전</button>
+                            <button onclick="shareQuizResult()" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow transition"><i class="fa-solid fa-share-nodes"></i> 결과 공유</button>
+                            <button onclick="router.render()" class="px-6 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition">다시 도전</button>
                         </div>
                     </div>
                 </div>
@@ -1137,19 +1144,19 @@
 
             container.innerHTML = `
                 <div class="space-y-6 max-w-xl mx-auto animate-fade-in">
-                    <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200/80 shadow-lg space-y-6">
-                        <div class="flex justify-between"><span class="text-xs font-bold px-3 py-1 bg-amber-100 text-amber-700 rounded-lg">${item.category}</span></div>
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-lg space-y-6">
+                        <div class="flex justify-between"><span class="text-xs font-bold px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 rounded-lg">${item.category}</span></div>
                         <div>
                             <h3 class="text-2xl font-extrabold mb-2">${item.keyword}</h3>
                             <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">${item.description}</p>
                         </div>
                         <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl">
-                            <div class="flex justify-between text-xs text-slate-500 mb-1"><span>발견한 교직어 (${learnedCards.length})</span><span class="font-bold text-blue-600">${rate}%</span></div>
-                            <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full"><div class="bg-blue-600 h-full" style="width:${rate}%"></div></div>
+                            <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1"><span>발견한 교직어 (${learnedCards.length})</span><span class="font-bold text-blue-600 dark:text-blue-400">${rate}%</span></div>
+                            <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full"><div class="bg-blue-600 dark:bg-blue-500 h-full" style="width:${rate}%"></div></div>
                         </div>
                         <div class="flex gap-3">
-                            <button onclick="markCardLearned(${item.id})" class="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl">${isLearned ? '학습 완료' : '알고 있었어요 ✨'}</button>
-                            <button onclick="openDetail(${item.id})" class="px-5 py-3 bg-slate-100 dark:bg-slate-700 font-bold rounded-xl">상세보기</button>
+                            <button onclick="markCardLearned(${item.id})" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition">${isLearned ? '학습 완료' : '알고 있었어요 ✨'}</button>
+                            <button onclick="openDetail(${item.id})" class="px-5 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-600 transition">상세보기</button>
                         </div>
                     </div>
                 </div>
@@ -1167,25 +1174,28 @@
             const bookmarkedItems = DB.filter(d => bookmarks.includes(d.id));
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold mb-1">나의 교직함</h2><p class="text-sm text-slate-500">즐겨찾기 및 데이터 백업</p></div>
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 space-y-4">
+                    <div><h2 class="text-2xl font-bold mb-1">나의 교직함</h2><p class="text-sm text-slate-500 dark:text-slate-400">즐겨찾기 및 데이터 백업</p></div>
+                    
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 space-y-4">
                         <h3 class="text-base font-bold flex items-center gap-2"><i class="fa-solid fa-bookmark text-amber-500"></i> 즐겨찾기 (${bookmarkedItems.length}개)</h3>
-                        ${bookmarkedItems.length > 0 ? `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">${bookmarkedItems.map(item => `<div onclick="openDetail(${item.id})" class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 cursor-pointer flex justify-between"><div><span class="text-xs text-blue-600">${item.category}</span><h4 class="font-bold text-sm">${item.keyword}</h4></div><button onclick="event.stopPropagation(); toggleBookmark(${item.id}); router.render()" class="text-slate-400 hover:text-rose-500"><i class="fa-solid fa-trash"></i></button></div>`).join('')}</div>` : `<p class="text-xs text-slate-400 py-4 text-center">즐겨찾기가 없습니다.</p>`}
+                        ${bookmarkedItems.length > 0 ? `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">${bookmarkedItems.map(item => `<div onclick="openDetail(${item.id})" class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 hover:border-blue-500 dark:hover:border-blue-500 border border-slate-200 dark:border-slate-700 cursor-pointer flex justify-between transition"><div><span class="text-xs text-blue-600 dark:text-blue-400">${item.category}</span><h4 class="font-bold text-sm">${item.keyword}</h4></div><button onclick="event.stopPropagation(); toggleBookmark(${item.id}); router.render()" class="text-slate-400 hover:text-rose-500 transition"><i class="fa-solid fa-trash"></i></button></div>`).join('')}</div>` : `<p class="text-xs text-slate-400 py-4 text-center">즐겨찾기가 없습니다.</p>`}
                     </div>
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 flex justify-between items-center">
-                        <h3 class="text-base font-bold flex items-center gap-2"><i class="fa-solid fa-database text-blue-500"></i> 데이터 백업 / 복원</h3>
-                        <div class="flex gap-2"><button onclick="backupData()" class="px-4 py-2 bg-blue-600 text-white font-bold rounded-xl text-xs">백업 다운로드</button><label class="px-4 py-2 bg-slate-100 dark:bg-slate-700 font-bold rounded-xl text-xs cursor-pointer">불러오기<input type="file" accept=".json" onchange="restoreData(event)" class="hidden"></label></div>
+                    
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 space-y-4">
+                        <h3 class="text-base font-bold flex items-center gap-2"><i class="fa-solid fa-database text-blue-500 dark:text-blue-400"></i> 데이터 백업 및 복원</h3>
+                        <div class="flex gap-3"><button onclick="backupData()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition">내 데이터 백업</button><label class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-xs cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 transition">백업 파일 불러오기 <input type="file" accept=".json" onchange="restoreData(event)" class="hidden"></label></div>
                     </div>
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 flex justify-between items-center">
-                        <h4 class="font-bold text-sm">개인 기록 전체 초기화</h4>
-                        <button onclick="if(confirm('초기화하시겠습니까?')) { localStorage.clear(); window.location.reload(); }" class="px-4 py-2 bg-rose-50 dark:bg-rose-900/40 text-rose-600 font-bold rounded-xl text-xs">초기화</button>
+                    
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex justify-between items-center">
+                        <div><h4 class="font-bold text-sm">개인 기록 전체 초기화</h4></div>
+                        <button onclick="if(confirm('초기화하시겠습니까?')) { localStorage.clear(); window.location.reload(); }" class="px-4 py-2 bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 font-bold rounded-xl text-xs hover:bg-rose-100 dark:hover:bg-rose-900/60 transition">초기화</button>
                     </div>
                 </div>
             `;
         }
 
-        // --- 기타 공통 ---
-        function setThemeMode(mode) { Storage.set('theme_mode', mode); applyThemeMode(); showToast(`테마 설정 완료`, 'info'); }
+        // --- 테마 및 앱 로드 ---
+        function setThemeMode(mode) { Storage.set('theme_mode', mode); applyThemeMode(); showToast(`테마 변경 완료`, 'info'); }
         function toggleQuickDarkMode() { setThemeMode(document.documentElement.classList.contains('dark') ? 'light' : 'dark'); }
         function applyThemeMode() {
             const mode = Storage.get('theme_mode', 'light');
@@ -1193,9 +1203,6 @@
             else document.documentElement.classList.remove('dark');
         }
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if(Storage.get('theme_mode')==='system') applyThemeMode(); });
-
-        function openMobileMenu() { const m = document.getElementById('mobile-menu-modal'); if(m) m.classList.remove('hidden'); }
-        function closeMobileMenu() { const m = document.getElementById('mobile-menu-modal'); if(m) m.classList.add('hidden'); }
 
         function backupData() {
             const data = { bookmarks: Storage.get('bookmarks', []), recent_searches: Storage.get('recent_searches', []), learned_cards: Storage.get('learned_cards', []), quiz_history: Storage.get('quiz_history', []) };
@@ -1207,7 +1214,9 @@
             r.readAsText(f);
         }
 
-        // 안정적인 초기화 시작점
+        function openMobileMenu() { const m = document.getElementById('mobile-menu-modal'); if(m) m.classList.remove('hidden'); }
+        function closeMobileMenu() { const m = document.getElementById('mobile-menu-modal'); if(m) m.classList.add('hidden'); }
+
         if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', () => { applyThemeMode(); router.init(); }); }
         else { applyThemeMode(); router.init(); }
 
