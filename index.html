@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>교직백서 1000 : 초등교사를 위한 교직생활 OS</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -12,19 +11,12 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8'
-                        }
+                        brand: { 50: '#eff6ff', 100: '#dbeafe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
                     }
                 }
             }
         }
     </script>
-    <!-- Pretendard Font & FontAwesome -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -35,10 +27,8 @@
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200 pb-16 md:pb-0">
 
-    <!-- 토스트 컨테이너 -->
     <div id="toast-container" class="fixed bottom-20 md:bottom-6 right-4 z-50 flex flex-col space-y-2 pointer-events-none"></div>
 
-    <!-- 상단 앱바 -->
     <header class="sticky top-0 z-40 bg-white/85 dark:bg-slate-800/85 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
         <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="router.navigate('home')">
@@ -48,7 +38,7 @@
                 <div>
                     <h1 class="font-bold text-lg leading-tight flex items-center gap-2">
                         교직백서 1000 
-                        <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-medium">OS v3.5</span>
+                        <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-medium">OS v4.0</span>
                     </h1>
                     <p class="text-xs text-slate-500 dark:text-slate-400">초등교사를 위한 교직생활 통합 플랫폼</p>
                 </div>
@@ -70,48 +60,45 @@
         </div>
     </header>
 
-    <!-- 메인 컨테이너 -->
     <div class="flex-1 max-w-7xl w-full mx-auto flex flex-col md:flex-row pb-20 md:pb-6">
-        <!-- PC 좌측 사이드바 -->
         <aside class="hidden md:block w-64 p-4 shrink-0 border-r border-slate-200 dark:border-slate-700 space-y-1">
             <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mb-2 uppercase tracking-wider">메인 메뉴</div>
-            <a onclick="router.navigate('home')" id="nav-home" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+            <a onclick="router.navigate('home')" id="nav-home" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer">
                 <i class="fa-solid fa-house w-5 text-center"></i> 홈 대시보드
             </a>
-            <a onclick="router.navigate('search')" id="nav-search" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+            <a onclick="router.navigate('search')" id="nav-search" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer">
                 <i class="fa-solid fa-magnifying-glass w-5 text-center"></i> 교직어 검색
             </a>
-            <a onclick="router.navigate('situations')" id="nav-situations" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+            <a onclick="router.navigate('situations')" id="nav-situations" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer">
                 <i class="fa-solid fa-triangle-exclamation w-5 text-center"></i> 이럴 땐 어떻게?
             </a>
-            <a onclick="router.navigate('navigator')" id="nav-navigator" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+            <a onclick="router.navigate('navigator')" id="nav-navigator" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer">
                 <i class="fa-solid fa-compass w-5 text-center"></i> 교직 내비게이터
             </a>
-            <a onclick="router.navigate('map')" id="nav-map" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+            <a onclick="router.navigate('map')" id="nav-map" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer">
                 <i class="fa-solid fa-network-wired w-5 text-center"></i> 교직 지식맵
             </a>
 
             <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mt-6 mb-2 uppercase tracking-wider">성장 & 학습</div>
-            <a onclick="router.navigate('year')" id="nav-year" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+            <a onclick="router.navigate('year')" id="nav-year" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer">
                 <i class="fa-solid fa-calendar-days w-5 text-center"></i> 교사의 1년
             </a>
-            <a onclick="router.navigate('career')" id="nav-career" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+            <a onclick="router.navigate('career')" id="nav-career" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer">
                 <i class="fa-solid fa-route w-5 text-center"></i> 교직 커리어맵
             </a>
-            <a onclick="router.navigate('quiz')" id="nav-quiz" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+            <a onclick="router.navigate('quiz')" id="nav-quiz" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer">
                 <i class="fa-solid fa-gamepad w-5 text-center"></i> 교직력 테스트
             </a>
-            <a onclick="router.navigate('card')" id="nav-card" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+            <a onclick="router.navigate('card')" id="nav-card" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer">
                 <i class="fa-solid fa-id-card w-5 text-center"></i> 오늘의 교직카드
             </a>
 
             <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mt-6 mb-2 uppercase tracking-wider">개인 보관함</div>
-            <a onclick="router.navigate('mybox')" id="nav-mybox" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+            <a onclick="router.navigate('mybox')" id="nav-mybox" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer">
                 <i class="fa-solid fa-box-archive w-5 text-center"></i> 나의 교직함
             </a>
         </aside>
 
-        <!-- 모바일 하단 네비게이션 -->
         <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-700 px-2 py-2 flex justify-around items-center" style="padding-bottom: env(safe-area-inset-bottom);">
             <button onclick="router.navigate('home')" id="mob-home" class="mob-item flex flex-col items-center py-1 px-2 text-xs text-slate-500 dark:text-slate-400">
                 <i class="fa-solid fa-house text-lg mb-0.5"></i>홈
@@ -130,9 +117,10 @@
             </button>
         </nav>
 
-        <!-- 메인 콘텐츠 뷰포트 -->
         <main id="app-view" class="flex-1 p-4 md:p-8 max-w-full overflow-hidden">
-            <!-- 동적 렌더링 영역 -->
+            <div class="flex items-center justify-center h-full">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
         </main>
     </div>
 
@@ -151,42 +139,115 @@
                 <button onclick="closeMobileMenu()" class="p-2 text-slate-400" aria-label="메뉴 닫기"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="grid grid-cols-2 gap-3">
-                <button onclick="closeMobileMenu(); router.navigate('home')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
-                    <i class="fa-solid fa-house text-blue-500"></i> 홈 대시보드
-                </button>
-                <button onclick="closeMobileMenu(); router.navigate('search')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
-                    <i class="fa-solid fa-magnifying-glass text-blue-500"></i> 교직어 검색
-                </button>
-                <button onclick="closeMobileMenu(); router.navigate('situations')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
-                    <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> 이럴 땐 어떻게?
-                </button>
-                <button onclick="closeMobileMenu(); router.navigate('navigator')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
-                    <i class="fa-solid fa-compass text-emerald-500"></i> 교직 내비게이터
-                </button>
-                <button onclick="closeMobileMenu(); router.navigate('map')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
-                    <i class="fa-solid fa-network-wired text-indigo-500"></i> 교직 지식맵
-                </button>
-                <button onclick="closeMobileMenu(); router.navigate('year')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
-                    <i class="fa-solid fa-calendar-days text-purple-500"></i> 교사의 1년
-                </button>
-                <button onclick="closeMobileMenu(); router.navigate('career')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
-                    <i class="fa-solid fa-route text-rose-500"></i> 커리어맵
-                </button>
-                <button onclick="closeMobileMenu(); router.navigate('quiz')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
-                    <i class="fa-solid fa-gamepad text-orange-500"></i> 교직력 테스트
-                </button>
-                <button onclick="closeMobileMenu(); router.navigate('card')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
-                    <i class="fa-solid fa-id-card text-teal-500"></i> 오늘의 카드
-                </button>
-                <button onclick="closeMobileMenu(); router.navigate('mybox')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
-                    <i class="fa-solid fa-box-archive text-blue-500"></i> 나의 교직함
-                </button>
+                <button onclick="closeMobileMenu(); router.navigate('home')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3"><i class="fa-solid fa-house text-blue-500"></i> 홈 대시보드</button>
+                <button onclick="closeMobileMenu(); router.navigate('search')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3"><i class="fa-solid fa-magnifying-glass text-blue-500"></i> 교직어 검색</button>
+                <button onclick="closeMobileMenu(); router.navigate('situations')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3"><i class="fa-solid fa-triangle-exclamation text-amber-500"></i> 이럴 땐 어떻게?</button>
+                <button onclick="closeMobileMenu(); router.navigate('navigator')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3"><i class="fa-solid fa-compass text-emerald-500"></i> 교직 내비게이터</button>
+                <button onclick="closeMobileMenu(); router.navigate('map')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3"><i class="fa-solid fa-network-wired text-indigo-500"></i> 교직 지식맵</button>
+                <button onclick="closeMobileMenu(); router.navigate('year')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3"><i class="fa-solid fa-calendar-days text-purple-500"></i> 교사의 1년</button>
+                <button onclick="closeMobileMenu(); router.navigate('career')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3"><i class="fa-solid fa-route text-rose-500"></i> 커리어맵</button>
+                <button onclick="closeMobileMenu(); router.navigate('quiz')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3"><i class="fa-solid fa-gamepad text-orange-500"></i> 교직력 테스트</button>
+                <button onclick="closeMobileMenu(); router.navigate('card')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3"><i class="fa-solid fa-id-card text-teal-500"></i> 오늘의 카드</button>
+                <button onclick="closeMobileMenu(); router.navigate('mybox')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3"><i class="fa-solid fa-box-archive text-blue-500"></i> 나의 교직함</button>
             </div>
         </div>
     </div>
 
-    <!-- 애플리케이션 스크립트 -->
+    <!-- 자바스크립트 전체 로직 -->
     <script>
+        // --- 1. 유틸리티 함수 및 초기 설정 ---
+        const CHO_LIST = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+        function getChosung(str) {
+            let result = "";
+            for (let i = 0; i < str.length; i++) {
+                const code = str.charCodeAt(i) - 44032;
+                if (code > -1 && code < 11172) {
+                    result += CHO_LIST[Math.floor(code / 588)];
+                } else {
+                    result += str.charAt(i);
+                }
+            }
+            return result;
+        }
+
+        function escapeHTML(str) {
+            return String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+        }
+
+        function highlightText(text, query) {
+            if (!query || !text) return escapeHTML(text);
+            const safeText = escapeHTML(text);
+            const safeQuery = escapeHTML(query);
+            try {
+                const regex = new RegExp(`(${safeQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                return safeText.replace(regex, '<span class="bg-amber-200 dark:bg-amber-800 text-slate-900 dark:text-white px-0.5 rounded">$1</span>');
+            } catch (e) {
+                return safeText;
+            }
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        function hashCode(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
+            }
+            return hash;
+        }
+
+        // --- 2. 토스트 및 스토리지 관리 ---
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            const bgColors = {
+                success: 'bg-slate-900 dark:bg-white text-white dark:text-slate-900',
+                error: 'bg-rose-600 text-white',
+                info: 'bg-blue-600 text-white'
+            };
+
+            toast.className = `${bgColors[type] || bgColors.success} px-4 py-3 rounded-2xl shadow-xl text-xs font-bold pointer-events-auto transform translate-y-2 opacity-0 transition-all duration-300 flex items-center gap-2`;
+            toast.innerHTML = `<i class="fa-solid fa-${type==='error'?'circle-exclamation':'circle-check'}"></i> ${message}`;
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 10);
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        const Storage = {
+            get(key, defaultValue) {
+                try {
+                    const v3Item = localStorage.getItem('eb_1000_v3_' + key);
+                    if (v3Item) return JSON.parse(v3Item);
+                    const v2Item = localStorage.getItem('eb_1000_v2_' + key);
+                    if (v2Item) {
+                        const parsed = JSON.parse(v2Item);
+                        localStorage.setItem('eb_1000_v3_' + key, JSON.stringify(parsed));
+                        return parsed;
+                    }
+                    return defaultValue;
+                } catch (e) { return defaultValue; }
+            },
+            set(key, value) {
+                try {
+                    localStorage.setItem('eb_1000_v3_' + key, JSON.stringify(value));
+                } catch (e) {}
+            }
+        };
+
+        // --- 3. 데이터베이스(DB) 정의 ---
         const CATEGORIES = [
             "인사·발령", "승진·전직", "복무·휴가", "급여·수당·연금", "학교조직·행정", 
             "학교회계·예산", "교육과정", "수업", "평가", "학적·출결", 
@@ -423,117 +484,7 @@
             ]
         };
 
-        function runSelfTest() {
-            let passDB = DB.length === 1000;
-            const ids = new Set(DB.map(d => d.id));
-            const keywords = new Set(DB.map(d => d.keyword));
-            let passIds = ids.size === 1000;
-            let passKeywords = keywords.size === 1000;
-            let fakeKeywords = DB.filter(d => d.keyword.match(/\(\d+\)/)).length === 0;
-            let descValid = DB.filter(d => !d.description).length === 0;
-            let relatedValid = true;
-            DB.forEach(d => {
-                if (d.related) {
-                    d.related.forEach(rel => {
-                        if (!DB.some(x => x.keyword === rel)) relatedValid = false;
-                    });
-                }
-            });
-
-            console.group("[교직백서 1000 Self Test]");
-            console.log("DB:", passDB ? "PASS" : "FAIL");
-            console.log("Unique IDs:", passIds ? "PASS" : "FAIL");
-            console.log("Unique Keywords:", passKeywords ? "PASS" : "FAIL");
-            console.log("Fake Keywords:", fakeKeywords ? "PASS" : "FAIL");
-            console.log("Descriptions:", descValid ? "PASS" : "FAIL");
-            console.log("Related Links:", relatedValid ? "PASS" : "FAIL");
-            console.log("Situations:", SITUATIONS.length >= 50 ? "PASS" : "FAIL");
-            console.log("Navigator:", NAVIGATOR_COURSES.length >= 20 ? "PASS" : "FAIL");
-            console.log("Year Tasks:", YEAR_TASKS[3] ? "PASS" : "FAIL");
-            console.log("Storage:", typeof localStorage !== 'undefined' ? "PASS" : "FAIL");
-            console.groupEnd();
-        }
-
-        runSelfTest();
-
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toast-container');
-            if (!container) return;
-
-            const toast = document.createElement('div');
-            const bgColors = {
-                success: 'bg-slate-900 dark:bg-white text-white dark:text-slate-900',
-                error: 'bg-rose-600 text-white',
-                info: 'bg-blue-600 text-white'
-            };
-
-            toast.className = `${bgColors[type] || bgColors.success} px-4 py-3 rounded-2xl shadow-xl text-xs font-bold pointer-events-auto transform translate-y-2 opacity-0 transition-all duration-300 flex items-center gap-2`;
-            toast.innerHTML = `<i class="fa-solid fa-${type==='error'?'circle-exclamation':'circle-check'}"></i> ${message}`;
-            container.appendChild(toast);
-
-            setTimeout(() => {
-                toast.classList.remove('translate-y-2', 'opacity-0');
-            }, 10);
-
-            setTimeout(() => {
-                toast.classList.add('translate-y-2', 'opacity-0');
-                setTimeout(() => toast.remove(), 300);
-            }, 2500);
-        }
-
-        const Storage = {
-            get(key, defaultValue) {
-                try {
-                    const v3Item = localStorage.getItem('eb_1000_v3_' + key);
-                    if (v3Item) return JSON.parse(v3Item);
-                    const v2Item = localStorage.getItem('eb_1000_v2_' + key);
-                    if (v2Item) {
-                        const parsed = JSON.parse(v2Item);
-                        localStorage.setItem('eb_1000_v3_' + key, JSON.stringify(parsed));
-                        return parsed;
-                    }
-                    return defaultValue;
-                } catch (e) { return defaultValue; }
-            },
-            set(key, value) {
-                try {
-                    localStorage.setItem('eb_1000_v3_' + key, JSON.stringify(value));
-                } catch (e) {}
-            }
-        };
-
-        const CHO_LIST = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
-        function getChosung(str) {
-            let result = "";
-            for (let i = 0; i < str.length; i++) {
-                const code = str.charCodeAt(i) - 44032;
-                if (code > -1 && code < 11172) {
-                    result += CHO_LIST[Math.floor(code / 588)];
-                } else {
-                    result += str.charAt(i);
-                }
-            }
-            return result;
-        }
-
-        function escapeHTML(str) {
-            return String(str).replace(/[&<>'"]/g, 
-                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-            );
-        }
-
-        function highlightText(text, query) {
-            if (!query || !text) return escapeHTML(text);
-            const safeText = escapeHTML(text);
-            const safeQuery = escapeHTML(query);
-            try {
-                const regex = new RegExp(`(${safeQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-                return safeText.replace(regex, '<span class="bg-amber-200 dark:bg-amber-800 text-slate-900 dark:text-white px-0.5 rounded">$1</span>');
-            } catch (e) {
-                return safeText;
-            }
-        }
-
+        // --- 라우터 초기화 및 앱 실행 ---
         const router = {
             current: 'home',
             param: null,
@@ -541,7 +492,7 @@
                 this.current = view;
                 this.param = param;
                 window.location.hash = param ? `#view=${view}&param=${encodeURIComponent(param)}` : `#view=${view}`;
-                renderApp();
+                this.render();
                 window.scrollTo(0, 0);
             },
             init() {
@@ -551,8 +502,8 @@
                     const item = DB.find(d => d.keyword === kw);
                     if (item) {
                         this.current = 'search';
-                        renderApp();
-                        openDetail(item.id, false);
+                        this.render();
+                        setTimeout(() => openDetail(item.id, false), 50);
                         return;
                     }
                 }
@@ -561,7 +512,56 @@
                     this.current = params.get('view') || 'home';
                     this.param = params.get('param') ? decodeURIComponent(params.get('param')) : null;
                 }
-                renderApp();
+                this.render();
+            },
+            render() {
+                try {
+                    document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('bg-blue-50', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400'));
+                    document.querySelectorAll('.mob-item').forEach(el => el.classList.remove('text-blue-600', 'dark:text-blue-400', 'font-bold'));
+                    
+                    const activeSidebar = document.getElementById(`nav-${this.current}`);
+                    if (activeSidebar) activeSidebar.classList.add('bg-blue-50', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400');
+                    
+                    const activeMob = document.getElementById(`mob-${this.current}`);
+                    if (activeMob) activeMob.classList.add('text-blue-600', 'dark:text-blue-400', 'font-bold');
+
+                    const bookmarks = Storage.get('bookmarks', []);
+                    const badge = document.getElementById('bookmark-badge');
+                    if (badge) {
+                        if (bookmarks.length > 0) badge.classList.remove('hidden');
+                        else badge.classList.add('hidden');
+                    }
+
+                    const viewContainer = document.getElementById('app-view');
+                    if (!viewContainer) return;
+
+                    switch(this.current) {
+                        case 'home': renderHome(viewContainer); break;
+                        case 'search': renderSearch(viewContainer, this.param); break;
+                        case 'situations': renderSituations(viewContainer); break;
+                        case 'navigator': renderNavigator(viewContainer); break;
+                        case 'map': renderMap(viewContainer); break;
+                        case 'year': renderYear(viewContainer); break;
+                        case 'career': renderCareer(viewContainer); break;
+                        case 'quiz': renderQuiz(viewContainer); break;
+                        case 'card': renderCard(viewContainer); break;
+                        case 'mybox': renderMyBox(viewContainer); break;
+                        default: renderHome(viewContainer); break;
+                    }
+                } catch (error) {
+                    console.error("Rendering Error:", error);
+                    const viewContainer = document.getElementById('app-view');
+                    if (viewContainer) {
+                        viewContainer.innerHTML = `
+                            <div class="flex flex-col items-center justify-center h-full py-20 text-center">
+                                <div class="w-16 h-16 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center text-2xl mb-4"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                                <h2 class="text-lg font-bold text-slate-800 mb-2">화면을 불러오는 중 오류가 발생했습니다.</h2>
+                                <p class="text-sm text-slate-500 mb-6">데이터를 읽는 과정에서 일시적인 문제가 발생했습니다.</p>
+                                <button onclick="window.location.href='index.html'" class="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm">홈으로 돌아가기</button>
+                            </div>
+                        `;
+                    }
+                }
             }
         };
 
@@ -570,52 +570,19 @@
             if (hash.includes('keyword=')) {
                 const kw = decodeURIComponent(hash.split('keyword=')[1]);
                 const item = DB.find(d => d.keyword === kw);
-                if (item) {
-                    openDetail(item.id, false);
-                }
+                if (item) openDetail(item.id, false);
             } else {
                 const modal = document.getElementById('detail-modal');
                 if (modal && !modal.classList.contains('hidden')) {
                     closeModal(false);
                 }
-                if (hash.includes('view=')) {
+                if (hash.includes('view=') || hash === '') {
                     router.init();
                 }
             }
         });
 
-        function renderApp() {
-            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('bg-blue-50', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400'));
-            document.querySelectorAll('.mob-item').forEach(el => el.classList.remove('text-blue-600', 'dark:text-blue-400', 'font-bold'));
-            
-            const activeSidebar = document.getElementById(`nav-${router.current}`);
-            if (activeSidebar) activeSidebar.classList.add('bg-blue-50', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400');
-            
-            const activeMob = document.getElementById(`mob-${router.current}`);
-            if (activeMob) activeMob.classList.add('text-blue-600', 'dark:text-blue-400', 'font-bold');
-
-            const bookmarks = Storage.get('bookmarks', []);
-            const badge = document.getElementById('bookmark-badge');
-            if (bookmarks.length > 0) badge.classList.remove('hidden');
-            else badge.classList.add('hidden');
-
-            const viewContainer = document.getElementById('app-view');
-            
-            switch(router.current) {
-                case 'home': renderHome(viewContainer); break;
-                case 'search': renderSearch(viewContainer, router.param); break;
-                case 'situations': renderSituations(viewContainer); break;
-                case 'navigator': renderNavigator(viewContainer); break;
-                case 'map': renderMap(viewContainer); break;
-                case 'year': renderYear(viewContainer); break;
-                case 'career': renderCareer(viewContainer); break;
-                case 'quiz': renderQuiz(viewContainer); break;
-                case 'card': renderCard(viewContainer); break;
-                case 'mybox': renderMyBox(viewContainer); break;
-                default: renderHome(viewContainer); break;
-            }
-        }
-
+        // --- 뷰 렌더링 함수들 ---
         function renderHome(container) {
             const d = new Date();
             const year = d.getFullYear();
@@ -624,7 +591,7 @@
             const todayStr = `${year}년 ${month}월 ${date}일`;
             
             const cardIndex = Math.abs(hashCode(todayStr)) % DB.length;
-            const todaysCard = DB[cardIndex];
+            const todaysCard = DB[cardIndex] || DB[0];
 
             const recentSearches = Storage.get('recent_searches', []).slice(0, 5);
             const bookmarks = Storage.get('bookmarks', []);
@@ -640,7 +607,7 @@
             const categoryCount = new Set(DB.map(x => x.category)).size;
 
             container.innerHTML = `
-                <div class="space-y-6">
+                <div class="space-y-6 animate-fade-in">
                     <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-6 md:p-10 text-white shadow-xl relative overflow-hidden">
                         <div class="absolute right-0 top-0 translate-x-8 -translate-y-8 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
                         <div class="relative z-10 max-w-2xl">
@@ -774,7 +741,6 @@
                     if (e.key === 'Enter') router.navigate('search', searchInput.value.trim());
                 });
             }
-
             renderHomeChecklistPreview(month);
         }
 
@@ -805,15 +771,6 @@
             state[idx] = !state[idx];
             Storage.set(key, state);
             renderHomeChecklistPreview(month);
-        }
-
-        function hashCode(str) {
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) {
-                hash = ((hash << 5) - hash) + str.charCodeAt(i);
-                hash |= 0;
-            }
-            return hash;
         }
 
         let searchDisplayLimit = 60;
@@ -982,7 +939,6 @@
             let scoredResults = DB.map(item => {
                 const matchCat = currentCategoryFilter === '전체' || item.category === currentCategoryFilter;
                 if (!matchCat) return { item, score: -1 };
-
                 if (!query) return { item, score: 0 };
 
                 let score = 0;
@@ -1491,7 +1447,13 @@
             }
 
             const q = quizState.items[quizState.index];
-            const wrongOptions = DB.filter(d => d.id !== q.id && d.category === q.category).sort(() => 0.5 - Math.random()).slice(0, 3).map(d => d.keyword);
+            // [오류 수정 반영] 카테고리 내에서 오답 보기가 3개 미만일 경우 전체 DB에서 보완 추출하는 안전망 추가
+            let wrongOptionsData = DB.filter(d => d.id !== q.id && d.category === q.category).sort(() => 0.5 - Math.random());
+            if (wrongOptionsData.length < 3) {
+                const additional = DB.filter(d => d.id !== q.id && d.category !== q.category).sort(() => 0.5 - Math.random());
+                wrongOptionsData = [...wrongOptionsData, ...additional];
+            }
+            const wrongOptions = wrongOptionsData.slice(0, 3).map(d => d.keyword);
             const options = [...wrongOptions, q.keyword].sort(() => 0.5 - Math.random());
 
             container.innerHTML = `
@@ -1763,15 +1725,7 @@
             if (m) m.classList.add('hidden');
         }
 
-        function debounce(func, wait) {
-            let timeout;
-            return function(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
-            };
-        }
-
-        // [오류 수정 반영] DOM 로딩 상태를 체크하여 이미 로드된 경우 즉시 안전하게 앱을 초기화하도록 개선
+        // 초기화 안전장치
         if (document.readyState === 'loading') {
             window.addEventListener('DOMContentLoaded', () => {
                 applyThemeMode();
