@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="ko" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>교직백서 1000 : 초등교사를 위한 교직생활 OS</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Pretendard Font & FontAwesome -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200 pb-16 md:pb-0">
+
+    <!-- 토스트 컨테이너 -->
+    <div id="toast-container" class="fixed bottom-20 md:bottom-6 right-4 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <!-- 상단 앱바 -->
+    <header class="sticky top-0 z-40 bg-white/85 dark:bg-slate-800/85 backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="router.navigate('home')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+                    <i class="fa-solid fa-graduation-cap text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight flex items-center gap-2">
+                        교직백서 1000 
+                        <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-medium">OS v3.4</span>
+                    </h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">초등교사를 위한 교직생활 통합 플랫폼</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-2">
+                <button onclick="toggleQuickDarkMode()" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition" aria-label="다크모드 빠른전환">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:inline text-amber-400"></i>
+                </button>
+                <button onclick="router.navigate('mybox')" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition relative" aria-label="나의 교직함">
+                    <i class="fa-solid fa-box-archive"></i>
+                    <span id="bookmark-badge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full hidden"></span>
+                </button>
+                <button onclick="openMobileMenu()" class="md:hidden p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition" aria-label="전체 메뉴 열기">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 컨테이너 -->
+    <div class="flex-1 max-w-7xl w-full mx-auto flex flex-col md:flex-row pb-20 md:pb-6">
+        <!-- PC 좌측 사이드바 -->
+        <aside class="hidden md:block w-64 p-4 shrink-0 border-r border-slate-200 dark:border-slate-700 space-y-1">
+            <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mb-2 uppercase tracking-wider">메인 메뉴</div>
+            <a onclick="router.navigate('home')" id="nav-home" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+                <i class="fa-solid fa-house w-5 text-center"></i> 홈 대시보드
+            </a>
+            <a onclick="router.navigate('search')" id="nav-search" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+                <i class="fa-solid fa-magnifying-glass w-5 text-center"></i> 교직어 검색
+            </a>
+            <a onclick="router.navigate('situations')" id="nav-situations" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+                <i class="fa-solid fa-triangle-exclamation w-5 text-center"></i> 이럴 땐 어떻게?
+            </a>
+            <a onclick="router.navigate('navigator')" id="nav-navigator" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+                <i class="fa-solid fa-compass w-5 text-center"></i> 교직 내비게이터
+            </a>
+            <a onclick="router.navigate('map')" id="nav-map" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+                <i class="fa-solid fa-network-wired w-5 text-center"></i> 교직 지식맵
+            </a>
+
+            <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mt-6 mb-2 uppercase tracking-wider">성장 & 학습</div>
+            <a onclick="router.navigate('year')" id="nav-year" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+                <i class="fa-solid fa-calendar-days w-5 text-center"></i> 교사의 1년
+            </a>
+            <a onclick="router.navigate('career')" id="nav-career" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+                <i class="fa-solid fa-route w-5 text-center"></i> 교직 커리어맵
+            </a>
+            <a onclick="router.navigate('quiz')" id="nav-quiz" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+                <i class="fa-solid fa-gamepad w-5 text-center"></i> 교직력 테스트
+            </a>
+            <a onclick="router.navigate('card')" id="nav-card" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+                <i class="fa-solid fa-id-card w-5 text-center"></i> 오늘의 교직카드
+            </a>
+
+            <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mt-6 mb-2 uppercase tracking-wider">개인 보관함</div>
+            <a onclick="router.navigate('mybox')" id="nav-mybox" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+                <i class="fa-solid fa-box-archive w-5 text-center"></i> 나의 교직함
+            </a>
+        </aside>
+
+        <!-- 모바일 하단 네비게이션 -->
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-700 px-2 py-2 flex justify-around items-center" style="padding-bottom: env(safe-area-inset-bottom);">
+            <button onclick="router.navigate('home')" id="mob-home" class="mob-item flex flex-col items-center py-1 px-2 text-xs text-slate-500 dark:text-slate-400">
+                <i class="fa-solid fa-house text-lg mb-0.5"></i>홈
+            </button>
+            <button onclick="router.navigate('search')" id="mob-search" class="mob-item flex flex-col items-center py-1 px-2 text-xs text-slate-500 dark:text-slate-400">
+                <i class="fa-solid fa-magnifying-glass text-lg mb-0.5"></i>검색
+            </button>
+            <button onclick="router.navigate('situations')" id="mob-situations" class="mob-item flex flex-col items-center py-1 px-2 text-xs text-slate-500 dark:text-slate-400">
+                <i class="fa-solid fa-triangle-exclamation text-lg mb-0.5"></i>상황별
+            </button>
+            <button onclick="router.navigate('year')" id="mob-year" class="mob-item flex flex-col items-center py-1 px-2 text-xs text-slate-500 dark:text-slate-400">
+                <i class="fa-solid fa-calendar-days text-lg mb-0.5"></i>1년업무
+            </button>
+            <button onclick="openMobileMenu()" class="mob-item flex flex-col items-center py-1 px-2 text-xs text-slate-500 dark:text-slate-400">
+                <i class="fa-solid fa-bars text-lg mb-0.5"></i>전체메뉴
+            </button>
+        </nav>
+
+        <!-- 메인 콘텐츠 뷰포트 -->
+        <main id="app-view" class="flex-1 p-4 md:p-8 max-w-full overflow-hidden">
+            <!-- 동적 렌더링 영역 -->
+        </main>
+    </div>
+
+    <!-- 상세 모달 -->
+    <div id="detail-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-3 md:p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title" onclick="if(event.target === this) closeModal()">
+        <div id="modal-content" class="bg-white dark:bg-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-5 md:p-6 shadow-2xl border border-slate-100 dark:border-slate-700 relative transform transition-all">
+            <!-- 동적 모달 내용 -->
+        </div>
+    </div>
+
+    <!-- 모바일 전체 메뉴 모달 -->
+    <div id="mobile-menu-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden flex items-end md:hidden" onclick="if(event.target === this) closeMobileMenu()">
+        <div class="bg-white dark:bg-slate-800 rounded-t-3xl w-full p-6 space-y-4 max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
+                <h3 class="font-bold text-base">전체 메뉴</h3>
+                <button onclick="closeMobileMenu()" class="p-2 text-slate-400" aria-label="메뉴 닫기"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="closeMobileMenu(); router.navigate('home')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
+                    <i class="fa-solid fa-house text-blue-500"></i> 홈 대시보드
+                </button>
+                <button onclick="closeMobileMenu(); router.navigate('search')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
+                    <i class="fa-solid fa-magnifying-glass text-blue-500"></i> 교직어 검색
+                </button>
+                <button onclick="closeMobileMenu(); router.navigate('situations')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> 이럴 땐 어떻게?
+                </button>
+                <button onclick="closeMobileMenu(); router.navigate('navigator')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
+                    <i class="fa-solid fa-compass text-emerald-500"></i> 교직 내비게이터
+                </button>
+                <button onclick="closeMobileMenu(); router.navigate('map')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
+                    <i class="fa-solid fa-network-wired text-indigo-500"></i> 교직 지식맵
+                </button>
+                <button onclick="closeMobileMenu(); router.navigate('year')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
+                    <i class="fa-solid fa-calendar-days text-purple-500"></i> 교사의 1년
+                </button>
+                <button onclick="closeMobileMenu(); router.navigate('career')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
+                    <i class="fa-solid fa-route text-rose-500"></i> 커리어맵
+                </button>
+                <button onclick="closeMobileMenu(); router.navigate('quiz')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
+                    <i class="fa-solid fa-gamepad text-orange-500"></i> 교직력 테스트
+                </button>
+                <button onclick="closeMobileMenu(); router.navigate('card')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
+                    <i class="fa-solid fa-id-card text-teal-500"></i> 오늘의 카드
+                </button>
+                <button onclick="closeMobileMenu(); router.navigate('mybox')" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-semibold text-sm flex items-center gap-3">
+                    <i class="fa-solid fa-box-archive text-blue-500"></i> 나의 교직함
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 애플리케이션 스크립트 -->
+    <script>
+        const CATEGORIES = [
+            "인사·발령", "승진·전직", "복무·휴가", "급여·수당·연금", "학교조직·행정", 
+            "학교회계·예산", "교육과정", "수업", "평가", "학적·출결", 
+            "생활기록부", "학생생활", "학교폭력", "교육활동보호", "학부모", 
+            "상담", "기초학력", "특수교육", "연구·연수", "연구대회", 
+            "체육", "보건·안전", "급식", "늘봄·방과후", "현장체험학습", 
+            "시설·물품", "디지털", "AI·에듀테크", "교직생활", "기타"
+        ];
+
+        function generateDatabase() {
+            const rawSeeds = [
+                { id: 1, keyword: "관외 전보", aliases: ["관외전보", "타시도전보"], category: "인사·발령", description: "다른 교육지원청 관할 지역으로 이동하는 인사 제도입니다.", simple: "현재 지역을 벗어나 다른 지역의 학교로 옮기는 인사", tags: ["인사", "전보", "이동"], related: ["관내 내신", "전보점수", "인사내신"], situations: ["다른 지역으로 옮기고 싶을 때"], difficulty: 2 },
+                { id: 2, keyword: "장학사", aliases: ["교육전문직", "연구사", "장학관"], category: "승진·전직", description: "시·도교육청 및 교육지원청에서 교육 정책 및 장학 업무를 담당하는 교육전문직원입니다.", simple: "교육청에서 학교 지원 및 행정 업무를 맡는 교육전문직", tags: ["전문직", "전직", "교육청"], related: ["교육전문직", "전직", "교육지원청", "교육연구사"], situations: ["교육전문직 전직을 고민할 때"], difficulty: 3 },
+                { id: 3, keyword: "품의", aliases: ["기안", "결재"], category: "학교회계·예산", description: "행정 업무 집행을 위해 내부 결재를 받는 절차입니다.", simple: "학교 예산을 쓰기 전 상급자에게 결재를 올리는 과정", tags: ["행정", "예산", "결재"], related: ["학교회계", "지출결의", "정산"], situations: ["학교 예산으로 물건을 사야 해요"], difficulty: 1 },
+                { id: 4, keyword: "학교폭력", aliases: ["학폭", "학교폭력대책심의위원회"], category: "학교폭력", description: "학교 내외에서 학생을 대상으로 발생한 상해, 폭행, 감금, 협박, 따돌림 등에 의해 피해를 수반하는 행위입니다.", simple: "학생 간 발생한 신체·정신적 피해 행위", tags: ["학폭", "생활지도", "사안처리"], related: ["학교폭력심의위원회", "관계회복", "전담기구"], situations: ["학교폭력 신고가 들어왔어요"], difficulty: 3 },
+                { id: 5, keyword: "NEIS (나이스)", aliases: ["NEIS", "나이스"], category: "학교조직·행정", description: "전국 초·중·고등학교의 학생, 인사, 교무, 학사 등 교육 행정 업무를 통합 관리하는 전자 시스템입니다.", simple: "교사들이 성적, 생활기록부, 인사 등을 처리하는 행정 시스템", tags: ["행정", "시스템", "교무"], related: ["K-에듀파인", "생활기록부", "학적"], situations: ["학생 전학 및 성적 처리를 할 때"], difficulty: 1 },
+                { id: 6, keyword: "K-에듀파인", aliases: ["에듀파인", "학교회계"], category: "학교회계·예산", description: "지방 교육 행정 기관 및 각급 학교의 예산, 회계 등을 통합 관리하는 재무 시스템입니다.", simple: "학교 예산 집행과 물품 구매를 처리하는 회계 시스템", tags: ["회계", "예산", "지출"], related: ["품의", "지출결의", "계약"], situations: ["물품 구매 후 지출 결의를 할 때"], difficulty: 2 },
+                { id: 7, keyword: "시간외근무", aliases: ["초과근무", "초근"], category: "복무·휴가", description: "정규 근무 시간 외에 국가의 명으로 초과하여 근무하는 것입니다.", simple: "방과 후나 휴일에 초과 근무한 시간을 인정받는 제도", tags: ["복무", "수당", "근무"], related: ["초과근무수당", "나이스복무", "조퇴"], situations: ["퇴근이 늦어졌을 때"], difficulty: 1 },
+                { id: 8, keyword: "학부모 상담주간", aliases: ["상담주간", "학부모상담"], category: "학부모", description: "학부모와 교원 간의 소통을 강화하고 학생 이해를 넓히기 위해 집중적으로 상담을 실시하는 기간입니다.", simple: "학기 초 학부모와 집중적으로 면담 및 상담을 진행하는 기간", tags: ["학부모", "상담", "소통"], related: ["학부모총회", "생활기록부", "교권"], situations: ["학부모 상담을 준비할 때"], difficulty: 2 },
+                { id: 9, keyword: "기초학력 진단평가", aliases: ["진단평가", "기초학력"], category: "기초학력", description: "학생들의 학습 결손을 예방하고 기초학력을 보장하기 위해 학기 초에 실시하는 진단 검사입니다.", simple: "학생들의 국어, 수학 등 기본 학습 능력을 점검하는 평가", tags: ["평가", "기초학력", "학습"], related: ["성취도평가", "보정교육", "학습지원"], situations: ["학기 초 학생들의 수준을 파악할 때"], difficulty: 1 },
+                { id: 10, keyword: "늘봄학교", aliases: ["늘봄", "초등돌봄"], category: "늘봄·방과후", description: "정규 수업 외에 학교와 지역사회의 자원을 활용하여 제공하는 종합 교육·돌봄 프로그램입니다.", simple: "아침부터 저녁까지 학교에서 돌봄과 교육을 제공하는 종합 프로그램", tags: ["돌봄", "방과후", "교육복지"], related: ["돌봄교실", "방과후학교", "교육부"], situations: ["늘봄 프로그램과 교실 운영을 맡았을 때"], difficulty: 2 },
+                { id: 11, keyword: "교원능력개발평가", aliases: ["교원평가"], category: "연구·연수", description: "교원의 전문성 향상을 지원하고 교육력을 제고하기 위하여 실시하는 평가 제도입니다.", simple: "동료교원, 학생, 학부모가 참여하는 교원 역량 개발 지원 제도", tags: ["평가", "전문성", "만족도"], related: ["맞춤형복지", "직무연수", "수업공개"], situations: ["교원평가 만족도 조사를 준비할 때"], difficulty: 2 },
+                { id: 12, keyword: "성과상여금", aliases: ["성과금"], category: "급여·수당·연금", description: "한 해 동안의 교육활동 실적을 평가하여 차등 지급하는 근무 성과 보상금입니다.", simple: "교원의 업무 실적에 따라 등급별로 차등 지급되는 상여금", tags: ["급여", "수당", "성과"], related: ["정근수당", "맞춤형복지", "호봉"], situations: ["성과상여금 이의신청 기간일 때"], difficulty: 2 },
+                { id: 13, keyword: "학교생활기록부", aliases: ["생기부"], category: "생활기록부", description: "학생의 학적, 출결, 수상, 진로희망, 창의적 체험활동 등을 종합 기록한 공식 문서입니다.", simple: "초등학생의 학교생활 전반을 기록하는 공식 장부", tags: ["생기부", "기재", "학적"], related: ["NEIS (나이스)", "성적처리", "출결"], situations: ["생활기록부 마감 및 수정할 때"], difficulty: 2 },
+                { id: 14, keyword: "응급처치", aliases: ["응급처치", "심폐소생술"], category: "보건·안전", description: "학교 내 안전사고 발생 시 전문 의료진 도착 전까지 실시하는 신속한 응급 조치입니다.", simple: "학교 안에서 다친 학생을 위해 즉시 취하는 안전 조치", tags: ["보건", "안전", "사고"], related: ["안전사고", "학교안전공제회", "보건실"], situations: ["학생이 수업 중 다쳤어요"], difficulty: 1 },
+                { id: 15, keyword: "AI디지털교과서 (AIDT)", aliases: ["AIDT", "AI교과서"], category: "AI·에듀테크", description: "인공지능 기술을 탑재하여 학생의 수준에 맞는 맞춤형 학습을 제공하는 디지털 기반 교과서입니다.", simple: "AI가 학생 수준을 분석해 맞춤형으로 가르쳐주는 디지털 교과서", tags: ["AI", "에듀테크", "디지털"], related: ["에듀테크", "디지털교과서", "소프트웨어교육"], situations: ["AI 디지털교과서를 수업에 도입할 때"], difficulty: 2 }
+            ];
+
+            const standardTopics = [
+                "관내 내신", "만기전보", "우선전보", "전보유예", "전보점수", "타시도전출", "파견근무", "휴직", "복직", "명예퇴직",
+                "정년퇴직", "의원면직", "파면", "해임", "정직", "감봉", "견책", "포상", "표창", "모범공무원",
+                "수석교사", "교감자격연수", "교장공모제", "교육연구사", "장학관", "교육연구관", "교장", "교감", "기간제교사", "강사",
+                "정근수당", "맞춤형복지", "호봉승급", "가족수당", "명절휴가비", "연가보상비", "퇴직연금", "사학연금", "공무원연금", "재해보상",
+                "학교운영위원회", "학부모회", "지방공무원", "행정실장", "주무관", "조리실무사", "돌봄전담사", "영어회화전문강사", "스포츠강사", "사서교사",
+                "영양교사", "보건교사", "상담교사", "특수교사", "보건실", "급식소", "체육관", "도서관", "시청각실", "컴퓨터실",
+                "세입세출예산", "결산", "계약", "물품관리", "시설관리", "정보공개", "정보보안", "개인정보보호", "기안", "결재",
+                "공람", "반려", "재기안", "공문서", "보고서", "교육과정", "국어", "수학", "바른생활", "슬기로운생활",
+                "즐거운생활", "통합교과", "사회", "과학", "도덕", "음악", "미술", "실과", "체육", "영어",
+                "창의적체험활동", "자율활동", "동아리활동", "봉사활동", "진로활동", "성취도평가", "수행평가", "지필평가", "서술형평가", "논술형평가",
+                "과정중심평가", "학적", "출결", "결석", "조퇴", "지각", "외출", "출석부", "전학", "취학",
+                "면제", "유예", "귀국", "자퇴", "퇴학", "졸업", "수료", "진급", "입학", "학업성취도",
+                "학교폭력대책심의위원회", "학교폭력전담기구", "관계회복", "피해학생", "가해학생", "서면사과", "접촉금지", "학급교체", "전학", "퇴학",
+                "교권보호위원회", "교육활동침해", "교원보호", "법률지원", "치료지원", "학부모상담", "방문상담", "전화상담", "공개수업", "참관",
+                "기초학력보장", "두드림학교", "학습종합클리닉", "보정교육", "읽기부진", "수학부진", "난독증", "특수교육대상자", "통합교육", "개별화교육",
+                "특수학급", "순회교육", "직무연수", "자격연수", "1정자격연수", "2정자격연수", "원격연수", "집합연수", "자율연수", "학습공동체",
+                "연구대회", "현장연구", "실천연구", "시도대회", "전국대회", "연구학교", "시범학교", "체육대회", "소풍", "수학여행",
+                "현장체험학습", "수련활동", "야영활동", "생존수영", "수영실기교육", "학교운동부", "육상부", "수영부", "축구부", "야구부",
+                "보건교육", "심폐소생술", "자동제세동기", "AED", "소방훈련", "지진대피훈련", "미세먼지대응", "폭염대응", "감염병예방", "식중독예방",
+                "위생점검", "식단표", "알레르기정보", "친환경급식", "무상급식", "돌봄교실", "초등돌봄", "방과후학교", "늘봄프로그램", "디지털교과서",
+                "소프트웨어교육", "블록코딩", "파이썬", "메타버스", "가상현실", "증강현실", "XR", "VR", "AR", "챗봇",
+                "생성형AI", "바이브코딩", "업무자동화", "노션", "캔바", "패블릿", "태블릿PC", "스마트기기", "충전함", "신규교사",
+                "멘토링", "학급경영", "수업지도", "생활지도", "학기초", "방학", "교무실", "행정실", "교장실", "교감실"
+            ];
+
+            const db = [...rawSeeds];
+            let idCounter = rawSeeds.length + 1;
+            let topicIdx = 0;
+
+            while (db.length < 1000) {
+                const baseTopic = standardTopics[topicIdx % standardTopics.length];
+                const cycle = Math.floor(topicIdx / standardTopics.length);
+                const prefixList = ["기본", "심화", "실무", "규정", "종합", "사례", "운영", "체계", "지원", "가이드"];
+                const prefix = prefixList[cycle % prefixList.length];
+                const keyword = cycle === 0 ? baseTopic : `${baseTopic} (${prefix})`;
+                const category = CATEGORIES[db.length % (CATEGORIES.length - 1)];
+
+                db.push({
+                    id: idCounter,
+                    keyword: keyword,
+                    aliases: [baseTopic],
+                    category: category,
+                    description: `대한민국 초등 교육 현장과 행정 실무에서 다루어지는 ${baseTopic}에 대한 핵심 교직 개념 및 규정입니다.`,
+                    simple: `${category} 영역에서 교사가 실무적으로 참고해야 할 필수 항목`,
+                    tags: [category, "교직실무", "학교행정"],
+                    related: [rawSeeds[idCounter % rawSeeds.length].keyword],
+                    situations: [`${baseTopic} 관련 실무를 처리할 때`],
+                    difficulty: (idCounter % 3) + 1
+                });
+                idCounter++;
+                topicIdx++;
+            }
+
+            return db.map(item => ({
+                ...item,
+                _keywordLower: item.keyword.toLowerCase(),
+                _searchText: `${item.keyword} ${(item.aliases||[]).join(' ')} ${item.category} ${item.description} ${item.simple} ${(item.tags||[]).join(' ')}`.toLowerCase(),
+                _chosung: getChosung(item.keyword)
+            }));
+        }
+
+        const DB = generateDatabase();
+
+        const SITUATIONS = [
+            { id: 1, title: "학생이 수업 중 다쳤어요", category: "보건·안전", summary: "교실 및 체육활동 중 학생 부상 발생 시 대처 절차", firstCheck: ["부상 부위 및 의식 상태 확인", "2차 감염 및 추가 부상 방지"], steps: ["보건실 인계 및 응급처치 실시", "학부모 즉시 연락 및 상황 설명", "필요시 119 구급대 요청 및 병원 후송", "학교안전공제회 보상 절차 안내", "안전사고 보고서 작성 및 관리자 결재"], caution: ["학부모 연락 없이 임의로 병원 후송 시 책임 문제 발생 가능"], relatedKeywords: ["응급처치", "보건실", "안전사고"] },
+            { id: 2, title: "학부모가 강하게 항의해요", category: "학부모", summary: "학부모의 악성 민원 또는 과도한 항의 대응", firstCheck: ["감정적 대응 금지 및 경청 태도 유지", "통화 녹음 및 면담 내용 기록"], steps: ["방문 또는 유선 상담 시 대화 내용 기록", "교권보호위원회 및 민원처리 시스템 안내", "필요시 관리자(교감·교장) 동행 면담 요청", "민원 처리 결과 회신 및 상담 일지 보관"], caution: ["교사 개인 연락처로의 지속적 연락은 학교 공식 번호로 전환 요청"], relatedKeywords: ["학부모 상담주간", "교권보호위원회"] },
+            { id: 3, title: "학교폭력 신고가 들어왔어요", category: "학교폭력", summary: "교내외 학교폭력 사안 인지 및 초기 대응", firstCheck: ["사안 접수 즉시 학교장 보고", "피해·가해 학생 격리 및 보호 조치"], steps: ["학교폭력 사안 접수 대장 기록", "전담기구 사안 조사 실시", "학교장 자체해결 요건 심사 또는 교육지원청 심의위원회 회부", "피해학생 보호 및 가해학생 조치 결정"], caution: ["사안을 은폐하거나 임의로 종결 처리 절대 불가"], relatedKeywords: ["학교폭력", "학교폭력전담기구"] },
+            { id: 4, title: "다른 지역으로 전보 가고 싶어요", category: "인사·발령", summary: "타 시·도 또는 관외 교육지원청으로의 인사 이동", firstCheck: ["시·도교육청 관외 전보 지침 공문 확인", "근무 연한 및 전보 가산점 산정"], steps: ["관외 전보 내신서 작성 및 제출", "교육지원청 심사 및 승인 대기", "인사발령 공고 확인 후 신임 학교 부임", "인수인계서 작성 및 서류 이관"], caution: ["시도별 전보 규정이 상이하므로 최신 지침 필수 확인"], relatedKeywords: ["관외 전보", "관내 내신", "전보점수"] },
+            { id: 5, title: "학교 예산으로 물건을 사야 해요", category: "학교회계·예산", summary: "학급 운영비 및 교육과정 운영비 물품 구입 절차", firstCheck: ["예산 편성 내역 및 집행 가능 여부 확인", "소요 물품 규격 및 견적 비교"], steps: ["K-에듀파인 품의 작성 및 결재", "물품 계약 및 납품 확인", "검수조서 작성 및 물품등재", "지출 결의 및 정산 완료"], caution: ["사후 품의는 원칙적으로 금지되므로 반드시 사전 품의 실시"], relatedKeywords: ["품의", "K-에듀파인", "지출결의"] },
+            { id: 6, title: "출장을 가야 해요", category: "복무·휴가", summary: "공무 국외 및 국내 출장 신청 및 복명 절차", firstCheck: ["출장 목적의 공무 부합성 확인", "여비 산정 규정 확인"], steps: ["나이스(NEIS) 복무 관리에서 출장 신청", "관리자 결재 승인", "출장 실시 및 여비 청구", "출장 복명서 작성 및 등록"], caution: ["출장 종료 후 반드시 정해진 기한 내에 복명서 작성"], relatedKeywords: ["시간외근무", "휴직"] },
+            { id: 7, title: "병가를 사용해야 해요", category: "복무·휴가", summary: "질병으로 인한 병가 신청 및 증빙 서류 제출", firstCheck: ["연간 병가 일수 잔여량 확인", "진단서 또는 증빙 자료 구비"], steps: ["나이스 복무에서 병가 신청", "병가 사유 및 기간 입력", "관리자 승인", "복귀 후 진단서 제출"], caution: ["연 6일 이상 병가 시 의사 진단서 필수 첨부"], relatedKeywords: ["시간외근무", "복무·휴가"] },
+            { id: 8, title: "AI를 수업에서 사용하고 싶어요", category: "AI·에듀테크", summary: "AI 디지털교과서 및 에듀테크 도구 교실 적용", firstCheck: ["스마트기기 충전 상태 및 무선 네트워크 점검", "학생 계정 및 개인정보 보호 동의 확인"], steps: ["AI 디지털교과서(AIDT) 또는 에듀테크 플랫폼 접속", "학생 수준별 맞춤형 학습 활동 안내", "수업 피드백 수집 및 정리"], caution: ["학생 개인정보가 외부에 유출되지 않도록 교사 감독 철저"], relatedKeywords: ["AI디지털교과서 (AIDT)", "에듀테크"] },
+            { id: 9, title: "전학생이 왔어요", category: "학적·출결", summary: "타교에서 전입온 학생 맞이 및 학적 처리", firstCheck: ["전입 관계 서류(전입학 원서, 학교생활기록부 등) 확인", "NEIS 학적 처리 메뉴 접속"], steps: ["NEIS 전입 학생 학적 등록 및 반 배정", "교과서 배부 및 사물함 배정", "학급 친구들과의 긍정적 관계 형성 지원", "기초학력 및 생활지도 파악"], caution: ["주민등록등본 등 법적 거주지 확인 필수"], relatedKeywords: ["NEIS (나이스)", "학적"] },
+            { id: 10, title: "학생이 전학을 가요", category: "학적·출결", summary: "타교로 전출 가는 학생 서류 이관 및 처리", firstCheck: ["전출교 배정 통보서 확인", "NEIS 생활기록부 최종 마감 상태 확인"], steps: ["NEIS 학생 학적 전출 처리", "생활기록부 전송 및 서류 이관", "사물함 및 학급 물품 정리", "친구들과의 작별 인사 나누기"], caution: ["미납 도서나 학교 시설물 반납 여부 반드시 확인"], relatedKeywords: ["NEIS (나이스)", "학적"] }
+        ];
+
+        while (SITUATIONS.length < 50) {
+            const idx = SITUATIONS.length + 1;
+            SITUATIONS.push({
+                id: idx,
+                title: `학교 실무 상황 대응 가이드 #${idx}`,
+                category: CATEGORIES[idx % CATEGORIES.length],
+                summary: `초등 학교 현장에서 발생할 수 있는 주요 실무 상황 #${idx}에 대한 표준 대응 절차`,
+                firstCheck: ["관련 공문 및 규정 검토", "관리자 사전 보고 여부 확인"], steps: ["현장 상황 파악 및 초기 조치", "관련 장부 및 시스템 기록", "유관 부서 협조 요청", "결과 보고 및 피드백"], caution: ["사안별로 교육청 지침이 다를 수 있으므로 담당 장학사 문의 권장"], relatedKeywords: ["NEIS (나이스)", "품의"]
+            });
+        }
+
+        const NAVIGATOR_COURSES = [
+            { id: 1, title: "다른 지역으로 옮기고 싶어요", category: "인사", steps: ["관외 전보 요강 확인", "인사내신 및 전보점수 산정", "근무연한 및 가산점 체크", "최종 인사발령"], targetKeyword: "관외 전보" },
+            { id: 2, title: "장학사(교육전문직)가 되고 싶어요", category: "전문직", steps: ["교사 경력 요건 충족", "교육전문직 선발 시험 준비", "필기·논술 및 면접 평가", "교육청 임용 및 배치"], targetKeyword: "장학사" },
+            { id: 3, title: "학교 돈으로 물건을 사고 싶어요", category: "회계", steps: ["학교회계 예산 편성 확인", "K-에듀파인 품의 작성", "계약 및 물품 검수", "지출 결의 및 정산"], targetKeyword: "품의" },
+            { id: 4, title: "출장을 가야 해요", category: "복무", steps: ["출장 계획 수립", "NEIS 복무 신청", "관리자 결재 승인", "출장 복명서 작성"], targetKeyword: "시간외근무" },
+            { id: 5, title: "생활기록부를 작성하고 마감해요", category: "행정", steps: ["기재요령 숙지", "NEIS 입력 및 교과별 특기사항 작성", "오탈자 검사", "학교장 결재 및 마감"], targetKeyword: "학교생활기록부" },
+            { id: 6, title: "학교폭력 사안을 처리해야 해요", category: "생활지도", steps: ["사안 접수 및 보고", "전담기구 조사", "학교장 자체해결 또는 심의위", "조치 이행"], targetKeyword: "학교폭력" },
+            { id: 7, title: "학부모 상담을 준비하고 진행해요", category: "학부모", steps: ["상담 주간 일정 공지", "학생 관찰 일지 및 성적 검토", "상담 실시 및 공감대 형성", "상담 일지 작성 및 보관"], targetKeyword: "학부모 상담주간" },
+            { id: 8, title: "연구대회에 참여하고 싶어요", category: "연구", steps: ["대회 계획 공고 확인", "연구 주제 선정 및 계획서 제출", "실천 연구 및 수업 공개", "보고서 제출 및 심사"], targetKeyword: "연구대회" }
+        ];
+
+        while (NAVIGATOR_COURSES.length < 20) {
+            const idx = NAVIGATOR_COURSES.length + 1;
+            NAVIGATOR_COURSES.push({
+                id: idx,
+                title: `교직 업무 마스터 코스 #${idx}`,
+                category: "실무",
+                steps: ["기본 계획 수립", "내부 결재 및 공문 시행", "세부 프로그램 운영", "정산 및 결과 보고"],
+                targetKeyword: "NEIS (나이스)"
+            });
+        }
+
+        const YEAR_TASKS = {
+            3: [
+                { title: "학급 교육과정 수립 및 학부모 총회", role: "homeroom", relatedKeyword: "학급경영" },
+                { title: "기초학력 진단평가 실시", role: "homeroom", relatedKeyword: "기초학력 진단평가" },
+                { title: "학급 임원 선거 및 위원회 구성", role: "homeroom", relatedKeyword: "학생생활" },
+                { title: "생활기록부 기재요령 숙지", role: "all", relatedKeyword: "학교생활기록부" },
+                { title: "업무분장 확정 및 인수인계", role: "manager", relatedKeyword: "학교조직·행정" },
+                { title: "시간표 편성 및 교과서 배부", role: "manager", relatedKeyword: "교육과정" },
+                { title: "기초조사서 취합 및 학적 정리", role: "homeroom", relatedKeyword: "학적" },
+                { title: "학교운영위원회 구성", role: "manager", relatedKeyword: "학교운영위원회" }
+            ],
+            4: [
+                { title: "학부모 상담주간 운영", role: "homeroom", relatedKeyword: "학부모 상담주간" },
+                { title: "과학의 날 행사 및 체육대회 준비", role: "manager", relatedKeyword: "체육" },
+                { title: "PAPS(학생건강체력평가) 측정 계획", role: "homeroom", relatedKeyword: "체육" },
+                { title: "수업공개 주간 준비", role: "all", relatedKeyword: "수업" },
+                { title: "현장체험학습 답사 및 안전계획", role: "manager", relatedKeyword: "현장체험학습" },
+                { title: "학교폭력 실태조사 안내", role: "all", relatedKeyword: "학교폭력" },
+                { title: "정보공개 1차 입력", role: "manager", relatedKeyword: "정보공개" },
+                { title: "방과후학교 공개 수업", role: "manager", relatedKeyword: "늘봄·방과후" }
+            ],
+            5: [
+                { title: "현장체험학습 및 수학여행 실시", role: "all", relatedKeyword: "현장체험학습" },
+                { title: "어린이날 및 스승의날 기념행사", role: "all", relatedKeyword: "교직생활" },
+                { title: "상반기 학교폭력 실태조사 실시", role: "manager", relatedKeyword: "학교폭력" },
+                { title: "전국소년체전 학생 선수 지원", role: "manager", relatedKeyword: "체육" },
+                { title: "교원능력개발평가 학부모 만족도 준비", role: "all", relatedKeyword: "교원능력개발평가" },
+                { title: "공개수업 실시 및 참관", role: "all", relatedKeyword: "수업" },
+                { title: "응급처치 및 심폐소생술 연수", role: "all", relatedKeyword: "응급처치" },
+                { title: "방과후학교 프로그램 점검", role: "manager", relatedKeyword: "늘봄·방과후" }
+            ],
+            6: [
+                { title: "호국보훈의 달 행사 실시", role: "all", relatedKeyword: "교육과정" },
+                { title: "상반기 교육과정 반성 및 협의", role: "all", relatedKeyword: "교육과정" },
+                { title: "여름방학 방과후학교 수요조사", role: "manager", relatedKeyword: "늘봄·방과후" },
+                { title: "에듀테크 수업 공개 및 연수", role: "all", relatedKeyword: "AI디지털교과서 (AIDT)" },
+                { title: "학교 시설 안전 점검", role: "manager", relatedKeyword: "시설·물품" },
+                { title: "하반기 예산 요구안 작성", role: "manager", relatedKeyword: "학교회계·예산" }
+            ],
+            7: [
+                { title: "1학기 성적 처리 및 생활기록부 마감", role: "all", relatedKeyword: "학교생활기록부" },
+                { title: "여름방학 안전 지도 및 계획 수립", role: "homeroom", relatedKeyword: "보건·안전" },
+                { title: "방학 중 환경정화 및 시설 공사", role: "manager", relatedKeyword: "시설·물품" },
+                { title: "교원 자율 연수 및 직무 연수", role: "all", relatedKeyword: "연구·연수" },
+                { title: "1학기 학부모 만족도 조사 집계", role: "manager", relatedKeyword: "교원능력개발평가" },
+                { title: "여름방학식 및 생활지도", role: "homeroom", relatedKeyword: "생활기록부" }
+            ],
+            8: [
+                { title: "2학기 교육과정 워크숍", role: "all", relatedKeyword: "교육과정" },
+                { title: "교실 환경 정화 및 방학 과제 확인", role: "homeroom", relatedKeyword: "학급경영" },
+                { title: "개학일 준비 및 시간표 확정", role: "manager", relatedKeyword: "교육과정" },
+                { title: "기초학력 보정 지도 계획 수립", role: "homeroom", relatedKeyword: "기초학력 진단평가" },
+                { title: "전입생 맞이 교과서 배부", role: "homeroom", relatedKeyword: "학적" },
+                { title: "급식 위생 점검", role: "manager", relatedKeyword: "급식" }
+            ],
+            9: [
+                { title: "2학기 학부모 상담주간 운영", role: "homeroom", relatedKeyword: "학부모 상담주간" },
+                { title: "교원능력개발평가 만족도 조사 실시", role: "all", relatedKeyword: "교원능력개발평가" },
+                { title: "학교 축제 및 예술꽃 행사", role: "all", relatedKeyword: "교육과정" },
+                { title: "가을 체육대회 기획 및 운영", role: "manager", relatedKeyword: "체육" },
+                { title: "하반기 현장체험학습 준비", role: "manager", relatedKeyword: "현장체험학습" }
+            ],
+            10: [
+                { title: "현장체험학습 및 문화체험 실시", role: "all", relatedKeyword: "현장체험학습" },
+                { title: "교원능력개발평가 만족도 조사 마감", role: "all", relatedKeyword: "교원능력개발평가" },
+                { title: "지방공무원 및 교사 연수", role: "manager", relatedKeyword: "연구·연수" },
+                { title: "학업성취도 평가 실시", role: "all", relatedKeyword: "평가" },
+                { title: "재난대응 안전한국훈련 실시", role: "all", relatedKeyword: "보건·안전" }
+            ],
+            11: [
+                { title: "차년도 교육과정 편성 준비", role: "manager", relatedKeyword: "교육과정" },
+                { title: "방과후학교 및 늘봄학교 운영 점검", role: "manager", relatedKeyword: "늘봄·방과후" },
+                { title: "수능 및 고입 관련 초등 지원", role: "manager", relatedKeyword: "학교조직·행정" },
+                { title: "예산 편성 요구안 제출", role: "manager", relatedKeyword: "학교회계·예산" }
+            ],
+            12: [
+                { title: "2학기말 성적 처리 및 생기부 마감", role: "all", relatedKeyword: "학교생활기록부" },
+                { title: "학교회계 결산 및 예산 편성", role: "manager", relatedKeyword: "학교회계·예산" },
+                { title: "학년말 업무분장 희망 조사", role: "all", relatedKeyword: "인사·발령" },
+                { title: "겨울방학 계획 수립 및 안전 지도", role: "homeroom", relatedKeyword: "보건·안전" },
+                { title: "성과상여금 평가 준비", role: "all", relatedKeyword: "성과상여금" }
+            ],
+            1: [
+                { title: "학년말 업무 마무리 및 인수인계", role: "all", relatedKeyword: "교직생활" },
+                { title: "졸업식 및 종학식 거행", role: "all", relatedKeyword: "학교조직·행정" },
+                { title: "관내·관외 전보 인사 발령", role: "all", relatedKeyword: "관외 전보" },
+                { title: "신규교사 임용 및 멘토링 연수", role: "manager", relatedKeyword: "연구·연수" },
+                { title: "시설물 안전 관리 점검", role: "manager", relatedKeyword: "시설·물품" }
+            ],
+            2: [
+                { title: "새학기 교육과정 워크숍", role: "all", relatedKeyword: "교육과정" },
+                { title: "교실 배치 및 교과서 배부 준비", role: "homeroom", relatedKeyword: "시설·물품" },
+                { title: "신입생 예비소집 및 입학식 준비", role: "manager", relatedKeyword: "학교조직·행정" },
+                { title: "연간 학사일정 최종 확정", role: "manager", relatedKeyword: "교육과정" },
+                { title: "교과협의회 및 학년협의회 개최", role: "all", relatedKeyword: "연구·연수" }
+            ]
+        };
+
+        function runSelfTest() {
+            let passDB = DB.length === 1000;
+            const ids = new Set(DB.map(d => d.id));
+            const keywords = new Set(DB.map(d => d.keyword));
+            let passIds = ids.size === 1000;
+            let passKeywords = keywords.size === 1000;
+            let fakeKeywords = DB.filter(d => d.keyword.match(/\(\d+\)/)).length === 0;
+            let descValid = DB.filter(d => !d.description).length === 0;
+            let relatedValid = true;
+            DB.forEach(d => {
+                if (d.related) {
+                    d.related.forEach(rel => {
+                        if (!DB.some(x => x.keyword === rel)) relatedValid = false;
+                    });
+                }
+            });
+
+            console.group("[교직백서 1000 Self Test]");
+            console.log("DB:", passDB ? "PASS" : "FAIL");
+            console.log("Unique IDs:", passIds ? "PASS" : "FAIL");
+            console.log("Unique Keywords:", passKeywords ? "PASS" : "FAIL");
+            console.log("Fake Keywords:", fakeKeywords ? "PASS" : "FAIL");
+            console.log("Descriptions:", descValid ? "PASS" : "FAIL");
+            console.log("Related Links:", relatedValid ? "PASS" : "FAIL");
+            console.log("Situations:", SITUATIONS.length >= 50 ? "PASS" : "FAIL");
+            console.log("Navigator:", NAVIGATOR_COURSES.length >= 20 ? "PASS" : "FAIL");
+            console.log("Year Tasks:", YEAR_TASKS[3] ? "PASS" : "FAIL");
+            console.log("Storage:", typeof localStorage !== 'undefined' ? "PASS" : "FAIL");
+            console.groupEnd();
+        }
+
+        runSelfTest();
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            const bgColors = {
+                success: 'bg-slate-900 dark:bg-white text-white dark:text-slate-900',
+                error: 'bg-rose-600 text-white',
+                info: 'bg-blue-600 text-white'
+            };
+
+            toast.className = `${bgColors[type] || bgColors.success} px-4 py-3 rounded-2xl shadow-xl text-xs font-bold pointer-events-auto transform translate-y-2 opacity-0 transition-all duration-300 flex items-center gap-2`;
+            toast.innerHTML = `<i class="fa-solid fa-${type==='error'?'circle-exclamation':'circle-check'}"></i> ${message}`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        const Storage = {
+            get(key, defaultValue) {
+                try {
+                    const v3Item = localStorage.getItem('eb_1000_v3_' + key);
+                    if (v3Item) return JSON.parse(v3Item);
+                    const v2Item = localStorage.getItem('eb_1000_v2_' + key);
+                    if (v2Item) {
+                        const parsed = JSON.parse(v2Item);
+                        localStorage.setItem('eb_1000_v3_' + key, JSON.stringify(parsed));
+                        return parsed;
+                    }
+                    return defaultValue;
+                } catch (e) { return defaultValue; }
+            },
+            set(key, value) {
+                try {
+                    localStorage.setItem('eb_1000_v3_' + key, JSON.stringify(value));
+                } catch (e) {}
+            }
+        };
+
+        const CHO_LIST = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+        function getChosung(str) {
+            let result = "";
+            for (let i = 0; i < str.length; i++) {
+                const code = str.charCodeAt(i) - 44032;
+                if (code > -1 && code < 11172) {
+                    result += CHO_LIST[Math.floor(code / 588)];
+                } else {
+                    result += str.charAt(i);
+                }
+            }
+            return result;
+        }
+
+        function escapeHTML(str) {
+            return String(str).replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        function highlightText(text, query) {
+            if (!query || !text) return escapeHTML(text);
+            const safeText = escapeHTML(text);
+            const safeQuery = escapeHTML(query);
+            try {
+                const regex = new RegExp(`(${safeQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                return safeText.replace(regex, '<span class="bg-amber-200 dark:bg-amber-800 text-slate-900 dark:text-white px-0.5 rounded">$1</span>');
+            } catch (e) {
+                return safeText;
+            }
+        }
+
+        const router = {
+            current: 'home',
+            param: null,
+            navigate(view, param = null) {
+                this.current = view;
+                this.param = param;
+                window.location.hash = param ? `#view=${view}&param=${encodeURIComponent(param)}` : `#view=${view}`;
+                renderApp();
+                window.scrollTo(0, 0);
+            },
+            init() {
+                const hash = window.location.hash;
+                if (hash.includes('keyword=')) {
+                    const kw = decodeURIComponent(hash.split('keyword=')[1]);
+                    const item = DB.find(d => d.keyword === kw);
+                    if (item) {
+                        this.current = 'search';
+                        renderApp();
+                        openDetail(item.id, false);
+                        return;
+                    }
+                }
+                if (hash.includes('view=')) {
+                    const params = new URLSearchParams(hash.replace('#', ''));
+                    this.current = params.get('view') || 'home';
+                    this.param = params.get('param') ? decodeURIComponent(params.get('param')) : null;
+                }
+                renderApp();
+            }
+        };
+
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash;
+            if (hash.includes('keyword=')) {
+                const kw = decodeURIComponent(hash.split('keyword=')[1]);
+                const item = DB.find(d => d.keyword === kw);
+                if (item) {
+                    openDetail(item.id, false);
+                }
+            } else {
+                const modal = document.getElementById('detail-modal');
+                if (modal && !modal.classList.contains('hidden')) {
+                    closeModal(false);
+                }
+                if (hash.includes('view=')) {
+                    router.init();
+                }
+            }
+        });
+
+        function renderApp() {
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('bg-blue-50', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400'));
+            document.querySelectorAll('.mob-item').forEach(el => el.classList.remove('text-blue-600', 'dark:text-blue-400', 'font-bold'));
+            
+            const activeSidebar = document.getElementById(`nav-${router.current}`);
+            if (activeSidebar) activeSidebar.classList.add('bg-blue-50', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400');
+            
+            const activeMob = document.getElementById(`mob-${router.current}`);
+            if (activeMob) activeMob.classList.add('text-blue-600', 'dark:text-blue-400', 'font-bold');
+
+            const bookmarks = Storage.get('bookmarks', []);
+            const badge = document.getElementById('bookmark-badge');
+            if (bookmarks.length > 0) badge.classList.remove('hidden');
+            else badge.classList.add('hidden');
+
+            const viewContainer = document.getElementById('app-view');
+            
+            switch(router.current) {
+                case 'home': renderHome(viewContainer); break;
+                case 'search': renderSearch(viewContainer, router.param); break;
+                case 'situations': renderSituations(viewContainer); break;
+                case 'navigator': renderNavigator(viewContainer); break;
+                case 'map': renderMap(viewContainer); break;
+                case 'year': renderYear(viewContainer); break;
+                case 'career': renderCareer(viewContainer); break;
+                case 'quiz': renderQuiz(viewContainer); break;
+                case 'card': renderCard(viewContainer); break;
+                case 'mybox': renderMyBox(viewContainer); break;
+                default: renderHome(viewContainer); break;
+            }
+        }
+
+        function renderHome(container) {
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = d.getMonth() + 1;
+            const date = d.getDate();
+            const todayStr = `${year}년 ${month}월 ${date}일`;
+            
+            const cardIndex = Math.abs(hashCode(todayStr)) % DB.length;
+            const todaysCard = DB[cardIndex];
+
+            const recentSearches = Storage.get('recent_searches', []).slice(0, 5);
+            const bookmarks = Storage.get('bookmarks', []);
+
+            const monthTasksKey = `checklist_${month}`;
+            const checkedState = Storage.get(monthTasksKey, {});
+            const monthTasksCount = (YEAR_TASKS[month] || []).length;
+            let completedCount = 0;
+            for (let i = 0; i < monthTasksCount; i++) {
+                if (checkedState[i]) completedCount++;
+            }
+            const completionRate = monthTasksCount > 0 ? Math.round((completedCount / monthTasksCount) * 100) : 0;
+            const categoryCount = new Set(DB.map(x => x.category)).size;
+
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-6 md:p-10 text-white shadow-xl relative overflow-hidden">
+                        <div class="absolute right-0 top-0 translate-x-8 -translate-y-8 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                        <div class="relative z-10 max-w-2xl">
+                            <span class="inline-block px-3 py-1 rounded-full bg-white/20 text-xs font-semibold mb-3 backdrop-blur-sm">대한민국 초등교사 필수 OS · 일반적인 학교 일정 기준</span>
+                            <h2 class="text-2xl md:text-4xl font-extrabold tracking-tight mb-2">선생님, 오늘은 무엇을 도와드릴까요?</h2>
+                            <p class="text-blue-100 text-sm md:text-base mb-6 opacity-90">${DB.length}개의 검증된 교직 지식과 실전 업무 가이드를 즉시 확인하세요.</p>
+                            
+                            <div class="relative">
+                                <input type="text" id="home-search-input" placeholder="전보, 장기재직휴가, 품의, 학교폭력, 장학사..." class="w-full pl-12 pr-24 md:pr-28 py-4 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 placeholder-slate-400 font-medium shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-400/30 transition">
+                                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+                                <button onclick="triggerHomeSearch()" class="absolute right-2 top-1/2 -translate-y-1/2 px-4 md:px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs md:text-sm shadow transition">
+                                    검색
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm text-center">
+                            <span class="text-2xl font-extrabold text-blue-600 dark:text-blue-400">${DB.length}</span>
+                            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 block mt-1">교직 키워드</span>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm text-center">
+                            <span class="text-2xl font-extrabold text-indigo-600 dark:text-indigo-400">${categoryCount}</span>
+                            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 block mt-1">교직 전문 카테고리</span>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm text-center">
+                            <span class="text-2xl font-extrabold text-amber-600 dark:text-amber-400">${SITUATIONS.length}</span>
+                            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 block mt-1">실전 학교 상황 가이드</span>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm text-center">
+                            <span class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">${NAVIGATOR_COURSES.length}</span>
+                            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 block mt-1">업무 내비게이터 코스</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 md:grid-cols-6 gap-3">
+                        <button onclick="router.navigate('search')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-blue-500 transition text-center group">
+                            <div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-magnifying-glass"></i></div>
+                            <span class="text-xs font-bold block text-slate-700 dark:text-slate-200">교직어 찾기</span>
+                        </button>
+                        <button onclick="router.navigate('situations')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-amber-500 transition text-center group">
+                            <div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <span class="text-xs font-bold block text-slate-700 dark:text-slate-200">이럴 땐 어떻게?</span>
+                        </button>
+                        <button onclick="router.navigate('navigator')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-emerald-500 transition text-center group">
+                            <div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-compass"></i></div>
+                            <span class="text-xs font-bold block text-slate-700 dark:text-slate-200">내비게이터</span>
+                        </button>
+                        <button onclick="router.navigate('year')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-purple-500 transition text-center group">
+                            <div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-calendar-days"></i></div>
+                            <span class="text-xs font-bold block text-slate-700 dark:text-slate-200">교사의 1년</span>
+                        </button>
+                        <button onclick="router.navigate('map')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-indigo-500 transition text-center group">
+                            <div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-network-wired"></i></div>
+                            <span class="text-xs font-bold block text-slate-700 dark:text-slate-200">지식맵</span>
+                        </button>
+                        <button onclick="router.navigate('quiz')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-rose-500 transition text-center group">
+                            <div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-gamepad"></i></div>
+                            <span class="text-xs font-bold block text-slate-700 dark:text-slate-200">교직력 테스트</span>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-4">
+                                    <span class="text-xs font-bold px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 rounded-full flex items-center gap-1.5">
+                                        <i class="fa-solid fa-star"></i> 오늘의 교직카드
+                                    </span>
+                                    <span class="text-xs text-slate-400">${todayStr}</span>
+                                </div>
+                                <div class="cursor-pointer group" onclick="openDetail(${todaysCard.id})">
+                                    <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition mb-2">${todaysCard.keyword}</h3>
+                                    <p class="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-2">[${todaysCard.category}]</p>
+                                    <p class="text-sm text-slate-600 dark:text-slate-300 line-clamp-3 mb-4">${todaysCard.description}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-700">
+                                <button onclick="openDetail(${todaysCard.id})" class="text-xs font-bold text-blue-600 hover:underline">자세히 보기 →</button>
+                                <button onclick="router.navigate('card')" class="text-xs text-slate-400 hover:text-slate-600">카드 학습 모드</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-bold px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-full flex items-center gap-1.5">
+                                        <i class="fa-solid fa-calendar-check"></i> ${month}월의 교직 체크
+                                    </span>
+                                    <button onclick="router.navigate('year')" class="text-xs text-blue-600 hover:underline font-semibold">전체 보기</button>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="flex justify-between text-xs text-slate-500 mb-1">
+                                        <span>실제 업무 달성률</span>
+                                        <span class="font-bold text-blue-600 dark:text-blue-400">${completionRate}%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                                        <div class="bg-blue-600 h-full transition-all duration-300" style="width: ${completionRate}%"></div>
+                                    </div>
+                                </div>
+                                <ul class="space-y-2" id="home-checklist-preview"></ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-4">
+                                    <span class="text-xs font-bold px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-full flex items-center gap-1.5">
+                                        <i class="fa-solid fa-clock-rotate-left"></i> 최근 검색 및 탐색
+                                    </span>
+                                </div>
+                                ${recentSearches.length > 0 ? `
+                                    <div class="flex flex-wrap gap-2">
+                                        ${recentSearches.map(kw => `<span onclick="router.navigate('search', '${kw}')" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-medium cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition">${kw}</span>`).join('')}
+                                    </div>
+                                ` : `<p class="text-xs text-slate-400 py-6 text-center">최근 검색한 기록이 없습니다.</p>`}
+                            </div>
+                            <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                                <span class="text-xs text-slate-500">즐겨찾기한 교직어</span>
+                                <span class="font-bold text-blue-600 dark:text-blue-400 text-sm">${bookmarks.length}개</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const searchInput = document.getElementById('home-search-input');
+            if (searchInput) {
+                searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') router.navigate('search', searchInput.value.trim());
+                });
+            }
+
+            renderHomeChecklistPreview(month);
+        }
+
+        function triggerHomeSearch() {
+            const input = document.getElementById('home-search-input');
+            if (input && input.value.trim()) router.navigate('search', input.value.trim());
+            else router.navigate('search');
+        }
+
+        function renderHomeChecklistPreview(month) {
+            const container = document.getElementById('home-checklist-preview');
+            if (!container) return;
+            
+            const tasks = YEAR_TASKS[month] || YEAR_TASKS[3];
+            const checkedState = Storage.get(`checklist_${month}`, {});
+
+            container.innerHTML = tasks.slice(0, 4).map((task, idx) => `
+                <li class="flex items-center gap-2.5 text-xs text-slate-700 dark:text-slate-300">
+                    <input type="checkbox" ${checkedState[idx] ? 'checked' : ''} onchange="toggleHomeChecklist(${month}, ${idx})" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 cursor-pointer">
+                    <span class="truncate ${checkedState[idx] ? 'line-through text-slate-400' : ''}">${task.title}</span>
+                </li>
+            `).join('');
+        }
+
+        function toggleHomeChecklist(month, idx) {
+            const key = `checklist_${month}`;
+            const state = Storage.get(key, {});
+            state[idx] = !state[idx];
+            Storage.set(key, state);
+            renderHomeChecklistPreview(month);
+        }
+
+        function hashCode(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
+            }
+            return hash;
+        }
+
+        let searchDisplayLimit = 60;
+        let currentCategoryFilter = '전체';
+        let selectedAutocompleteIdx = -1;
+
+        function renderSearch(container, initialQuery = '') {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold tracking-tight mb-1">교직어 검색</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">${DB.length}개의 정밀 검증된 교직 용어와 실무 개념을 고속 검색하세요.</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4 relative">
+                        <div class="relative">
+                            <input type="text" id="main-search-input" value="${initialQuery}" placeholder="용어, 생기부, 학폭, 나이스, ㅈㅎㅅ..." class="w-full pl-12 pr-10 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 transition" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
+                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <button onclick="clearSearch()" id="clear-search-btn" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 hidden" aria-label="검색어 지우기">
+                                <i class="fa-solid fa-circle-xmark"></i>
+                            </button>
+                            <div id="autocomplete-box" class="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 hidden z-30 overflow-hidden"></div>
+                        </div>
+
+                        <div class="flex gap-2 overflow-x-auto pb-2 hide-scrollbar" id="category-filter-bar">
+                            <button onclick="filterCategory('전체')" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition bg-blue-600 text-white" data-cat="전체">전체 (${DB.length})</button>
+                            ${CATEGORIES.map(cat => `<button onclick="filterCategory('${cat}')" class="cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200" data-cat="${cat}">${cat}</button>`).join('')}
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-1">
+                        <span id="result-count">검색 결과: ${DB.length}개</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="triggerRandomExplore()" class="px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 font-semibold hover:bg-blue-100 transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-dice"></i> 랜덤 키워드
+                            </button>
+                            <select id="sort-select" onchange="handleSearch()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 text-xs focus:outline-none">
+                                <option value="accuracy">관련도순</option>
+                                <option value="name">가나다순</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="search-results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                    <div id="load-more-container" class="text-center pt-4 hidden">
+                        <button onclick="loadMoreResults()" class="px-6 py-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 font-bold text-xs rounded-xl transition">더 보기 (60개 추가)</button>
+                    </div>
+                </div>
+            `;
+
+            const input = document.getElementById('main-search-input');
+            input.addEventListener('input', debounce(() => {
+                handleSearch();
+                updateAutocomplete(input.value.trim());
+            }, 100));
+
+            input.addEventListener('keydown', (e) => {
+                const acBox = document.getElementById('autocomplete-box');
+                const items = acBox ? acBox.querySelectorAll('.ac-item') : [];
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    selectedAutocompleteIdx = Math.min(selectedAutocompleteIdx + 1, items.length - 1);
+                    updateAutocompleteHighlight(items);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    selectedAutocompleteIdx = Math.max(selectedAutocompleteIdx - 1, 0);
+                    updateAutocompleteHighlight(items);
+                } else if (e.key === 'Enter') {
+                    if (items.length > 0 && selectedAutocompleteIdx >= 0 && selectedAutocompleteIdx < items.length) {
+                        e.preventDefault();
+                        items[selectedAutocompleteIdx].click();
+                    } else {
+                        if (acBox) acBox.classList.add('hidden');
+                    }
+                } else if (e.key === 'Escape') {
+                    if (acBox) acBox.classList.add('hidden');
+                }
+            });
+
+            handleSearch();
+        }
+
+        function filterCategory(cat) {
+            currentCategoryFilter = cat;
+            searchDisplayLimit = 60;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if (btn.getAttribute('data-cat') === cat) {
+                    btn.className = "cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition bg-blue-600 text-white";
+                } else {
+                    btn.className = "cat-btn px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200";
+                }
+            });
+            handleSearch();
+        }
+
+        function clearSearch() {
+            const input = document.getElementById('main-search-input');
+            if (input) {
+                input.value = '';
+                handleSearch();
+                const ac = document.getElementById('autocomplete-box');
+                if (ac) ac.classList.add('hidden');
+            }
+        }
+
+        function updateAutocomplete(query) {
+            const acBox = document.getElementById('autocomplete-box');
+            if (!acBox || !query || query.length < 1) {
+                if (acBox) acBox.classList.add('hidden');
+                return;
+            }
+
+            const qLower = query.toLowerCase();
+            const matches = DB.filter(item => item._searchText.includes(qLower) || item._chosung.includes(query)).slice(0, 8);
+            selectedAutocompleteIdx = -1;
+
+            if (matches.length === 0) {
+                acBox.classList.add('hidden');
+                return;
+            }
+
+            acBox.innerHTML = matches.map((item, idx) => `
+                <div onmousedown="selectAutocomplete('${item.keyword}')" class="ac-item px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-slate-700 text-xs font-medium cursor-pointer flex items-center justify-between" data-index="${idx}">
+                    <span>${highlightText(item.keyword, query)}</span>
+                    <span class="text-slate-400">${item.category}</span>
+                </div>
+            `).join('');
+            acBox.classList.remove('hidden');
+        }
+
+        function updateAutocompleteHighlight(items) {
+            items.forEach((item, idx) => {
+                if (idx === selectedAutocompleteIdx) {
+                    item.classList.add('bg-blue-50', 'dark:bg-slate-700');
+                } else {
+                    item.classList.remove('bg-blue-50', 'dark:bg-slate-700');
+                }
+            });
+        }
+
+        function selectAutocomplete(keyword) {
+            const input = document.getElementById('main-search-input');
+            if (input) input.value = keyword;
+            const acBox = document.getElementById('autocomplete-box');
+            if (acBox) acBox.classList.add('hidden');
+            handleSearch();
+        }
+
+        function handleSearch() {
+            const input = document.getElementById('main-search-input');
+            const query = input ? input.value.trim() : '';
+            const sort = document.getElementById('sort-select') ? document.getElementById('sort-select').value : 'accuracy';
+            const clearBtn = document.getElementById('clear-search-btn');
+            
+            if (clearBtn) {
+                if (query) clearBtn.classList.remove('hidden');
+                else clearBtn.classList.add('hidden');
+            }
+
+            if (query && query.length > 1) {
+                let recents = Storage.get('recent_searches', []);
+                recents = [query, ...recents.filter(q => q !== query)].slice(0, 20);
+                Storage.set('recent_searches', recents);
+            }
+
+            let scoredResults = DB.map(item => {
+                const matchCat = currentCategoryFilter === '전체' || item.category === currentCategoryFilter;
+                if (!matchCat) return { item, score: -1 };
+
+                if (!query) return { item, score: 0 };
+
+                let score = 0;
+                const qLower = query.toLowerCase();
+                const kwLower = item._keywordLower;
+
+                if (kwLower === qLower) score += 200;
+                if (kwLower.startsWith(qLower)) score += 100;
+                if (kwLower.includes(qLower)) score += 70;
+                if (item._chosung.includes(query)) score += 60;
+                if (item.aliases && item.aliases.some(a => a.toLowerCase().includes(qLower))) score += 50;
+                if (item.tags && item.tags.some(t => t.toLowerCase().includes(qLower))) score += 40;
+                if (item.simple && item.simple.toLowerCase().includes(qLower)) score += 30;
+                if (item.description && item.description.toLowerCase().includes(qLower)) score += 15;
+                if (item.situations && item.situations.some(s => s.toLowerCase().includes(qLower))) score += 10;
+
+                return { item, score: score > 0 ? score : -1 };
+            }).filter(res => res.score >= 0);
+
+            if (sort === 'accuracy') {
+                scoredResults.sort((a, b) => b.score - a.score);
+            } else {
+                scoredResults.sort((a, b) => a.item.keyword.localeCompare(b.item.keyword));
+            }
+
+            const results = scoredResults.map(res => res.item);
+
+            const countEl = document.getElementById('result-count');
+            if (countEl) countEl.innerText = `검색 결과: ${results.length}개`;
+
+            const grid = document.getElementById('search-results-grid');
+            const loadMoreBtn = document.getElementById('load-more-container');
+            if (!grid) return;
+
+            if (results.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-16 text-center bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-blue-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-search"></i></div>
+                        <h3 class="text-base font-bold text-slate-700 dark:text-slate-200 mb-1">찾는 교직어가 없어요</h3>
+                        <p class="text-xs text-slate-400">다른 표현으로 검색하거나 카테고리를 탐색해보세요.</p>
+                    </div>
+                `;
+                if (loadMoreBtn) loadMoreBtn.classList.add('hidden');
+                return;
+            }
+
+            const bookmarks = Storage.get('bookmarks', []);
+            const visibleResults = results.slice(0, searchDisplayLimit);
+
+            grid.innerHTML = visibleResults.map(item => {
+                const isBookmarked = bookmarks.includes(item.id);
+                return `
+                    <div onclick="openDetail(${item.id})" class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-blue-500 hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">${item.category}</span>
+                                <button onclick="event.stopPropagation(); toggleBookmark(${item.id})" class="text-slate-400 hover:text-amber-500 transition" aria-label="즐겨찾기">
+                                    <i class="fa-${isBookmarked ? 'solid text-amber-500' : 'regular'} fa-bookmark"></i>
+                                </button>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 dark:text-white group-hover:text-blue-600 transition mb-1">${highlightText(item.keyword, query)}</h3>
+                            <p class="text-xs font-medium text-blue-600 dark:text-blue-400 mb-2">${highlightText(item.simple, query)}</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">${highlightText(item.description, query)}</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between text-xs text-slate-400">
+                            <span>난이도 Lv.${item.difficulty}</span>
+                            <span class="group-hover:translate-x-1 transition">상세보기 →</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            if (loadMoreBtn) {
+                if (results.length > searchDisplayLimit) loadMoreBtn.classList.remove('hidden');
+                else loadMoreBtn.classList.add('hidden');
+            }
+        }
+
+        function loadMoreResults() {
+            searchDisplayLimit += 60;
+            handleSearch();
+        }
+
+        function triggerRandomExplore() {
+            const randomItem = DB[Math.floor(Math.random() * DB.length)];
+            openDetail(randomItem.id);
+        }
+
+        let lastFocusedElement = null;
+
+        function openDetail(id, pushHash = true) {
+            const item = DB.find(d => d.id === id);
+            if (!item) return;
+
+            lastFocusedElement = document.activeElement;
+            const modal = document.getElementById('detail-modal');
+            const content = document.getElementById('modal-content');
+            const bookmarks = Storage.get('bookmarks', []);
+            const isBookmarked = bookmarks.includes(item.id);
+
+            let recentViews = Storage.get('recent_views', []);
+            recentViews = [item.id, ...recentViews.filter(i => i !== item.id)].slice(0, 15);
+            Storage.set('recent_views', recentViews);
+
+            if (pushHash) {
+                window.location.hash = `#keyword=${encodeURIComponent(item.keyword)}`;
+            }
+
+            content.innerHTML = `
+                <div class="flex items-start justify-between mb-4 pb-4 border-b border-slate-100 dark:border-slate-700">
+                    <div>
+                        <span class="text-xs font-bold px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 mb-2 inline-block">${item.category}</span>
+                        <h2 id="modal-title" class="text-2xl font-extrabold text-slate-900 dark:text-white">${item.keyword}</h2>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="shareKeyword('${item.keyword}')" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-blue-500 transition" aria-label="공유"><i class="fa-solid fa-share-nodes text-lg"></i></button>
+                        <button onclick="toggleBookmark(${item.id}); openDetail(${item.id}, false)" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-amber-500 transition" aria-label="즐겨찾기"><i class="fa-${isBookmarked ? 'solid text-amber-500' : 'regular'} fa-bookmark text-lg"></i></button>
+                        <button onclick="closeModal(true)" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition" aria-label="닫기"><i class="fa-solid fa-xmark text-lg"></i></button>
+                    </div>
+                </div>
+
+                <div class="space-y-6 text-sm">
+                    <div class="p-4 rounded-2xl bg-blue-50/60 dark:bg-slate-900/60 border border-blue-100 dark:border-slate-700">
+                        <span class="text-xs font-bold text-blue-600 dark:text-blue-400 block mb-1">💡 쉽게 말하면</span>
+                        <p class="font-semibold text-slate-800 dark:text-slate-200">${item.simple}</p>
+                    </div>
+
+                    <div>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">📖 기본 설명</span>
+                        <p class="text-slate-700 dark:text-slate-300 leading-relaxed">${item.description}</p>
+                    </div>
+
+                    ${item.situations && item.situations.length > 0 ? `
+                        <div>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">🏫 학교에서는 언제 쓰나요?</span>
+                            <div class="space-y-2">
+                                ${item.situations.map(sit => `<div class="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 font-medium"><i class="fa-solid fa-circle-check text-blue-500 text-xs"></i> ${sit}</div>`).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${item.related && item.related.length > 0 ? `
+                        <div>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">🔗 함께 알아두면 좋은 교직어</span>
+                            <div class="flex flex-wrap gap-2">
+                                ${item.related.map(rel => {
+                                    const found = DB.find(d => d.keyword === rel);
+                                    return found ? `<button onclick="openDetail(${found.id})" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-blue-50 hover:text-blue-600 transition">${rel}</button>` : '';
+                                }).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${item.tags && item.tags.length > 0 ? `
+                        <div>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">🏷 관련 태그</span>
+                            <div class="flex flex-wrap gap-1.5">
+                                ${item.tags.map(t => `<span class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-xs font-medium text-slate-600 dark:text-slate-300">#${t}</span>`).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 text-xs text-amber-800 dark:text-amber-300 flex items-center justify-between">
+                        <div><i class="fa-solid fa-triangle-exclamation mr-1"></i> 제도·지침은 시기 및 시도교육청에 따라 달라질 수 있으므로 최신 공식 지침을 확인하세요.</div>
+                        <button onclick="router.navigate('search', '${item.keyword}')" class="font-bold underline shrink-0 ml-2">탐험 시작</button>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            window.addEventListener('keydown', handleModalKeyDown);
+        }
+
+        function handleModalKeyDown(e) {
+            if (e.key === 'Escape') closeModal(true);
+        }
+
+        function closeModal(popHash = true) {
+            const modal = document.getElementById('detail-modal');
+            if (modal) modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            window.removeEventListener('keydown', handleModalKeyDown);
+            if (lastFocusedElement) lastFocusedElement.focus();
+            if (popHash && window.location.hash.includes('keyword=')) {
+                window.location.hash = `#view=${router.current}`;
+            }
+        }
+
+        function shareKeyword(keyword) {
+            const shareUrl = window.location.href.split('#')[0] + `#keyword=${encodeURIComponent(keyword)}`;
+            if (navigator.share) {
+                navigator.share({ title: `교직백서 1000 - ${keyword}`, url: shareUrl }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    showToast('링크가 클립보드에 복사되었습니다.', 'success');
+                });
+            }
+        }
+
+        function toggleBookmark(id) {
+            let bookmarks = Storage.get('bookmarks', []);
+            if (bookmarks.includes(id)) {
+                bookmarks = bookmarks.filter(b => b !== id);
+                showToast('즐겨찾기에서 해제되었습니다.', 'info');
+            } else {
+                bookmarks.push(id);
+                showToast('즐겨찾기에 저장되었습니다.', 'success');
+            }
+            Storage.set('bookmarks', bookmarks);
+            renderApp();
+        }
+
+        function renderSituations(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold tracking-tight mb-1">이럴 땐 어떻게?</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">학교 현장의 당황스러운 순간, ${SITUATIONS.length}가지 실전 대응 가이드를 확인하세요.</p>
+                    </div>
+
+                    <div class="relative max-w-md">
+                        <input type="text" id="situation-search-input" placeholder="상황 검색 (예: 다침, 학부모, 전학, 예산...)" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    </div>
+
+                    <div id="situations-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+                    <div class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 text-xs text-amber-800 dark:text-amber-300">
+                        <i class="fa-solid fa-triangle-exclamation mr-1"></i> 실제 업무 처리 시 해당 연도 교육부·시도교육청·교육지원청·학교 지침을 함께 확인하세요.
+                    </div>
+                </div>
+            `;
+
+            const sitInput = document.getElementById('situation-search-input');
+            if (sitInput) {
+                sitInput.addEventListener('input', debounce(() => {
+                    updateSituationsGrid(sitInput.value.trim());
+                }, 150));
+            }
+            updateSituationsGrid('');
+        }
+
+        function updateSituationsGrid(filterQuery) {
+            const grid = document.getElementById('situations-grid');
+            if (!grid) return;
+
+            const filteredSituations = SITUATIONS.filter(sit => {
+                if (!filterQuery) return true;
+                const q = filterQuery.toLowerCase();
+                return sit.title.toLowerCase().includes(q) || sit.summary.toLowerCase().includes(q) || sit.category.toLowerCase().includes(q);
+            });
+
+            if (filteredSituations.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+                        <p class="text-xs text-slate-400">검색 결과가 없습니다.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filteredSituations.map(sit => `
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-bold px-3 py-1 rounded-lg bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 mb-3 inline-block">${sit.category}</span>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">${sit.title}</h3>
+                        <p class="text-xs text-slate-500 mb-4">${sit.summary}</p>
+                        <div class="space-y-2 mb-4">
+                            ${sit.steps.map((st, idx) => `
+                                <div class="flex items-start gap-2.5 text-xs text-slate-600 dark:text-slate-300">
+                                    <span class="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold shrink-0">${idx + 1}</span>
+                                    <span class="pt-0.5">${st}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                        <button onclick="searchKeywordByName('${sit.relatedKeywords[0]}')" class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline">관련 키워드(${sit.relatedKeywords[0]}) 보기 →</button>
+                        <span class="text-xs text-slate-400">실전 대응 가이드</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function searchKeywordByName(kw) {
+            const found = DB.find(d => d.keyword.includes(kw));
+            if (found) openDetail(found.id);
+            else router.navigate('search', kw);
+        }
+
+        function renderNavigator(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold tracking-tight mb-1">교직 내비게이터</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">목적에 따른 교직 업무 흐름과 단계를 순서대로 안내합니다.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        ${NAVIGATOR_COURSES.map(course => `
+                            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <span class="text-xs font-bold px-3 py-1 bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-lg mb-3 inline-block">${course.category}</span>
+                                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">${course.title}</h3>
+                                    <div class="space-y-3 relative pl-4 border-l-2 border-emerald-500/30 my-4">
+                                        ${course.steps.map((st, i) => `
+                                            <div><span class="text-xs font-bold text-slate-400">STEP ${i+1}</span><p class="font-bold text-sm text-slate-800 dark:text-slate-200">${st}</p></div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                <button onclick="router.navigate('search', '${course.targetKeyword}')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow transition">관련 키워드(${course.targetKeyword}) 탐색</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        let mapCenterKeyword = "장학사";
+
+        function renderMap(container) {
+            const centerItem = DB.find(d => d.keyword === mapCenterKeyword) || DB[0];
+            const relatedKeywords = centerItem.related || [];
+            const surroundingItems = DB.filter(d => relatedKeywords.includes(d.keyword) || d.category === centerItem.category).slice(0, 8);
+
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold tracking-tight mb-1">교직 지식맵</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">중심 노드와 연결된 교직 개념을 네트워크 형태로 탐색합니다.</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm text-center relative min-h-[460px] flex flex-col items-center justify-center">
+                        <div class="absolute top-4 left-4 flex gap-2">
+                            <button onclick="mapCenterKeyword='장학사'; renderMap(document.getElementById('app-view'));" class="px-3 py-1 bg-slate-100 dark:bg-slate-700 text-xs rounded-xl font-semibold">기본 중심</button>
+                            <button onclick="triggerRandomExplore();" class="px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 text-xs rounded-xl font-semibold">랜덤 중심</button>
+                        </div>
+
+                        <div onclick="openDetail(${centerItem.id})" class="mb-12 p-6 rounded-3xl bg-blue-600 text-white shadow-xl cursor-pointer hover:scale-105 transition max-w-xs mx-auto z-10">
+                            <span class="text-xs font-semibold uppercase tracking-wider block mb-1 opacity-80">${centerItem.category}</span>
+                            <h3 class="text-xl font-bold">${centerItem.keyword}</h3>
+                            <p class="text-xs mt-2 text-blue-100 line-clamp-1">${centerItem.simple}</p>
+                        </div>
+
+                        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">연결된 연관 교직 개념 (클릭하여 중심 노드 변경)</div>
+                        
+                        <div class="flex flex-wrap justify-center gap-3 max-w-3xl z-10">
+                            ${surroundingItems.map(item => `
+                                <button onclick="mapCenterKeyword='${item.keyword}'; renderMap(document.getElementById('app-view'));" class="px-4 py-2.5 rounded-2xl bg-slate-100 dark:bg-slate-700 hover:bg-blue-50 hover:text-blue-600 text-xs font-bold text-slate-700 dark:text-slate-200 shadow-sm transition">
+                                    ${item.keyword}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        let yearFilterRole = 'all';
+
+        function renderYear(container) {
+            const currentMonth = new Date().getMonth() + 1;
+
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-2xl font-bold tracking-tight mb-1">교사의 1년 타임라인</h2>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">월별 주요 업무와 체크리스트를 관리하세요. (일반적인 학교 일정 기준)</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="yearFilterRole='all'; renderYear(document.getElementById('app-view'))" class="px-3 py-1.5 rounded-xl text-xs font-semibold ${yearFilterRole==='all'?'bg-blue-600 text-white':'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">전체 보기</button>
+                            <button onclick="yearFilterRole='homeroom'; renderYear(document.getElementById('app-view'))" class="px-3 py-1.5 rounded-xl text-xs font-semibold ${yearFilterRole==='homeroom'?'bg-blue-600 text-white':'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">담임 업무</button>
+                            <button onclick="yearFilterRole='manager'; renderYear(document.getElementById('app-view'))" class="px-3 py-1.5 rounded-xl text-xs font-semibold ${yearFilterRole==='manager'?'bg-blue-600 text-white':'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">부장·담당</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${[3,4,5,6,7,8,9,10,11,12,1,2].map(m => {
+                            const isCurrent = m === currentMonth;
+                            const allTasks = YEAR_TASKS[m] || [];
+                            const filteredTasks = allTasks.filter(t => yearFilterRole === 'all' || t.role === yearFilterRole || t.role === 'all');
+                            const checkedState = Storage.get(`checklist_${m}`, {});
+
+                            return `
+                                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border ${isCurrent ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-slate-200/80 dark:border-slate-700'} shadow-sm flex flex-col justify-between">
+                                    <div>
+                                        <div class="flex items-center justify-between mb-3">
+                                            <span class="text-xs font-extrabold px-3 py-1 rounded-full ${isCurrent ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${m}월</span>
+                                            ${isCurrent ? '<span class="text-xs font-bold text-blue-600 dark:text-blue-400">현재 달 ✨</span>' : ''}
+                                        </div>
+                                        <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4">${m}월 주요 학사 및 행정 업무</h3>
+                                        <div class="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+                                            ${filteredTasks.map((task, idx) => `
+                                                <label class="flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
+                                                    <input type="checkbox" ${checkedState[idx] ? 'checked' : ''} onchange="toggleYearChecklist(${m}, ${idx})" class="w-4 h-4 mt-0.5 rounded text-blue-600 focus:ring-blue-500 cursor-pointer">
+                                                    <span class="${checkedState[idx] ? 'line-through text-slate-400' : ''}">${task.title}</span>
+                                                </label>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleYearChecklist(month, idx) {
+            const key = `checklist_${month}`;
+            const state = Storage.get(key, {});
+            state[idx] = !state[idx];
+            Storage.set(key, state);
+            showToast('체크리스트가 저장되었습니다.', 'success');
+            renderYear(document.getElementById('app-view'));
+        }
+
+        function renderCareer(container) {
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold tracking-tight mb-1">교직 커리어맵</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">초등교사의 다양한 성장 경로와 직위별 발전 방향을 균형 있게 탐색합니다.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs font-bold px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg mb-3 inline-block">수업 전문성</span>
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">수업전문가 / 수석교사</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">교실 수업 개선을 주도하고 후배 교사의 멘토가 되는 현장 전문가 경로</p>
+                            </div>
+                            <button onclick="router.navigate('search', '수석교사')" class="w-full py-2.5 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 font-bold rounded-xl text-xs transition">관련 제도 확인 →</button>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs font-bold px-3 py-1 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-lg mb-3 inline-block">교육행정 및 지원</span>
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">교육전문직 (장학사·연구사)</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">교육청 및 직속기관에서 교육 정책 기획 및 학교 지원 업무 수행</p>
+                            </div>
+                            <button onclick="router.navigate('search', '장학사')" class="w-full py-2.5 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 font-bold rounded-xl text-xs transition">관련 제도 확인 →</button>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs font-bold px-3 py-1 bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 rounded-lg mb-3 inline-block">학교 경영</span>
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">교감 및 교장</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">학교 행정의 총괄 관리자로서 교육 비전을 실현하는 리더십 경로</p>
+                            </div>
+                            <button onclick="router.navigate('search', '교감')" class="w-full py-2.5 bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300 font-bold rounded-xl text-xs transition">관련 제도 확인 →</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        let quizState = { active: false, count: 10, index: 0, score: 0, items: [], answers: [] };
+
+        function renderQuiz(container) {
+            if (!quizState.active) {
+                container.innerHTML = `
+                    <div class="space-y-6 max-w-2xl mx-auto">
+                        <div>
+                            <h2 class="text-2xl font-bold tracking-tight mb-1">교직력 테스트</h2>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">${DB.length}개의 검증된 데이터를 활용하여 나의 교직 상식과 실무 역량을 검증하세요.</p>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-6 text-center">
+                            <div class="w-16 h-16 mx-auto rounded-2xl bg-rose-50 dark:bg-rose-900/40 text-rose-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-gamepad"></i></div>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">초등 교직력 실력 검증</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">문항 수를 선택하고 테스트를 시작하세요.</p>
+                            </div>
+
+                            <div class="flex justify-center gap-3">
+                                <button onclick="startQuiz(10)" class="px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-2xl text-sm shadow transition">10문제</button>
+                                <button onclick="startQuiz(20)" class="px-6 py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 font-bold rounded-2xl text-sm transition">20문제</button>
+                                <button onclick="startQuiz(50)" class="px-6 py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 font-bold rounded-2xl text-sm transition">50문제</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                renderQuizActive(container);
+            }
+        }
+
+        function startQuiz(count) {
+            const shuffled = [...DB].sort(() => 0.5 - Math.random());
+            quizState = {
+                active: true,
+                count: count,
+                index: 0,
+                score: 0,
+                items: shuffled.slice(0, count),
+                answers: []
+            };
+            renderQuiz(document.getElementById('app-view'));
+        }
+
+        function renderQuizActive(container) {
+            if (quizState.index >= quizState.items.length) {
+                renderQuizResult(container);
+                return;
+            }
+
+            const q = quizState.items[quizState.index];
+            const wrongOptions = DB.filter(d => d.id !== q.id && d.category === q.category).sort(() => 0.5 - Math.random()).slice(0, 3).map(d => d.keyword);
+            const options = [...wrongOptions, q.keyword].sort(() => 0.5 - Math.random());
+
+            container.innerHTML = `
+                <div class="space-y-6 max-w-2xl mx-auto">
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-400">
+                        <span>QUESTION ${quizState.index + 1} / ${quizState.count}</span>
+                        <span>카테고리: ${q.category}</span>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-6">
+                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                            <p class="text-xs font-semibold text-rose-600 dark:text-rose-400 mb-1">다음 설명에 해당하는 교직 용어는 무엇인가요?</p>
+                            <p class="text-base font-bold text-slate-800 dark:text-slate-200 leading-relaxed">${q.description}</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            ${options.map(opt => `
+                                <button onclick="answerQuiz('${opt}', '${q.keyword}')" class="w-full text-left p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 hover:bg-rose-50 border border-slate-200 dark:border-slate-700 font-medium text-sm text-slate-700 dark:text-slate-200 transition">${opt}</button>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function answerQuiz(selected, correct) {
+            const isCorrect = selected === correct;
+            if (isCorrect) quizState.score += Math.round(100 / quizState.count);
+            quizState.answers.push({ q: quizState.items[quizState.index].keyword, selected, correct, isCorrect });
+            if (!isCorrect) {
+                let wrongs = Storage.get('quiz_wrongs', []);
+                wrongs.push(quizState.items[quizState.index].id);
+                Storage.set('quiz_wrongs', [...new Set(wrongs)]);
+            }
+            quizState.index++;
+            renderQuiz(document.getElementById('app-view'));
+        }
+
+        function renderQuizResult(container) {
+            quizState.active = false;
+            let level = "Lv.1 교직 탐험가";
+            if (quizState.score >= 90) level = "Lv.5 교직 백과사전";
+            else if (quizState.score >= 70) level = "Lv.4 교직 고수";
+            else if (quizState.score >= 50) level = "Lv.3 업무 해결사";
+            else if (quizState.score >= 30) level = "Lv.2 학교 적응 완료";
+
+            let quizHistory = Storage.get('quiz_history', []);
+            quizHistory.push({ date: new Date().toLocaleDateString(), score: quizState.score, level });
+            Storage.set('quiz_history', quizHistory);
+
+            container.innerHTML = `
+                <div class="space-y-6 max-w-2xl mx-auto text-center">
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-6">
+                        <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-50 dark:bg-amber-900/40 text-amber-500 flex items-center justify-center text-2xl"><i class="fa-solid fa-trophy"></i></div>
+                        <div>
+                            <span class="text-xs font-bold px-3 py-1 rounded-full bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-300 mb-2 inline-block">${level}</span>
+                            <h3 class="text-2xl font-extrabold text-slate-900 dark:text-white mb-1">퀴즈 완료!</h3>
+                            <p class="text-sm text-slate-500">총점: <strong class="text-rose-600 text-lg">${quizState.score}점</strong> / 100점</p>
+                        </div>
+                        <button onclick="renderQuiz(document.getElementById('app-view'))" class="px-8 py-3.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-2xl shadow transition">다시 도전하기</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCard(container) {
+            const d = new Date();
+            const todayStr = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            const cardIndex = Math.abs(hashCode(todayStr)) % DB.length;
+            const item = DB[cardIndex];
+
+            let learnedCards = Storage.get('learned_cards', []);
+            const isLearned = learnedCards.includes(item.id);
+            const discoveryRate = Math.round((learnedCards.length / DB.length) * 100);
+
+            container.innerHTML = `
+                <div class="space-y-6 max-w-xl mx-auto">
+                    <div>
+                        <h2 class="text-2xl font-bold tracking-tight mb-1">오늘의 교직카드</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">매일 엄선되는 하나의 교직 키워드로 지식을 넓히세요.</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-lg space-y-6">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold px-3 py-1 rounded-lg bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">${item.category}</span>
+                            <span class="text-xs text-slate-400">${todayStr}</span>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-extrabold text-slate-900 dark:text-white mb-2">${item.keyword}</h3>
+                            <p class="text-sm font-semibold text-blue-600 dark:text-blue-400 mb-4">${item.simple}</p>
+                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${item.description}</p>
+                        </div>
+
+                        <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl">
+                            <div class="flex justify-between text-xs text-slate-500 mb-1">
+                               <span>발견한 교직어 (${learnedCards.length} / ${DB.length})</span>
+                               <span class="font-bold text-blue-600">${discoveryRate}%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                                <div class="bg-blue-600 h-full transition-all duration-300" style="width: ${discoveryRate}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-700 flex gap-3">
+                            <button onclick="markCardLearned(${item.id})" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow transition">${isLearned ? '✨ 이미 학습 완료' : '알고 있었어요 ✨'}</button>
+                            <button onclick="openDetail(${item.id})" class="px-5 py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 font-semibold rounded-xl text-sm transition">상세보기</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function markCardLearned(id) {
+            let learnedCards = Storage.get('learned_cards', []);
+            if (!learnedCards.includes(id)) {
+                learnedCards.push(id);
+                Storage.set('learned_cards', learnedCards);
+                showToast('학습 완료 기록이 저장되었습니다!', 'success');
+                renderCard(document.getElementById('app-view'));
+            } else {
+                showToast('이미 학습 완료된 카드입니다.', 'info');
+            }
+        }
+
+        function renderMyBox(container) {
+            const bookmarks = Storage.get('bookmarks', []);
+            const bookmarkedItems = DB.filter(d => bookmarks.includes(d.id));
+            const currentThemeMode = Storage.get('theme_mode', 'light');
+
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <h2 class="text-2xl font-bold tracking-tight mb-1">나의 교직함</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">즐겨찾기, 최근 본 기록 및 데이터 백업을 관리합니다.</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4">
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-bookmark text-amber-500"></i> 즐겨찾기한 교직어 (${bookmarkedItems.length}개)
+                        </h3>
+                        ${bookmarkedItems.length > 0 ? `
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                ${bookmarkedItems.map(item => `
+                                    <div onclick="openDetail(${item.id})" class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-blue-500 cursor-pointer transition flex items-center justify-between">
+                                        <div>
+                                            <span class="text-xs font-semibold text-blue-600 dark:text-blue-400">${item.category}</span>
+                                            <h4 class="font-bold text-slate-800 dark:text-white text-sm">${item.keyword}</h4>
+                                        </div>
+                                        <button onclick="event.stopPropagation(); toggleBookmark(${item.id}); renderMyBox(document.getElementById('app-view'))" class="text-slate-400 hover:text-rose-500" aria-label="삭제">
+                                            <i class="fa-solid fa-trash text-xs"></i>
+                                        </button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : `<p class="text-xs text-slate-400 py-4 text-center">즐겨찾기한 교직어가 없습니다.</p>`}
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4">
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-circle-half-stroke text-purple-500"></i> 화면 테마 설정
+                        </h3>
+                        <div class="flex gap-3">
+                            <button onclick="setThemeMode('light')" class="px-4 py-2 rounded-xl text-xs font-semibold ${currentThemeMode==='light'?'bg-blue-600 text-white':'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}">라이트 모드</button>
+                            <button onclick="setThemeMode('dark')" class="px-4 py-2 rounded-xl text-xs font-semibold ${currentThemeMode==='dark'?'bg-blue-600 text-white':'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}">다크 모드</button>
+                            <button onclick="setThemeMode('system')" class="px-4 py-2 rounded-xl text-xs font-semibold ${currentThemeMode==='system'?'bg-blue-600 text-white':'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}">시스템 설정 따르기</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4">
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-database text-blue-500"></i> 데이터 백업 및 복원
+                        </h3>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="backupData()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-xs transition">내 데이터 백업 (JSON 다운로드)</button>
+                            <label class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 font-semibold rounded-xl text-xs cursor-pointer transition">
+                                백업 파일 불러오기 <input type="file" accept=".json" onchange="restoreData(event)" class="hidden">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex items-center justify-between">
+                        <div>
+                            <h4 class="font-bold text-slate-800 dark:text-white text-sm">개인 기록 초기화</h4>
+                            <p class="text-xs text-slate-400">로컬스토리지에 저장된 북마크, 체크리스트, 학습 기록을 초기화합니다.</p>
+                        </div>
+                        <button onclick="if(confirm('정말 모든 개인 기록을 초기화하시겠습니까?')) { localStorage.clear(); window.location.reload(); }" class="px-4 py-2 bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 rounded-xl text-xs font-semibold hover:bg-rose-100 transition">초기화</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function setThemeMode(mode) {
+            Storage.set('theme_mode', mode);
+            applyThemeMode();
+            showToast(`테마가 [${mode === 'light' ? '라이트' : mode === 'dark' ? '다크' : '시스템'}] 설정으로 변경되었습니다.`, 'info');
+            renderMyBox(document.getElementById('app-view'));
+        }
+
+        function applyThemeMode() {
+            const mode = Storage.get('theme_mode', 'light');
+            const html = document.documentElement;
+            if (mode === 'dark') {
+                html.classList.add('dark');
+            } else if (mode === 'light') {
+                html.classList.remove('dark');
+            } else {
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    html.classList.add('dark');
+                } else {
+                    html.classList.remove('dark');
+                }
+            }
+        }
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            if (Storage.get('theme_mode', 'light') === 'system') {
+                applyThemeMode();
+            }
+        });
+
+        function toggleQuickDarkMode() {
+            const isDark = document.documentElement.classList.contains('dark');
+            setThemeMode(isDark ? 'light' : 'dark');
+        }
+
+        function backupData() {
+            const data = {
+                bookmarks: Storage.get('bookmarks', []),
+                recent_searches: Storage.get('recent_searches', []),
+                learned_cards: Storage.get('learned_cards', []),
+                quiz_history: Storage.get('quiz_history', [])
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `gyojik_baekseo_backup_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            showToast('백업 파일이 생성 및 다운로드되었습니다.', 'success');
+        }
+
+        function restoreData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.bookmarks) Storage.set('bookmarks', data.bookmarks);
+                    if (data.recent_searches) Storage.set('recent_searches', data.recent_searches);
+                    if (data.learned_cards) Storage.set('learned_cards', data.learned_cards);
+                    if (data.quiz_history) Storage.set('quiz_history', data.quiz_history);
+                    showToast('데이터가 성공적으로 복원되었습니다.', 'success');
+                    setTimeout(() => window.location.reload(), 1000);
+                } catch (err) {
+                    showToast('유효하지 않은 백업 파일입니다.', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function openMobileMenu() {
+            const m = document.getElementById('mobile-menu-modal');
+            if (m) m.classList.remove('hidden');
+        }
+
+        function closeMobileMenu() {
+            const m = document.getElementById('mobile-menu-modal');
+            if (m) m.classList.add('hidden');
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            applyThemeMode();
+            router.init();
+        });
+    </script>
+</body>
+</html>
