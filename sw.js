@@ -3,7 +3,7 @@
  * - CDN 파일(Tailwind, 폰트, 아이콘): 저장본 우선 → 없으면 네트워크
  * 앱 파일 구성을 크게 바꾸면 아래 VERSION 숫자를 올려 주세요.
  */
-const VERSION = 'gb1000-v2';
+const VERSION = 'gb1000-v3';
 const CORE = ['./', './index.html', './terms.json', './manifest.webmanifest', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 const CDN = [
   'https://cdn.tailwindcss.com',
