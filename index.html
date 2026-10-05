@@ -21,6 +21,7 @@
     <meta property="og:locale" content="ko_KR">
     <meta name="theme-color" content="#2563eb">
     <link rel="manifest" href="manifest.webmanifest">
+    <script src="ys-install.js"></script>
     <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -86,6 +87,7 @@
                 </div>
             </div>
             <div class="flex items-center space-x-1 md:space-x-2">
+                <button type="button" data-ys-install class="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold whitespace-nowrap transition" aria-label="앱 설치">📲 <span class="hidden sm:inline">앱 </span>설치</button>
                 <button onclick="toggleQuickDarkMode()" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="다크모드 전환"><i class="fa-solid fa-moon dark:hidden"></i><i class="fa-solid fa-sun hidden dark:inline text-amber-400"></i></button>
                 <button onclick="router.navigate('mybox')" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition relative" aria-label="나의 교직함"><i class="fa-solid fa-box-archive"></i><span id="bookmark-badge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full hidden"></span></button>
                 <button onclick="openMobileMenu()" class="md:hidden p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="전체 메뉴"><i class="fa-solid fa-bars text-lg"></i></button>
@@ -1782,7 +1784,6 @@
             const currentThemeMode = Storage.get('theme_mode', 'light');
             const s = getSettings();
             const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-            const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
             const field = 'w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm outline-none mt-1';
             const card = 'bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 space-y-4';
 
@@ -1813,8 +1814,7 @@
                     <div class="${card}">
                         <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-mobile-screen-button text-blue-500"></i> 앱으로 설치하기</h3>
                         ${standalone ? `<p class="text-sm text-emerald-600 dark:text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check"></i> 지금 앱으로 실행 중이에요. 인터넷이 끊겨도 열립니다.</p>`
-                        : deferredInstallPrompt ? `<p class="text-xs text-slate-500 dark:text-slate-400">홈 화면(바탕화면)에 아이콘이 생기고, 학교 와이파이가 끊겨도 열려요.</p><button onclick="installApp()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow"><i class="fa-solid fa-download"></i> 앱 설치</button>`
-                        : `<p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">${isIOS ? '아이폰·아이패드: <b>Safari</b>에서 아래쪽 <b>공유 버튼</b> → <b>홈 화면에 추가</b>를 누르세요.' : '안드로이드 크롬: 오른쪽 위 <b>⋮ 메뉴</b> → <b>앱 설치</b>(또는 홈 화면에 추가) · PC 크롬/엣지: 주소창 오른쪽의 <b>설치 아이콘</b>을 누르세요.'}<br>한 번 열어 둔 화면은 인터넷이 끊겨도 다시 열려요.</p>`}
+                        : `<p class="text-xs text-slate-500 dark:text-slate-400">홈 화면(바탕화면)에 아이콘이 생기고, 학교 와이파이가 끊겨도 열려요.</p><button type="button" data-ys-install class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow"><i class="fa-solid fa-download"></i> 앱 설치</button>`}
                     </div>
 
                     <div class="${card}">
@@ -2496,15 +2496,7 @@
         // ====================================================
         // 2. 앱 설치(PWA) · 오프라인
         // ====================================================
-        let deferredInstallPrompt = null;
-        window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstallPrompt = e; if (router.current === 'mybox') router.render(); });
-        window.addEventListener('appinstalled', () => { deferredInstallPrompt = null; showToast('앱으로 설치되었습니다!'); if (router.current === 'mybox') router.render(); });
-        async function installApp() {
-            if (!deferredInstallPrompt) return;
-            deferredInstallPrompt.prompt();
-            try { await deferredInstallPrompt.userChoice; } catch (e) {}
-            deferredInstallPrompt = null; if (router.current === 'mybox') router.render();
-        }
+        // 📲 앱 설치 버튼([data-ys-install])은 ys-install.js가 맡는다: 바로 설치 또는 기기별 설치 방법 안내
         function registerSW() {
             if (!('serviceWorker' in navigator)) return;
             const ok = location.protocol === 'https:' || ['localhost', '127.0.0.1'].includes(location.hostname);
