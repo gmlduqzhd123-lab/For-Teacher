@@ -4,6 +4,8 @@
  * 앱 파일 구성을 크게 바꾸면 아래 VERSION 숫자를 올려 주세요.
  */
 const VERSION = 'gb1000-v7';
+// 같은 주소(gmlduqzhd123-lab.github.io)의 다른 앱들과 저장소를 함께 쓰므로, 이 앱의 이전 캐시만 지운다.
+const CACHE_PREFIX = 'gb1000-v';
 const CORE = ['./', './index.html', './terms.json', './manifest.webmanifest', './ys-install.js', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'];
 const CDN = [
   'https://cdn.tailwindcss.com',
@@ -23,7 +25,7 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k)));
+    await Promise.all(keys.filter(k => k.startsWith(CACHE_PREFIX) && k !== VERSION).map(k => caches.delete(k)));
     await self.clients.claim();
   })());
 });
