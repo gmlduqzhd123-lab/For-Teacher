@@ -74,23 +74,24 @@
 
     <!-- 상단 헤더 -->
     <header class="bg-white/85 dark:bg-slate-800/85 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 h-16 shrink-0 z-30">
-        <div class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between gap-2">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="router.navigate('home')">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md">
                     <i class="fa-solid fa-graduation-cap text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg leading-tight flex items-center gap-2">
-                        교직백서 1000 <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-black tracking-wider">OS Final</span>
+                    <h1 class="font-bold text-base sm:text-lg leading-tight flex items-center gap-2 whitespace-nowrap">
+                        교직백서 1000 <span class="hidden sm:inline text-[10px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-black tracking-wider">OS Final</span>
                     </h1>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">초등교사 실무 완벽 지원 플랫폼</p>
+                    <p class="hidden sm:block text-xs text-slate-500 dark:text-slate-400">초등교사 실무 완벽 지원 플랫폼</p>
                 </div>
             </div>
             <div class="flex items-center space-x-1 md:space-x-2">
-                <button type="button" data-ys-install class="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold whitespace-nowrap transition" aria-label="앱 설치">📲 <span class="hidden sm:inline">앱 </span>설치</button>
-                <button onclick="toggleQuickDarkMode()" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="다크모드 전환"><i class="fa-solid fa-moon dark:hidden"></i><i class="fa-solid fa-sun hidden dark:inline text-amber-400"></i></button>
-                <button onclick="router.navigate('mybox')" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition relative" aria-label="나의 교직함"><i class="fa-solid fa-box-archive"></i><span id="bookmark-badge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full hidden"></span></button>
-                <button onclick="openMobileMenu()" class="md:hidden p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="전체 메뉴"><i class="fa-solid fa-bars text-lg"></i></button>
+                <button type="button" data-ys-install class="px-2.5 sm:px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold whitespace-nowrap transition" aria-label="앱 설치">📲 <span class="hidden sm:inline">앱 </span>설치</button>
+                <button type="button" data-qr class="px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-bold whitespace-nowrap transition" aria-label="QR 코드로 접속"><span class="hidden sm:inline">📱 </span>QR</button>
+                <button onclick="toggleQuickDarkMode()" class="p-2 sm:p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="다크모드 전환"><i class="fa-solid fa-moon dark:hidden"></i><i class="fa-solid fa-sun hidden dark:inline text-amber-400"></i></button>
+                <button onclick="router.navigate('mybox')" class="p-2 sm:p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition relative" aria-label="나의 교직함"><i class="fa-solid fa-box-archive"></i><span id="bookmark-badge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full hidden"></span></button>
+                <button onclick="openMobileMenu()" class="md:hidden p-2 sm:p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="전체 메뉴"><i class="fa-solid fa-bars text-lg"></i></button>
             </div>
         </div>
     </header>
