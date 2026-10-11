@@ -35,8 +35,12 @@
     <!-- 폰트 & 아이콘 -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;900&display=swap">
     <style>
         body { font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+        .font-serif-kr { font-family: 'Noto Serif KR', 'Nanum Myeongjo', 'AppleMyungjo', serif; word-break: keep-all; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .timer-blink { animation: blinker 1s linear infinite; color: #ef4444; }
@@ -523,85 +527,91 @@
             let completedCount = 0; for (let i = 0; i < monthTasksCount; i++) if (checkedState[i]) completedCount++;
             const completionRate = monthTasksCount > 0 ? Math.round((completedCount / monthTasksCount) * 100) : 0;
 
+            const toolLink = 'group block py-5 border-t border-slate-300 dark:border-slate-700 text-left w-full';
+            const tools = [
+                ['tools-doc', '문서 생성기', '기안문·알림장 초안을 바로'],
+                ['tools-class', '학급 도구', '자리 배치와 학급 운영'],
+                ['timetable', '시간표 · 종 알림', '지금 몇 교시인지 한눈에'],
+                ['tools-record', '생기부 문장 도우미', '행동특성·교과 문장 다듬기'],
+                ['situations', '이럴 땐 어떻게?', '상황별 처리 순서 가이드'],
+                ['year', '교사의 1년', '달마다 챙길 업무 타임라인'],
+                ['tools-board', '실전 태스크 보드', '해야 할 업무를 한 판에'],
+                ['map', '교직 지식맵', '용어 사이의 연결을 지도로']
+            ];
+            const popular = ['관외 전보', '학교폭력', '품의', '교육활동 침해'];
+            const chip = 'px-3.5 py-2 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm text-slate-700 dark:text-slate-200 hover:border-blue-700 hover:text-blue-700 dark:hover:border-blue-400 dark:hover:text-blue-300 transition';
+            const extLink = 'min-h-[52px] flex items-center justify-between px-4 rounded-xl border border-slate-200 dark:border-slate-700 font-semibold text-sm text-slate-800 dark:text-slate-100 hover:border-blue-700 dark:hover:border-blue-400 transition';
+
             container.innerHTML = `
-                <div class="space-y-6 animate-fade-in">
-                    <div class="flex flex-col md:flex-row gap-3">
-                        <div class="flex-1 bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-700 shadow-sm flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-rose-50 dark:bg-rose-900/40 text-rose-500 dark:text-rose-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-mug-hot"></i></div>
-                            <div><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">오늘의 멘탈 케어</p><p class="text-sm font-semibold text-slate-700 dark:text-slate-200">"${quote}"</p></div>
+                <div class="max-w-6xl mx-auto animate-fade-in">
+                    <section class="pt-6 md:pt-14 pb-10 md:pb-14">
+                        <p class="text-xs md:text-sm font-semibold tracking-[0.08em] text-blue-700 dark:text-blue-400 mb-4 md:mb-5">초등교사를 위한 교직생활 OS</p>
+                        <h2 class="font-serif-kr font-black text-[34px] leading-[1.2] md:text-[60px] md:leading-[1.15] tracking-tight text-slate-900 dark:text-white">교직의 모든 질문에,<br>근거 있는 답을.</h2>
+                        <p class="mt-5 md:mt-6 mb-8 md:mb-10 text-base md:text-lg leading-relaxed text-slate-600 dark:text-slate-300 max-w-xl">${DB.length.toLocaleString()}개 교직 용어와 실전 업무 가이드. 전보부터 품의까지, 찾고 바로 처리하세요.</p>
+                        <div class="flex max-w-2xl rounded-xl border-2 border-slate-900 dark:border-slate-200 bg-white dark:bg-slate-800 overflow-hidden focus-within:ring-4 focus-within:ring-blue-500/20">
+                            <label for="home-search-input" class="sr-only">교직 용어 검색</label>
+                            <input type="text" id="home-search-input" placeholder="전보, 학폭, 품의, 나이스..." class="flex-1 min-w-0 min-h-[56px] md:min-h-[60px] px-4 md:px-5 bg-transparent text-base md:text-lg text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none">
+                            <button onclick="triggerHomeSearch()" class="shrink-0 px-6 md:px-8 bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold text-base md:text-lg transition">검색</button>
                         </div>
-                        <div onclick="router.navigate('timetable')" class="cursor-pointer bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-700 shadow-sm flex items-center gap-3 md:min-w-[230px] hover:border-blue-400 transition" role="button" aria-label="시간표 열기">
-                            <div class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0"><i class="fa-solid fa-bell"></i></div>
-                            <div class="min-w-0 flex-1"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider"><span class="now-clock">--:--</span> · 지금은</p><p class="now-status-title text-sm font-bold text-slate-800 dark:text-slate-100 truncate">-</p><p class="now-status-sub text-[11px] text-slate-500 dark:text-slate-400 truncate">-</p></div>
+                        <div class="flex flex-wrap items-center gap-2 mt-4">
+                            <span class="text-sm text-slate-500 dark:text-slate-400 mr-1">자주 찾는</span>
+                            ${popular.map(kw => `<button type="button" data-kw="${escapeHTML(kw)}" onclick="router.navigate('search', this.dataset.kw)" class="${chip}">${escapeHTML(kw)}</button>`).join('')}
                         </div>
-                        <div class="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl p-4 text-white shadow-sm flex items-center justify-between min-w-[200px]">
-                            <div><p class="text-[10px] font-bold text-emerald-100 uppercase tracking-wider">${vacName}까지</p><p class="text-xl font-extrabold">${diffDays === 0 ? 'D-Day' : `D - ${diffDays}`}</p></div>
-                            <i class="fa-solid fa-plane-departure text-3xl opacity-50"></i>
-                        </div>
-                    </div>
+                    </section>
 
-                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-6 md:p-10 text-white shadow-xl relative overflow-hidden">
-                        <div class="absolute right-0 top-0 translate-x-8 -translate-y-8 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-                        <div class="relative z-10 max-w-2xl">
-                            <span class="inline-block px-3 py-1 rounded-full bg-white/20 text-xs font-semibold mb-3 backdrop-blur-sm">초등교사 필수 OS · 일반 학교 일정 기준</span>
-                            <h2 class="text-2xl md:text-4xl font-extrabold tracking-tight mb-2">선생님, 오늘은 무엇을 도와드릴까요?</h2>
-                            <p class="text-blue-100 text-sm md:text-base mb-6 opacity-90">${DB.length}개 교직 용어와 실전 업무 가이드</p>
-                            <div class="relative flex gap-2">
-                                <input type="text" id="home-search-input" placeholder="전보, 학폭, 품의, 나이스..." class="w-full pl-12 pr-4 py-4 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 placeholder-slate-400 font-medium shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-400/30 transition">
-                                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
-                                <button onclick="triggerHomeSearch()" class="shrink-0 px-6 bg-blue-800 hover:bg-blue-900 text-white font-semibold rounded-2xl shadow transition">검색</button>
+                    <section aria-label="오늘" class="grid grid-cols-1 md:grid-cols-3 border-t-2 border-slate-900 dark:border-slate-300 border-b border-b-slate-200 dark:border-b-slate-700 bg-white dark:bg-slate-800/60">
+                        <button type="button" onclick="router.navigate('timetable')" class="text-left p-5 md:p-6 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition" aria-label="시간표 열기">
+                            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5"><span class="now-clock">--:--</span> · 지금은</p>
+                            <p class="now-status-title text-xl md:text-2xl font-bold text-slate-900 dark:text-white truncate">-</p>
+                            <p class="now-status-sub text-sm text-slate-600 dark:text-slate-300 mt-1 truncate">-</p>
+                        </button>
+                        <div class="p-5 md:p-6 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-700">
+                            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">${d.getMonth() + 1}월 업무 달성률</p>
+                            <p id="home-completion-rate" class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">${completionRate}%</p>
+                            <div class="mt-3 w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden"><div id="home-completion-bar" class="bg-blue-700 dark:bg-blue-400 h-full transition-all" style="width: ${completionRate}%"></div></div>
+                        </div>
+                        <div class="p-5 md:p-6">
+                            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">${vacName}까지</p>
+                            <p class="text-xl md:text-2xl font-bold text-blue-700 dark:text-blue-400">${diffDays === 0 ? 'D-Day' : `D-${diffDays}`}</p>
+                            <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">일반 학교 일정 기준</p>
+                        </div>
+                    </section>
+                    <p class="mt-4 text-sm text-slate-500 dark:text-slate-400"><span class="font-semibold text-slate-600 dark:text-slate-300">오늘의 한 마디</span> · ${quote}</p>
+
+                    <section class="pt-14 md:pt-16">
+                        <h3 class="font-serif-kr text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-5">실무 도구</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8">
+                            ${tools.map(([route, name, desc], i) => `<button type="button" onclick="router.navigate('${route}')" class="${toolLink}"><span class="block text-xs font-semibold text-blue-700 dark:text-blue-400 mb-2">${String(i + 1).padStart(2, '0')}</span><span class="block text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-300 transition">${name}</span><span class="block mt-1 text-sm text-slate-500 dark:text-slate-400">${desc}</span></button>`).join('')}
+                        </div>
+                    </section>
+
+                    <section class="pt-10 md:pt-12 grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-6">
+                        <article class="rounded-2xl bg-slate-900 dark:bg-slate-800 dark:border dark:border-slate-700 text-slate-50 p-7 md:p-8 flex flex-col">
+                            <p class="text-xs font-semibold tracking-[0.08em] text-blue-300 mb-4">${cardIsReview ? '오늘의 복습 카드' : '오늘의 교직카드'}</p>
+                            <button type="button" onclick="openDetail(${todaysCard.id})" class="text-left group">
+                                <span class="block font-serif-kr text-3xl md:text-4xl font-black tracking-tight group-hover:text-blue-200 transition">${escapeHTML(todaysCard.keyword)}</span>
+                                <span class="block mt-2 text-sm text-slate-300">${escapeHTML(todaysCard.category)}</span>
+                                <span class="block mt-3 text-base leading-relaxed text-slate-200 line-clamp-3">${escapeHTML(todaysCard.description)}</span>
+                            </button>
+                            <button type="button" onclick="router.navigate('card')" class="mt-6 self-start min-h-[44px] px-4 rounded-lg border border-slate-300 text-sm font-semibold hover:bg-white hover:text-slate-900 transition">카드 전체 학습 →</button>
+                        </article>
+                        <div class="rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-7 md:p-8">
+                            <h3 class="text-xs font-semibold tracking-[0.08em] text-slate-500 dark:text-slate-400 mb-4">${d.getMonth() + 1}월 체크리스트</h3>
+                            <ul class="space-y-1" id="home-checklist-preview"></ul>
+                            <button type="button" onclick="router.navigate('year')" class="mt-4 text-sm font-semibold text-blue-700 dark:text-blue-400 hover:underline">교사의 1년에서 전체 보기 →</button>
+                        </div>
+                        <div class="rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-7 md:p-8">
+                            <h3 class="text-xs font-semibold tracking-[0.08em] text-slate-500 dark:text-slate-400 mb-4">최근 검색</h3>
+                            ${recentSearches.length > 0 ? `<div class="flex flex-wrap gap-2">${recentSearches.map(kw => `<button type="button" data-kw="${escapeHTML(kw)}" onclick="router.navigate('search', this.dataset.kw)" class="${chip}">${escapeHTML(kw)}</button>`).join('')}</div>` : `<p class="text-sm text-slate-400 dark:text-slate-500">아직 검색 기록이 없습니다.</p>`}
+                            <h3 class="text-xs font-semibold tracking-[0.08em] text-slate-500 dark:text-slate-400 mt-7 mb-3">업무 바로가기</h3>
+                            <div class="grid grid-cols-2 lg:grid-cols-1 gap-2.5">
+                                <a href="https://neis.go.kr" target="_blank" rel="noopener noreferrer" class="${extLink}">NEIS <span aria-hidden="true" class="text-slate-400">↗</span></a>
+                                <a href="https://klef.go.kr" target="_blank" rel="noopener noreferrer" class="${extLink}">K-에듀파인 <span aria-hidden="true" class="text-slate-400">↗</span></a>
+                                <a href="https://www.teachiworld.com" target="_blank" rel="noopener noreferrer" class="${extLink}">맞춤형복지 <span aria-hidden="true" class="text-slate-400">↗</span></a>
+                                <a href="https://www.moe.go.kr" target="_blank" rel="noopener noreferrer" class="${extLink}">교육부 <span aria-hidden="true" class="text-slate-400">↗</span></a>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-2 pr-4">
-                        <a href="https://neis.go.kr" target="_blank" rel="noopener noreferrer" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-link text-blue-500 dark:text-blue-400"></i> NEIS (나이스)</a>
-                        <a href="https://klef.go.kr" target="_blank" rel="noopener noreferrer" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-won-sign text-amber-500 dark:text-amber-400"></i> K-에듀파인</a>
-                        <a href="https://www.teachiworld.com" target="_blank" rel="noopener noreferrer" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-gift text-rose-500 dark:text-rose-400"></i> 맞춤형복지</a>
-                        <a href="https://www.moe.go.kr" target="_blank" rel="noopener noreferrer" class="shrink-0 flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-blue-500 transition text-sm font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-building-columns text-slate-500 dark:text-slate-400"></i> 교육부</a>
-                        <div class="shrink-0 w-2"></div>
-                    </div>
-
-                    <div class="grid grid-cols-4 md:grid-cols-8 gap-2 md:gap-3">
-                        <button onclick="router.navigate('tools-doc')" class="p-2 md:p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-blue-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-file-signature"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">문서 생성기</span></button>
-                        <button onclick="router.navigate('tools-class')" class="p-2 md:p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-amber-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-users-rectangle"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">학급 도구</span></button>
-                        <button onclick="router.navigate('tools-board')" class="p-2 md:p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-emerald-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-list-check"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">태스크보드</span></button>
-                        <button onclick="router.navigate('year')" class="p-2 md:p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-purple-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-calendar-days"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">교사의 1년</span></button>
-                        <button onclick="router.navigate('map')" class="p-2 md:p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-indigo-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-network-wired"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">지식맵</span></button>
-                        <button onclick="router.navigate('situations')" class="p-2 md:p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-rose-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-triangle-exclamation"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">상황 가이드</span></button>
-                        <button onclick="router.navigate('timetable')" class="p-2 md:p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-sky-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-sky-50 dark:bg-sky-900/40 text-sky-600 dark:text-sky-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-bell"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">시간표</span></button>
-                        <button onclick="router.navigate('tools-record')" class="p-2 md:p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 hover:border-teal-500 transition text-center group"><div class="w-12 h-12 mx-auto mb-2 rounded-xl bg-teal-50 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400 flex items-center justify-center text-xl group-hover:scale-110 transition"><i class="fa-solid fa-pen-nib"></i></div><span class="text-xs font-bold block text-slate-700 dark:text-slate-200">생기부</span></button>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center justify-between mb-4"><span class="text-xs font-bold px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 rounded-full">${cardIsReview ? '<i class="fa-solid fa-rotate"></i> 오늘의 복습 카드' : '<i class="fa-solid fa-star"></i> 오늘의 교직카드'}</span></div>
-                                <div class="cursor-pointer group" onclick="openDetail(${todaysCard.id})">
-                                    <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition mb-2">${escapeHTML(todaysCard.keyword)}</h3>
-                                    <p class="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-2">[${escapeHTML(todaysCard.category)}]</p>
-                                    <p class="text-sm text-slate-600 dark:text-slate-300 line-clamp-3 mb-4">${escapeHTML(todaysCard.description)}</p>
-                                </div>
-                            </div>
-                            <button onclick="router.navigate('card')" class="mt-4 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline text-left">카드 전체 학습 →</button>
-                        </div>
-                        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center justify-between mb-3"><span class="text-xs font-bold px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 rounded-full"><i class="fa-solid fa-calendar-check"></i> ${d.getMonth()+1}월 체크</span></div>
-                                <div class="mb-3">
-                                    <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1"><span>실제 업무 달성률</span><span id="home-completion-rate" class="font-bold text-blue-600 dark:text-blue-400">${completionRate}%</span></div>
-                                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden"><div id="home-completion-bar" class="bg-blue-600 dark:bg-blue-500 h-full transition-all" style="width: ${completionRate}%"></div></div>
-                                </div>
-                                <ul class="space-y-2" id="home-checklist-preview"></ul>
-                            </div>
-                        </div>
-                        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-center justify-between mb-4"><span class="text-xs font-bold px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-full"><i class="fa-solid fa-clock-rotate-left"></i> 최근 검색</span></div>
-                                ${recentSearches.length > 0 ? `<div class="flex flex-wrap gap-2">${recentSearches.map(kw => `<span data-kw="${escapeHTML(kw)}" onclick="router.navigate('search', this.dataset.kw)" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-medium cursor-pointer hover:bg-blue-50 dark:hover:bg-slate-600 hover:text-blue-600 dark:hover:text-blue-400 transition text-slate-800 dark:text-slate-200">${escapeHTML(kw)}</span>`).join('')}</div>` : `<p class="text-xs text-slate-400 dark:text-slate-500 py-6 text-center">기록이 없습니다.</p>`}
-                            </div>
-                        </div>
-                    </div>
+                    </section>
                 </div>
             ` + FOOTER_HTML;
             const searchInput = document.getElementById('home-search-input');
@@ -622,10 +632,10 @@
             const tasks = YEAR_TASKS[month] || YEAR_TASKS[3];
             const checkedState = Storage.get(`checklist_${month}`, {});
             container.innerHTML = tasks.slice(0, 4).map((task, idx) => `
-                <li class="flex items-center gap-2.5 text-xs text-slate-700 dark:text-slate-300">
-                    <input type="checkbox" ${checkedState[idx] ? 'checked' : ''} onchange="toggleHomeChecklist(${month}, ${idx})" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 cursor-pointer border-slate-300 dark:border-slate-600">
+                <li><label class="flex items-center gap-3 min-h-[44px] text-base cursor-pointer text-slate-800 dark:text-slate-200">
+                    <input type="checkbox" ${checkedState[idx] ? 'checked' : ''} onchange="toggleHomeChecklist(${month}, ${idx})" class="w-5 h-5 shrink-0 rounded accent-blue-700 cursor-pointer">
                     <span class="truncate ${checkedState[idx] ? 'line-through text-slate-400 dark:text-slate-500' : ''}">${escapeHTML(task.title)}</span>
-                </li>
+                </label></li>
             `).join('');
             // 체크 시 달성률도 즉시 갱신
             const done = tasks.filter((_, i) => checkedState[i]).length;
