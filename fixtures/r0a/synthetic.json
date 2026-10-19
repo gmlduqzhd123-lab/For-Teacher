@@ -1,0 +1,203 @@
+{
+  "syntheticOnly": true,
+  "storageCases": {
+    "bothPrefixesAndCorruptCurrent": {
+      "eb_1000_final_bookmarks": "[153,295,437,11]",
+      "eb_1000_v7_bookmarks": "[12,153]",
+      "eb_1000_final_recent_searches": "[broken JSON",
+      "eb_1000_v7_recent_searches": "[\"합성 검색 문구\"]",
+      "eb_1000_final_checklist_3": "{\"0\":true}",
+      "eb_1000_v7_checklist_3": "{\"1\":true}",
+      "eb_1000_final_ics_year": "2026",
+      "eb_1000_final_year_task_dates": "{\"2026_3_0\":\"2026-03-04\"}",
+      "eb_1000_final_board_title": "\"합성 행사\"",
+      "eb_1000_final_board_tasks": "{\"t1\":{\"title\":\"합성 할 일\",\"done\":true}}",
+      "eb_1000_final_record_drafts": "{\"behavior\":\"합성 초안\"}",
+      "eb_1000_final_counsel_records": "[{\"id\":\"synthetic-counsel-1\",\"student\":\"가상 학생\",\"summary\":\"합성 상담\"}]",
+      "eb_1000_v7_unsupported_legacy_key": "{\"note\":\"암호화 스냅샷에만 보존\"}",
+      "other_app_private_record": "\"읽거나 수정하지 않음\""
+    },
+    "neverSavedBoard": {
+      "eb_1000_final_theme_mode": "\"system\""
+    },
+    "savedEmptyBoard": {
+      "eb_1000_final_board_tasks": "{}"
+    }
+  },
+  "expectedInventory": {
+    "bothPrefixesAndCorruptCurrent": [
+      {
+        "fullKey": "eb_1000_final_board_tasks",
+        "suffix": "board_tasks",
+        "prefix": "eb_1000_final_",
+        "sha256": "fa557f162cea1af158c05d7517814eb0792dd0a1eafa915dce5f518dcf684f8a",
+        "validJson": true,
+        "count": 1
+      },
+      {
+        "fullKey": "eb_1000_final_board_title",
+        "suffix": "board_title",
+        "prefix": "eb_1000_final_",
+        "sha256": "794b7b27c5b763aa06ae784e143737e9b599d5ee52f99e4e5e3bcf9fc8fdc164",
+        "validJson": true,
+        "count": 1
+      },
+      {
+        "fullKey": "eb_1000_final_bookmarks",
+        "suffix": "bookmarks",
+        "prefix": "eb_1000_final_",
+        "sha256": "01452c55c13ebbcb3f9f9cd978accad2ee40983031b055a486b164238eca3e4c",
+        "validJson": true,
+        "count": 4
+      },
+      {
+        "fullKey": "eb_1000_final_checklist_3",
+        "suffix": "checklist_3",
+        "prefix": "eb_1000_final_",
+        "sha256": "8d540673f599603d125c7f73ca3e7bb76d8c158e5be3aef644c5993ab6f25205",
+        "validJson": true,
+        "count": 1
+      },
+      {
+        "fullKey": "eb_1000_final_counsel_records",
+        "suffix": "counsel_records",
+        "prefix": "eb_1000_final_",
+        "sha256": "93e049bac2c77138d4a31cdbbf1341382150ded8203e72a2add90f66c22ff2ec",
+        "validJson": true,
+        "count": 1
+      },
+      {
+        "fullKey": "eb_1000_final_ics_year",
+        "suffix": "ics_year",
+        "prefix": "eb_1000_final_",
+        "sha256": "158a323a7ba44870f23d96f1516dd70aa48e9a72db4ebb026b0a89e212a208ab",
+        "validJson": true,
+        "count": 1
+      },
+      {
+        "fullKey": "eb_1000_final_recent_searches",
+        "suffix": "recent_searches",
+        "prefix": "eb_1000_final_",
+        "sha256": "edd4b396dced17668063ca0c63698033096944287222cb806d7dd1eb1c36f080",
+        "validJson": false,
+        "count": null
+      },
+      {
+        "fullKey": "eb_1000_final_record_drafts",
+        "suffix": "record_drafts",
+        "prefix": "eb_1000_final_",
+        "sha256": "18792010a6480b1ebb9b9abaaf3b1e90ea9a36e447fe711227b6bb7230de827d",
+        "validJson": true,
+        "count": 1
+      },
+      {
+        "fullKey": "eb_1000_final_year_task_dates",
+        "suffix": "year_task_dates",
+        "prefix": "eb_1000_final_",
+        "sha256": "4f947f10d2e6c9b5b1195d9e67fb4eff36bb9293684870a07b7badfa391f7fa8",
+        "validJson": true,
+        "count": 1
+      },
+      {
+        "fullKey": "eb_1000_v7_bookmarks",
+        "suffix": "bookmarks",
+        "prefix": "eb_1000_v7_",
+        "sha256": "97ab34aaf7eab01956fdfaddf913d91a164acbd615cb4dfde191417a7f7489df",
+        "validJson": true,
+        "count": 2
+      },
+      {
+        "fullKey": "eb_1000_v7_checklist_3",
+        "suffix": "checklist_3",
+        "prefix": "eb_1000_v7_",
+        "sha256": "fb09890ecc37ed14a9fa72c5b1e2774ef465c635b206d2dcfaf956514924aa45",
+        "validJson": true,
+        "count": 1
+      },
+      {
+        "fullKey": "eb_1000_v7_recent_searches",
+        "suffix": "recent_searches",
+        "prefix": "eb_1000_v7_",
+        "sha256": "7750617ebeb91b97c84b33fd44790a0ac05f3d7f736f20e0a9eab51792ea815c",
+        "validJson": true,
+        "count": 1
+      },
+      {
+        "fullKey": "eb_1000_v7_unsupported_legacy_key",
+        "suffix": "unsupported_legacy_key",
+        "prefix": "eb_1000_v7_",
+        "sha256": "41508100f3d5d85414b8ff354fe9248deefcaf2dd994867c2a450899dbf56e9a",
+        "validJson": true,
+        "count": 1
+      }
+    ],
+    "neverSavedBoard": [
+      {
+        "fullKey": "eb_1000_final_theme_mode",
+        "suffix": "theme_mode",
+        "prefix": "eb_1000_final_",
+        "sha256": "0dc8cd0a92280156c12ba5073f5049586727ba0bef2ff72099577bd332db18f5",
+        "validJson": true,
+        "count": 1
+      }
+    ],
+    "savedEmptyBoard": [
+      {
+        "fullKey": "eb_1000_final_board_tasks",
+        "suffix": "board_tasks",
+        "prefix": "eb_1000_final_",
+        "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "validJson": true,
+        "count": 0
+      }
+    ]
+  },
+  "urlCases": [
+    {
+      "hash": "#keyword=%EC%B4%88%EB%93%B1%20%ED%95%99%EA%B5%90%ED%8F%AD%EB%A0%A5",
+      "keyword": "초등 학교폭력"
+    },
+    {
+      "hash": "#keyword=%ED%98%84%EC%9E%A5%20%EC%B2%B4%ED%97%98%ED%95%99%EC%8A%B5",
+      "keyword": "현장 체험학습"
+    },
+    {
+      "hash": "#view=search&param=100%25%20%ED%99%95%EC%9D%B8",
+      "param": "100% 확인"
+    }
+  ],
+  "backups": {
+    "legacyFlat": {
+      "bookmarks": [
+        153
+      ],
+      "record_drafts": {
+        "behavior": "합성 초안"
+      }
+    },
+    "v3": {
+      "app": "gyojik-baekseo-1000",
+      "version": 3,
+      "exportedAt": "2026-10-18T00:00:00.000Z",
+      "data": {
+        "bookmarks": [
+          153
+        ],
+        "record_drafts": {
+          "behavior": "합성 초안"
+        }
+      }
+    },
+    "counselEncryptedV1": {
+      "app": "gyojik-baekseo-1000",
+      "type": "counsel-encrypted",
+      "v": 1,
+      "kdf": "PBKDF2-SHA256",
+      "iterations": 250000,
+      "salt": "ABEiM0RVZneImaq7zN3u/w==",
+      "iv": "ABEiM0RVZneImaq7",
+      "data": "IR33GGDzw0lwyW3p5+YTyVHFr5+EaeAf8D35MYp4tvcVrQogrXk/bx9NfsbWJ6z7w6Ul4aREAvQAO5F+O4ZwMM237Y5ye5Ok+W/4jCNFU9nrzLUokBIA25hUSN7sPnqcPRXbyIX/a+JGy3U4iGhBGDRi+4fhdL2mTBpewuMrHPrVyv4Gbh8ECEwmc1M7UMq1HAGeLbSd"
+    }
+  },
+  "testPassword": "synthetic-only-password"
+}
