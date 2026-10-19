@@ -1,5 +1,13 @@
 # Development status
 
+## Usability improvement pass — 2026-10-19
+
+- Implemented current-path storage success/failure reporting, damaged-current-value protection, record draft capture before navigation, validated legacy/v3 backup import preview and partial-failure reporting, and clear local-storage/backup guidance.
+- Search now groups variants by the frozen `legacy-map.json` mapping, preserves numeric bookmark storage while comparing representative IDs, supports the eight specified phrases, and shows related situation/workflow results. Public situation/workflow IDs are frozen in `data/public-links.json`; old numeric links remain readable.
+- Added `data/content-meta.json` with every current item marked `needs-review`. This is a review queue, **not** a claim of official-source validation. Added status labels in content views, keyboard focus handling for the detail dialog, zoom support, and explicit offline readiness text.
+- `node scripts/usability-check.mjs`, `node scripts/r0a-contract.mjs verify`, JavaScript syntax checks, and `git diff --check` pass. Local `file://` UI inspection was blocked by browser URL policy. Device/browser acceptance tests have not been run.
+- Remaining: official-source editorial review of the priority topics and student injury flow; full content hash/version validation; R0b–R0d encrypted storage, migration, atomic restore and their interruption/two-tab tests; real device accessibility, PWA, and sharing verification. Do not mark these complete from this pass.
+
 ## Code state
 
 - PRD: version 1.1, 2026-10-18. Scope selected from its R0a work package, with the supplied start note used as context.

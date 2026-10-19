@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "situations": [
+    {
+      "id": "situation:01",
+      "title": "수업 중 학생이 다쳤어요"
+    },
+    {
+      "id": "situation:02",
+      "title": "학부모가 강하게 항의해요"
+    },
+    {
+      "id": "situation:03",
+      "title": "학교폭력 신고를 받았어요"
+    },
+    {
+      "id": "situation:04",
+      "title": "학급 물건을 사야 해요"
+    },
+    {
+      "id": "situation:05",
+      "title": "몸이 아파 출근이 어려워요"
+    },
+    {
+      "id": "situation:06",
+      "title": "학생이 연락 없이 등교하지 않았어요"
+    },
+    {
+      "id": "situation:07",
+      "title": "수업 시간에 계속 방해하는 학생이 있어요"
+    },
+    {
+      "id": "situation:08",
+      "title": "수업 중 폭언·폭행을 당했어요"
+    },
+    {
+      "id": "situation:09",
+      "title": "현장체험학습을 준비해요"
+    },
+    {
+      "id": "situation:10",
+      "title": "학생에게서 감염병 진단 연락이 왔어요"
+    },
+    {
+      "id": "situation:11",
+      "title": "학생 알레르기가 걱정돼요"
+    },
+    {
+      "id": "situation:12",
+      "title": "복직(휴직 종료)을 앞두고 있어요"
+    },
+    {
+      "id": "situation:13",
+      "title": "통합학급 담임을 맡았어요"
+    },
+    {
+      "id": "situation:14",
+      "title": "학생 개인정보를 외부에 보내야 해요"
+    },
+    {
+      "id": "situation:15",
+      "title": "생활기록부를 마감해요"
+    }
+  ],
+  "courses": [
+    {
+      "id": "workflow:01",
+      "title": "체험학습 기획부터 정산까지"
+    },
+    {
+      "id": "workflow:02",
+      "title": "운동부 운영 사이클"
+    },
+    {
+      "id": "workflow:03",
+      "title": "에듀테크 활용 수업 시작하기"
+    },
+    {
+      "id": "workflow:04",
+      "title": "관외 전보 준비"
+    },
+    {
+      "id": "workflow:05",
+      "title": "학교폭력 사안 처리"
+    },
+    {
+      "id": "workflow:06",
+      "title": "물품 구입 한 번에 끝내기"
+    },
+    {
+      "id": "workflow:07",
+      "title": "학부모 상담주간 운영"
+    },
+    {
+      "id": "workflow:08",
+      "title": "기초학력 지원 한 해 흐름"
+    },
+    {
+      "id": "workflow:09",
+      "title": "교육활동 침해 대응"
+    },
+    {
+      "id": "workflow:10",
+      "title": "1급 정교사 자격 취득"
+    }
+  ]
+}

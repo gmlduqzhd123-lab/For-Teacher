@@ -3,10 +3,10 @@
  * - CDN 파일(Tailwind, 폰트, 아이콘): 저장본 우선 → 없으면 네트워크
  * 앱 파일 구성을 크게 바꾸면 아래 VERSION 숫자를 올려 주세요.
  */
-const VERSION = 'gb1000-v9';
+const VERSION = 'gb1000-v11';
 // 같은 주소(gmlduqzhd123-lab.github.io)의 다른 앱들과 저장소를 함께 쓰므로, 이 앱의 이전 캐시만 지운다.
 const CACHE_PREFIX = 'gb1000-v';
-const CORE = ['./', './index.html', './terms.json', './manifest.webmanifest', './ys-install.js', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'];
+const CORE = ['./', './index.html', './terms.json', './data/legacy-map.json', './data/public-links.json', './data/content-meta.json', './manifest.webmanifest', './ys-install.js', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'];
 const CDN = [
   'https://cdn.tailwindcss.com',
   'https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-Regular.woff2',
@@ -18,7 +18,8 @@ const CDN = [
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(VERSION);
-    await Promise.all(CORE.map(u => cache.add(new Request(u, { cache: 'reload' })).catch(() => {})));
+    // Keep the previous active worker when any core file is unavailable.
+    await Promise.all(CORE.map(u => cache.add(new Request(u, { cache: 'reload' }))));
     await Promise.all(CDN.map(u => fetch(u, { mode: 'no-cors' }).then(r => cache.put(u, r)).catch(() => {})));
     await self.skipWaiting();
   })());
