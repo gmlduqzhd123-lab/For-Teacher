@@ -235,7 +235,7 @@
         <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700">
             <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex items-center gap-3">
                 <i class="fa-solid fa-bolt text-amber-500 text-lg"></i>
-                <input id="command-palette-input" type="search" placeholder="도구 이름, 상황, 교직어 초성 검색 (예: 타이머, 생기부, 학폭, ㄱㅇㅈㅂ)..." class="flex-1 bg-transparent text-sm font-semibold text-slate-900 dark:text-white outline-none" autocomplete="off" aria-labelledby="command-palette-title">
+                <input id="command-palette-input" type="search" oninput="cmdPaletteIdx=0; renderCommandPaletteList(this.value)" onkeydown="handleCommandPaletteKey(event)" placeholder="도구 이름, 상황, 교직어 초성 검색 (예: 타이머, 생기부, 학폭, ㄱㅇㅈㅂ)..." class="flex-1 bg-transparent text-sm font-semibold text-slate-900 dark:text-white outline-none" autocomplete="off" aria-labelledby="command-palette-title">
                 <span id="command-palette-title" class="sr-only">빠른 이동 및 통합 검색</span>
                 <button type="button" onclick="closeCommandPalette()" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-500 dark:text-slate-300">ESC</button>
             </div>
@@ -1773,7 +1773,8 @@
             grid.innerHTML = filtered.map(sit => {
                 const kw = sit.relatedKeywords[0];
                 const act = SITUATION_ACTION_MAP[sit.id] || {};
-                const navPublicId = act.nav ? NAVIGATOR_COURSES[act.nav - 1]?.publicId : '';
+                const courseIdx = act.course || act.nav;
+                const navPublicId = courseIdx ? NAVIGATOR_COURSES[courseIdx - 1]?.publicId : '';
                 return `
                 <div id="situation-${escapeHTML(sit.publicId)}" class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between hover:border-blue-300 transition group">
                     <div>
@@ -1797,7 +1798,7 @@
                         ${kw ? `<div class="pt-4 border-t border-slate-100 dark:border-slate-700">
                             <button data-kw="${escapeHTML(kw)}" onclick="openDetailByKeyword(this.dataset.kw)" class="text-xs font-bold text-blue-600 dark:text-blue-400 group-hover:underline w-full text-left">핵심 교직어 '${escapeHTML(kw)}' 상세보기 →</button>
                         </div>` : ''}
-                        ${(navPublicId || act.doc) ? `<div class="mt-2.5 flex flex-wrap gap-2">${navPublicId ? `<button type="button" data-public-id="${escapeHTML(navPublicId)}" onclick="router.navigate('navigator', this.dataset.publicId)" class="text-xs font-bold px-3 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 transition"><i class="fa-solid fa-route mr-1"></i>업무 순서 보기 →</button>` : ''}${act.doc ? `<button type="button" onclick="router.navigate('tools-doc', '${act.doc}')" class="text-xs font-bold px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 transition"><i class="fa-solid fa-file-signature mr-1"></i>관련 양식 바로 쓰기 →</button>` : ''}</div>` : ''}
+                        ${(navPublicId || act.doc) ? `<div class="mt-2.5 flex flex-wrap gap-2">${navPublicId ? `<button type="button" data-public-id="${escapeHTML(navPublicId)}" onclick="router.navigate('navigator', this.dataset.publicId)" class="text-xs font-bold px-3 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 transition"><i class="fa-solid fa-route mr-1"></i>업무 순서 보기 →</button>` : ''}${act.doc ? `<button type="button" onclick="router.navigate('tools-doc', '${act.doc}')" class="text-xs font-bold px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 transition"><i class="fa-solid fa-file-signature mr-1"></i>${escapeHTML(act.docLabel || '관련 양식 바로 쓰기')} →</button>` : ''}</div>` : ''}
                     </div>
                 </div>`;
             }).join('');
@@ -2324,7 +2325,9 @@
             const label = document.getElementById('offline-status'); if (!label) return;
             if (!('caches' in window)) { label.textContent = '이 브라우저에서는 오프라인 상태를 확인할 수 없습니다.'; return; }
             try {
-                const cache = await caches.open('gb1000-v11');
+                const keys = await caches.keys();
+                const cacheName = keys.find(k => k.startsWith('gb1000-v')) || 'gb1000-v12';
+                const cache = await caches.open(cacheName);
                 const required = ['./index.html', './terms.json', './data/legacy-map.json', './data/public-links.json', './data/content-meta.json'];
                 const found = await Promise.all(required.map(path => cache.match(new URL(path, location.href))));
                 label.textContent = found.every(Boolean) ? '이 기기에 핵심 자료가 저장되어 오프라인 열람을 준비했습니다.' : '오프라인 열람 자료를 아직 모두 저장하지 못했습니다. 온라인에서 다시 열어 주세요.';
@@ -2729,6 +2732,7 @@
         let presentKind = null, presentIsFullscreen = false;
         function setTimerPreset(sec) { pauseTimer(); timerSeconds = sec; updateTimerDisplay(); }
         function openPresent(kind) {
+            if (kind === 'seat') kind = 'seats';
             const ov = document.getElementById('present-overlay'); if (!ov) return;
             presentKind = kind; unlockAudio();
             const bigBtn = 'px-6 py-3 rounded-2xl text-lg font-bold transition';
@@ -2754,16 +2758,20 @@
                     </div>
                     <p class="text-slate-400 text-sm mt-6">스페이스: 시작/정지 · ↑↓: 1분 더하기/빼기 · R: 리셋 · Esc: 닫기</p>`;
             } else if (kind === 'pick') {
+                const hasNames = getClassNames().length > 0;
                 body = `<p class="text-2xl md:text-3xl text-slate-400 font-bold mb-6">오늘의 발표자는?</p>
                     <div id="present-pick" class="font-black text-amber-300 break-all" style="font-size:min(14vw,26vh)">?</div>
                     <div class="flex flex-wrap gap-3 justify-center mt-10">
                         <button onclick="pickRandom()" class="${bigBtn} bg-rose-600 hover:bg-rose-500"><i class="fa-solid fa-wand-magic-sparkles"></i> 1명 뽑기</button>
                         <button onclick="resetPicked()" class="${bigBtn} bg-white/10 hover:bg-white/20 text-base">기록 초기화</button>
+                        ${!hasNames ? `<button onclick="closePresent(); openSetupWizard();" class="${bigBtn} bg-emerald-600 hover:bg-emerald-500 text-base"><i class="fa-solid fa-users mr-1"></i>학급 명단 등록하기</button>` : ''}
                     </div>
                     <p class="pick-remain text-slate-400 text-base mt-4"></p>
                     <p class="text-slate-500 text-sm mt-4">스페이스·엔터: 뽑기 · Esc: 닫기</p>`;
             } else if (kind === 'seats') {
-                body = `<div class="mb-6 flex items-center gap-4 justify-center"><span class="px-16 py-3 bg-white/15 rounded-xl text-xl font-bold">교 탁</span><button onclick="generateSeats(); openPresent('seats');" class="px-4 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-sm font-bold shadow"><i class="fa-solid fa-shuffle mr-1"></i>다시 배치</button></div>${seatsHTML(Storage.get('seat_result', null), true)}`;
+                if (!Storage.get('seat_result', null) && getClassNames().length > 0) generateSeats();
+                const hasNames = getClassNames().length > 0;
+                body = `<div class="mb-6 flex flex-wrap items-center gap-4 justify-center"><span class="px-16 py-3 bg-white/15 rounded-xl text-xl font-bold">교 탁</span><button onclick="generateSeats(); openPresent('seats');" class="px-4 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-sm font-bold shadow"><i class="fa-solid fa-shuffle mr-1"></i>다시 배치</button>${!hasNames ? `<button onclick="closePresent(); openSetupWizard();" class="px-4 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-bold shadow"><i class="fa-solid fa-users mr-1"></i>학급 명단 등록하기</button>` : ''}</div>${seatsHTML(Storage.get('seat_result', null), true)}`;
             } else if (kind === 'clock') {
                 body = `<div class="now-clock font-black tabular-nums leading-none" style="font-size:min(22vw,34vh)">--:--</div>
                     <p class="now-status-title font-extrabold mt-6" style="font-size:min(8vw,10vh)">-</p>
@@ -3309,13 +3317,17 @@
             document.documentElement.style.fontSize = scale + '%';
             const lbl = document.getElementById('font-scale-label');
             if (lbl) lbl.textContent = scale + '%';
+            document.querySelectorAll('[data-font-toggle]').forEach(btn => {
+                btn.textContent = `가+ ${scale}%`;
+                btn.setAttribute('aria-label', `글자 크기 조절 (현재 ${scale}%)`);
+            });
         }
         function setFontScale(scale) {
             const valid = ['100', '110', '120'].includes(String(scale)) ? String(scale) : '100';
             saveSetting('fontScale', valid);
             applyFontScale();
             showToast(`글자 크기를 ${valid}%로 변경했습니다.`, 'info');
-            if (router.currentPage === 'mybox') router.render();
+            if (router.current === 'mybox') router.render();
         }
         function cycleFontScale() {
             const cur = String(getSettings().fontScale || '100');
@@ -3330,34 +3342,35 @@
             const s = getSettings();
             const names = getClassNames();
             c.innerHTML = `
-                <div class="p-6 md:p-8">
+                <div>
                     <div class="flex items-start justify-between gap-4 mb-5">
                         <div>
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 text-xs font-extrabold mb-2">🪄 1분 학급 초기 세팅</span>
                             <h3 id="setup-wizard-title" class="text-xl md:text-2xl font-black text-slate-900 dark:text-white">한 번 입력하면 모든 도구가 우리 반에 맞춰집니다</h3>
                             <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">입력한 내용은 서버로 전송되지 않고 선생님의 기기(브라우저)에만 안전하게 저장됩니다.</p>
                         </div>
-                        <button onclick="closeSetupWizard()" aria-label="닫기" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark"></i></button>
+                        <button type="button" onclick="closeSetupWizard()" aria-label="닫기" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                         <label class="text-xs font-bold text-slate-600 dark:text-slate-300">학교명
-                            <input id="wiz-school" value="${escapeHTML(s.school || '')}" placeholder="예: 행복초등학교" class="mt-1 w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-white">
+                            <input id="wiz-school" value="${escapeHTML(s.schoolName || '')}" placeholder="예: 행복초등학교" class="mt-1 w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-white">
                         </label>
                         <label class="text-xs font-bold text-slate-600 dark:text-slate-300">학반명
                             <input id="wiz-class" value="${escapeHTML(s.className || '')}" placeholder="예: 3학년 2반" class="mt-1 w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-white">
                         </label>
                         <label class="text-xs font-bold text-slate-600 dark:text-slate-300">담임 교사 성함
-                            <input id="wiz-teacher" value="${escapeHTML(s.teacher || '')}" placeholder="예: 김교사" class="mt-1 w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-white">
+                            <input id="wiz-teacher" value="${escapeHTML(s.teacherName || '')}" placeholder="예: 김교사" class="mt-1 w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-white">
                         </label>
                         <label class="text-xs font-bold text-slate-600 dark:text-slate-300">소속 시·도교육청 (지침·누리집 바로가기 연동)
                             <select id="wiz-office" class="mt-1 w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-white">
-                                ${EDUCATION_OFFICES.map(o => `<option value="${o.code}" ${(s.office || 'seoul') === o.code ? 'selected' : ''}>${escapeHTML(o.name)}</option>`).join('')}
+                                <option value="">선택 안 함 (전국 공통)</option>
+                                ${EDUCATION_OFFICES.map(o => `<option value="${escapeHTML(o.code)}" ${(s.office || '') === o.code ? 'selected' : ''}>${escapeHTML(o.name)}</option>`).join('')}
                             </select>
                         </label>
                     </div>
                     <div class="mb-5">
                         <div class="flex items-center justify-between mb-1.5">
-                            <label for="wiz-names" class="text-xs font-bold text-slate-600 dark:text-slate-300">우리 반 학생 명렬표 <span class="font-normal text-slate-400">(발표자 뽑기·자리배치·체크리스트·생기부·상담에 자동 연동)</span></label>
+                            <label for="wiz-names" class="text-xs font-bold text-slate-600 dark:text-slate-300">우리 반 학생 명렬표 <span class="font-normal text-slate-400">(발표자 뽑기·자리배치·생기부·상담에 자동 연동)</span></label>
                             <button type="button" onclick="fillSampleClassNamesInWizard()" class="text-xs font-extrabold text-indigo-600 dark:text-indigo-400 hover:underline">✨ 예시 명렬표 채우기 (체험용)</button>
                         </div>
                         <textarea id="wiz-names" rows="4" placeholder="줄바꿈 또는 쉼표(,)로 구분해 입력해 주세요. (예: 1.강하늘, 2.김바다, 3.박별...)" class="w-full p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-white">${escapeHTML(names.join(', '))}</textarea>
@@ -3387,64 +3400,83 @@
             if (m) m.classList.add('hidden');
         }
         function saveSetupWizard() {
-            const school = (document.getElementById('wiz-school')?.value || '').trim();
+            const schoolName = (document.getElementById('wiz-school')?.value || '').trim();
             const className = (document.getElementById('wiz-class')?.value || '').trim();
-            const teacher = (document.getElementById('wiz-teacher')?.value || '').trim();
-            const office = (document.getElementById('wiz-office')?.value || 'seoul').trim();
+            const teacherName = (document.getElementById('wiz-teacher')?.value || '').trim();
+            const office = (document.getElementById('wiz-office')?.value || '').trim();
             const rawNames = (document.getElementById('wiz-names')?.value || '');
-            const names = rawNames.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+            const names = parseNameList(rawNames);
             const cur = getSettings();
-            Storage.set('settings', { ...cur, school, className, teacher, office });
-            Storage.set('class_names', names);
+            if (!Storage.set('settings', { ...cur, schoolName, className, teacherName, office })) return;
+            if (!Storage.set('class_names', names.join(', '))) return;
+            const clsInput = document.getElementById('class-names-input');
+            if (clsInput) clsInput.value = names.join(', ');
+            pickedNames.clear();
             closeSetupWizard();
             showToast(`학급 세팅 완료! (${className || '우리 반'} · 학생 ${names.length}명)`);
             router.render();
         }
 
+        const MENU_PAGES = [
+            ['home', '홈 대시보드', '1초 실행 독 · 오늘의 안내 · 주요 일정'],
+            ['search', '교직어 검색', '1,000개 교직 용어 · 초성 검색 지원'],
+            ['situations', '이럴 땐 어떻게? (상황 가이드 15선)', '돌발 상황별 대응 순서 · 통화 스크립트 · 양식 연결'],
+            ['navigator', '교직 내비게이터', '업무 목적별 단계별 플로우차트'],
+            ['map', '교직 지식맵', '연관 교직 개념 네트워크 탐색'],
+            ['tools-doc', '기안·알림장 생성기 (20종)', '빈칸 채우기로 가정통신문·알림장·품의서 완성'],
+            ['tools-class', '학급 경영 도구', '타이머 · 발표자 뽑기 · 자리 배치기'],
+            ['tools-board', '실전 태스크 보드', '행사·신학기·생기부 체크리스트 및 동학년 공유'],
+            ['tools-edutech', '에듀테크 큐레이션', '수업 활용 AI 도구 및 추천 프롬프트'],
+            ['timetable', '시간표 · 종 알림', '주간 시간표 관리 및 수업 시작/종료 알림'],
+            ['tools-record', '생기부 문장 도우미', '학생별 작성 · 나이스 바이트 · 금지어 점검 · 엑셀 저장'],
+            ['counsel', '학부모 상담 기록장', '상담 기록 · 상담주간 시간표 자동 배정 · 암호화 백업'],
+            ['year', '교사의 1년 타임라인', '월별 주요 학사·행정 업무 체크 및 달력(.ics) 내보내기'],
+            ['career', '교직 커리어맵', '수석교사 · 장학사 · 교감/교장 성장 경로'],
+            ['quiz', '교직력 테스트 & 오답 노트', '실무 상황 판단 퀴즈 및 틀린 문제 복습'],
+            ['card', '오늘의 교직카드', '하루 1개 대표 교직 키워드 학습'],
+            ['mybox', '나의 교직함 (설정 · 통합 백업)', '즐겨찾기 · 학급/교육청 설정 · 글자 크기 · 암호화 백업']
+        ];
         let cmdPaletteItems = [];
         let cmdPaletteIdx = 0;
         function buildCommandPaletteItems(query) {
-            const q = (query || '').trim().toLowerCase();
+            const q = normalizeSearch(query);
+            const qComp = compactSearch(query);
             const all = [
                 { badge: '1초 실행', icon: 'fa-stopwatch', color: 'text-rose-500', title: '수업 타이머 (전체화면 바로 열기)', sub: '교실 TV용 큰 숫자 타이머 · 1/3/5/10분 프리셋', run: () => openPresent('timer') },
                 { badge: '1초 실행', icon: 'fa-dice', color: 'text-amber-500', title: '발표자 뽑기 (전체화면 바로 열기)', sub: '우리 반 명렬표 연동 무작위 발표자 추첨', run: () => openPresent('pick') },
-                { badge: '1초 실행', icon: 'fa-chair', color: 'text-emerald-500', title: '자리 배치표 (전체화면 바로 열기)', sub: '칠판 기준 자리표 확대 · 즉시 다시 섞기', run: () => openPresent('seat') },
+                { badge: '1초 실행', icon: 'fa-chair', color: 'text-emerald-500', title: '자리 배치표 (전체화면 바로 열기)', sub: '칠판 기준 자리표 확대 · 즉시 다시 섞기', run: () => openPresent('seats') },
                 { badge: '1초 실행', icon: 'fa-chalkboard', color: 'text-amber-600', title: '칠판 알림 메모 (전체화면 바로 열기)', sub: '오늘의 준비물·과제·아침 자습 안내를 TV에 크게 표시', run: () => openPresent('memo') },
                 { badge: '1초 실행', icon: 'fa-clock', color: 'text-indigo-500', title: '현재 교시·시계 (전체화면 바로 열기)', sub: '시종 시간표 연동 현재 교시와 남은 시간 표시', run: () => openPresent('clock') },
                 { badge: '학급 설정', icon: 'fa-wand-magic-sparkles', color: 'text-indigo-600', title: '1분 학급 초기 세팅 마법사', sub: '학교·학반·교사명·교육청·학생 명렬표 한 번에 등록', run: () => openSetupWizard() },
                 { badge: '백업/복원', icon: 'fa-shield-halved', color: 'text-indigo-600', title: '전체 데이터 통합 암호화 백업·복원', sub: '마이박스 > 일반 설정 + 생기부 초안 + 상담 기록 원클릭 백업', run: () => router.navigate('mybox') },
                 { badge: '글자 크기', icon: 'fa-text-height', color: 'text-slate-600', title: '화면 글자 크기 배율 전환 (100% / 110% / 120%)', sub: '현재 배율을 다음 단계로 즉시 변경합니다', run: () => cycleFontScale() }
             ];
-            Object.entries(PAGE_META).forEach(([id, meta]) => {
-                all.push({ badge: '메뉴 이동', icon: 'fa-compass', color: 'text-indigo-500', title: meta.title, sub: meta.desc || '', run: () => router.navigate(id) });
+            MENU_PAGES.forEach(([id, title, desc]) => {
+                all.push({ badge: '메뉴 이동', icon: 'fa-compass', color: 'text-indigo-500', title, sub: desc, run: () => router.navigate(id) });
             });
             DOC_TEMPLATES.forEach(t => {
-                all.push({ badge: '통신문/알림장', icon: 'fa-file-signature', color: 'text-violet-500', title: `[문서 서식] ${t.title}`, sub: `${t.type} · 빈칸 채우기로 3초 완성`, run: () => { currentDocTemplate = t.id; docFieldValues = {}; router.navigate('tools-doc'); } });
+                all.push({ badge: '통신문/알림장', icon: 'fa-file-signature', color: 'text-violet-500', title: `[문서 서식] ${t.title}`, sub: '기안·알림장 생성기 · 빈칸 채우기로 3초 완성', run: () => router.navigate('tools-doc', t.id) });
             });
             NAVIGATOR_COURSES.forEach(c => {
-                all.push({ badge: '실무 코스', icon: 'fa-route', color: 'text-emerald-600', title: `[실무 내비게이터] ${c.title}`, sub: `${c.when} · 단계별 체크리스트`, run: () => { currentCourseId = c.id; router.navigate('navigator'); } });
+                all.push({ badge: '실무 코스', icon: 'fa-route', color: 'text-emerald-600', title: `[실무 내비게이터] ${c.title}`, sub: `${c.category || '실무'} · ${(c.steps || []).join(' → ')}`, run: () => router.navigate('navigator', c.publicId) });
             });
             SITUATIONS.forEach(s => {
-                const act = SITUATION_ACTION_MAP[s.id];
-                all.push({ badge: '상황별 대처', icon: 'fa-bolt', color: 'text-amber-500', title: `[상황 레시피] ${s.title}`, sub: s.steps.join(' → '), run: () => { router.navigate('situations'); setTimeout(() => filterSituations(s.cat), 60); } });
-                if (act && act.script) {
-                    all.push({ badge: '학부모 통화 대본', icon: 'fa-phone-volume', color: 'text-emerald-600', title: `[통화 스크립트 복사] ${s.title}`, sub: act.script, run: () => copySituationScript(s.id) });
+                all.push({ badge: '상황별 대처', icon: 'fa-bolt', color: 'text-amber-500', title: `[상황 가이드] ${s.title}`, sub: `${s.category || ''} · ${(s.steps || []).join(' → ')}`, run: () => router.navigate('situations', s.publicId) });
+                if (s.script) {
+                    all.push({ badge: '학부모 통화 대본', icon: 'fa-phone-volume', color: 'text-emerald-600', title: `[통화 스크립트 복사] ${s.title}`, sub: s.script, run: () => copyText(s.script, '통화 스크립트를 복사했습니다.') });
                 }
             });
-            if (termsData && termsData.length) {
-                const pool = q ? termsData : curatedTerms().slice(0, 30);
-                pool.forEach(t => {
-                    if (!q || (t.term && t.term.toLowerCase().includes(q)) || (t.summary && t.summary.toLowerCase().includes(q)) || (t.category && t.category.toLowerCase().includes(q))) {
-                        all.push({ badge: `백과 #${t.id}`, icon: 'fa-book-open', color: 'text-slate-500', title: t.term, sub: `${t.category} · ${t.summary}`, run: () => openDetail(t.id) });
-                    }
+            const matched = !q ? all.slice(0, 28) : all.filter(item => {
+                const hay = `${item.title} ${item.sub} ${item.badge}`;
+                return normalizeSearch(hay).includes(q) || compactSearch(hay).includes(qComp) || compactSearch(getChosung(item.title)).includes(qComp);
+            });
+            if (DB && DB.length) {
+                const termPool = q ? rankTerms(q, '전체', 'accuracy').slice(0, 25) : curatedTerms().slice(0, 12);
+                termPool.forEach(t => {
+                    matched.push({ badge: `백과 #${t.id}`, icon: 'fa-book-open', color: 'text-slate-500', title: t.keyword, sub: `${t.category} · ${t.simple}`, run: () => openDetail(t.id) });
                 });
             }
-            if (!q) return all.slice(0, 28);
-            return all.filter(item =>
-                item.title.toLowerCase().includes(q) ||
-                item.sub.toLowerCase().includes(q) ||
-                item.badge.toLowerCase().includes(q)
-            ).slice(0, 40);
+            return matched.slice(0, 40);
         }
         function openCommandPalette() {
             const m = document.getElementById('command-palette-modal');
@@ -3483,6 +3515,7 @@
             `).join('');
         }
         function handleCommandPaletteKey(e) {
+            if (e.isComposing) return;
             if (e.key === 'ArrowDown') {
                 e.preventDefault();
                 if (cmdPaletteItems.length) { cmdPaletteIdx = (cmdPaletteIdx + 1) % cmdPaletteItems.length; renderCommandPaletteList(e.target.value); }
@@ -3509,6 +3542,17 @@
                 const m = document.getElementById('command-palette-modal');
                 if (m && !m.classList.contains('hidden')) closeCommandPalette();
                 else openCommandPalette();
+                return;
+            }
+            if (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                const tag = (e.target && e.target.tagName) ? e.target.tagName.toUpperCase() : '';
+                if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tag) || e.target?.isContentEditable) return;
+                const cp = document.getElementById('command-palette-modal');
+                const sw = document.getElementById('setup-wizard-modal');
+                const mm = document.getElementById('mobile-menu-modal');
+                if ((cp && !cp.classList.contains('hidden')) || (sw && !sw.classList.contains('hidden')) || (mm && !mm.classList.contains('hidden')) || isModalOpen() || presentKind) return;
+                e.preventDefault();
+                openCommandPalette();
                 return;
             }
             if (e.key === 'Escape') {
