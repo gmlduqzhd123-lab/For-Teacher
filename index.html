@@ -583,7 +583,14 @@
         }
         function decodeSharePayload(str) {
             try {
-                const clean = String(str || '').trim().replace(/^.*#view=[^&]+&param=share:/, '').replace(/^share:/, '');
+                let raw = String(str || '').trim();
+                if (raw.includes('#')) {
+                    const hashPart = raw.slice(raw.indexOf('#') + 1);
+                    const p = new URLSearchParams(hashPart).get('param');
+                    if (p) raw = p;
+                }
+                try { if (raw.includes('%')) raw = decodeURIComponent(raw); } catch (_) {}
+                const clean = raw.replace(/^.*#view=[^&]+&param=share:/, '').replace(/^share:/, '').trim();
                 const bin = atob(clean);
                 const bytes = new Uint8Array(bin.length);
                 for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
@@ -643,6 +650,9 @@
                 if (this.current === 'tools-record' && !saveRecordDraftNow()) return;
                 stopIntervals(); closePresent();
                 if (isModalOpen()) closeModal(false);
+                if (typeof closeCommandPalette === 'function') closeCommandPalette();
+                if (typeof closeSetupWizard === 'function') closeSetupWizard();
+                if (typeof closeMobileMenu === 'function') closeMobileMenu();
                 this.current = view; this.param = param || null;
                 const h = buildHash(view, this.param);
                 if (window.location.hash !== h) window.location.hash = h; // hashchange에서는 상태가 같으므로 재렌더링 생략
@@ -938,6 +948,7 @@
                     const existing = list.find(t => t.title === decoded.title && t.content === decoded.content);
                     if (existing) {
                         initialTemplateId = existing.id;
+                        sharedNotice = `<div class="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-xs font-bold text-emerald-700 dark:text-emerald-300"><i class="fa-solid fa-circle-check mr-1"></i>이미 내 양식함에 있는 '${escapeHTML(decoded.title)}' 양식을 열었습니다!</div>`;
                     } else if (list.length < 50) {
                         const newId = 'c_' + Date.now();
                         list.push({ id: newId, title: String(decoded.title).slice(0, 40), content: String(decoded.content).slice(0, 5000) });
@@ -946,6 +957,8 @@
                             sharedNotice = `<div class="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-xs font-bold text-emerald-700 dark:text-emerald-300"><i class="fa-solid fa-circle-check mr-1"></i>동료 선생님이 공유한 '${escapeHTML(decoded.title)}' 양식을 내 양식함에 추가하고 열었습니다!</div>`;
                         }
                     }
+                    router.param = initialTemplateId;
+                    try { history.replaceState(null, '', buildHash('tools-doc', router.param)); } catch (_) {}
                 }
             }
             const custom = getCustomTemplates();
@@ -1255,11 +1268,18 @@
             const names = getClassNames();
             if (names.length === 0) { showToast('이름을 입력해주세요.', 'error'); return; }
             const o = getSeatOpts(); const C = Math.max(2, Math.min(10, parseInt(o.cols) || 6));
-            const nameSet = new Set(names);
+            const stripNum = s => String(s || '').replace(/^\d+[\s.)번-]*/, '').trim();
+            const resolveSeatName = q => {
+                const raw = String(q || '').trim();
+                if (!raw) return null;
+                if (names.includes(raw)) return raw;
+                const clean = stripNum(raw);
+                return names.find(n => stripNum(n) === clean) || null;
+            };
             const frontRaw = parseNameList(o.front), groupsRaw = parseSeparateGroups(o.separate);
-            const front = [...new Set(frontRaw.filter(n => nameSet.has(n)))];
-            const groups = groupsRaw.map(g => [...new Set(g.filter(n => nameSet.has(n)))]).filter(g => g.length >= 2);
-            const unknown = [...new Set([...frontRaw, ...groupsRaw.flat()].filter(n => !nameSet.has(n)))];
+            const front = [...new Set(frontRaw.map(resolveSeatName).filter(Boolean))];
+            const groups = groupsRaw.map(g => [...new Set(g.map(resolveSeatName).filter(Boolean))]).filter(g => g.length >= 2);
+            const unknown = [...new Set([...frontRaw, ...groupsRaw.flat()].filter(n => !resolveSeatName(n)))];
 
             const near = (a, b) => Math.abs(Math.floor(a / C) - Math.floor(b / C)) <= 1 && Math.abs(a % C - b % C) <= 1;
             const frontSlots = Math.min(names.length, Math.ceil(front.length / C) * C);
@@ -1347,6 +1367,8 @@
                     });
                     if (Storage.set('board_title', String(decoded.title).slice(0, 60)) && Storage.set('board_tasks', importedTasks)) {
                         sharedNotice = `<div class="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-xs font-bold text-emerald-700 dark:text-emerald-300"><i class="fa-solid fa-circle-check mr-1"></i>동료 선생님이 공유한 '${escapeHTML(decoded.title)}' 태스크 보드를 불러왔습니다!</div>`;
+                        router.param = null;
+                        try { history.replaceState(null, '', buildHash('tools-board', null)); } catch (_) {}
                     }
                 }
             }
@@ -1430,10 +1452,10 @@
             list.innerHTML = keys.map(k => `
                 <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 group transition hover:border-emerald-300 dark:hover:border-emerald-500">
                     <div class="flex items-center gap-3 w-full">
-                        <input type="checkbox" ${tasks[k].done ? 'checked' : ''} onchange="toggleBoardTask('${k}')" class="w-5 h-5 rounded text-emerald-600 border-slate-300 dark:border-slate-600 cursor-pointer">
-                        <input type="text" value="${escapeHTML(tasks[k].title)}" onchange="updateBoardTaskTitle('${k}', this.value)" placeholder="할 일을 입력하세요" class="bg-transparent border-none outline-none w-full text-sm font-medium ${tasks[k].done ? 'text-slate-400 dark:text-slate-500 line-through' : 'text-slate-800 dark:text-slate-200'}">
+                        <input type="checkbox" data-id="${escapeHTML(k)}" ${tasks[k].done ? 'checked' : ''} onchange="toggleBoardTask(this.dataset.id)" class="w-5 h-5 rounded text-emerald-600 border-slate-300 dark:border-slate-600 cursor-pointer">
+                        <input type="text" data-id="${escapeHTML(k)}" value="${escapeHTML(tasks[k].title)}" onchange="updateBoardTaskTitle(this.dataset.id, this.value)" placeholder="할 일을 입력하세요" class="bg-transparent border-none outline-none w-full text-sm font-medium ${tasks[k].done ? 'text-slate-400 dark:text-slate-500 line-through' : 'text-slate-800 dark:text-slate-200'}">
                     </div>
-                    <button onclick="deleteBoardTask('${k}')" class="text-slate-400 hover:text-rose-500 opacity-50 hover:opacity-100 transition" aria-label="삭제"><i class="fa-solid fa-trash"></i></button>
+                    <button data-id="${escapeHTML(k)}" onclick="deleteBoardTask(this.dataset.id)" class="text-slate-400 hover:text-rose-500 opacity-50 hover:opacity-100 transition" aria-label="삭제"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `).join('');
         }
@@ -2429,8 +2451,9 @@
             for (const k of keys) {
                 if (!Object.prototype.hasOwnProperty.call(BACKUP_TYPES, k)) continue;
                 Storage.error = null;
-                data[k] = Storage.get(k, null);
+                const val = Storage.get(k, null);
                 if (Storage.error) { showToast('읽을 수 없는 자료가 있어 백업을 중지했습니다.', 'error'); return; }
+                if (val !== null && val !== undefined) data[k] = val;
             }
             const payload = { app: 'gyojik-baekseo-1000', version: 3, exportedAt: new Date().toISOString(), data };
             try {
@@ -2474,7 +2497,10 @@
             saveSetting('lastBackupAt', ymd(new Date()));
             const general = {};
             for (const k of Storage.ownKeys().filter(key => !BACKUP_EXCLUDE.includes(key))) {
-                if (Object.prototype.hasOwnProperty.call(BACKUP_TYPES, k)) general[k] = Storage.get(k, null);
+                if (Object.prototype.hasOwnProperty.call(BACKUP_TYPES, k)) {
+                    const val = Storage.get(k, null);
+                    if (val !== null && val !== undefined) general[k] = val;
+                }
             }
             const counsel = getCounsel();
             try {
@@ -3502,7 +3528,7 @@
                 return;
             }
             box.innerHTML = cmdPaletteItems.map((it, idx) => `
-                <button type="button" onclick="runCommandPaletteItem(${idx})" onmouseenter="cmdPaletteIdx=${idx}" class="w-full text-left px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 transition-colors ${idx === cmdPaletteIdx ? 'bg-indigo-50 dark:bg-indigo-900/40 text-indigo-900 dark:text-white' : 'hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-200'}">
+                <button type="button" data-cmd-active="${idx === cmdPaletteIdx}" onclick="runCommandPaletteItem(${idx})" onmouseenter="cmdPaletteIdx=${idx}" class="w-full text-left px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 transition-colors ${idx === cmdPaletteIdx ? 'bg-indigo-50 dark:bg-indigo-900/40 text-indigo-900 dark:text-white' : 'hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-200'}">
                     <div class="flex items-center gap-3 min-w-0">
                         <i class="fa-solid ${it.icon} ${it.color} w-5 text-center shrink-0"></i>
                         <div class="min-w-0">
@@ -3513,6 +3539,8 @@
                     <span class="shrink-0 text-[11px] font-extrabold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">${escapeHTML(it.badge)}</span>
                 </button>
             `).join('');
+            const activeEl = box.querySelector('[data-cmd-active="true"]');
+            if (activeEl && typeof activeEl.scrollIntoView === 'function') activeEl.scrollIntoView({ block: 'nearest' });
         }
         function handleCommandPaletteKey(e) {
             if (e.isComposing) return;
