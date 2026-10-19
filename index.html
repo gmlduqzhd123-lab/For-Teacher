@@ -150,7 +150,7 @@
             </nav>
             <div class="editorial-header-actions">
                 <button type="button" class="editorial-action" data-ys-install>앱 설치</button>
-                <button type="button" class="editorial-action" onclick="toggleQuickDarkMode()" aria-label="다크모드 전환">화면 모드</button>
+                <button type="button" class="editorial-action" data-theme-toggle onclick="toggleQuickDarkMode()" aria-label="다크 모드로 전환">다크 모드</button>
                 <button type="button" class="editorial-action editorial-menu-trigger" onclick="openMobileMenu()" aria-label="전체 메뉴 열기">전체 메뉴</button>
                 <span id="bookmark-badge" class="hidden" aria-hidden="true"></span>
             </div>
@@ -217,7 +217,7 @@
                 <section class="editorial-menu-group"><h4>찾기</h4><button onclick="closeMobileMenu(); router.navigate('search')">교직어 검색</button><button onclick="closeMobileMenu(); router.navigate('situations')">상황 가이드</button><button onclick="closeMobileMenu(); router.navigate('navigator')">교직 내비게이터</button><button onclick="closeMobileMenu(); router.navigate('map')">교직 지식맵</button></section>
                 <section class="editorial-menu-group"><h4>업무</h4><button onclick="closeMobileMenu(); router.navigate('year')">교사의 1년</button><button onclick="closeMobileMenu(); router.navigate('tools-board')">태스크 보드</button><button onclick="closeMobileMenu(); router.navigate('tools-doc')">문서 · 알림장 생성기</button><button onclick="closeMobileMenu(); router.navigate('career')">교직 커리어맵</button></section>
                 <section class="editorial-menu-group"><h4>수업과 기록</h4><button onclick="closeMobileMenu(); router.navigate('tools-class')">학급 경영 도구</button><button onclick="closeMobileMenu(); router.navigate('timetable')">시간표 · 종 알림</button><button onclick="closeMobileMenu(); router.navigate('tools-record')">생기부 문장 도우미</button><button onclick="closeMobileMenu(); router.navigate('counsel')">상담 기록장</button></section>
-                <section class="editorial-menu-group"><h4>학습과 설정</h4><button onclick="closeMobileMenu(); router.navigate('quiz')">교직력 테스트</button><button onclick="closeMobileMenu(); router.navigate('card')">오늘의 교직카드</button><button onclick="closeMobileMenu(); router.navigate('tools-edutech')">에듀테크 큐레이션</button><button onclick="closeMobileMenu(); router.navigate('mybox')">나의 교직함</button><button data-ys-install>앱 설치</button><button onclick="toggleQuickDarkMode(); closeMobileMenu()">화면 모드 전환</button><button data-qr onclick="closeMobileMenu()">QR 코드로 접속</button></section>
+                <section class="editorial-menu-group"><h4>학습과 설정</h4><button onclick="closeMobileMenu(); router.navigate('quiz')">교직력 테스트</button><button onclick="closeMobileMenu(); router.navigate('card')">오늘의 교직카드</button><button onclick="closeMobileMenu(); router.navigate('tools-edutech')">에듀테크 큐레이션</button><button onclick="closeMobileMenu(); router.navigate('mybox')">나의 교직함</button><button data-ys-install>앱 설치</button><button data-theme-toggle onclick="toggleQuickDarkMode(); closeMobileMenu()" aria-label="다크 모드로 전환">다크 모드</button><button data-qr onclick="closeMobileMenu()">QR 코드로 접속</button></section>
             </div>
         </div>
     </div>
@@ -1857,10 +1857,18 @@
             if (router.current === 'mybox') router.render();
         }
         function toggleQuickDarkMode() { setThemeMode(document.documentElement.classList.contains('dark') ? 'light' : 'dark', true); }
+        function updateThemeToggleLabels() {
+            const label = document.documentElement.classList.contains('dark') ? '라이트 모드' : '다크 모드';
+            document.querySelectorAll('[data-theme-toggle]').forEach(button => {
+                button.textContent = label;
+                button.setAttribute('aria-label', `${label}로 전환`);
+            });
+        }
         function applyThemeMode() {
             const mode = Storage.get('theme_mode', 'light');
             if(mode==='dark' || (mode==='system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
             else document.documentElement.classList.remove('dark');
+            updateThemeToggleLabels();
         }
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if(Storage.get('theme_mode')==='system') applyThemeMode(); });
 
