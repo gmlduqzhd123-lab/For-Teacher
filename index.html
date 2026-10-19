@@ -19,7 +19,7 @@
     <meta property="og:title" content="교직백서 1000 : 초등교사를 위한 교직생활 OS">
     <meta property="og:description" content="교직 용어 검색부터 시간표·자리 배치·생기부 문장·상담 기록까지, 초등교사 실무를 한 곳에서.">
     <meta property="og:locale" content="ko_KR">
-    <meta name="theme-color" content="#2563eb">
+    <meta name="theme-color" content="#2e3c35">
     <link rel="manifest" href="manifest.webmanifest">
     <script src="ys-install.js"></script>
     <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
@@ -70,39 +70,94 @@
             #print-root { display: block !important; }
         }
         @keyframes slotSpin { 0% { transform: translateY(-3px); opacity: 0.5; } 50% { transform: translateY(3px); opacity: 1; } 100% { transform: translateY(-3px); opacity: 0.5; } }
+        :root { --paper: #f7f5f0; --paper-card: #fffefa; --paper-line: #e7e3da; --paper-ink: #282b28; --paper-muted: #6b746f; --paper-accent: #955c43; --paper-deep: #2e3c35; }
+        .dark { --paper: #191e1b; --paper-card: #242a26; --paper-line: #3b443e; --paper-ink: #f0f0e9; --paper-muted: #acb8ae; --paper-accent: #e3ae90; --paper-deep: #304c40; }
+        body { background: var(--paper) !important; color: var(--paper-ink) !important; }
+        .editorial-header { flex: none; background: var(--paper); border-bottom: 1px solid var(--paper-line); z-index: 30; }
+        .editorial-header-inner { max-width: 1240px; margin: auto; min-height: 76px; padding: 0 28px; display: flex; align-items: center; gap: 34px; }
+        .editorial-brand { border: 0; background: none; color: var(--paper-ink); font-family: 'Noto Serif KR', Georgia, serif; font-size: 19px; font-weight: 900; letter-spacing: -.07em; white-space: nowrap; padding: 0; }
+        .editorial-brand span { color: var(--paper-accent); }
+        .editorial-primary-nav { display: flex; align-self: stretch; align-items: stretch; gap: 24px; margin: 0 auto; }
+        .editorial-primary-nav button { border: 0; border-bottom: 2px solid transparent; background: none; color: var(--paper-muted); font-size: 13px; font-weight: 700; padding: 0 2px; white-space: nowrap; }
+        .editorial-primary-nav button.active { border-bottom-color: var(--paper-accent); color: var(--paper-ink); }
+        .editorial-header-actions { display: flex; gap: 9px; align-items: center; }
+        .editorial-action { border: 1px solid var(--paper-line); background: var(--paper-card); color: var(--paper-ink); border-radius: 8px; padding: 8px 11px; font-size: 12px; font-weight: 700; min-height: 39px; white-space: nowrap; }
+        .editorial-action-primary { background: var(--paper-deep); color: #fff; border-color: var(--paper-deep); }
+        .editorial-shell { width: 100%; min-height: 0; display: flex; flex: 1; }
+        #desktop-sidebar { display: none !important; }
+        #app-view { width: 100%; background: var(--paper); padding: 0 28px 70px; }
+        .editorial-home { max-width: 1160px; margin: auto; }
+        .editorial-hero { display: grid; grid-template-columns: 1.3fr 1fr; gap: 42px; align-items: end; padding: 52px 0 37px; border-bottom: 1px solid var(--paper-line); }
+        .editorial-eyebrow { display: block; color: var(--paper-accent); font-size: 11px; font-weight: 800; letter-spacing: .17em; margin-bottom: 17px; }
+        .editorial-hero h2 { font-family: 'Noto Serif KR', Georgia, serif; font-size: clamp(31px, 3.6vw, 48px); line-height: 1.34; letter-spacing: -.075em; font-weight: 900; margin: 0 0 17px; word-break: keep-all; }
+        .editorial-hero h2 em { color: var(--paper-accent); font-style: normal; }
+        .editorial-hero p { color: var(--paper-muted); font-size: 14px; line-height: 1.7; margin: 0; max-width: 470px; }
+        .editorial-search { display: flex; align-items: center; padding: 8px; border: 1px solid var(--paper-line); background: var(--paper-card); border-radius: 8px; box-shadow: 0 8px 28px rgba(35, 35, 20, .04); }
+        .editorial-search input { flex: 1; min-width: 0; padding: 10px 11px; background: transparent; border: 0; outline: none; color: var(--paper-ink); font-size: 14px; }
+        .editorial-search button { min-height: 42px; padding: 0 17px; background: var(--paper-deep); color: #fff; border: 0; border-radius: 5px; font-size: 13px; font-weight: 750; }
+        .editorial-content-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; padding-top: 32px; }
+        .editorial-section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 17px; }
+        .editorial-section-head h3 { font-family: 'Noto Serif KR', Georgia, serif; color: var(--paper-ink); font-size: 22px; font-weight: 900; letter-spacing: -.06em; margin: 0; }
+        .editorial-section-head button { border: 0; background: none; color: var(--paper-accent); font-size: 12px; font-weight: 750; white-space: nowrap; }
+        .editorial-story { display: flex; flex-direction: column; justify-content: space-between; min-height: 218px; padding: 27px 29px; border-radius: 8px; background: var(--paper-deep); color: #faf9f1; text-align: left; width: 100%; border: 0; }
+        .editorial-story small { color: #c4d7c8; font-size: 11px; font-weight: 800; letter-spacing: .12em; }
+        .editorial-story strong { font-family: 'Noto Serif KR', Georgia, serif; font-size: 26px; line-height: 1.35; letter-spacing: -.06em; word-break: keep-all; }
+        .editorial-story span { color: #d7dfd5; font-size: 12px; line-height: 1.6; }
+        .editorial-shortcuts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 13px; }
+        .editorial-shortcut { text-align: left; padding: 17px 18px; min-height: 79px; border: 1px solid var(--paper-line); background: var(--paper-card); border-radius: 6px; color: var(--paper-ink); }
+        .editorial-shortcut strong { display: block; font-size: 13px; font-weight: 800; }
+        .editorial-shortcut small { display: block; color: var(--paper-muted); font-size: 11px; margin-top: 7px; }
+        .editorial-list { border-top: 1px solid var(--paper-ink); }
+        .editorial-list button { width: 100%; display: flex; align-items: center; gap: 18px; padding: 18px 0; border: 0; border-bottom: 1px solid var(--paper-line); background: transparent; color: var(--paper-ink); text-align: left; }
+        .editorial-list-index { width: 38px; flex: none; color: var(--paper-accent); font-family: Georgia, serif; font-size: 21px; }
+        .editorial-list strong { display: block; font-size: 13px; font-weight: 800; }
+        .editorial-list small { display: block; color: var(--paper-muted); font-size: 11px; margin-top: 5px; }
+        .editorial-note { color: var(--paper-muted); font-size: 11px; line-height: 1.5; margin: 17px 0 0; }
+        .editorial-recent { border-top: 1px solid var(--paper-line); margin-top: 35px; padding-top: 20px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; color: var(--paper-muted); font-size: 12px; }
+        .editorial-recent button { border: 1px solid var(--paper-line); background: var(--paper-card); color: var(--paper-ink); border-radius: 99px; padding: 7px 12px; font-size: 12px; }
+        #mobile-menu-modal { align-items: center; justify-content: center; padding: 16px; }
+        .editorial-menu-panel { width: min(780px, 100%); max-height: min(85vh, 760px); overflow-y: auto; padding: 27px; border-radius: 14px; background: var(--paper-card); color: var(--paper-ink); }
+        .editorial-menu-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--paper-line); padding-bottom: 16px; margin-bottom: 23px; }
+        .editorial-menu-head h3 { font-family: 'Noto Serif KR', Georgia, serif; font-size: 22px; font-weight: 900; margin: 0; }
+        .editorial-menu-head button { color: var(--paper-muted); border: 0; background: transparent; font-size: 20px; }
+        .editorial-menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px 35px; }
+        .editorial-menu-group h4 { color: var(--paper-accent); font-size: 11px; font-weight: 800; letter-spacing: .1em; margin: 0 0 10px; }
+        .editorial-menu-group button { display: block; width: 100%; text-align: left; padding: 8px 0; border: 0; border-bottom: 1px solid var(--paper-line); background: transparent; color: var(--paper-ink); font-size: 13px; font-weight: 650; }
+        .editorial-bottom-nav { background: var(--paper-card) !important; border-color: var(--paper-line) !important; }
+        .editorial-bottom-nav .mob-item { color: var(--paper-muted) !important; font-weight: 650; }
+        .editorial-bottom-nav .mob-item.font-bold { color: var(--paper-accent) !important; }
+        .editorial-header button:focus-visible, .editorial-home button:focus-visible, .editorial-menu-panel button:focus-visible, .editorial-search:focus-within { outline: 2px solid var(--paper-accent); outline-offset: 3px; }
+        @media (max-width: 850px) { .editorial-header-inner { gap: 14px; padding: 0 18px; } .editorial-primary-nav { gap: 12px; } .editorial-primary-nav button { font-size: 12px; } .editorial-action:not(.editorial-menu-trigger) { display: none; } .editorial-content-grid { gap: 22px; } }
+        @media (max-width: 650px) { .editorial-header-inner { min-height: 61px; justify-content: space-between; } .editorial-primary-nav { display: none; } #app-view { padding: 0 16px 100px; } .editorial-hero { grid-template-columns: 1fr; gap: 22px; padding: 32px 0 27px; } .editorial-hero h2 { font-size: 32px; } .editorial-content-grid { grid-template-columns: 1fr; gap: 30px; padding-top: 28px; } .editorial-story { min-height: 210px; } .editorial-menu-panel { padding: 21px; } .editorial-menu-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 h-screen flex flex-col overflow-hidden transition-colors duration-200">
 
     <div id="toast-container" class="fixed bottom-24 md:bottom-8 right-4 z-50 flex flex-col space-y-2 pointer-events-none"></div>
 
-    <!-- 상단 헤더 -->
-    <header class="bg-white/85 dark:bg-slate-800/85 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 h-16 shrink-0 z-30">
-        <div class="max-w-7xl mx-auto px-3 sm:px-4 h-full flex items-center justify-between gap-2">
-            <div class="flex items-center space-x-2 sm:space-x-3 cursor-pointer" onclick="router.navigate('home')">
-                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md">
-                    <i class="fa-solid fa-graduation-cap text-lg"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-base sm:text-lg leading-tight flex items-center gap-2 whitespace-nowrap">
-                        교직백서 1000 <span class="hidden sm:inline text-[10px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-black tracking-wider">OS Final</span>
-                    </h1>
-                    <p class="hidden sm:block text-xs text-slate-500 dark:text-slate-400">초등교사 실무 완벽 지원 플랫폼</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-0.5 sm:space-x-1 md:space-x-2">
-                <button type="button" data-ys-install class="px-2.5 sm:px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold whitespace-nowrap transition" aria-label="앱 설치">📲 <span class="hidden sm:inline">앱 </span>설치</button>
-                <button type="button" data-qr class="px-2.5 sm:px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-bold whitespace-nowrap transition" aria-label="QR 코드로 접속"><span class="hidden sm:inline">📱 </span>QR</button>
-                <button onclick="toggleQuickDarkMode()" class="p-2 sm:p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="다크모드 전환"><i class="fa-solid fa-moon dark:hidden"></i><i class="fa-solid fa-sun hidden dark:inline text-amber-400"></i></button>
-                <button onclick="router.navigate('mybox')" class="p-2 sm:p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition relative" aria-label="나의 교직함"><i class="fa-solid fa-box-archive"></i><span id="bookmark-badge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full hidden"></span></button>
-                <button onclick="openMobileMenu()" class="md:hidden p-2 sm:p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="전체 메뉴"><i class="fa-solid fa-bars text-lg"></i></button>
+    <!-- 콘텐츠 중심 상단 메뉴 -->
+    <header class="editorial-header">
+        <div class="editorial-header-inner">
+            <button type="button" class="editorial-brand" onclick="router.navigate('home')" aria-label="교직백서 1000 홈">교직백서 <span>1000</span></button>
+            <nav class="editorial-primary-nav" aria-label="주 메뉴">
+                <button type="button" data-primary-nav="home" onclick="router.navigate('home')">홈</button>
+                <button type="button" data-primary-nav="search" onclick="router.navigate('search')">찾기</button>
+                <button type="button" data-primary-nav="year" onclick="router.navigate('year')">업무</button>
+                <button type="button" data-primary-nav="tools-class" onclick="router.navigate('tools-class')">수업과 기록</button>
+                <button type="button" data-primary-nav="quiz" onclick="router.navigate('quiz')">학습</button>
+            </nav>
+            <div class="editorial-header-actions">
+                <button type="button" class="editorial-action" data-ys-install>앱 설치</button>
+                <button type="button" class="editorial-action" onclick="toggleQuickDarkMode()" aria-label="다크모드 전환">화면 모드</button>
+                <button type="button" class="editorial-action editorial-menu-trigger" onclick="openMobileMenu()" aria-label="전체 메뉴 열기">전체 메뉴</button>
+                <span id="bookmark-badge" class="hidden" aria-hidden="true"></span>
             </div>
         </div>
     </header>
 
-    <div class="flex-1 w-full max-w-7xl mx-auto flex overflow-hidden relative">
+    <div class="editorial-shell overflow-hidden relative">
         <!-- PC 사이드바 -->
-        <aside class="hidden md:flex flex-col w-64 p-4 shrink-0 border-r border-slate-200 dark:border-slate-700 space-y-1 overflow-y-auto hide-scrollbar pb-10">
+        <aside id="desktop-sidebar" class="hidden md:flex flex-col w-64 p-4 shrink-0 border-r border-slate-200 dark:border-slate-700 space-y-1 overflow-y-auto hide-scrollbar pb-10">
             <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mb-2 uppercase">메인 메뉴</div>
             <a onclick="router.navigate('home')" id="nav-home" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-house w-5 text-center"></i> 홈 대시보드</a>
             <a onclick="router.navigate('search')" id="nav-search" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-magnifying-glass w-5 text-center"></i> 교직어 검색</a>
@@ -139,7 +194,7 @@
     </div>
 
     <!-- 모바일 하단 네비게이션 -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-700 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex justify-around items-center">
+    <nav class="editorial-bottom-nav md:hidden fixed bottom-0 left-0 right-0 z-40 backdrop-blur-md border-t px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex justify-around items-center" aria-label="모바일 빠른 메뉴">
         <button onclick="router.navigate('home')" id="mob-home" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-house text-lg mb-1"></i>홈</button>
         <button onclick="router.navigate('search')" id="mob-search" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-magnifying-glass text-lg mb-1"></i>검색</button>
         <button onclick="router.navigate('situations')" id="mob-situations" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-triangle-exclamation text-lg mb-1"></i>상황</button>
@@ -152,31 +207,15 @@
         <div id="modal-content" class="bg-white dark:bg-slate-800 rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-8 shadow-2xl border border-slate-100 dark:border-slate-700 relative transform transition-all hide-scrollbar"></div>
     </div>
 
-    <!-- 모바일 전체 메뉴 모달 -->
-    <div id="mobile-menu-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-end md:hidden" onclick="if(event.target === this) closeMobileMenu()">
-        <div class="bg-white dark:bg-slate-800 rounded-t-3xl w-full p-6 pb-12 space-y-4 max-h-[85vh] overflow-y-auto hide-scrollbar">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
-                <h3 class="font-bold text-base text-slate-900 dark:text-white">전체 메뉴</h3>
-                <button onclick="closeMobileMenu()" class="p-2 text-slate-400 dark:text-slate-500" aria-label="메뉴 닫기"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div class="grid grid-cols-2 gap-3 text-sm">
-                <button onclick="closeMobileMenu(); router.navigate('home')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-house text-blue-500 w-5 text-center"></i> 홈</button>
-                <button onclick="closeMobileMenu(); router.navigate('search')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-magnifying-glass text-blue-500 w-5 text-center"></i> 검색</button>
-                <button onclick="closeMobileMenu(); router.navigate('tools-doc')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2"><i class="fa-solid fa-file-signature w-5 text-center"></i> 문서생성기</button>
-                <button onclick="closeMobileMenu(); router.navigate('tools-class')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2"><i class="fa-solid fa-users-rectangle w-5 text-center"></i> 학급도구</button>
-                <button onclick="closeMobileMenu(); router.navigate('tools-board')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2"><i class="fa-solid fa-list-check w-5 text-center"></i> 태스크보드</button>
-                <button onclick="closeMobileMenu(); router.navigate('tools-edutech')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2"><i class="fa-solid fa-laptop-code w-5 text-center"></i> 에듀테크</button>
-                <button onclick="closeMobileMenu(); router.navigate('timetable')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2"><i class="fa-solid fa-bell w-5 text-center"></i> 시간표·종</button>
-                <button onclick="closeMobileMenu(); router.navigate('tools-record')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2"><i class="fa-solid fa-pen-nib w-5 text-center"></i> 생기부 도우미</button>
-                <button onclick="closeMobileMenu(); router.navigate('counsel')" class="p-3 rounded-2xl bg-blue-50 dark:bg-blue-900/40 text-left font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2"><i class="fa-solid fa-comments w-5 text-center"></i> 상담 기록장</button>
-                <button onclick="closeMobileMenu(); router.navigate('situations')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-triangle-exclamation text-amber-500 w-5 text-center"></i> 상황가이드</button>
-                <button onclick="closeMobileMenu(); router.navigate('navigator')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-compass text-emerald-500 w-5 text-center"></i> 내비게이터</button>
-                <button onclick="closeMobileMenu(); router.navigate('map')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-network-wired text-indigo-500 w-5 text-center"></i> 지식맵</button>
-                <button onclick="closeMobileMenu(); router.navigate('year')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-calendar-days text-purple-500 w-5 text-center"></i> 교사의 1년</button>
-                <button onclick="closeMobileMenu(); router.navigate('career')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-route text-rose-500 w-5 text-center"></i> 커리어맵</button>
-                <button onclick="closeMobileMenu(); router.navigate('quiz')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-gamepad text-orange-500 w-5 text-center"></i> 퀴즈</button>
-                <button onclick="closeMobileMenu(); router.navigate('card')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-id-card text-teal-500 w-5 text-center"></i> 오늘의카드</button>
-                <button onclick="closeMobileMenu(); router.navigate('mybox')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 text-left font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 shadow-sm"><i class="fa-solid fa-box-archive text-slate-500 w-5 text-center"></i> 교직함</button>
+    <!-- 모든 기존 기능을 그룹으로 정리한 전체 메뉴 -->
+    <div id="mobile-menu-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex" role="dialog" aria-modal="true" aria-labelledby="all-menu-title" onclick="if(event.target === this) closeMobileMenu()">
+        <div class="editorial-menu-panel hide-scrollbar">
+            <div class="editorial-menu-head"><h3 id="all-menu-title">전체 메뉴</h3><button type="button" onclick="closeMobileMenu()" aria-label="메뉴 닫기">×</button></div>
+            <div class="editorial-menu-grid">
+                <section class="editorial-menu-group"><h4>찾기</h4><button onclick="closeMobileMenu(); router.navigate('search')">교직어 검색</button><button onclick="closeMobileMenu(); router.navigate('situations')">상황 가이드</button><button onclick="closeMobileMenu(); router.navigate('navigator')">교직 내비게이터</button><button onclick="closeMobileMenu(); router.navigate('map')">교직 지식맵</button></section>
+                <section class="editorial-menu-group"><h4>업무</h4><button onclick="closeMobileMenu(); router.navigate('year')">교사의 1년</button><button onclick="closeMobileMenu(); router.navigate('tools-board')">태스크 보드</button><button onclick="closeMobileMenu(); router.navigate('tools-doc')">문서 · 알림장 생성기</button><button onclick="closeMobileMenu(); router.navigate('career')">교직 커리어맵</button></section>
+                <section class="editorial-menu-group"><h4>수업과 기록</h4><button onclick="closeMobileMenu(); router.navigate('tools-class')">학급 경영 도구</button><button onclick="closeMobileMenu(); router.navigate('timetable')">시간표 · 종 알림</button><button onclick="closeMobileMenu(); router.navigate('tools-record')">생기부 문장 도우미</button><button onclick="closeMobileMenu(); router.navigate('counsel')">상담 기록장</button></section>
+                <section class="editorial-menu-group"><h4>학습과 설정</h4><button onclick="closeMobileMenu(); router.navigate('quiz')">교직력 테스트</button><button onclick="closeMobileMenu(); router.navigate('card')">오늘의 교직카드</button><button onclick="closeMobileMenu(); router.navigate('tools-edutech')">에듀테크 큐레이션</button><button onclick="closeMobileMenu(); router.navigate('mybox')">나의 교직함</button><button data-ys-install>앱 설치</button><button onclick="toggleQuickDarkMode(); closeMobileMenu()">화면 모드 전환</button><button data-qr onclick="closeMobileMenu()">QR 코드로 접속</button></section>
             </div>
         </div>
     </div>
@@ -441,6 +480,9 @@
             },
             render() {
                 try {
+                     const navGroup = { situations: 'search', navigator: 'search', map: 'search', 'tools-board': 'year', 'tools-doc': 'year', career: 'year', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', card: 'quiz', 'tools-edutech': 'quiz' };
+                     const activeNav = navGroup[this.current] || this.current;
+                     document.querySelectorAll('[data-primary-nav]').forEach(el => { const active = el.dataset.primaryNav === activeNav; el.classList.toggle('active', active); if (active) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current'); });
                     document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('bg-blue-50', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400'));
                     document.querySelectorAll('.mob-item').forEach(el => el.classList.remove('text-blue-600', 'dark:text-blue-400', 'font-bold'));
                     const activeSidebar = document.getElementById(`nav-${this.current}`); if (activeSidebar) activeSidebar.classList.add('bg-blue-50', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400');
@@ -504,120 +546,70 @@
         }
 
         function renderHome(container) {
-            const d = new Date();
-            const hashStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-            const { item: todaysCard, review: cardIsReview } = getTodaysCard();
-            const quote = QUOTES[Math.abs(hashCode(hashStr)) % QUOTES.length];
-
-            // 방학 D-day: 자정 기준으로 계산 (겨울 1/5, 여름 7/20 기준)
-            const year = d.getFullYear();
-            const today = new Date(year, d.getMonth(), d.getDate());
-            const vacations = [
-                { name: '겨울방학', date: new Date(year, 0, 5) },
-                { name: '여름방학', date: new Date(year, 6, 20) },
-                { name: '겨울방학', date: new Date(year + 1, 0, 5) }
+            const month = new Date().getMonth() + 1;
+            const monthlyTasks = YEAR_TASKS[month] || [];
+            const feature = SITUATIONS.find(s => s.title.includes('체험학습')) || SITUATIONS[0];
+            const savedBoard = Storage.get('board_tasks', null);
+            const savedBoardCount = savedBoard && typeof savedBoard === 'object' && !Array.isArray(savedBoard) ? Object.keys(savedBoard).length : null;
+            const recentIds = Storage.get('recent_views', []);
+            const recentItems = (Array.isArray(recentIds) ? recentIds : []).map(id => DB.find(item => item.id === Number(id))).filter(Boolean).slice(0, 3);
+            const list = [
+                { title: monthlyTasks[0]?.title || `${month}월 주요 업무`, desc: '연간 업무에서 확인', route: 'year' },
+                { title: '진행 중인 태스크 보드', desc: savedBoardCount === null ? '새 업무를 시작할 수 있습니다' : `저장된 할 일 ${savedBoardCount}개`, route: 'tools-board' },
+                { title: recentItems[0] ? `최근 본 용어 · ${recentItems[0].keyword}` : '교직어 찾아보기', desc: recentItems[0] ? '나의 교직함에서 다시 열기' : '필요한 근거를 검색해 보세요', route: recentItems[0] ? 'mybox' : 'search' }
             ];
-            const nextVac = vacations.find(v => v.date >= today);
-            const vacName = nextVac.name;
-            const diffDays = Math.round((nextVac.date - today) / 86400000);
-
-            const recentSearches = Storage.get('recent_searches', []).filter(k => k && String(k).trim() !== 'null').slice(0, 5);
-            const monthTasksCount = (YEAR_TASKS[d.getMonth() + 1] || []).length;
-            const checkedState = Storage.get(`checklist_${d.getMonth() + 1}`, {});
-            let completedCount = 0; for (let i = 0; i < monthTasksCount; i++) if (checkedState[i]) completedCount++;
-            const completionRate = monthTasksCount > 0 ? Math.round((completedCount / monthTasksCount) * 100) : 0;
-
-            const toolLink = 'group block py-5 border-t border-slate-300 dark:border-slate-700 text-left w-full';
-            const tools = [
-                ['tools-doc', '문서 생성기', '기안문·알림장 초안을 바로'],
-                ['tools-class', '학급 도구', '자리 배치와 학급 운영'],
-                ['timetable', '시간표 · 종 알림', '지금 몇 교시인지 한눈에'],
-                ['tools-record', '생기부 문장 도우미', '행동특성·교과 문장 다듬기'],
-                ['situations', '이럴 땐 어떻게?', '상황별 처리 순서 가이드'],
-                ['year', '교사의 1년', '달마다 챙길 업무 타임라인'],
-                ['tools-board', '실전 태스크 보드', '해야 할 업무를 한 판에'],
-                ['map', '교직 지식맵', '용어 사이의 연결을 지도로']
+            const shortcuts = [
+                ['tools-doc', '문서 생성기', '기안문과 알림장'],
+                ['tools-class', '학급 경영 도구', '자리 배치와 운영'],
+                ['map', '교직 지식맵', '용어 사이의 연결'],
+                ['mybox', '나의 교직함', '저장한 자료']
             ];
-            const popular = ['관외 전보', '학교폭력', '품의', '교육활동 침해'];
-            const chip = 'px-3.5 py-2 rounded-full border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm text-slate-700 dark:text-slate-200 hover:border-blue-700 hover:text-blue-700 dark:hover:border-blue-400 dark:hover:text-blue-300 transition';
-            const extLink = 'min-h-[52px] flex items-center justify-between px-4 rounded-xl border border-slate-200 dark:border-slate-700 font-semibold text-sm text-slate-800 dark:text-slate-100 hover:border-blue-700 dark:hover:border-blue-400 transition';
-
             container.innerHTML = `
-                <div class="max-w-6xl mx-auto animate-fade-in">
-                    <section class="pt-6 md:pt-14 pb-10 md:pb-14">
-                        <p class="text-xs md:text-sm font-semibold tracking-[0.08em] text-blue-700 dark:text-blue-400 mb-4 md:mb-5">초등교사를 위한 교직생활 OS</p>
-                        <h2 class="font-serif-kr font-black text-[34px] leading-[1.2] md:text-[60px] md:leading-[1.15] tracking-tight text-slate-900 dark:text-white">교직의 모든 질문에,<br>근거 있는 답을.</h2>
-                        <p class="mt-5 md:mt-6 mb-8 md:mb-10 text-base md:text-lg leading-relaxed text-slate-600 dark:text-slate-300 max-w-xl">${DB.length.toLocaleString()}개 교직 용어와 실전 업무 가이드. 전보부터 품의까지, 찾고 바로 처리하세요.</p>
-                        <div class="flex max-w-2xl rounded-xl border-2 border-slate-900 dark:border-slate-200 bg-white dark:bg-slate-800 overflow-hidden focus-within:ring-4 focus-within:ring-blue-500/20">
-                            <label for="home-search-input" class="sr-only">교직 용어 검색</label>
-                            <input type="text" id="home-search-input" placeholder="전보, 학폭, 품의, 나이스..." class="flex-1 min-w-0 min-h-[56px] md:min-h-[60px] px-4 md:px-5 bg-transparent text-base md:text-lg text-slate-900 dark:text-slate-100 placeholder-slate-400 outline-none">
-                            <button onclick="triggerHomeSearch()" class="shrink-0 px-6 md:px-8 bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold text-base md:text-lg transition">검색</button>
+                <div class="editorial-home animate-fade-in">
+                    <section class="editorial-hero" aria-label="교직백서 소개와 검색">
+                        <div>
+                            <span class="editorial-eyebrow">THE TEACHER'S DESK</span>
+                            <h2>교직의 질문에,<br><em>명료한 다음 단계.</em></h2>
+                            <p>필요한 근거를 찾고, 오늘의 업무를 확인한 뒤 다음 일로 이어가세요.</p>
                         </div>
-                        <div class="flex flex-wrap items-center gap-2 mt-4">
-                            <span class="text-sm text-slate-500 dark:text-slate-400 mr-1">자주 찾는</span>
-                            ${popular.map(kw => `<button type="button" data-kw="${escapeHTML(kw)}" onclick="router.navigate('search', this.dataset.kw)" class="${chip}">${escapeHTML(kw)}</button>`).join('')}
+                        <div class="editorial-search">
+                            <label for="home-search-input" class="sr-only">교직 업무 검색</label>
+                            <input type="search" id="home-search-input" placeholder="무엇을 찾고 계신가요?" autocomplete="off">
+                            <button type="button" onclick="triggerHomeSearch()">검색</button>
                         </div>
                     </section>
-
-                    <section aria-label="오늘" class="grid grid-cols-1 md:grid-cols-3 border-t-2 border-slate-900 dark:border-slate-300 border-b border-b-slate-200 dark:border-b-slate-700 bg-white dark:bg-slate-800/60">
-                        <button type="button" onclick="router.navigate('timetable')" class="text-left p-5 md:p-6 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition" aria-label="시간표 열기">
-                            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5"><span class="now-clock">--:--</span> · 지금은</p>
-                            <p class="now-status-title text-xl md:text-2xl font-bold text-slate-900 dark:text-white truncate">-</p>
-                            <p class="now-status-sub text-sm text-slate-600 dark:text-slate-300 mt-1 truncate">-</p>
-                        </button>
-                        <div class="p-5 md:p-6 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-700">
-                            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">${d.getMonth() + 1}월 업무 달성률</p>
-                            <p id="home-completion-rate" class="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">${completionRate}%</p>
-                            <div class="mt-3 w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden"><div id="home-completion-bar" class="bg-blue-700 dark:bg-blue-400 h-full transition-all" style="width: ${completionRate}%"></div></div>
-                        </div>
-                        <div class="p-5 md:p-6">
-                            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">${vacName}까지</p>
-                            <p class="text-xl md:text-2xl font-bold text-blue-700 dark:text-blue-400">${diffDays === 0 ? 'D-Day' : `D-${diffDays}`}</p>
-                            <p class="text-sm text-slate-600 dark:text-slate-300 mt-1">일반 학교 일정 기준</p>
-                        </div>
-                    </section>
-                    <p class="mt-4 text-sm text-slate-500 dark:text-slate-400"><span class="font-semibold text-slate-600 dark:text-slate-300">오늘의 한 마디</span> · ${quote}</p>
-
-                    <section class="pt-14 md:pt-16">
-                        <h3 class="font-serif-kr text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-white mb-5">실무 도구</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8">
-                            ${tools.map(([route, name, desc], i) => `<button type="button" onclick="router.navigate('${route}')" class="${toolLink}"><span class="block text-xs font-semibold text-blue-700 dark:text-blue-400 mb-2">${String(i + 1).padStart(2, '0')}</span><span class="block text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-300 transition">${name}</span><span class="block mt-1 text-sm text-slate-500 dark:text-slate-400">${desc}</span></button>`).join('')}
-                        </div>
-                    </section>
-
-                    <section class="pt-10 md:pt-12 grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-6">
-                        <article class="rounded-2xl bg-slate-900 dark:bg-slate-800 dark:border dark:border-slate-700 text-slate-50 p-7 md:p-8 flex flex-col">
-                            <p class="text-xs font-semibold tracking-[0.08em] text-blue-300 mb-4">${cardIsReview ? '오늘의 복습 카드' : '오늘의 교직카드'}</p>
-                            <button type="button" onclick="openDetail(${todaysCard.id})" class="text-left group">
-                                <span class="block font-serif-kr text-3xl md:text-4xl font-black tracking-tight group-hover:text-blue-200 transition">${escapeHTML(todaysCard.keyword)}</span>
-                                <span class="block mt-2 text-sm text-slate-300">${escapeHTML(todaysCard.category)}</span>
-                                <span class="block mt-3 text-base leading-relaxed text-slate-200 line-clamp-3">${escapeHTML(todaysCard.description)}</span>
+                    <div class="editorial-content-grid">
+                        <section aria-label="오늘의 안내">
+                            <div class="editorial-section-head"><h3>오늘의 안내</h3><button type="button" onclick="router.navigate('situations')">상황 가이드 전체 →</button></div>
+                            <button type="button" class="editorial-story" onclick="openFeaturedSituation()">
+                                <small>상황별 처리 순서</small>
+                                <strong>${escapeHTML(feature?.title || '상황별 안내')}</strong>
+                                <span>${escapeHTML(feature?.summary || '기존 가이드에서 처리 단계와 확인할 사항을 살펴보세요.')} &nbsp; 읽어보기 →</span>
                             </button>
-                            <button type="button" onclick="router.navigate('card')" class="mt-6 self-start min-h-[44px] px-4 rounded-lg border border-slate-300 text-sm font-semibold hover:bg-white hover:text-slate-900 transition">카드 전체 학습 →</button>
-                        </article>
-                        <div class="rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-7 md:p-8">
-                            <h3 class="text-xs font-semibold tracking-[0.08em] text-slate-500 dark:text-slate-400 mb-4">${d.getMonth() + 1}월 체크리스트</h3>
-                            <ul class="space-y-1" id="home-checklist-preview"></ul>
-                            <button type="button" onclick="router.navigate('year')" class="mt-4 text-sm font-semibold text-blue-700 dark:text-blue-400 hover:underline">교사의 1년에서 전체 보기 →</button>
-                        </div>
-                        <div class="rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-7 md:p-8">
-                            <h3 class="text-xs font-semibold tracking-[0.08em] text-slate-500 dark:text-slate-400 mb-4">최근 검색</h3>
-                            ${recentSearches.length > 0 ? `<div class="flex flex-wrap gap-2">${recentSearches.map(kw => `<button type="button" data-kw="${escapeHTML(kw)}" onclick="router.navigate('search', this.dataset.kw)" class="${chip}">${escapeHTML(kw)}</button>`).join('')}</div>` : `<p class="text-sm text-slate-400 dark:text-slate-500">아직 검색 기록이 없습니다.</p>`}
-                            <h3 class="text-xs font-semibold tracking-[0.08em] text-slate-500 dark:text-slate-400 mt-7 mb-3">업무 바로가기</h3>
-                            <div class="grid grid-cols-2 lg:grid-cols-1 gap-2.5">
-                                <a href="https://neis.go.kr" target="_blank" rel="noopener noreferrer" class="${extLink}">NEIS <span aria-hidden="true" class="text-slate-400">↗</span></a>
-                                <a href="https://klef.go.kr" target="_blank" rel="noopener noreferrer" class="${extLink}">K-에듀파인 <span aria-hidden="true" class="text-slate-400">↗</span></a>
-                                <a href="https://www.teachiworld.com" target="_blank" rel="noopener noreferrer" class="${extLink}">맞춤형복지 <span aria-hidden="true" class="text-slate-400">↗</span></a>
-                                <a href="https://www.moe.go.kr" target="_blank" rel="noopener noreferrer" class="${extLink}">교육부 <span aria-hidden="true" class="text-slate-400">↗</span></a>
+                            <div class="editorial-shortcuts">
+                                ${shortcuts.map(([route, title, desc]) => `<button type="button" class="editorial-shortcut" onclick="router.navigate('${route}')"><strong>${title}</strong><small>${desc}</small></button>`).join('')}
                             </div>
-                        </div>
-                    </section>
+                        </section>
+                        <section aria-label="지금 살펴볼 일">
+                            <div class="editorial-section-head"><h3>지금 살펴볼 일</h3><button type="button" onclick="router.navigate('year')">교사의 1년 →</button></div>
+                            <div class="editorial-list">
+                                ${list.map((item, i) => `<button type="button" onclick="router.navigate('${item.route}')"><span class="editorial-list-index">${String(i + 1).padStart(2, '0')}</span><span><strong>${escapeHTML(item.title)}</strong><small>${escapeHTML(item.desc)}</small></span></button>`).join('')}
+                            </div>
+                            <p class="editorial-note">학교별 일정은 직접 설정한 경우에만 표시됩니다. 위 연간 업무는 일반 목록입니다.</p>
+                        </section>
+                    </div>
+                    <div class="editorial-recent"><span>자주 찾는 주제</span>${['관외 전보', '학교폭력', '품의'].map(kw => `<button type="button" data-kw="${escapeHTML(kw)}" onclick="router.navigate('search', this.dataset.kw)">${escapeHTML(kw)}</button>`).join('')}</div>
                 </div>
             ` + FOOTER_HTML;
             const searchInput = document.getElementById('home-search-input');
-            if (searchInput) searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.isComposing) triggerHomeSearch(); });
-            renderHomeChecklistPreview(d.getMonth() + 1);
-            startClock();
+            if (searchInput) searchInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) triggerHomeSearch(); });
+        }
+
+        function openFeaturedSituation() {
+            const feature = SITUATIONS.find(s => s.title.includes('체험학습')) || SITUATIONS[0];
+            router.navigate('situations');
+            const input = document.getElementById('situation-search-input');
+            if (input && feature) { input.value = feature.title; updateSituationsGrid(feature.title); }
         }
 
         function triggerHomeSearch() {
@@ -2515,9 +2507,30 @@
             navigator.serviceWorker.register('sw.js').catch(err => console.warn('[교직백서] 오프라인 기능 등록 실패:', err));
         }
 
-        function openMobileMenu() { const m = document.getElementById('mobile-menu-modal'); if(m) m.classList.remove('hidden'); }
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMobileMenu(); });
-        function closeMobileMenu() { const m = document.getElementById('mobile-menu-modal'); if(m) m.classList.add('hidden'); }
+        let menuTrigger = null;
+        function openMobileMenu() {
+            const m = document.getElementById('mobile-menu-modal'); if (!m) return;
+            menuTrigger = document.activeElement;
+            m.classList.remove('hidden');
+            m.querySelector('.editorial-menu-head button')?.focus();
+        }
+        document.addEventListener('keydown', e => {
+            const m = document.getElementById('mobile-menu-modal');
+            if (!m || m.classList.contains('hidden')) return;
+            if (e.key === 'Escape') { closeMobileMenu(); return; }
+            if (e.key !== 'Tab') return;
+            const buttons = [...m.querySelectorAll('button')].filter(el => getComputedStyle(el).display !== 'none');
+            if (!buttons.length) return;
+            if (e.shiftKey && document.activeElement === buttons[0]) { e.preventDefault(); buttons.at(-1).focus(); }
+            else if (!e.shiftKey && document.activeElement === buttons.at(-1)) { e.preventDefault(); buttons[0].focus(); }
+        });
+        function closeMobileMenu() {
+            const m = document.getElementById('mobile-menu-modal');
+            if (!m || m.classList.contains('hidden')) return;
+            m.classList.add('hidden');
+            menuTrigger?.focus();
+            menuTrigger = null;
+        }
 
         // 안정적인 초기화 시작점: 테마 먼저 적용 → 데이터(terms.json) 로딩 → 화면 표시
         async function boot() {
