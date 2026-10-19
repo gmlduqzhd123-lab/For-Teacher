@@ -2,7 +2,7 @@
 <html lang="ko" class="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>교직백서 1000 : 초등교사를 위한 교직생활 OS</title>
     <meta property="og:site_name" content="엽쌤스쿨">
     <meta property="og:url" content="https://gmlduqzhd123-lab.github.io/For-Teacher/">
@@ -40,6 +40,7 @@
         @font-face { font-family: 'Maru Buri'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-SemiBold.woff2') format('woff2'); font-style: normal; font-weight: 600; font-display: swap; }
         @font-face { font-family: 'Maru Buri'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-Bold.woff2') format('woff2'); font-style: normal; font-weight: 700; font-display: swap; }
         body, button, input, textarea, select { font-family: 'Maru Buri', 'Nanum Myeongjo', 'AppleMyungjo', serif; }
+        button, a, label, summary { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
         .font-serif-kr { font-family: 'Maru Buri', 'Nanum Myeongjo', 'AppleMyungjo', serif; word-break: keep-all; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -72,7 +73,7 @@
         @keyframes slotSpin { 0% { transform: translateY(-3px); opacity: 0.5; } 50% { transform: translateY(3px); opacity: 1; } 100% { transform: translateY(-3px); opacity: 0.5; } }
         :root { --paper: #f7f5f0; --paper-card: #fffefa; --paper-line: #e7e3da; --paper-ink: #282b28; --paper-muted: #526058; --paper-accent: #965d3c; --paper-deep: #2e3c35; }
         .dark { --paper: #191e1b; --paper-card: #242a26; --paper-line: #3b443e; --paper-ink: #f0f0e9; --paper-muted: #acb8ae; --paper-accent: #e3ae90; --paper-deep: #304c40; }
-        body { background: var(--paper) !important; color: var(--paper-ink) !important; }
+        body { background: var(--paper) !important; color: var(--paper-ink) !important; height: 100vh; height: 100dvh; }
         .editorial-header { flex: none; background: var(--paper); border-bottom: 1px solid var(--paper-line); z-index: 30; }
         .editorial-header-inner { max-width: 1240px; margin: auto; min-height: 76px; padding: 0 28px; display: flex; align-items: center; gap: 34px; }
         .editorial-brand { border: 0; background: none; color: var(--paper-ink); font-family: 'Maru Buri', Georgia, serif; font-size: 19px; font-weight: 700; letter-spacing: -.07em; white-space: nowrap; padding: 0; }
@@ -85,7 +86,7 @@
         .editorial-action-primary { background: var(--paper-deep); color: #fff; border-color: var(--paper-deep); }
         .editorial-shell { width: 100%; min-height: 0; display: flex; flex: 1; }
         #desktop-sidebar { display: none !important; }
-        #app-view { width: 100%; background: var(--paper); padding: 0 28px 70px; }
+        #app-view { width: 100%; background: var(--paper); padding: 0 28px 70px; -webkit-overflow-scrolling: touch; }
         .editorial-home { max-width: 1160px; margin: auto; }
         .editorial-hero { display: grid; grid-template-columns: 1.3fr 1fr; gap: 42px; align-items: end; padding: 52px 0 37px; border-bottom: 1px solid var(--paper-line); }
         .editorial-eyebrow { display: block; color: var(--paper-accent); font-size: 11px; font-weight: 800; letter-spacing: .17em; margin-bottom: 17px; }
@@ -118,7 +119,7 @@
         .editorial-home + div > span { color: var(--paper-muted) !important; }
         .editorial-recent button { border: 1px solid var(--paper-line); background: var(--paper-card); color: var(--paper-ink); border-radius: 99px; padding: 7px 12px; font-size: 12px; }
         #mobile-menu-modal { align-items: center; justify-content: center; padding: 16px; }
-        .editorial-menu-panel { width: min(780px, 100%); max-height: min(85vh, 760px); overflow-y: auto; padding: 27px; border-radius: 14px; background: var(--paper-card); color: var(--paper-ink); }
+        .editorial-menu-panel { width: min(780px, 100%); max-height: min(85dvh, 760px); overflow-y: auto; overscroll-behavior: contain; padding: 27px; border-radius: 14px; background: var(--paper-card); color: var(--paper-ink); }
         .editorial-menu-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--paper-line); padding-bottom: 16px; margin-bottom: 23px; }
         .editorial-menu-head h3 { font-family: 'Maru Buri', Georgia, serif; font-size: 22px; font-weight: 700; margin: 0; }
         .editorial-menu-head button { color: var(--paper-muted); border: 0; background: transparent; font-size: 20px; }
@@ -129,8 +130,9 @@
         .editorial-bottom-nav .mob-item { color: var(--paper-muted) !important; font-weight: 650; }
         .editorial-bottom-nav .mob-item.font-bold { color: var(--paper-accent) !important; }
         .editorial-header button:focus-visible, .editorial-home button:focus-visible, .editorial-menu-panel button:focus-visible, .editorial-search:focus-within { outline: 2px solid var(--paper-accent); outline-offset: 3px; }
-        @media (max-width: 850px) { .editorial-header-inner { gap: 14px; padding: 0 18px; } .editorial-primary-nav { gap: 12px; } .editorial-primary-nav button { font-size: 12px; } .editorial-action:not(.editorial-menu-trigger) { display: none; } .editorial-hero { grid-template-columns: 1fr; gap: 22px; } .editorial-content-grid { gap: 22px; } }
-        @media (max-width: 650px) { .editorial-header-inner { min-height: 61px; justify-content: space-between; } .editorial-primary-nav { display: none; } #app-view { padding: 0 16px 100px; } .editorial-hero { grid-template-columns: 1fr; gap: 22px; padding: 32px 0 27px; } .editorial-hero h2 { font-size: 32px; } .editorial-content-grid { grid-template-columns: 1fr; gap: 30px; padding-top: 28px; } .editorial-story { min-height: 210px; } .editorial-menu-panel { padding: 21px; } .editorial-menu-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 850px) { .editorial-header-inner { gap: 14px; padding: 0 18px; } .editorial-primary-nav { gap: 12px; } .editorial-primary-nav button { font-size: 12px; } .editorial-action:not(.editorial-menu-trigger):not(.editorial-mobile-keep) { display: none; } .editorial-hero { grid-template-columns: 1fr; gap: 22px; } .editorial-content-grid { gap: 22px; } }
+        @media (max-width: 768px) { input:not([type="checkbox"]):not([type="radio"]), textarea, select { font-size: 16px !important; } }
+        @media (max-width: 650px) { .editorial-header-inner { min-height: 61px; justify-content: space-between; padding: 0 14px; } .editorial-primary-nav { display: none; } .editorial-header-actions { gap: 6px; } #app-view { padding: 0 16px 104px; } .editorial-hero { grid-template-columns: 1fr; gap: 22px; padding: 28px 0 24px; } .editorial-hero h2 { font-size: 28px; } .editorial-content-grid { grid-template-columns: 1fr; gap: 28px; padding-top: 24px; } .editorial-story { min-height: 200px; padding: 22px; } .editorial-shortcuts { grid-template-columns: 1fr; } .editorial-menu-panel { padding: 21px; } .editorial-menu-grid { grid-template-columns: 1fr; gap: 18px; } }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 h-screen flex flex-col overflow-hidden transition-colors duration-200">
@@ -149,7 +151,7 @@
                 <button type="button" data-primary-nav="quiz" onclick="router.navigate('quiz')">학습</button>
             </nav>
             <div class="editorial-header-actions">
-                <button type="button" class="editorial-action" onclick="openCommandPalette()" aria-label="빠른 이동 및 통합 검색 열기" title="단축키: Ctrl+K 또는 /"><i class="fa-solid fa-bolt text-amber-600 mr-1"></i>빠른 이동</button>
+                <button type="button" class="editorial-action editorial-mobile-keep" onclick="openCommandPalette()" aria-label="빠른 이동 및 통합 검색 열기" title="단축키: Ctrl+K 또는 /"><i class="fa-solid fa-bolt text-amber-600 mr-1"></i>빠른 이동</button>
                 <button type="button" class="editorial-action" onclick="openSetupWizard()" aria-label="1분 학급 세팅 열기"><i class="fa-solid fa-wand-magic-sparkles text-emerald-600 mr-1"></i>학급 세팅</button>
                 <button type="button" class="editorial-action" data-font-toggle onclick="cycleFontScale()" aria-label="글자 크기 조절">가+ 100%</button>
                 <button type="button" class="editorial-action editorial-menu-trigger" onclick="openMobileMenu()" aria-label="전체 메뉴 열기">전체 메뉴</button>
@@ -204,12 +206,12 @@
         <button onclick="router.navigate('search')" id="mob-search" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-magnifying-glass text-lg mb-1"></i>검색</button>
         <button onclick="router.navigate('situations')" id="mob-situations" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-triangle-exclamation text-lg mb-1"></i>상황</button>
         <button onclick="router.navigate('tools-class')" id="mob-tools-class" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-users-rectangle text-lg mb-1"></i>학급도구</button>
-        <button onclick="openMobileMenu()" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-bars text-lg mb-1"></i>메뉴</button>
+        <button onclick="toggleMobileMenu()" id="mob-menu" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-bars text-lg mb-1"></i>메뉴</button>
     </nav>
 
     <!-- 상세 모달 -->
     <div id="detail-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-3 md:p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title" onclick="if(event.target === this) closeModal()">
-        <div id="modal-content" class="bg-white dark:bg-slate-800 rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 md:p-8 shadow-2xl border border-slate-100 dark:border-slate-700 relative transform transition-all hide-scrollbar"></div>
+        <div id="modal-content" class="bg-white dark:bg-slate-800 rounded-3xl max-w-2xl w-full max-h-[85dvh] overflow-y-auto overscroll-contain p-5 md:p-8 shadow-2xl border border-slate-100 dark:border-slate-700 relative transform transition-all hide-scrollbar"></div>
     </div>
 
     <!-- 모든 기존 기능을 그룹으로 정리한 전체 메뉴 -->
@@ -227,20 +229,20 @@
 
     <!-- 1분 학급 세팅 위저드 모달 -->
     <div id="setup-wizard-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-3 md:p-4" role="dialog" aria-modal="true" aria-labelledby="setup-wizard-title" onclick="if(event.target === this) closeSetupWizard()">
-        <div id="setup-wizard-content" class="bg-white dark:bg-slate-800 rounded-3xl max-w-xl w-full max-h-[88vh] overflow-y-auto p-6 md:p-8 shadow-2xl border border-slate-100 dark:border-slate-700 hide-scrollbar"></div>
+        <div id="setup-wizard-content" class="bg-white dark:bg-slate-800 rounded-3xl max-w-xl w-full max-h-[88dvh] overflow-y-auto overscroll-contain p-5 md:p-8 shadow-2xl border border-slate-100 dark:border-slate-700 hide-scrollbar"></div>
     </div>
 
     <!-- 빠른 이동 & 통합 커맨드 바 (Ctrl+K) -->
-    <div id="command-palette-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-start justify-center pt-14 md:pt-24 p-3 md:p-4" role="dialog" aria-modal="true" aria-labelledby="command-palette-title" onclick="if(event.target === this) closeCommandPalette()">
+    <div id="command-palette-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-start justify-center pt-3 sm:pt-14 md:pt-24 p-3 md:p-4" role="dialog" aria-modal="true" aria-labelledby="command-palette-title" onclick="if(event.target === this) closeCommandPalette()">
         <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700">
-            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex items-center gap-3">
+            <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-slate-700 flex items-center gap-3">
                 <i class="fa-solid fa-bolt text-amber-500 text-lg"></i>
-                <input id="command-palette-input" type="search" oninput="cmdPaletteIdx=0; renderCommandPaletteList(this.value)" onkeydown="handleCommandPaletteKey(event)" placeholder="도구 이름, 상황, 교직어 초성 검색 (예: 타이머, 생기부, 학폭, ㄱㅇㅈㅂ)..." class="flex-1 bg-transparent text-sm font-semibold text-slate-900 dark:text-white outline-none" autocomplete="off" aria-labelledby="command-palette-title">
+                <input id="command-palette-input" type="search" oninput="cmdPaletteIdx=0; renderCommandPaletteList(this.value)" onkeydown="handleCommandPaletteKey(event)" placeholder="도구, 상황, 교직어 초성 검색 (예: 타이머, 생기부, ㄱㅇㅈㅂ)..." class="flex-1 bg-transparent text-sm font-semibold text-slate-900 dark:text-white outline-none" autocomplete="off" aria-labelledby="command-palette-title">
                 <span id="command-palette-title" class="sr-only">빠른 이동 및 통합 검색</span>
-                <button type="button" onclick="closeCommandPalette()" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-500 dark:text-slate-300">ESC</button>
+                <button type="button" onclick="closeCommandPalette()" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-500 dark:text-slate-300">닫기</button>
             </div>
-            <div id="command-palette-list" class="max-h-[60vh] overflow-y-auto p-2 space-y-1 hide-scrollbar"></div>
-            <div class="px-4 py-2.5 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-[11px] text-slate-400">
+            <div id="command-palette-list" class="max-h-[52dvh] sm:max-h-[60vh] overflow-y-auto overscroll-contain p-2 space-y-1 hide-scrollbar"></div>
+            <div class="hidden sm:flex px-4 py-2.5 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-700 justify-between items-center text-[11px] text-slate-400">
                 <span>↑↓ 이동 · Enter 바로 실행 · Esc 닫기</span>
                 <span>어디서나 <b>Ctrl+K</b> 또는 <b>/</b></span>
             </div>
@@ -680,12 +682,13 @@
                 try {
                     if (this.current === 'tools-record' && pendingRecordDraft && !saveRecordDraftNow()) return;
                      const navGroup = { situations: 'search', navigator: 'search', map: 'search', 'tools-board': 'year', 'tools-doc': 'year', career: 'year', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', card: 'quiz', 'tools-edutech': 'quiz' };
+                     const mobGroup = { home: 'home', search: 'search', navigator: 'search', map: 'search', situations: 'situations', 'tools-class': 'tools-class', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', 'tools-doc': 'tools-class', 'tools-board': 'tools-class', year: 'menu', career: 'menu', quiz: 'menu', card: 'menu', 'tools-edutech': 'menu', mybox: 'menu' };
                      const activeNav = navGroup[this.current] || this.current;
                      document.querySelectorAll('[data-primary-nav]').forEach(el => { const active = el.dataset.primaryNav === activeNav; el.classList.toggle('active', active); if (active) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current'); });
                     document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('bg-blue-50', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400'));
                     document.querySelectorAll('.mob-item').forEach(el => el.classList.remove('text-blue-600', 'dark:text-blue-400', 'font-bold'));
                     const activeSidebar = document.getElementById(`nav-${this.current}`); if (activeSidebar) activeSidebar.classList.add('bg-blue-50', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400');
-                    const activeMob = document.getElementById(`mob-${this.current}`); if (activeMob) activeMob.classList.add('text-blue-600', 'dark:text-blue-400', 'font-bold');
+                    const activeMob = document.getElementById(`mob-${mobGroup[this.current] || this.current}`); if (activeMob) activeMob.classList.add('text-blue-600', 'dark:text-blue-400', 'font-bold');
 
                     updateBookmarkBadge();
 
@@ -838,7 +841,7 @@
                                 <button type="button" onclick="triggerHomeSearch()">검색</button>
                             </div>
                             <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 px-1">
-                                <span>💡 어디서나 <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[11px]">Ctrl+K</kbd> 또는 <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[11px]">/</kbd> 키로 도구·용어를 즉시 열 수 있어요</span>
+                                <button type="button" onclick="openCommandPalette()" class="text-left hover:underline">💡 상단 <b>⚡ 빠른 이동</b> 버튼(PC는 <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[11px]">Ctrl+K</kbd> 또는 <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[11px]">/</kbd>)으로 도구·용어를 즉시 열 수 있어요</button>
                             </div>
                         </div>
                     </section>
@@ -1184,9 +1187,9 @@
                                     </label>
                                 </div>
                             </details>
-                            <div class="bg-slate-50 dark:bg-slate-900 p-6 rounded-2xl overflow-x-auto">
+                            <div class="bg-slate-50 dark:bg-slate-900 p-4 sm:p-6 rounded-2xl overflow-x-auto">
                                 <div class="text-center mb-6"><span class="px-12 py-2 bg-slate-300 dark:bg-slate-700 rounded text-sm font-bold text-slate-700 dark:text-slate-200">교 탁</span></div>
-                                <div id="seats-grid" class="flex justify-center min-h-[100px] items-center"></div>
+                                <div id="seats-grid" class="min-h-[100px] flex items-center"></div>
                             </div>
                         </div>
                         <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-6 rounded-3xl shadow-sm text-white flex flex-col justify-center items-center text-center">
@@ -1305,10 +1308,10 @@
 
         function seatRows(res) { const rows = []; for (let i = 0; i < res.names.length; i += res.cols) rows.push(res.names.slice(i, i + res.cols)); return rows; }
         function seatsHTML(res, big = false) {
-            if (!res || !Array.isArray(res.names) || !res.names.length) return '<p class="text-slate-400 dark:text-slate-500 text-sm font-medium">배치 생성 버튼을 눌러주세요.</p>';
-            const boxStyle = big ? `width:min(${Math.floor(80 / res.cols)}vw,150px);height:min(9vh,90px);font-size:min(2.6vw,26px)` : '';
+            if (!res || !Array.isArray(res.names) || !res.names.length) return '<p class="text-slate-400 dark:text-slate-500 text-sm font-medium mx-auto">배치 생성 버튼을 눌러주세요.</p>';
+            const boxStyle = big ? `width:min(${Math.floor(80 / res.cols)}vw,150px);height:min(9vh,90px);font-size:clamp(11px,2.6vw,26px)` : '';
             const boxCls = big ? 'bg-white/10 border border-white/25 text-white' : 'w-16 h-14 sm:w-20 sm:h-16 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 shadow-sm';
-            return `<div class="inline-flex flex-col gap-2 items-center">${seatRows(res).map(r => `<div class="flex gap-1.5">${r.map((n, ci) => `<div class="${boxCls} rounded-xl flex items-center justify-center font-bold text-center break-all p-1 ${res.pairMode && ci % 2 === 1 && ci < res.cols - 1 ? (big ? 'mr-8' : 'mr-4') : ''}" style="${boxStyle}">${escapeHTML(n)}</div>`).join('')}</div>`).join('')}</div>`;
+            return `<div class="w-max mx-auto flex flex-col gap-2 items-center">${seatRows(res).map(r => `<div class="flex gap-1.5">${r.map((n, ci) => `<div class="${boxCls} rounded-xl flex items-center justify-center font-bold text-center break-all p-1 ${res.pairMode && ci % 2 === 1 && ci < res.cols - 1 ? (big ? 'mr-3 sm:mr-8' : 'mr-4') : ''}" style="${boxStyle}">${escapeHTML(n)}</div>`).join('')}</div>`).join('')}</div>`;
         }
 
         function exportSeatsImage() {
@@ -1566,7 +1569,7 @@
             }).map(canonicalTerm).slice(0, 8);
             selectedAutocompleteIdx = -1;
             if (matches.length === 0) { acBox.classList.add('hidden'); return; }
-            acBox.innerHTML = matches.map((item, idx) => `<div onmousedown="selectAutocomplete(${item.id})" class="ac-item px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-slate-700 text-xs font-medium cursor-pointer flex justify-between text-slate-800 dark:text-slate-200" data-index="${idx}"><span>${highlightText(item.keyword, query)}</span><span class="text-slate-400">${item.category}</span></div>`).join('');
+            acBox.innerHTML = matches.map((item, idx) => `<div onmousedown="selectAutocomplete(${item.id})" onclick="selectAutocomplete(${item.id})" class="ac-item px-4 py-2.5 hover:bg-blue-50 dark:hover:bg-slate-700 text-xs font-medium cursor-pointer flex justify-between text-slate-800 dark:text-slate-200" data-index="${idx}"><span>${highlightText(item.keyword, query)}</span><span class="text-slate-400">${item.category}</span></div>`).join('');
             acBox.classList.remove('hidden');
         }
 
@@ -2769,7 +2772,7 @@
                 ['clock', 'fa-clock', '현재 교시·시계'],
                 ['memo', 'fa-chalkboard', '칠판 알림 메모']
             ];
-            const navBar = `<div class="absolute top-4 left-4 right-16 flex flex-wrap items-center gap-2 z-10">${tabs.map(([k, ic, label]) => `<button type="button" onclick="openPresent('${k}')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 ${presentKind === k ? 'bg-white text-slate-900 shadow-lg' : 'bg-white/10 hover:bg-white/20 text-slate-200'}"><i class="fa-solid ${ic}"></i><span>${label}</span></button>`).join('')}</div>`;
+            const navBar = `<div class="absolute top-3 sm:top-4 left-3 sm:left-4 right-16 flex flex-nowrap sm:flex-wrap overflow-x-auto hide-scrollbar items-center gap-1.5 sm:gap-2 pr-2 z-10">${tabs.map(([k, ic, label]) => `<button type="button" onclick="openPresent('${k}')" class="px-3 sm:px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${presentKind === k ? 'bg-white text-slate-900 shadow-lg' : 'bg-white/10 hover:bg-white/20 text-slate-200'}"><i class="fa-solid ${ic}"></i><span>${label}</span></button>`).join('')}</div>`;
             let body = '';
             if (kind === 'timer') {
                 body = `<div class="timer-display-text font-black tabular-nums leading-none tracking-tighter" style="font-size:min(26vw,44vh)">00:00</div>
@@ -2797,7 +2800,7 @@
             } else if (kind === 'seats') {
                 if (!Storage.get('seat_result', null) && getClassNames().length > 0) generateSeats();
                 const hasNames = getClassNames().length > 0;
-                body = `<div class="mb-6 flex flex-wrap items-center gap-4 justify-center"><span class="px-16 py-3 bg-white/15 rounded-xl text-xl font-bold">교 탁</span><button onclick="generateSeats(); openPresent('seats');" class="px-4 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-sm font-bold shadow"><i class="fa-solid fa-shuffle mr-1"></i>다시 배치</button>${!hasNames ? `<button onclick="closePresent(); openSetupWizard();" class="px-4 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-bold shadow"><i class="fa-solid fa-users mr-1"></i>학급 명단 등록하기</button>` : ''}</div>${seatsHTML(Storage.get('seat_result', null), true)}`;
+                body = `<div class="mb-6 flex flex-wrap items-center gap-4 justify-center"><span class="px-10 sm:px-16 py-2.5 sm:py-3 bg-white/15 rounded-xl text-base sm:text-xl font-bold">교 탁</span><button onclick="generateSeats(); openPresent('seats');" class="px-4 py-2.5 sm:py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-xs sm:text-sm font-bold shadow"><i class="fa-solid fa-shuffle mr-1"></i>다시 배치</button>${!hasNames ? `<button onclick="closePresent(); openSetupWizard();" class="px-4 py-2.5 sm:py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-xs sm:text-sm font-bold shadow"><i class="fa-solid fa-users mr-1"></i>학급 명단 등록하기</button>` : ''}</div><div class="w-full overflow-x-auto">${seatsHTML(Storage.get('seat_result', null), true)}</div>`;
             } else if (kind === 'clock') {
                 body = `<div class="now-clock font-black tabular-nums leading-none" style="font-size:min(22vw,34vh)">--:--</div>
                     <p class="now-status-title font-extrabold mt-6" style="font-size:min(8vw,10vh)">-</p>
@@ -2805,15 +2808,15 @@
                     <div class="w-[min(70vw,720px)] bg-white/15 h-3 rounded-full overflow-hidden mt-8"><div class="now-status-bar bg-blue-400 h-full transition-all" style="width:0%"></div></div>`;
             } else if (kind === 'memo') {
                 const note = getSettings().presentNote || '1. 교과서와 필기도구 준비하기\n2. 모둠별로 오늘의 탐구 주제 이야기 나누기\n3. 다 마친 모둠은 조용히 손들기 ✋';
-                body = `<div class="w-[min(90vw,960px)] text-left space-y-4">
-                    <div class="flex items-center justify-between">
-                        <span class="text-lg font-extrabold text-amber-300"><i class="fa-solid fa-chalkboard mr-2"></i>오늘의 활동 · 칠판 안내판 (직접 클릭해 수정하세요)</span>
-                        <span class="now-clock text-2xl font-black text-slate-300 tabular-nums">--:--</span>
+                body = `<div class="w-[min(92vw,960px)] text-left space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <span class="text-sm sm:text-lg font-extrabold text-amber-300"><i class="fa-solid fa-chalkboard mr-2"></i>오늘의 활동 · 칠판 안내판 (직접 클릭해 수정하세요)</span>
+                        <span class="now-clock text-xl sm:text-2xl font-black text-slate-300 tabular-nums">--:--</span>
                     </div>
-                    <textarea id="present-memo-input" oninput="saveSetting('presentNote', this.value)" rows="6" class="w-full p-6 rounded-3xl bg-white/10 border-2 border-white/20 text-white font-extrabold leading-relaxed outline-none focus:border-amber-300 resize-none" style="font-size:min(4.2vw,42px)">${escapeHTML(note)}</textarea>
+                    <textarea id="present-memo-input" oninput="saveSetting('presentNote', this.value)" rows="6" class="w-full p-4 sm:p-6 rounded-3xl bg-white/10 border-2 border-white/20 text-white font-extrabold leading-relaxed outline-none focus:border-amber-300 resize-none" style="font-size:clamp(18px,4.2vw,42px)">${escapeHTML(note)}</textarea>
                 </div>`;
             }
-            ov.innerHTML = `${navBar}<button onclick="closePresent()" class="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-2xl z-10" aria-label="전체 화면 닫기"><i class="fa-solid fa-xmark"></i></button><div class="w-full h-full flex flex-col items-center justify-center p-6 pt-20 text-center overflow-auto">${body}</div>`;
+            ov.innerHTML = `${navBar}<button onclick="closePresent()" class="absolute top-3 sm:top-4 right-3 sm:right-4 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 hover:bg-white/20 text-xl sm:text-2xl z-10 flex items-center justify-center" aria-label="전체 화면 닫기"><i class="fa-solid fa-xmark"></i></button><div class="w-full h-full flex flex-col items-center justify-center p-4 sm:p-6 pt-16 sm:pt-20 text-center overflow-auto">${body}</div>`;
             ov.classList.remove('hidden'); ov.classList.add('flex');
             if (ov.requestFullscreen && document.fullscreenElement !== ov) ov.requestFullscreen().catch(() => {});
             document.removeEventListener('keydown', presentKeyHandler);
@@ -3334,6 +3337,11 @@
             menuTrigger?.focus();
             menuTrigger = null;
         }
+        function toggleMobileMenu() {
+            const m = document.getElementById('mobile-menu-modal');
+            if (m && !m.classList.contains('hidden')) closeMobileMenu();
+            else openMobileMenu();
+        }
 
         // ====================================================
         // 3. 글자 크기 배율 (100% / 110% / 120%) · 1분 학급 세팅 마법사 · 빠른 실행 팔레트 (Ctrl+K)
@@ -3410,7 +3418,7 @@
                     </div>
                 </div>`;
             m.classList.remove('hidden');
-            setTimeout(() => document.getElementById('wiz-school')?.focus(), 50);
+            if (window.innerWidth > 768) setTimeout(() => document.getElementById('wiz-school')?.focus(), 50);
         }
         function fillSampleClassNamesInWizard() {
             const sample = ['1.강하늘', '2.김바다', '3.김서연', '4.박도윤', '5.박지우', '6.서민준', '7.손예린', '8.신유찬', '9.안소율', '10.오시우', '11.윤채원', '12.이서준', '13.이지호', '14.임하은', '15.장현우', '16.정다은', '17.조은우', '18.최수아', '19.한지민', '20.홍준서'];
