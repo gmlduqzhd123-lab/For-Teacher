@@ -149,6 +149,9 @@
                 <button type="button" data-primary-nav="quiz" onclick="router.navigate('quiz')">학습</button>
             </nav>
             <div class="editorial-header-actions">
+                <button type="button" class="editorial-action" onclick="openCommandPalette()" aria-label="빠른 이동 및 통합 검색 열기" title="단축키: Ctrl+K 또는 /"><i class="fa-solid fa-bolt text-amber-600 mr-1"></i>빠른 이동</button>
+                <button type="button" class="editorial-action" onclick="openSetupWizard()" aria-label="1분 학급 세팅 열기"><i class="fa-solid fa-wand-magic-sparkles text-emerald-600 mr-1"></i>학급 세팅</button>
+                <button type="button" class="editorial-action" data-font-toggle onclick="cycleFontScale()" aria-label="글자 크기 조절">가+ 100%</button>
                 <button type="button" class="editorial-action editorial-menu-trigger" onclick="openMobileMenu()" aria-label="전체 메뉴 열기">전체 메뉴</button>
                 <button type="button" class="editorial-action" data-theme-toggle onclick="toggleQuickDarkMode()" aria-label="다크 모드로 전환">다크 모드</button>
                 <button type="button" class="editorial-action" data-ys-install>앱 설치</button>
@@ -214,10 +217,32 @@
         <div class="editorial-menu-panel hide-scrollbar">
             <div class="editorial-menu-head"><h3 id="all-menu-title">전체 메뉴</h3><button type="button" onclick="closeMobileMenu()" aria-label="메뉴 닫기">×</button></div>
             <div class="editorial-menu-grid">
-                <section class="editorial-menu-group"><h4>찾기</h4><button onclick="closeMobileMenu(); router.navigate('search')">교직어 검색</button><button onclick="closeMobileMenu(); router.navigate('situations')">상황 가이드</button><button onclick="closeMobileMenu(); router.navigate('navigator')">교직 내비게이터</button><button onclick="closeMobileMenu(); router.navigate('map')">교직 지식맵</button></section>
+                <section class="editorial-menu-group"><h4>찾기</h4><button onclick="closeMobileMenu(); router.navigate('search')">교직어 검색</button><button onclick="closeMobileMenu(); router.navigate('situations')">상황 가이드</button><button onclick="closeMobileMenu(); router.navigate('navigator')">교직 내비게이터</button><button onclick="closeMobileMenu(); router.navigate('map')">교직 지식맵</button><button onclick="closeMobileMenu(); openCommandPalette()">⚡ 빠른 이동 · 통합 검색 (Ctrl+K)</button></section>
                 <section class="editorial-menu-group"><h4>업무</h4><button onclick="closeMobileMenu(); router.navigate('year')">교사의 1년</button><button onclick="closeMobileMenu(); router.navigate('tools-board')">태스크 보드</button><button onclick="closeMobileMenu(); router.navigate('tools-doc')">문서 · 알림장 생성기</button><button onclick="closeMobileMenu(); router.navigate('career')">교직 커리어맵</button></section>
-                <section class="editorial-menu-group"><h4>수업과 기록</h4><button onclick="closeMobileMenu(); router.navigate('tools-class')">학급 경영 도구</button><button onclick="closeMobileMenu(); router.navigate('timetable')">시간표 · 종 알림</button><button onclick="closeMobileMenu(); router.navigate('tools-record')">생기부 문장 도우미</button><button onclick="closeMobileMenu(); router.navigate('counsel')">상담 기록장</button></section>
-                <section class="editorial-menu-group"><h4>학습과 설정</h4><button onclick="closeMobileMenu(); router.navigate('quiz')">교직력 테스트</button><button onclick="closeMobileMenu(); router.navigate('card')">오늘의 교직카드</button><button onclick="closeMobileMenu(); router.navigate('tools-edutech')">에듀테크 큐레이션</button><button onclick="closeMobileMenu(); router.navigate('mybox')">나의 교직함</button><button data-ys-install>앱 설치</button><button data-theme-toggle onclick="toggleQuickDarkMode(); closeMobileMenu()" aria-label="다크 모드로 전환">다크 모드</button><button data-qr onclick="closeMobileMenu()">QR 코드로 접속</button></section>
+                <section class="editorial-menu-group"><h4>수업과 기록</h4><button onclick="closeMobileMenu(); router.navigate('tools-class')">학급 경영 도구</button><button onclick="closeMobileMenu(); router.navigate('timetable')">시간표 · 종 알림</button><button onclick="closeMobileMenu(); router.navigate('tools-record')">생기부 문장 도우미</button><button onclick="closeMobileMenu(); router.navigate('counsel')">상담 기록장</button><button onclick="closeMobileMenu(); openPresent('timer')">📺 전자칠판 수업 칠판모드</button></section>
+                <section class="editorial-menu-group"><h4>학습과 설정</h4><button onclick="closeMobileMenu(); openSetupWizard()">🪄 1분 학급 세팅 위저드</button><button onclick="closeMobileMenu(); router.navigate('quiz')">교직력 테스트</button><button onclick="closeMobileMenu(); router.navigate('card')">오늘의 교직카드</button><button onclick="closeMobileMenu(); router.navigate('tools-edutech')">에듀테크 큐레이션</button><button onclick="closeMobileMenu(); router.navigate('mybox')">나의 교직함 (백업·설정)</button><button data-font-toggle onclick="cycleFontScale()">가+ 글자 크기 조절</button><button data-ys-install>앱 설치</button><button data-theme-toggle onclick="toggleQuickDarkMode(); closeMobileMenu()" aria-label="다크 모드로 전환">다크 모드</button><button data-qr onclick="closeMobileMenu()">QR 코드로 접속</button></section>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1분 학급 세팅 위저드 모달 -->
+    <div id="setup-wizard-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-3 md:p-4" role="dialog" aria-modal="true" aria-labelledby="setup-wizard-title" onclick="if(event.target === this) closeSetupWizard()">
+        <div id="setup-wizard-content" class="bg-white dark:bg-slate-800 rounded-3xl max-w-xl w-full max-h-[88vh] overflow-y-auto p-6 md:p-8 shadow-2xl border border-slate-100 dark:border-slate-700 hide-scrollbar"></div>
+    </div>
+
+    <!-- 빠른 이동 & 통합 커맨드 바 (Ctrl+K) -->
+    <div id="command-palette-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-start justify-center pt-14 md:pt-24 p-3 md:p-4" role="dialog" aria-modal="true" aria-labelledby="command-palette-title" onclick="if(event.target === this) closeCommandPalette()">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700">
+            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex items-center gap-3">
+                <i class="fa-solid fa-bolt text-amber-500 text-lg"></i>
+                <input id="command-palette-input" type="search" placeholder="도구 이름, 상황, 교직어 초성 검색 (예: 타이머, 생기부, 학폭, ㄱㅇㅈㅂ)..." class="flex-1 bg-transparent text-sm font-semibold text-slate-900 dark:text-white outline-none" autocomplete="off" aria-labelledby="command-palette-title">
+                <span id="command-palette-title" class="sr-only">빠른 이동 및 통합 검색</span>
+                <button type="button" onclick="closeCommandPalette()" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-500 dark:text-slate-300">ESC</button>
+            </div>
+            <div id="command-palette-list" class="max-h-[60vh] overflow-y-auto p-2 space-y-1 hide-scrollbar"></div>
+            <div class="px-4 py-2.5 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-[11px] text-slate-400">
+                <span>↑↓ 이동 · Enter 바로 실행 · Esc 닫기</span>
+                <span>어디서나 <b>Ctrl+K</b> 또는 <b>/</b></span>
             </div>
         </div>
     </div>
@@ -347,17 +372,71 @@
 
         const QUOTES = ["선생님의 오늘 하루도 아이들에게는 우주입니다.", "완벽하지 않아도 괜찮아요, 매일 성장하고 있으니까요.", "퇴근 후에는 온전히 나를 위한 시간을 보내세요.", "힘들 땐 동학년 선생님과 커피 한 잔 어때요?", "아이들의 긍정적인 변화는 느리지만 반드시 일어납니다.", "선생님의 따뜻한 눈빛 하나가 아이의 하루를 구합니다.", "오늘도 무사히 하루를 마친 선생님, 정말 고생 많으셨습니다."];
         const DOC_TEMPLATES = [
-            { id: 't1', title: '학폭 발생 초기 학부모 안내', content: '학부모님 안녕하십니까. 오늘 교내에서 [학생이름] 학생 관련 다툼이 있었습니다. 학교에서는 규정에 따라 공정하게 사실을 파악 중입니다. 확인이 필요하신 경우 [연락가능시간]에 교무실로 연락 주세요.' },
-            { id: 't2', title: '현장체험학습 품의서', content: '1. 관련: [학년/반] 계획\n2. 위와 관련하여 현장체험학습 예산을 배정하여 주시기 바랍니다.\n 가. 일시: [일시]\n 나. 장소: [장소]\n 다. 대상: [인원]명\n 라. 소요예산: [예산액]원\n 마. 예산과목: [예산과목]' },
-            { id: 't3', title: '보건실 응급처치 안내', content: '[학생이름] 학부모님 안녕하십니까. 담임교사입니다. 오늘 [발생시간]경 [장소]에서 [학생이름] 학생이 [부상내용]으로 보건실 처치를 받았습니다. 통증 지속 시 진료를 권장합니다.' },
-            { id: 't4', title: '운동부 출전 품의서', content: '1. 대회명: [대회명]\n2. 일시/장소: [일시] / [장소]\n3. 출전인원: [참가인원]명\n4. 소요예산: 금 [예산액]원 (출전비, 식비 등)\n5. 예산과목: [예산과목]' },
-            { id: 't5', title: 'PAPS 측정 결과 안내장', content: '학부모님 안녕하십니까. 건강 체력 향상을 위한 학생건강체력평가(PAPS) 결과 안내해 드립니다.\n\n- 심폐지구력: [심폐지구력기록]\n- 유연성: [유연성기록]\n- 근력: [근력기록]\n\n건강한 생활 습관을 기를 수 있도록 지도 부탁드립니다.' }
+            { id: 't1', title: '학폭 발생 초기 학부모 안내', content: '학부모님 안녕하십니까. [학교명] [학년반] 담임교사 [담임]입니다. 오늘 교내에서 [학생이름] 학생 관련 다툼 사안이 접수되었습니다. 학교에서는 관련 법령과 절차에 따라 공정하게 사실관계를 확인 중이며, 학생의 심리적 안정과 보호를 최우선으로 조치하고 있습니다. 추가로 확인이 필요하신 사항은 [연락가능시간]에 교무실로 연락 주시기 바랍니다.' },
+            { id: 't2', title: '현장체험학습 품의서', content: '1. 관련: [학교명] [학년/반] 현장체험학습 운영 계획\n2. 위와 관련하여 현장체험학습 예산을 다음과 같이 집행하고자 합니다.\n 가. 일시: [일시]\n 나. 장소: [장소]\n 다. 대상: [학년/반] 학생 [인원]명 및 인솔교사\n 라. 소요예산: 금 [예산액]원\n 마. 예산과목: [예산과목]\n끝.' },
+            { id: 't3', title: '보건실 응급처치 안내', content: '[학생이름] 학부모님 안녕하십니까. [학교명] [학년반] 담임교사 [담임]입니다. 오늘 [발생시간]경 [장소]에서 [학생이름] 학생이 [부상내용]으로 보건실에서 소독 및 응급처치를 받았습니다. 현재 상태는 안정적이나 귀가 후에도 통증이 지속될 경우 병원 진료를 권장드리며, 학교안전공제회 보상 절차가 필요하신 경우 언제든 말씀해 주세요.' },
+            { id: 't4', title: '운동부 출전 품의서', content: '1. 대회명: [대회명]\n2. 일시/장소: [일시] / [장소]\n3. 출전인원: [참가인원]명\n4. 소요예산: 금 [예산액]원 (출전비, 식비, 간식비 등)\n5. 예산과목: [예산과목]\n끝.' },
+            { id: 't5', title: 'PAPS 측정 결과 안내장', content: '학부모님 안녕하십니까. 학생들의 건강 체력 향상을 위한 학생건강체력평가(PAPS) 측정 결과를 안내해 드립니다.\n\n- 대상 학생: [학년반] [학생이름]\n- 심폐지구력: [심폐지구력기록]\n- 유연성: [유연성기록]\n- 근력·근지구력: [근력기록]\n\n가정에서도 규칙적인 운동과 건강한 생활 습관을 기를 수 있도록 격려 부탁드립니다.' },
+            { id: 't6', title: '학부모 상담주간 안내 및 신청서', content: '학부모님 안녕하십니까. [학교명] [학년반] 담임교사 [담임]입니다.\n새 학기 아이들의 학교 적응과 성장을 함께 나누기 위해 아래와 같이 학부모 상담주간을 운영합니다.\n\n1. 상담 기간: [상담기간]\n2. 상담 가능 시간: [상담시간] (1인당 약 15~20분)\n3. 상담 방법: 대면 상담 또는 전화 상담 중 선택\n4. 신청 방법: [신청방법]으로 희망 일시 1·2순위를 회신해 주세요.\n\n항상 따뜻한 관심과 협조에 감사드립니다.' },
+            { id: 't7', title: '교외체험학습 신청·보고서 안내', content: '학부모님 안녕하십니까. 가족 동반 교외체험학습 출석인정 절차를 안내해 드립니다.\n\n1. 신청서 제출: 체험학습 시작 [신청기한]일 전까지 담임교사에게 제출 후 학교장 사전 승인 확인\n2. 결과보고서 제출: 체험학습 종료 후 [보고기한]일 이내에 보고서 및 증빙자료 제출\n3. 연간 인정 일수: 본교 학칙 기준 연간 [인정일수]일 이내\n\n※ 사전 승인 없이 실시하거나 기한 내 보고서를 제출하지 않을 경우 미인정 결석으로 처리되오니 유의해 주시기 바랍니다.' },
+            { id: 't8', title: '감염병(독감·수두 등) 등교중지 및 출석인정 안내', content: '[학생이름] 학부모님 안녕하십니까. [학년반] 담임교사 [담임]입니다.\n학교 내 감염병 확산 예방을 위해 법정 감염병([감염병명]) 진단 시 전염 기간 동안 등교중지(출석인정 결석)가 적용됩니다.\n\n- 등교중지 기간: 의사 소견서상 격리 권고 기간\n- 등교 시 제출 서류: 진료확인서, 의사소견서, 진단서 중 1부 ([감염병명] 및 격리기간 명시)\n\n학생이 충분히 쉬고 건강하게 쾌유하기를 바랍니다.' },
+            { id: 't9', title: '미등교·결석 학생 보호자 확인 및 결석계 안내', content: '[학생이름] 학부모님 안녕하십니까. [학교명] [학년반] 담임교사 [담임]입니다.\n오늘([오늘]) [학생이름] 학생이 등교 시각까지 등교하지 않아 안전 확인차 연락드립니다. 현재 학생의 소재와 건강 상태를 회신해 주시기 바랍니다.\n\n아울러 질병 등으로 인한 결석 시 등교 후 5일 이내에 결석계와 증빙서류(진료확인서·처방전 등)를 보내주시면 출석처리 절차를 도와드리겠습니다.' },
+            { id: 't10', title: '식품 알레르기 및 건강 상태 사전 조사 안내', content: '학부모님 안녕하십니까. 안전한 학교 급식 및 요리·체험 활동을 위해 학생별 식품 알레르기 및 특이 건강 상태를 조사합니다.\n\n- 조사 항목: 알레르기 유발 식품 번호, 증상 정도, 에피펜 소지 여부, 체육 활동 시 유의사항\n- 회신 기한: [회신기한]까지\n\n변동 사항이 생기면 언제든 담임교사([담임])에게 알려주시기 바랍니다.' },
+            { id: 't11', title: '민원 면담 사전 예약 및 소통 창구 안내', content: '학부모님 안녕하십니까. [학교명] [학년반] 담임교사 [담임]입니다.\n학생들의 수업권 보호와 깊이 있는 상담을 위해 교사 면담 및 유선 상담은 사전 예약제로 운영되고 있습니다.\n\n- 연락 가능 시간: 평일 [연락가능시간] (수업 시간 중에는 통화가 어렵습니다)\n- 방문 면담 신청: 방문 전 하이톡/학교 대표번호로 일시 사전 협의\n\n학생 지도에 최선을 다하겠습니다. 감사합니다.' },
+            { id: 't12', title: '학급 교육활동 물품 구입 품의서', content: '1. 관련: [학교명] 교육과정 운영 계획\n2. [학년/반] 원활한 수업 및 학급 운영을 위하여 다음과 같이 교육활동 물품을 구입하고자 합니다.\n 가. 품목 및 수량: [품목명] 외 [수량]종 (붙임 내역서 참조)\n 나. 소요예산: 금 [예산액]원\n 다. 예산과목: [예산과목]\n 라. 구입방법: 학교장터(S2B) 또는 신용카드 구입\n붙임  물품 구입 내역서 1부.  끝.' },
+            { id: 't13', title: '개인정보 수집·이용 및 제3자 제공 동의 안내', content: '학부모님 안녕하십니까. [학교명]에서는 [사업또는행사명] 운영을 위하여 「개인정보 보호법」에 따라 아래와 같이 개인정보 수집·이용 및 제3자 제공 동의를 받고자 합니다.\n\n1. 수집·제공받는 자: [제공기관명]\n2. 목적: [수집목적]\n3. 항목: 학년, 반, 성명, [추가항목]\n4. 보유 및 이용 기간: [보유기간]\n\n동의서를 확인하신 후 [제출기한]까지 회신해 주시기 바랍니다.' },
+            { id: 't14', title: '통합학급 교육활동 안내 및 협력 지도 협조문', content: '학부모님 안녕하십니까. [학교명] [학년반] 담임교사 [담임]입니다.\n우리 반은 서로의 다름을 이해하고 함께 성장하는 통합교육 학급으로 운영됩니다. 특수교사 선생님과 긴밀히 협력하여 모든 학생이 배려와 존중을 배우고 안전하게 수업에 참여할 수 있도록 세심히 지도하겠습니다. 가정에서도 따뜻한 격려와 응원을 부탁드립니다.' },
+            { id: 't15', title: '복무(출장·연가·병가)에 따른 보결 및 합반 협조 요청', content: '[동학년선생님] 선생님, 안녕하십니까. [학년반] [담임]입니다.\n[일시] [복무사유]로 인하여 부득이하게 자리를 비우게 되어 보결(자습 감독) 협조를 부탁드립니다.\n\n- 대상 교시: [대상교시]\n- 학생 활동 안내: [자습과제내용]\n- 특이사항: [주의할학생및전달사항]\n\n교탁 위에 학습지와 안내 자료를 준비해 두었습니다. 늘 배려해 주셔서 진심으로 감사합니다.' },
+            { id: 't16', title: '복직 교원 부임 및 학급 운영 안내장', content: '학부모님 안녕하십니까. [오늘]자로 복직하여 [학교명] [학년반] 학생들과 함께하게 된 교사 [담임]입니다.\n아이들이 학기 중 변화에도 안정감을 느끼고 즐겁게 학교생활을 이어갈 수 있도록 기존 학급 규칙과 일과를 존중하며 정성껏 지도하겠습니다. 궁금하신 점이나 전달하실 사항은 편히 연락 주시기 바랍니다.' },
+            { id: 't17', title: '학기말 학교생활기록부 마감 전 출결·기록 확인 안내', content: '학부모님 안녕하십니까. [학년반] 담임교사 [담임]입니다.\n학기말 학교생활기록부 마감을 앞두고 출결 증빙서류(결석계, 교외체험학습 보고서 등) 미제출 건이 있는지 최종 확인하고 있습니다.\n\n- 마감 기한: [마감기한]까지\n- 확인 사항: 미제출 결석계·진료확인서, 체험학습 보고서, 개명·주민번호 정정 사항 등\n\n기한 이후에는 정정이 어려우니 기한 내 제출을 부탁드립니다.' },
+            { id: 't18', title: '학부모 공개수업 참관 안내장', content: '학부모님 안녕하십니까. 자녀의 학교생활과 수업 모습을 살펴보실 수 있도록 학부모 공개수업을 다음과 같이 실시합니다.\n\n1. 일시: [공개수업일시]\n2. 장소: [학년반] 교실\n3. 과목 및 주제: [과목명] — [수업주제]\n4. 유의사항: 수업 중 사진·동영상 촬영 및 녹음은 학생 초상권과 교육활동 보호를 위해 금지되어 있습니다.\n\n바쁘시더라도 참석하시어 아이들에게 큰 격려를 보내주시기 바랍니다.' },
+            { id: 't19', title: '기초학력 맞춤형 지도(두드림·보충지도) 참여 동의 안내', content: '[학생이름] 학부모님 안녕하십니까. [학교명] [학년반] 담임교사 [담임]입니다.\n학생의 기초 학습 자신감을 높이고 맞춤형 성장을 돕기 위해 아래와 같이 보충 학습 지원 프로그램을 운영하고자 합니다.\n\n1. 운영 기간 및 요일: [운영기간] ([운영요일및시간])\n2. 지도 영역: [지도영역]\n3. 참가비: 무료 (학교 예산 전액 지원)\n\n동봉된 참여 동의서를 작성하시어 [제출기한]까지 보내주시기 바랍니다.' },
+            { id: 't20', title: '수업 집중 및 생활지도 가정 연계 협조 안내', content: '[학생이름] 학부모님 안녕하십니까. [학년반] 담임교사 [담임]입니다.\n평소 밝게 생활하는 [학생이름] 학생이 최근 수업 중 [관찰행동] 모습을 보여, 학교에서도 바른 학습 습관을 기를 수 있도록 격려하며 지도하고 있습니다.\n가정에서도 학생이 규칙을 지키고 친구들과 배려하며 지낼 수 있도록 따뜻한 대화와 관심 부탁드립니다. 통화 가능하신 시간을 알려주시면 자세히 말씀 나누겠습니다.' }
+        ];
+        // 15개 상황 가이드 전체에 대한 맞춤형 문서 양식(doc) 및 업무 플로우(course) 매핑
+        const SITUATION_ACTION_MAP = {
+            1: { doc: 't3', course: 1, docLabel: '보건실 응급처치 알림장' },
+            2: { doc: 't11', course: 9, docLabel: '민원 면담 사전예약 안내문' },
+            3: { doc: 't1', course: 5, docLabel: '학폭 초기 학부모 안내문' },
+            4: { doc: 't12', course: 6, docLabel: '물품 구입 품의서 양식' },
+            5: { doc: 't15', course: null, docLabel: '보결 수업 협조 요청문' },
+            6: { doc: 't9', course: null, docLabel: '미등교 확인 및 결석계 안내' },
+            7: { doc: 't20', course: 9, docLabel: '생활지도 가정 연계 안내' },
+            8: { doc: 't11', course: 9, docLabel: '교육활동 보호 안내문' },
+            9: { doc: 't2', course: 1, docLabel: '현장체험학습 품의서' },
+            10: { doc: 't8', course: null, docLabel: '감염병 등교중지 안내문' },
+            11: { doc: 't10', course: null, docLabel: '알레르기 사전 조사 안내' },
+            12: { doc: 't16', course: 4, docLabel: '복직 인사 및 학급 안내장' },
+            13: { doc: 't14', course: 8, docLabel: '통합학급 협력 안내문' },
+            14: { doc: 't13', course: null, docLabel: '개인정보 제공 동의 안내' },
+            15: { doc: 't17', course: 7, docLabel: '생기부 마감 전 확인 안내' }
+        };
+        const EDUCATION_OFFICES = [
+            { code: 'seoul', name: '서울특별시교육청', url: 'https://www.sen.go.kr' },
+            { code: 'gyeonggi', name: '경기도교육청', url: 'https://www.goe.go.kr' },
+            { code: 'incheon', name: '인천광역시교육청', url: 'https://www.ice.go.kr' },
+            { code: 'busan', name: '부산광역시교육청', url: 'https://www.pen.go.kr' },
+            { code: 'daegu', name: '대구광역시교육청', url: 'https://www.dge.go.kr' },
+            { code: 'gwangju', name: '광주광역시교육청', url: 'https://www.gen.go.kr' },
+            { code: 'daejeon', name: '대전광역시교육청', url: 'https://www.dje.go.kr' },
+            { code: 'ulsan', name: '울산광역시교육청', url: 'https://www.use.go.kr' },
+            { code: 'sejong', name: '세종특별자치시교육청', url: 'https://www.sje.go.kr' },
+            { code: 'gangwon', name: '강원특별자치도교육청', url: 'https://www.gwe.go.kr' },
+            { code: 'chungbuk', name: '충청북도교육청', url: 'https://www.cbe.go.kr' },
+            { code: 'chungnam', name: '충청남도교육청', url: 'https://www.cne.go.kr' },
+            { code: 'jeonbuk', name: '전북특별자치도교육청', url: 'https://www.jbe.go.kr' },
+            { code: 'jeonnam', name: '전라남도교육청', url: 'https://www.jne.go.kr' },
+            { code: 'gyeongbuk', name: '경상북도교육청', url: 'https://www.gbe.kr' },
+            { code: 'gyeongnam', name: '경상남도교육청', url: 'https://www.gne.go.kr' },
+            { code: 'jeju', name: '제주특별자치도교육청', url: 'https://www.jje.go.kr' }
         ];
         const EDUTECH_TOOLS = [
-            { name: "Canva (캔바)", desc: "디자인 끝판왕", url: "https://www.canva.com", prompt: "체육 수업용 포스터 양식 찾아줘" },
-            { name: "Suno", desc: "고품질 창작곡 AI", url: "https://suno.com", prompt: "초등학생이 부르기 쉬운 아카펠라 만들어줘" },
-            { name: "Cursor AI", desc: "코딩 AI 에디터", url: "https://cursor.sh", prompt: "바닐라 JS 1분 덧셈 퀴즈 앱 짜줘" },
-            { name: "ChatGPT", desc: "업무 자동화", url: "https://chatgpt.com", prompt: "운동회 릴레이 게임 아이디어 5가지" }
+            { name: "Canva (캔바)", desc: "수업 PPT · 학급 게시물 디자인 끝판왕", url: "https://www.canva.com", prompt: "초등 3학년 체육 수업 안전규칙 포스터 양식 찾아줘" },
+            { name: "Suno", desc: "학급송 · 계기교육 창작곡 AI", url: "https://suno.com", prompt: "초등학생이 부르기 쉬운 밝은 학급 규칙 동요 만들어줘" },
+            { name: "Cursor AI", desc: "교실 미니 웹앱 코딩 AI 에디터", url: "https://cursor.sh", prompt: "바닐라 JS로 전자칠판에서 쓸 1분 구구단 퀴즈 웹앱 짜줘" },
+            { name: "ChatGPT", desc: "가정통신문 초안 · 수업 아이디어 자동화", url: "https://chatgpt.com", prompt: "초등 운동회 학년군별 협동 릴레이 게임 아이디어 5가지 추천해줘" },
+            { name: "Padlet (패들릿)", desc: "모둠 활동 결과물 실시간 공유 보드", url: "https://padlet.com", prompt: "독서 토론 후 모둠별 한 줄 감상평과 질문을 포스트잇으로 붙여보세요" },
+            { name: "Kahoot! / 띵커벨", desc: "실시간 참여형 형성평가 퀴즈", url: "https://www.tkbell.co.kr", prompt: "오늘 배운 사회 단원 핵심 개념 OX 및 4지선다 퀴즈 10문항 출제" }
         ];
 
         // ----------------------------------------------------
@@ -490,12 +569,36 @@
             } catch (_) { CONTENT_META = null; }
         }
 
+        function curatedTerms() {
+            const list = DB.filter(item => !item._generated);
+            return list.length ? list : DB;
+        }
+        function currentOffice() {
+            const code = (typeof getSettings === 'function' ? getSettings().office : '') || '';
+            return EDUCATION_OFFICES.find(o => o.code === code || o.name === code) || null;
+        }
+        function encodeSharePayload(obj) {
+            try { return btoa( Array.from(new TextEncoder().encode(JSON.stringify(obj)), b => String.fromCharCode(b)).join('') ); }
+            catch (_) { return ''; }
+        }
+        function decodeSharePayload(str) {
+            try {
+                const clean = String(str || '').trim().replace(/^.*#view=[^&]+&param=share:/, '').replace(/^share:/, '');
+                const bin = atob(clean);
+                const bytes = new Uint8Array(bin.length);
+                for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                return JSON.parse(new TextDecoder().decode(bytes));
+            } catch (_) { return null; }
+        }
+
         function reviewLabel(publicId) {
-            if (!CONTENT_META?.items?.[publicId]) return '검토 정보 확인 필요';
+            const office = currentOffice();
+            const suffix = office ? `${office.name} 지침 대조 권장` : '시도교육청별 지침 확인 권장';
+            if (!CONTENT_META?.items?.[publicId]) return `📌 공통 실무 기준 · ${suffix}`;
             const record = CONTENT_META.items[publicId];
             // No item is labeled reviewed until its content hash can be checked at runtime.
-            if (record.reviewStatus === 'reviewed') return '검토 정보 확인 필요';
-            return record.reviewStatus === 'needs-update' ? '갱신 필요' : '검토 필요';
+            if (record.reviewStatus === 'reviewed') return `✅ 공식 기준 대조 · ${suffix}`;
+            return record.reviewStatus === 'needs-update' ? `⚠️ 지침 변경 확인 필요 · ${suffix}` : `📌 공통 실무 기준 · ${suffix}`;
         }
 
         function findItemByKeyword(kw) {
@@ -593,7 +696,7 @@
                         case 'mybox': renderMyBox(viewContainer); break;
                         case 'tools-doc': renderToolsDoc(viewContainer, this.param); break;
                         case 'tools-class': renderToolsClass(viewContainer); break;
-                        case 'tools-board': renderToolsBoard(viewContainer); break;
+                        case 'tools-board': renderToolsBoard(viewContainer, this.param); break;
                         case 'tools-edutech': renderToolsEdutech(viewContainer); break;
                         case 'timetable': renderTimetable(viewContainer); break;
                         case 'tools-record': renderToolsRecord(viewContainer); break;
@@ -641,6 +744,9 @@
             Storage.set('recent_searches', [q, ...recents].slice(0, 20));
         }
 
+        let homeDockTab = 'class';
+        function switchHomeDock(tab) { homeDockTab = tab; renderHome(document.getElementById('app-view')); }
+
         function renderHome(container) {
             const month = new Date().getMonth() + 1;
             const monthlyTasks = YEAR_TASKS[month] || [];
@@ -649,37 +755,109 @@
             const savedBoardCount = savedBoard && typeof savedBoard === 'object' && !Array.isArray(savedBoard) ? Object.keys(savedBoard).length : null;
             const recentIds = Storage.get('recent_views', []);
             const recentItems = [...new Set((Array.isArray(recentIds) ? recentIds : []).map(canonicalTermId))].map(id => DB.find(item => item.id === id)).filter(Boolean).slice(0, 3);
+            const s = getSettings();
+            const office = currentOffice();
+            const studentCount = parseNameList(Storage.get('class_names', '')).length;
+            const hasSetup = !!(s.schoolName || s.className || s.teacherName);
+            const nowSt = getNowStatus();
+
             const list = [
-                { title: monthlyTasks[0]?.title || `${month}월 주요 업무`, desc: '연간 업무에서 확인', route: 'year' },
-                { title: '진행 중인 태스크 보드', desc: savedBoardCount === null ? '새 업무를 시작할 수 있습니다' : `저장된 할 일 ${savedBoardCount}개`, route: 'tools-board' },
-                { title: recentItems[0] ? `최근 본 용어 · ${recentItems[0].keyword}` : '교직어 찾아보기', desc: recentItems[0] ? '나의 교직함에서 다시 열기' : '필요한 근거를 검색해 보세요', route: recentItems[0] ? 'mybox' : 'search' }
+                { title: monthlyTasks[0]?.title || `${month}월 주요 업무`, desc: '연간 업무 타임라인에서 체크하기', route: 'year' },
+                { title: '진행 중인 태스크 보드', desc: savedBoardCount === null ? '공개수업·체육대회·생기부 템플릿으로 시작' : `저장된 할 일 ${savedBoardCount}개`, route: 'tools-board' },
+                { title: recentItems[0] ? `최근 본 용어 · ${recentItems[0].keyword}` : '오늘의 핵심 교직카드', desc: recentItems[0] ? '나의 교직함에서 다시 열기' : '하루 1개 핵심 실무 개념 익히기', route: recentItems[0] ? 'mybox' : 'card' }
             ];
+            const classDockItems = [
+                { icon: 'fa-stopwatch text-blue-600', title: '스마트 타이머', sub: '전자칠판 전체화면', action: "openPresent('timer')" },
+                { icon: 'fa-wand-magic-sparkles text-rose-600', title: '발표자 랜덤 뽑기', sub: `명단 ${studentCount}명 연동`, action: "openPresent('pick')" },
+                { icon: 'fa-chair text-emerald-600', title: '자리 배치기', sub: '짝·앞자리·분리 조건', action: "router.navigate('tools-class')" },
+                { icon: 'fa-chalkboard text-amber-600', title: '수업 칠판 메모', sub: '오늘 활동 안내 띄우기', action: "openPresent('memo')" },
+                { icon: 'fa-bell text-indigo-600', title: '시간표 · 종 알림', sub: `${nowSt.title}`, action: "router.navigate('timetable')" }
+            ];
+            const adminDockItems = [
+                { icon: 'fa-file-signature text-blue-600', title: '기안·알림장 생성기', sub: '실전 양식 20종 자동완성', action: "router.navigate('tools-doc')" },
+                { icon: 'fa-pen-nib text-purple-600', title: '학생별 생기부 도우미', sub: '금지어 점검 · 엑셀 저장', action: "router.navigate('tools-record')" },
+                { icon: 'fa-comments text-emerald-600', title: '학부모 상담 기록장', sub: '상담주간 일정표 · 암호화', action: "router.navigate('counsel')" },
+                { icon: 'fa-triangle-exclamation text-amber-600', title: '이럴 땐 어떻게?', sub: '15대 돌발 상황별 대처', action: "router.navigate('situations')" },
+                { icon: 'fa-list-check text-teal-600', title: '실전 태스크 보드', sub: '동학년 체크리스트 공유', action: "router.navigate('tools-board')" }
+            ];
+            const dockItems = homeDockTab === 'class' ? classDockItems : adminDockItems;
             const shortcuts = [
-                ['tools-doc', '문서 생성기', '기안문과 알림장'],
-                ['tools-class', '학급 경영 도구', '자리 배치와 운영'],
-                ['map', '교직 지식맵', '용어 사이의 연결'],
-                ['mybox', '나의 교직함', '저장한 자료']
+                ['tools-doc', '기안·알림장 20종', '빈칸만 채워 바로 복사·인쇄'],
+                ['tools-record', '학생별 생기부 도우미', '바이트 계산 · 기재금지 점검'],
+                ['counsel', '학부모 상담 기록장', '상담주간 시간표 자동 배정'],
+                ['mybox', '나의 교직함 · 백업', '즐겨찾기와 통합 암호화 백업']
             ];
             container.innerHTML = `
                 <div class="editorial-home animate-fade-in">
+                    <!-- 1분 학급 세팅 온보딩 배너 / 내 학급 상태 바 -->
+                    <div class="mt-5 p-4 rounded-2xl border border-slate-200/90 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        ${hasSetup ? `
+                            <div class="flex flex-wrap items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-200">
+                                <span class="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300"><i class="fa-solid fa-school mr-1"></i>${escapeHTML(s.schoolName || '학교 미설정')} ${escapeHTML(s.className || '')} ${escapeHTML(s.teacherName ? s.teacherName + ' 선생님' : '')}</span>
+                                <span class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">학생 ${studentCount}명</span>
+                                <button type="button" onclick="router.navigate('timetable')" class="px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300"><i class="fa-regular fa-clock mr-1"></i><span class="now-status-title">${escapeHTML(nowSt.title)}</span> · <span class="now-status-sub">${escapeHTML(nowSt.sub)}</span></button>
+                                ${office ? `<a href="${escapeHTML(office.url)}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:underline">${escapeHTML(office.name)} ↗</a>` : ''}
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <button type="button" onclick="openSetupWizard()" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-200"><i class="fa-solid fa-sliders mr-1"></i>학급 정보·명단 수정</button>
+                                <button type="button" onclick="openCommandPalette()" class="px-3 py-1.5 rounded-xl bg-amber-500 text-white text-xs font-bold shadow-sm"><i class="fa-solid fa-bolt mr-1"></i>빠른 이동 (Ctrl+K)</button>
+                            </div>
+                        ` : `
+                            <div class="flex items-start md:items-center gap-3">
+                                <span class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-extrabold shrink-0"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                                <div>
+                                    <p class="text-sm font-extrabold text-slate-900 dark:text-white">처음 오셨나요? 1분 학급 세팅으로 우리 반 맞춤형 OS를 시작하세요</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">학교명·학년반·학생 명단만 한 번 입력하면 문서 생성기, 자리 배치, 생기부, 상담 기록장에 모두 자동 연동됩니다.</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="openSetupWizard()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow shrink-0">🪄 1분 학급 세팅 시작하기</button>
+                        `}
+                    </div>
+
                     <section class="editorial-hero" aria-label="교직백서 소개와 검색">
                         <div>
                             <span class="editorial-eyebrow">THE TEACHER'S DESK</span>
                             <h2>필요한 근거는 빠르게,<br><em>오늘 할 일은 분명하게</em></h2>
                             <p>교직 업무에 필요한 정보와 도구를 한곳에서 찾아보세요</p>
-                            <div class="flex flex-wrap gap-2 mt-5 text-sm"><button type="button" onclick="router.navigate('navigator')" class="px-3 py-2 rounded-lg bg-white/90 text-slate-900">처음 맡은 업무 알아보기</button><button type="button" onclick="router.navigate('situations')" class="px-3 py-2 rounded-lg bg-white/90 text-slate-900">지금 상황 해결하기</button><button type="button" onclick="router.navigate('tools-doc')" class="px-3 py-2 rounded-lg bg-white/90 text-slate-900">양식 바로 쓰기</button></div>
+                            <div class="flex flex-wrap gap-2 mt-5 text-sm"><button type="button" onclick="router.navigate('navigator')" class="px-3 py-2 rounded-lg bg-white/90 text-slate-900 font-bold">처음 맡은 업무 알아보기</button><button type="button" onclick="router.navigate('situations')" class="px-3 py-2 rounded-lg bg-white/90 text-slate-900 font-bold">지금 상황 해결하기</button><button type="button" onclick="router.navigate('tools-doc')" class="px-3 py-2 rounded-lg bg-white/90 text-slate-900 font-bold">양식 20종 바로 쓰기</button></div>
                         </div>
-                        <div class="editorial-search">
-                            <label for="home-search-input" class="sr-only">교직 업무 검색</label>
-                            <input type="search" id="home-search-input" placeholder="학폭 · 학생이 다쳤어요 · 현장체험학습 준비" autocomplete="off">
-                            <button type="button" onclick="triggerHomeSearch()">검색</button>
+                        <div class="space-y-2">
+                            <div class="editorial-search">
+                                <label for="home-search-input" class="sr-only">교직 업무 검색</label>
+                                <input type="search" id="home-search-input" placeholder="학폭 · 학생이 다쳤어요 · 현장체험학습 준비 · ㄱㅇㅈㅂ" autocomplete="off">
+                                <button type="button" onclick="triggerHomeSearch()">검색</button>
+                            </div>
+                            <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 px-1">
+                                <span>💡 어디서나 <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[11px]">Ctrl+K</kbd> 또는 <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[11px]">/</kbd> 키로 도구·용어를 즉시 열 수 있어요</span>
+                            </div>
                         </div>
                     </section>
+
+                    <!-- 빠른 실행 독 (교실 수업 독 vs 행정 칼퇴 독) -->
+                    <section class="mt-6 p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4" aria-label="빠른 실행 독">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="switchHomeDock('class')" class="px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition ${homeDockTab === 'class' ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}"><i class="fa-solid fa-chalkboard-user mr-1"></i>교실 수업 독 (1초 실행)</button>
+                                <button type="button" onclick="switchHomeDock('admin')" class="px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition ${homeDockTab === 'admin' ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}"><i class="fa-solid fa-briefcase mr-1"></i>행정 · 기록 독 (칼퇴 도구)</button>
+                            </div>
+                            <span class="text-[11px] font-semibold text-slate-400">${homeDockTab === 'class' ? '전자칠판·TV에 바로 띄우는 수업 진행 도구' : '기안문·생기부·상담·체크리스트 실무 도구'}</span>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                            ${dockItems.map(item => `
+                                <button type="button" onclick="${item.action}" class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 hover:bg-blue-50/70 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700 text-left transition group">
+                                    <div class="text-base mb-1.5"><i class="fa-solid ${item.icon}"></i></div>
+                                    <strong class="block text-xs font-extrabold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">${escapeHTML(item.title)}</strong>
+                                    <small class="block text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">${escapeHTML(item.sub)}</small>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </section>
+
                     <div class="editorial-content-grid">
                         <section aria-label="오늘의 안내">
-                            <div class="editorial-section-head"><h3>오늘의 안내</h3><button type="button" onclick="router.navigate('situations')">상황 가이드 전체 →</button></div>
+                            <div class="editorial-section-head"><h3>오늘의 안내</h3><button type="button" onclick="router.navigate('situations')">상황 가이드 15선 전체 →</button></div>
                             <button type="button" class="editorial-story" onclick="openFeaturedSituation()">
-                                <small>상황별 처리 순서</small>
+                                <small>상황별 처리 순서 · 관련 양식 원클릭 연결</small>
                                 <strong>${escapeHTML(feature?.title || '상황별 안내')}</strong>
                                 <span>${escapeHTML(feature?.summary || '기존 가이드에서 처리 단계와 확인할 사항을 살펴보세요.')} &nbsp; 읽어보기 →</span>
                             </button>
@@ -695,11 +873,12 @@
                             <p class="editorial-note">학교별 일정은 직접 설정한 경우에만 표시됩니다. 위 연간 업무는 일반 목록입니다.</p>
                         </section>
                     </div>
-                    <div class="editorial-recent"><span>자주 찾는 주제</span>${['관외 전보', '학교폭력', '품의'].map(kw => `<button type="button" data-kw="${escapeHTML(kw)}" onclick="router.navigate('search', this.dataset.kw)">${escapeHTML(kw)}</button>`).join('')}</div>
+                    <div class="editorial-recent"><span>자주 찾는 주제</span>${['관외 전보', '학교폭력', '품의', '안전사고', '출석인정결석', '생기부'].map(kw => `<button type="button" data-kw="${escapeHTML(kw)}" onclick="router.navigate('search', this.dataset.kw)">${escapeHTML(kw)}</button>`).join('')}</div>
                 </div>
             ` + FOOTER_HTML;
             const searchInput = document.getElementById('home-search-input');
             if (searchInput) searchInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) triggerHomeSearch(); });
+            startClock();
         }
 
         function openFeaturedSituation() {
@@ -738,7 +917,7 @@
             state[idx] = !state[idx]; Storage.set(`checklist_${month}`, state); renderHomeChecklistPreview(month);
         }
 
-        // ---------- 6. 문서/알림장 생성기 (내 양식 · 자동 입력 · 글자 수 · 인쇄) ----------
+        // ---------- 6. 문서/알림장 생성기 (내 양식 · 자동 입력 · 동료 공유 · 글자 수 · 인쇄) ----------
         function getCustomTemplates() { const t = Storage.get('custom_templates', []); return Array.isArray(t) ? t : []; }
         function getAllTemplates() { return [...DOC_TEMPLATES, ...getCustomTemplates().map(t => ({ ...t, custom: true }))]; }
         // 이름이 이렇게 된 빈칸은 자동으로 채워 둠 (직접 수정 가능)
@@ -751,29 +930,55 @@
         let tplEditorMode = null;
 
         function renderToolsDoc(container, initialTemplateId = null) {
+            let sharedNotice = '';
+            if (initialTemplateId && String(initialTemplateId).startsWith('share:')) {
+                const decoded = decodeSharePayload(initialTemplateId);
+                if (decoded && decoded.title && decoded.content) {
+                    const list = getCustomTemplates();
+                    const existing = list.find(t => t.title === decoded.title && t.content === decoded.content);
+                    if (existing) {
+                        initialTemplateId = existing.id;
+                    } else if (list.length < 50) {
+                        const newId = 'c_' + Date.now();
+                        list.push({ id: newId, title: String(decoded.title).slice(0, 40), content: String(decoded.content).slice(0, 5000) });
+                        if (Storage.set('custom_templates', list)) {
+                            initialTemplateId = newId;
+                            sharedNotice = `<div class="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-xs font-bold text-emerald-700 dark:text-emerald-300"><i class="fa-solid fa-circle-check mr-1"></i>동료 선생님이 공유한 '${escapeHTML(decoded.title)}' 양식을 내 양식함에 추가하고 열었습니다!</div>`;
+                        }
+                    }
+                }
+            }
             const custom = getCustomTemplates();
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">기안/알림장 생성기</h2><p class="text-sm text-slate-500 dark:text-slate-400">빈칸만 채우면 기안문과 학부모 알림장이 완성됩니다. 자주 쓰는 양식은 '내 양식'으로 저장하세요.</p></div>
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">기안/알림장 생성기</h2><p class="text-sm text-slate-500 dark:text-slate-400">실전 양식 20종과 내 양식을 빈칸만 채워 완성하고 동료 선생님과 링크로 공유하세요.</p></div>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" onclick="promptImportSharedTemplate()" class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold hover:bg-slate-200 transition"><i class="fa-solid fa-file-import mr-1"></i>공유받은 양식 코드 붙여넣기</button>
+                            <button type="button" onclick="openSetupWizard()" class="px-3.5 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-xs font-bold"><i class="fa-solid fa-school mr-1"></i>학교·담임 자동입력 설정</button>
+                        </div>
+                    </div>
+                    ${sharedNotice}
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-1 bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4">
-                            <label for="doc-template-select" class="block text-sm font-bold text-slate-900 dark:text-white">템플릿 선택</label>
+                            <label for="doc-template-select" class="block text-sm font-bold text-slate-900 dark:text-white">템플릿 선택 (${DOC_TEMPLATES.length + custom.length}종)</label>
                             <select id="doc-template-select" onchange="loadDocTemplate()" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-200 outline-none">
                                 <option value="">템플릿을 선택하세요</option>
-                                <optgroup label="기본 양식">${DOC_TEMPLATES.map(t => `<option value="${t.id}">${escapeHTML(t.title)}</option>`).join('')}</optgroup>
-                                ${custom.length ? `<optgroup label="내 양식">${custom.map(t => `<option value="${escapeHTML(t.id)}">${escapeHTML(t.title)}</option>`).join('')}</optgroup>` : ''}
+                                <optgroup label="기본 실전 양식 (${DOC_TEMPLATES.length}종)">${DOC_TEMPLATES.map(t => `<option value="${t.id}">${escapeHTML(t.title)}</option>`).join('')}</optgroup>
+                                ${custom.length ? `<optgroup label="내 양식 (${custom.length}종)">${custom.map(t => `<option value="${escapeHTML(t.id)}">${escapeHTML(t.title)}</option>`).join('')}</optgroup>` : ''}
                             </select>
                             <div class="flex flex-wrap gap-2">
                                 <button onclick="openTplEditor('new')" class="px-3 py-1.5 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 text-xs font-bold rounded-lg"><i class="fa-solid fa-plus"></i> 새 양식</button>
                                 <button id="tpl-copy-btn" onclick="openTplEditor('copy')" class="hidden px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg"><i class="fa-regular fa-clone"></i> 내 양식으로 복제</button>
                                 <button id="tpl-edit-btn" onclick="openTplEditor('edit')" class="hidden px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg"><i class="fa-solid fa-pen"></i> 수정</button>
+                                <button id="tpl-share-btn" onclick="shareCurrentDocTemplate()" class="hidden px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-xs font-bold rounded-lg"><i class="fa-solid fa-share-nodes"></i> 동료 공유</button>
                                 <button id="tpl-del-btn" onclick="deleteTpl()" class="hidden px-3 py-1.5 bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 text-xs font-bold rounded-lg"><i class="fa-solid fa-trash"></i> 삭제</button>
                             </div>
                             <div id="tpl-editor" class="hidden space-y-2 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
                                 <p id="tpl-editor-title" class="text-xs font-bold text-slate-700 dark:text-slate-200">새 양식 만들기</p>
                                 <input id="tpl-title" type="text" maxlength="40" placeholder="양식 이름 (예: 우유 급식 신청 안내)" class="w-full p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-200 outline-none">
                                 <textarea id="tpl-content" rows="8" placeholder="내용을 입력하세요. 바꿔 넣을 부분은 [학생이름] 처럼 대괄호로 감싸세요." class="w-full p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-200 outline-none resize-y"></textarea>
-                                <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">자동 입력되는 빈칸: <b>[오늘]</b> [학교명] [담임] [학년반] — 학교명·담임·학년반은 '나의 교직함 → 기본 정보'에서 설정해요.</p>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">자동 입력되는 빈칸: <b>[오늘]</b> [학교명] [담임] [학년반] — 학교명·담임·학년반은 '학급 세팅'에서 설정해요.</p>
                                 <div class="flex gap-2"><button onclick="saveTpl()" class="flex-1 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg">저장</button><button onclick="closeTplEditor()" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-lg">취소</button></div>
                             </div>
                             <div id="doc-inputs-container" class="space-y-3"></div>
@@ -796,12 +1001,28 @@
             if (initialTemplateId) { const select = document.getElementById('doc-template-select'); if (select) { select.value = initialTemplateId; loadDocTemplate(); } }
         }
 
+        function shareCurrentDocTemplate() {
+            if (!currentDocTemplate) return;
+            const code = encodeSharePayload({ type: 'tpl', title: currentDocTemplate.title, content: currentDocTemplate.content });
+            if (!code) { showToast('공유 링크를 만들지 못했습니다.', 'error'); return; }
+            const shareUrl = `${location.href.split('#')[0]}#view=tools-doc&param=${encodeURIComponent('share:' + code)}`;
+            copyText(shareUrl, `'${currentDocTemplate.title}' 양식 공유 링크를 복사했습니다! 동학년 메신저에 붙여넣으세요.`);
+        }
+        function promptImportSharedTemplate() {
+            const raw = prompt('동료 선생님께 받은 양식 공유 링크나 코드를 붙여넣어 주세요:');
+            if (!raw || !raw.trim()) return;
+            const decoded = decodeSharePayload(raw.trim());
+            if (!decoded || !decoded.title || !decoded.content) { showToast('유효한 양식 공유 코드가 아닙니다.', 'error'); return; }
+            router.navigate('tools-doc', 'share:' + encodeSharePayload({ type: 'tpl', title: decoded.title, content: decoded.content }));
+        }
+
         function loadDocTemplate() {
             const id = document.getElementById('doc-template-select').value;
             currentDocTemplate = getAllTemplates().find(t => t.id === id) || null;
             const container = document.getElementById('doc-inputs-container'); const output = document.getElementById('doc-output');
             document.getElementById('tpl-copy-btn')?.classList.toggle('hidden', !currentDocTemplate || !!currentDocTemplate.custom);
             document.getElementById('tpl-edit-btn')?.classList.toggle('hidden', !currentDocTemplate || !currentDocTemplate.custom);
+            document.getElementById('tpl-share-btn')?.classList.toggle('hidden', !currentDocTemplate);
             document.getElementById('tpl-del-btn')?.classList.toggle('hidden', !currentDocTemplate || !currentDocTemplate.custom);
             if (!currentDocTemplate) { container.innerHTML = ''; output.value = ''; updateDocCounter(); return; }
 
@@ -1115,19 +1336,40 @@
         // 저장된 값이 없을 때 기본 할 일로 시작 (이전엔 기본 항목 체크/삭제 시 목록이 통째로 사라지던 버그)
         function getBoardTasks() { return Storage.get('board_tasks', null) || { 't1': { title: '운동부 대회 출전 기안', done: false }, 't2': { title: '학부모 동의서 취합', done: true } }; }
 
-        function renderToolsBoard(container) {
+        function renderToolsBoard(container, initialParam = null) {
+            let sharedNotice = '';
+            if (initialParam && String(initialParam).startsWith('share:')) {
+                const decoded = decodeSharePayload(initialParam);
+                if (decoded && decoded.title && Array.isArray(decoded.items) && decoded.items.length) {
+                    const importedTasks = {};
+                    decoded.items.slice(0, 50).forEach((it, idx) => {
+                        if (it && typeof it.title === 'string') importedTasks['s_' + idx] = { title: it.title.slice(0, 120), done: !!it.done };
+                    });
+                    if (Storage.set('board_title', String(decoded.title).slice(0, 60)) && Storage.set('board_tasks', importedTasks)) {
+                        sharedNotice = `<div class="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-xs font-bold text-emerald-700 dark:text-emerald-300"><i class="fa-solid fa-circle-check mr-1"></i>동료 선생님이 공유한 '${escapeHTML(decoded.title)}' 태스크 보드를 불러왔습니다!</div>`;
+                    }
+                }
+            }
             const tasks = getBoardTasks();
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
                     <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                        <div><h2 class="text-2xl font-bold mb-1 text-slate-900 dark:text-white">실전 태스크 보드</h2><p class="text-sm text-slate-500 dark:text-slate-400">굵직한 행사의 세부 업무 관리</p></div>
-                        <button onclick="addBoardTask()" class="px-4 py-2.5 bg-emerald-600 text-white text-sm font-bold rounded-xl shadow transition shrink-0">+ 새 할 일 추가</button>
+                        <div><h2 class="text-2xl font-bold mb-1 text-slate-900 dark:text-white">실전 태스크 보드</h2><p class="text-sm text-slate-500 dark:text-slate-400">굵직한 행사의 세부 업무를 관리하고 동학년 선생님들과 링크·텍스트로 공유하세요.</p></div>
+                        <div class="flex flex-wrap gap-2 shrink-0">
+                            <button onclick="copyBoardAsText()" class="px-3.5 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl hover:bg-slate-200 transition"><i class="fa-regular fa-copy mr-1"></i>메신저용 복사</button>
+                            <button onclick="shareBoardTasks()" class="px-3.5 py-2.5 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 text-xs font-bold rounded-xl hover:bg-blue-100 transition"><i class="fa-solid fa-share-nodes mr-1"></i>동학년 링크 공유</button>
+                            <button onclick="promptImportSharedBoard()" class="px-3.5 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl hover:bg-slate-200 transition"><i class="fa-solid fa-file-import mr-1"></i>공유 코드 입력</button>
+                            <button onclick="addBoardTask()" class="px-4 py-2.5 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow transition">+ 새 할 일 추가</button>
+                        </div>
                     </div>
+                    ${sharedNotice}
 
                     <div class="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-2xl flex flex-col md:flex-row items-center gap-3 w-full">
                         <span class="text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0"><i class="fa-solid fa-download"></i> 템플릿 불러오기</span>
                         <div class="flex flex-nowrap gap-2 overflow-x-auto w-full hide-scrollbar pr-4">
+                            <button onclick="loadBoardPreset('newSemester')" class="shrink-0 whitespace-nowrap px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition">3월 신학기 첫 주</button>
                             <button onclick="loadBoardPreset('openClass')" class="shrink-0 whitespace-nowrap px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition">공개 수업 세팅</button>
+                            <button onclick="loadBoardPreset('fieldTrip')" class="shrink-0 whitespace-nowrap px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition">현장체험학습 인솔</button>
                             <button onclick="loadBoardPreset('sportsDay')" class="shrink-0 whitespace-nowrap px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition">가을 체육대회</button>
                             <button onclick="loadBoardPreset('recordsEnd')" class="shrink-0 whitespace-nowrap px-3 py-1.5 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 hover:text-emerald-600 dark:hover:text-emerald-400 transition">학기말 생기부 마감</button>
                             <div class="shrink-0 w-2"></div>
@@ -1146,10 +1388,35 @@
             renderBoardTasks(tasks);
         }
 
+        function shareBoardTasks() {
+            const title = Storage.get('board_title', '운동부 대회 출전 준비');
+            const tasks = getBoardTasks();
+            const items = Object.values(tasks).map(t => ({ title: t.title || '', done: !!t.done }));
+            const code = encodeSharePayload({ type: 'board', title, items });
+            if (!code) { showToast('공유 링크를 만들지 못했습니다.', 'error'); return; }
+            const shareUrl = `${location.href.split('#')[0]}#view=tools-board&param=${encodeURIComponent('share:' + code)}`;
+            copyText(shareUrl, `'${title}' 태스크 보드 공유 링크를 복사했습니다! 동학년 메신저에 공유하세요.`);
+        }
+        function promptImportSharedBoard() {
+            const raw = prompt('동료 선생님께 받은 태스크 보드 공유 링크나 코드를 붙여넣어 주세요:');
+            if (!raw || !raw.trim()) return;
+            const decoded = decodeSharePayload(raw.trim());
+            if (!decoded || !decoded.title || !Array.isArray(decoded.items)) { showToast('유효한 태스크 보드 공유 코드가 아닙니다.', 'error'); return; }
+            router.navigate('tools-board', 'share:' + encodeSharePayload({ type: 'board', title: decoded.title, items: decoded.items }));
+        }
+        function copyBoardAsText() {
+            const title = Storage.get('board_title', '태스크 보드');
+            const tasks = getBoardTasks();
+            const lines = Object.values(tasks).map(t => `${t.done ? '☑' : '☐'} ${t.title || '(내용 없음)'}`);
+            copyText(`[${title}]\n${lines.join('\n')}`, '메신저 공유용 체크리스트 텍스트를 복사했습니다.');
+        }
+
         function loadBoardPreset(type) {
             if(!confirm('현재 작성된 목록이 지워지고 템플릿이 불러와집니다. 진행할까요?')) return;
             let presetTitle = ''; let presetTasks = {};
-            if(type === 'openClass') { presetTitle = '동료장학 및 학부모 공개수업 준비'; presetTasks = { 'p1': {title:'수업 지도안 작성 및 내부 결재', done:false}, 'p2': {title:'학부모 안내장(참관 희망서) 발송', done:false}, 'p3': {title:'교실 환경 미화 및 게시물 정비', done:false}, 'p4': {title:'당일 다과 및 방명록 준비', done:false} }; }
+            if(type === 'newSemester') { presetTitle = '3월 신학기 첫 주 체크리스트'; presetTasks = { 'p1': {title:'나이스 학급 편성 및 출석부 명렬표 출력', done:false}, 'p2': {title:'학생 응급연락망·알레르기·특이사항 조사서 배부', done:false}, 'p3': {title:'학급 규칙·1인 1역 정하기 및 사물함 번호표 부착', done:false}, 'p4': {title:'주간 시간표 입력 및 전담 시간표 확인', done:false}, 'p5': {title:'교과서 배부 및 학부모 총회 안내장 발송', done:false} }; }
+            else if(type === 'openClass') { presetTitle = '동료장학 및 학부모 공개수업 준비'; presetTasks = { 'p1': {title:'수업 지도안 작성 및 내부 결재', done:false}, 'p2': {title:'학부모 안내장(참관 희망서) 발송', done:false}, 'p3': {title:'교실 환경 미화 및 게시물 정비', done:false}, 'p4': {title:'당일 다과 및 참관록 준비', done:false} }; }
+            else if(type === 'fieldTrip') { presetTitle = '현장체험학습 인솔 사전·사후 점검'; presetTasks = { 'p1': {title:'사전답사 실시 및 내부결재(안전대책 포함)', done:false}, 'p2': {title:'차량·장소 계약 의뢰 및 학부모 동의서 취합', done:false}, 'p3': {title:'사전 안전교육 실시 및 구급낭·비상연락망 점검', done:false}, 'p4': {title:'다녀온 후 결과보고 및 정산 서류 제출', done:false} }; }
             else if(type === 'sportsDay') { presetTitle = '가을 체육대회(운동회) 세팅'; presetTasks = { 'p1': {title:'학년군별 경기 종목 확정', done:false}, 'p2': {title:'필요 체육 물품 에듀파인 품의', done:false}, 'p3': {title:'학부모회 도우미 협조 요청 공문', done:false}, 'p4': {title:'당일 우천 시 플랜B 및 동선 계획', done:false} }; }
             else if(type === 'recordsEnd') { presetTitle = '학기말 생활기록부 마감 점검'; presetTasks = { 'p1': {title:'출결 마감 및 증빙 서류 확인', done:false}, 'p2': {title:'교과 세특 및 창체 특기사항 입력', done:false}, 'p3': {title:'행동특성 및 종합의견 기재', done:false}, 'p4': {title:'동학년 선생님들과 상호 크로스체크', done:false} }; }
             if (!Storage.set('board_title', presetTitle) || !Storage.set('board_tasks', presetTasks)) return;
@@ -1235,7 +1502,7 @@
                     <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 px-1">
                         <span id="result-count">검색 결과: ${new Set(DB.map(item => canonicalTermId(item.id))).size}개</span>
                         <div class="flex items-center gap-2">
-                            <button onclick="openDetail(DB[Math.floor(Math.random()*DB.length)].id)" class="px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg font-bold transition"><i class="fa-solid fa-dice"></i> 랜덤</button>
+                            <button onclick="const c=curatedTerms(); openDetail(c[Math.floor(Math.random()*c.length)].id)" class="px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg font-bold transition"><i class="fa-solid fa-dice"></i> 랜덤</button>
                             <select id="sort-select" onchange="handleSearch()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg px-2.5 py-1 focus:outline-none"><option value="accuracy">관련도순</option><option value="name">가나다순</option></select>
                         </div>
                     </div>
@@ -1405,6 +1672,7 @@
             document.title = `${item.keyword} | 교직백서 1000`;
 
             if(pushHash) { const h = `#term=${encodeURIComponent(`term:${item.id}`)}`; if (window.location.hash !== h) window.location.hash = h; }
+            const office = currentOffice();
 
             content.innerHTML = `
                 <div class="flex items-start justify-between mb-4 pb-4 border-b border-slate-100 dark:border-slate-700">
@@ -1424,9 +1692,12 @@
                     ${item.related && item.related.length > 0 ? `<div><span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase block mb-2">🔗 관련 교직어</span><div class="flex flex-wrap gap-2">${item.related.map(rel => { const found = DB.find(d => d.keyword === rel); return found ? `<button onclick="openDetail(${found.id})" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 rounded-xl text-xs font-semibold hover:text-blue-600 dark:hover:text-blue-400 text-slate-800 dark:text-slate-200 transition">${escapeHTML(rel)}</button>` : ''; }).join('')}</div></div>` : ''}
                     ${item.tags && item.tags.length > 0 ? `<div><span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase block mb-2">🏷 관련 태그</span><div class="flex flex-wrap gap-1.5">${item.tags.map(t => `<span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-600">#${escapeHTML(t)}</span>`).join('')}</div></div>` : ''}
                     ${item.tip ? `<div class="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 text-amber-800 dark:text-amber-300"><h4 class="font-bold text-xs mb-1"><i class="fa-solid fa-lightbulb"></i> 엽쌤의 실무 팁</h4><p class="font-medium">${escapeHTML(item.tip)}</p></div>` : ''}
-                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400 flex items-center justify-between">
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400 flex flex-wrap items-center justify-between gap-2">
                         <div><i class="fa-solid fa-triangle-exclamation mr-1"></i> 지침은 시도교육청별로 다를 수 있습니다.</div>
-                        <button onclick="router.navigate('search', DB.find(d => d.id === ${item.id}).keyword)" class="font-bold underline shrink-0 ml-2 hover:text-blue-600 transition">탐험 시작</button>
+                        <div class="flex items-center gap-3 shrink-0">
+                            ${office ? `<a href="${escapeHTML(office.url)}" target="_blank" rel="noopener noreferrer" class="font-bold text-amber-700 dark:text-amber-300 hover:underline">${escapeHTML(office.name)} 바로가기 ↗</a>` : `<button type="button" onclick="closeModal(false); openSetupWizard()" class="font-bold text-emerald-600 dark:text-emerald-400 hover:underline">소속 교육청 설정</button>`}
+                            <button onclick="router.navigate('search', DB.find(d => d.id === ${item.id}).keyword)" class="font-bold underline hover:text-blue-600 transition">탐험 시작</button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1481,7 +1752,7 @@
         function renderSituations(container) {
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">이럴 땐 어떻게?</h2><p class="text-sm text-slate-500 dark:text-slate-400">학교 현장의 당황스러운 순간, 실전 대응 가이드를 확인하세요.</p></div>
+                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">이럴 땐 어떻게?</h2><p class="text-sm text-slate-500 dark:text-slate-400">학교 현장의 당황스러운 순간, 실전 대응 가이드와 양식·업무 순서를 바로 연결해 드립니다.</p></div>
                     <div class="relative max-w-md"><input type="text" id="situation-search-input" placeholder="다침, 학폭, 예산 검색" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500"><i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i></div>
                     <div id="situations-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </div>
@@ -1501,6 +1772,8 @@
 
             grid.innerHTML = filtered.map(sit => {
                 const kw = sit.relatedKeywords[0];
+                const act = SITUATION_ACTION_MAP[sit.id] || {};
+                const navPublicId = act.nav ? NAVIGATOR_COURSES[act.nav - 1]?.publicId : '';
                 return `
                 <div id="situation-${escapeHTML(sit.publicId)}" class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between hover:border-blue-300 transition group">
                     <div>
@@ -1510,17 +1783,22 @@
                         ${sit.summary ? `<p class="text-xs text-slate-500 dark:text-slate-400 mb-4">${escapeHTML(sit.summary)}</p>` : ''}
                         ${sit.firstCheck.length ? `<div class="flex flex-wrap items-center gap-1.5 mb-3"><span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mr-1">먼저 확인</span>${chips(sit.firstCheck, 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300')}</div>` : ''}
                         ${sit.script ? `
-                        <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700 mb-4">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase block mb-1"><i class="fa-solid fa-phone"></i> 실전 통화 스크립트</span>
+                        <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700 mb-4 relative">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase"><i class="fa-solid fa-phone"></i> 실전 통화 스크립트</span>
+                                <button type="button" data-script="${escapeHTML(sit.script)}" onclick="copyText(this.dataset.script, '통화 스크립트를 복사했습니다.')" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-regular fa-copy"></i> 스크립트 복사</button>
+                            </div>
                             <p class="text-sm font-medium text-slate-700 dark:text-slate-300 italic">"${escapeHTML(sit.script)}"</p>
                         </div>` : ''}
                         <div class="space-y-2 mb-4">${sit.steps.map((st, i) => `<div class="flex items-start gap-2.5 text-xs text-slate-600 dark:text-slate-300"><span class="w-5 h-5 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center font-bold shrink-0">${i+1}</span><span class="pt-0.5">${escapeHTML(st)}</span></div>`).join('')}</div>
                         ${sit.caution.length ? `<div class="flex flex-wrap items-center gap-1.5 mb-4"><span class="text-[10px] font-bold text-rose-500 mr-1"><i class="fa-solid fa-triangle-exclamation"></i> 주의</span>${chips(sit.caution, 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-300')}</div>` : ''}
                     </div>
-                    ${kw ? `<div class="pt-4 border-t border-slate-100 dark:border-slate-700">
-                        <button data-kw="${escapeHTML(kw)}" onclick="openDetailByKeyword(this.dataset.kw)" class="text-xs font-bold text-blue-600 dark:text-blue-400 group-hover:underline w-full text-left">핵심 교직어 '${escapeHTML(kw)}' 상세보기 →</button>
-                    </div>` : ''}
-                    ${[1, 4, 9].includes(sit.id) ? `<div class="mt-2 flex flex-wrap gap-2">${({4:6,9:1})[sit.id] ? `<button type="button" data-public-id="${escapeHTML(NAVIGATOR_COURSES[({4:6,9:1})[sit.id]-1]?.publicId || '')}" onclick="router.navigate('navigator', this.dataset.publicId)" class="text-xs font-bold px-3 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">업무 순서 보기 →</button>` : ''}${({1:'t3',9:'t2'})[sit.id] ? `<button type="button" onclick="router.navigate('tools-doc', '${({1:'t3',9:'t2'})[sit.id]}')" class="text-xs font-bold px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">관련 양식 보기 →</button>` : ''}</div>` : ''}
+                    <div>
+                        ${kw ? `<div class="pt-4 border-t border-slate-100 dark:border-slate-700">
+                            <button data-kw="${escapeHTML(kw)}" onclick="openDetailByKeyword(this.dataset.kw)" class="text-xs font-bold text-blue-600 dark:text-blue-400 group-hover:underline w-full text-left">핵심 교직어 '${escapeHTML(kw)}' 상세보기 →</button>
+                        </div>` : ''}
+                        ${(navPublicId || act.doc) ? `<div class="mt-2.5 flex flex-wrap gap-2">${navPublicId ? `<button type="button" data-public-id="${escapeHTML(navPublicId)}" onclick="router.navigate('navigator', this.dataset.publicId)" class="text-xs font-bold px-3 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 transition"><i class="fa-solid fa-route mr-1"></i>업무 순서 보기 →</button>` : ''}${act.doc ? `<button type="button" onclick="router.navigate('tools-doc', '${act.doc}')" class="text-xs font-bold px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 transition"><i class="fa-solid fa-file-signature mr-1"></i>관련 양식 바로 쓰기 →</button>` : ''}</div>` : ''}
+                    </div>
                 </div>`;
             }).join('');
             if (router.param) requestAnimationFrame(() => document.getElementById(`situation-${SITUATIONS.find(item => item.publicId === router.param || String(item.id) === router.param)?.publicId}`)?.scrollIntoView({ block: 'start' }));
@@ -1554,11 +1832,12 @@
         let mapCenterKeyword = "장학사";
         function setMapCenter(id) { const it = DB.find(d => d.id === id); if (it) { mapCenterKeyword = it.keyword; renderMap(document.getElementById('app-view')); } }
         function renderMap(container) {
-            const centerItem = DB.find(d => d.keyword === mapCenterKeyword) || DB[0];
+            const pool = curatedTerms();
+            const centerItem = pool.find(d => d.keyword === mapCenterKeyword) || DB.find(d => d.keyword === mapCenterKeyword) || pool[0];
             const rels = centerItem.related || [];
             // 연관어를 먼저, 이후 같은 분류 항목으로 채움 (중심 노드 자신은 제외)
             const relItems = rels.map(k => DB.find(d => d.keyword === k)).filter(it => it && it.id !== centerItem.id);
-            const sameCat = shuffle(DB.filter(d => d.category === centerItem.category && d.id !== centerItem.id && !rels.includes(d.keyword)));
+            const sameCat = shuffle(pool.filter(d => d.category === centerItem.category && d.id !== centerItem.id && !rels.includes(d.keyword)));
             const surround = [...relItems, ...sameCat].slice(0, 8);
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
@@ -1566,7 +1845,7 @@
                     <div class="bg-white dark:bg-slate-800 p-8 pt-16 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm text-center relative min-h-[460px] flex flex-col items-center justify-center overflow-hidden">
                         <div class="absolute top-4 left-4 flex gap-2">
                             <button onclick="mapCenterKeyword='장학사'; renderMap(document.getElementById('app-view'));" class="px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded-xl font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition">기본 중심</button>
-                            <button onclick="setMapCenter(DB[Math.floor(Math.random()*DB.length)].id)" class="px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs rounded-xl font-bold transition">랜덤 중심</button>
+                            <button onclick="const c=curatedTerms(); setMapCenter(c[Math.floor(Math.random()*c.length)].id)" class="px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs rounded-xl font-bold transition">랜덤 중심</button>
                         </div>
                         <div onclick="openDetail(${centerItem.id})" class="mb-12 p-6 rounded-3xl bg-blue-600 text-white shadow-xl cursor-pointer hover:scale-105 transition max-w-xs mx-auto z-10">
                             <span class="text-[10px] font-bold uppercase block mb-1 opacity-80">${centerItem.category}</span>
@@ -1759,7 +2038,7 @@
             if (mode === 'review') {
                 const w = getWrongs(); items = shuffle(DB.filter(d => w.includes(d.id))).slice(0, count);
                 if (!items.length) { showToast('오답 노트가 비어 있어요.', 'info'); return; }
-            } else items = shuffle(DB).slice(0, count);
+            } else items = shuffle(curatedTerms()).slice(0, count);
             quizState = { active: true, mode, count: items.length, index: 0, correct: 0, score: 0, items, answers: [], level: "", options: null };
             router.render();
         }
@@ -1784,7 +2063,7 @@
             if (!quizState.options || quizState.options.qid !== q.id) {
                 // "만기 전보"/"초등 만기 전보"처럼 같은 주제어에서 나온 항목은 오답 보기에서 제외 (정답이 둘이 되는 문제 방지)
                 const base = (q.aliases || [])[0];
-                const pool = DB.filter(d => d.id !== q.id && !(base && (d.aliases || [])[0] === base) && !d.keyword.includes(q.keyword) && !q.keyword.includes(d.keyword));
+                const pool = curatedTerms().filter(d => d.id !== q.id && !(base && (d.aliases || [])[0] === base) && !d.keyword.includes(q.keyword) && !q.keyword.includes(d.keyword));
                 const seen = new Set();
                 const uniq = arr => arr.filter(d => { const k = (d.aliases || [])[0] || d.keyword; if (seen.has(k)) return false; seen.add(k); return true; });
                 let wrong = q._generated ? uniq(shuffle(pool.filter(d => d.category !== q.category))) : uniq(shuffle(pool.filter(d => d.category === q.category)));
@@ -1867,28 +2146,30 @@
             copyText(text, '결과가 클립보드에 복사되었습니다. 메신저에 공유해보세요!');
         }
 
-        // 오늘의 카드: 퀴즈에서 틀리고 아직 학습 완료하지 않은 용어를 우선 보여줌
+        // 오늘의 카드: 퀴즈에서 틀리고 아직 학습 완료하지 않은 용어를 우선 보여줌 (기본 풀은 직접 작성된 대표 용어)
         function getTodaysCard() {
             const h = Math.abs(hashCode(ymd(new Date())));
             const learned = Storage.get('learned_cards', []);
             const pending = getWrongs().filter(id => !learned.includes(id));
             if (pending.length) { const item = DB.find(d => d.id === pending[h % pending.length]); if (item) return { item, review: true, pending: pending.length }; }
-            return { item: DB[h % DB.length] || DB[0], review: false, pending: 0 };
+            const pool = curatedTerms();
+            return { item: pool[h % pool.length] || DB[0], review: false, pending: 0 };
         }
 
         function renderCard(container) {
             const d = new Date();
             const todayStr = `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`;
             const { item, review, pending } = getTodaysCard();
+            const pool = curatedTerms();
             const learnedCards = Storage.get('learned_cards', []);
             const isLearned = learnedCards.includes(item.id);
-            const rate = Math.round((learnedCards.length / DB.length) * 100);
+            const rate = Math.min(100, Math.round((learnedCards.length / pool.length) * 100));
 
             container.innerHTML = `
                 <div class="space-y-6 max-w-xl mx-auto animate-fade-in">
                     <div>
                         <h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">오늘의 교직카드</h2>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">매일 하나의 교직 키워드로 지식을 넓히세요. 퀴즈에서 틀린 용어가 있으면 먼저 복습해요.</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">매일 하나의 대표 교직 키워드로 지식을 넓히세요. 퀴즈에서 틀린 용어가 있으면 먼저 복습해요.</p>
                     </div>
                     ${review ? `<div class="p-3 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 text-xs font-semibold text-amber-800 dark:text-amber-300"><i class="fa-solid fa-rotate"></i> 복습 카드 · 퀴즈에서 틀렸던 용어예요 (남은 복습 ${pending}개)</div>` : ''}
                     <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-lg space-y-6">
@@ -1903,7 +2184,7 @@
                         </div>
                         <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
                             <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-                               <span>발견한 교직어 (${learnedCards.length} / ${DB.length})</span>
+                               <span>발견한 대표 교직어 (${learnedCards.length} / ${pool.length})</span>
                                <span class="font-bold text-blue-600 dark:text-blue-400">${rate}%</span>
                             </div>
                             <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
@@ -1936,13 +2217,18 @@
             const recentViews = [...new Set(Storage.get('recent_views', []).map(canonicalTermId))].map(id => DB.find(d => d.id === id)).filter(Boolean).slice(0, 10);
             const currentThemeMode = Storage.get('theme_mode', 'light');
             const s = getSettings();
+            const fontScale = s.fontScale || '100';
+            const office = currentOffice();
             const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
             const field = 'w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm outline-none mt-1';
             const card = 'bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 space-y-4';
 
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">나의 교직함</h2><p class="text-sm text-slate-500 dark:text-slate-400">즐겨찾기, 기본 정보, 앱 설치 및 데이터 백업을 관리합니다.</p></div>
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">나의 교직함</h2><p class="text-sm text-slate-500 dark:text-slate-400">즐겨찾기, 학급·교육청 설정, 가독성(글자 크기) 및 통합 암호화 백업을 관리합니다.</p></div>
+                        <button type="button" onclick="openSetupWizard()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold rounded-xl shadow self-start"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>1분 학급·명단 통합 세팅 열기</button>
+                    </div>
 
                     <div class="${card}">
                         <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-bookmark text-amber-500"></i> 즐겨찾기한 교직어 (${bookmarkedItems.length}개)</h3>
@@ -1955,9 +2241,13 @@
                     </div>
 
                     <div class="${card}">
-                        <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-school text-emerald-500"></i> 기본 정보</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">문서 생성기의 [학교명]·[담임]·[학년반] 자동 입력, 가정통신문·자리 배치표 인쇄 머리글에 쓰여요.</p>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-school text-emerald-500"></i> 기본 정보 · 소속 시·도교육청</h3>
+                            ${office ? `<a href="${escapeHTML(office.url)}" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-amber-700 dark:text-amber-300 hover:underline">${escapeHTML(office.name)} 누리집 ↗</a>` : ''}
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">문서 생성기의 [학교명]·[담임]·[학년반] 자동 입력, 가정통신문·자리 배치표 인쇄 머리글, 시도교육청 지침 바로가기에 쓰여요.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                            <label class="text-xs font-semibold text-slate-500 dark:text-slate-400">소속 교육청<select onchange="if(saveSetting('office', this.value)) { showToast('소속 교육청을 저장했습니다.'); router.render(); }" class="${field}"><option value="">선택 안 함 (전국 공통)</option>${EDUCATION_OFFICES.map(o => `<option value="${escapeHTML(o.code)}" ${s.office === o.code ? 'selected' : ''}>${escapeHTML(o.name)}</option>`).join('')}</select></label>
                             <label class="text-xs font-semibold text-slate-500 dark:text-slate-400">학교명<input type="text" value="${escapeHTML(s.schoolName)}" onchange="if(saveSetting('schoolName', this.value.trim())) showToast('저장했습니다.')" placeholder="예: 한빛초등학교" class="${field}"></label>
                             <label class="text-xs font-semibold text-slate-500 dark:text-slate-400">담임 이름<input type="text" value="${escapeHTML(s.teacherName)}" onchange="if(saveSetting('teacherName', this.value.trim())) showToast('저장했습니다.')" placeholder="예: 김엽" class="${field}"></label>
                             <label class="text-xs font-semibold text-slate-500 dark:text-slate-400">학년·반<input type="text" value="${escapeHTML(s.className)}" onchange="if(saveSetting('className', this.value.trim())) showToast('저장했습니다.')" placeholder="예: 3학년 2반" class="${field}"></label>
@@ -1972,24 +2262,52 @@
                     </div>
 
                     <div class="${card}">
-                        <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-circle-half-stroke text-purple-500"></i> 화면 테마 설정</h3>
-                        <div class="flex flex-wrap gap-3">
-                            <button onclick="setThemeMode('light')" class="px-4 py-2.5 rounded-xl text-xs font-bold transition ${currentThemeMode==='light'?'bg-blue-600 text-white shadow-md':'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}">라이트 모드</button>
-                            <button onclick="setThemeMode('dark')" class="px-4 py-2.5 rounded-xl text-xs font-bold transition ${currentThemeMode==='dark'?'bg-blue-600 text-white shadow-md':'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}">다크 모드</button>
-                            <button onclick="setThemeMode('system')" class="px-4 py-2.5 rounded-xl text-xs font-bold transition ${currentThemeMode==='system'?'bg-blue-600 text-white shadow-md':'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}">시스템 설정 따르기</button>
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-circle-half-stroke text-purple-500"></i> 화면 테마 및 글자 크기 (가독성 설정)</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">색상 테마</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <button onclick="setThemeMode('light')" class="px-4 py-2 rounded-xl text-xs font-bold transition ${currentThemeMode==='light'?'bg-blue-600 text-white shadow-md':'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}">라이트 모드</button>
+                                    <button onclick="setThemeMode('dark')" class="px-4 py-2 rounded-xl text-xs font-bold transition ${currentThemeMode==='dark'?'bg-blue-600 text-white shadow-md':'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}">다크 모드</button>
+                                    <button onclick="setThemeMode('system')" class="px-4 py-2 rounded-xl text-xs font-bold transition ${currentThemeMode==='system'?'bg-blue-600 text-white shadow-md':'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}">시스템 설정 따르기</button>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">글자 크기 배율 (시니어·저시력 친화 모드)</p>
+                                <div class="flex flex-wrap gap-2">
+                                    ${[['100','기본 (100%)'],['110','크게 (110%)'],['120','아주 크게 (120%)']].map(([val, label]) => `<button onclick="setFontScale('${val}')" class="px-4 py-2 rounded-xl text-xs font-bold transition ${fontScale===val?'bg-emerald-600 text-white shadow-md':'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200'}">${label}</button>`).join('')}
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="${card}">
-                        <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-database text-blue-500 dark:text-blue-400"></i> 저장과 백업</h3>
-                        <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-300">기록은 현재 이 기기의 이 브라우저에 저장됩니다. 다른 기기와 자동으로 동기화되지 않으며, 브라우저 자료를 삭제하면 사라질 수 있습니다.</p>
-                        <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-300">일반 백업은 암호화되지 않은 JSON 파일입니다. 학교 정보, 학급 명단, 초안, 일정 입력 등이 포함될 수 있습니다. 파일을 안전하게 보관하세요. 상담 기록은 제외되며 상담 기록장의 별도 암호화 백업을 이용합니다.</p>
-                        <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-300">기기를 옮길 때는 파일을 내보낸 뒤 다른 기기에서 이 페이지를 열고, 백업 파일을 검사·복원하세요.</p>
-                        <div class="flex flex-wrap gap-3">
-                            <button onclick="backupData()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm transition shadow-sm"><i class="fa-solid fa-download mr-1"></i> 내 데이터 백업</button>
-                            <label class="px-5 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-sm cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 transition shadow-sm"><i class="fa-solid fa-upload mr-1"></i> 백업 파일 불러오기<input type="file" accept=".json,application/json" onchange="restoreData(event)" class="hidden"></label>
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-database text-blue-500 dark:text-blue-400"></i> 저장과 백업</h3>
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-lg ${s.lastBackupAt ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' : 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'}"><i class="fa-regular fa-clock mr-1"></i>마지막 백업: ${escapeHTML(s.lastBackupAt || '아직 백업 기록 없음')}</span>
                         </div>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400">개인정보 보호를 위해 <b>상담 기록은 이 백업에 포함되지 않아요.</b> 상담 기록장의 '암호화 백업'을 따로 이용하세요.</p>
+                        <p class="text-xs leading-relaxed text-slate-600 dark:text-slate-300">기록은 현재 이 기기의 이 브라우저에 저장됩니다. 학기말이나 컴퓨터 교체 시 <b>통합 암호화 백업</b>으로 모든 자료를 한 번에 안전하게 보관하세요.</p>
+
+                        <div class="p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm font-extrabold text-emerald-900 dark:text-emerald-200"><i class="fa-solid fa-shield-halved mr-1"></i> 원클릭 통합 암호화 백업 (추천 · 모든 데이터 + 상담기록 포함)</h4>
+                            </div>
+                            <p class="text-xs text-emerald-800 dark:text-emerald-300">학급 명단, 생기부 초안, 내 양식, 체크리스트, <b>학부모 상담 기록</b>까지 단 하나의 AES-256 암호화 파일로 묶어 내보내거나 복원합니다.</p>
+                            <div class="flex flex-wrap gap-2 items-center">
+                                <input id="full-backup-pw" type="password" autocomplete="new-password" placeholder="백업 비밀번호 (8자 이상)" class="px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 text-xs text-slate-800 dark:text-slate-200 outline-none">
+                                <button type="button" onclick="exportFullEncryptedBackup()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-sm transition"><i class="fa-solid fa-lock mr-1"></i>통합 암호화 백업 받기</button>
+                                <label class="px-4 py-2 bg-white dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-200 font-bold rounded-xl text-xs cursor-pointer hover:bg-emerald-100 transition shadow-sm"><i class="fa-solid fa-unlock mr-1"></i>통합 백업 복원하기<input type="file" accept=".json,application/json" onchange="importFullEncryptedBackup(event)" class="hidden"></label>
+                            </div>
+                        </div>
+
+                        <div class="pt-2 border-t border-slate-100 dark:border-slate-700 space-y-2">
+                            <p class="text-xs font-bold text-slate-600 dark:text-slate-300">일반 백업 (암호화 없음 · 상담 기록 제외)</p>
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="backupData()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition shadow-sm"><i class="fa-solid fa-download mr-1"></i> 일반 데이터 백업</button>
+                                <label class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-xs cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-600 transition shadow-sm"><i class="fa-solid fa-upload mr-1"></i> 일반 백업 파일 불러오기<input type="file" accept=".json,application/json" onchange="restoreData(event)" class="hidden"></label>
+                            </div>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400">일반 백업에는 개인정보 보호를 위해 상담 기록이 포함되지 않습니다.</p>
+                        </div>
                         <p class="text-[11px] text-slate-400 dark:text-slate-500">교직어 데이터: ${escapeHTML(DATA_META.source)}${DATA_META.updatedAt ? ` · ${escapeHTML(DATA_META.updatedAt)} 기준` : ''} · 직접 작성 ${DATA_META.curated}개 / 전체 ${DB.length}개</p>
                     </div>
 
@@ -2100,6 +2418,7 @@
             return validateBackup(wrapped ? payload.data : payload);
         }
         function backupData() {
+            saveSetting('lastBackupAt', ymd(new Date()));
             const data = {};
             Storage.error = null;
             const keys = Storage.ownKeys().filter(key => !BACKUP_EXCLUDE.includes(key));
@@ -2117,6 +2436,7 @@
                 if (new TextEncoder().encode(json).length > BACKUP_MAX_BYTES) throw new Error('백업 크기가 20 MiB를 넘습니다.');
                 downloadFile(`baekseo_backup_${ymd(new Date())}.json`, json, 'application/json');
                 showToast('백업 파일을 만들었습니다. 다운로드 위치를 확인해 주세요.', 'success');
+                if (router.current === 'mybox') router.render();
             } catch (err) { showToast(err.message, 'error'); }
         }
 
@@ -2142,6 +2462,57 @@
             r.onerror = () => showToast('백업 파일을 읽지 못했습니다.', 'error');
             r.readAsText(f);
         }
+
+        async function exportFullEncryptedBackup() {
+            const pwEl = document.getElementById('full-backup-pw');
+            const pw = pwEl ? pwEl.value : '';
+            if (pw.length < 8) { showToast('비밀번호를 8자 이상 입력해 주세요.', 'error'); return; }
+            if (!cryptoReady()) return;
+            saveSetting('lastBackupAt', ymd(new Date()));
+            const general = {};
+            for (const k of Storage.ownKeys().filter(key => !BACKUP_EXCLUDE.includes(key))) {
+                if (Object.prototype.hasOwnProperty.call(BACKUP_TYPES, k)) general[k] = Storage.get(k, null);
+            }
+            const counsel = getCounsel();
+            try {
+                const iterations = 250000; const salt = crypto.getRandomValues(new Uint8Array(16)); const iv = crypto.getRandomValues(new Uint8Array(12));
+                const key = await deriveKey(pw, salt, iterations);
+                const plain = new TextEncoder().encode(JSON.stringify({ general, counsel, exportedAt: new Date().toISOString() }));
+                const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plain);
+                downloadFile(`교직백서_통합암호화백업_${ymd(new Date())}.json`, JSON.stringify({ app: 'gyojik-baekseo-1000', type: 'full-encrypted', v: 1, kdf: 'PBKDF2-SHA256', iterations, salt: bufToB64(salt), iv: bufToB64(iv), data: bufToB64(ct) }), 'application/json');
+                showToast('모든 데이터와 상담 기록을 통합 암호화 백업했습니다!', 'success');
+                if (router.current === 'mybox') router.render();
+            } catch (err) { showToast('통합 암호화 백업 중 오류가 발생했습니다.', 'error'); }
+        }
+
+        async function importFullEncryptedBackup(e) {
+            const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+            const pw = document.getElementById('full-backup-pw')?.value || '';
+            if (!pw) { showToast('백업할 때 설정한 비밀번호를 먼저 입력해 주세요.', 'error'); return; }
+            if (!cryptoReady()) return;
+            try {
+                const env = JSON.parse(await f.text());
+                if (!env || env.type !== 'full-encrypted') { showToast('통합 암호화 백업 파일이 아닙니다.', 'error'); return; }
+                let plain;
+                try {
+                    const key = await deriveKey(pw, b64ToBuf(env.salt), env.iterations || 250000);
+                    plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64ToBuf(env.iv) }, key, b64ToBuf(env.data));
+                } catch (_) { showToast('비밀번호가 틀렸거나 파일이 손상되었습니다.', 'error'); return; }
+                const payload = JSON.parse(new TextDecoder().decode(plain));
+                const generalEntries = payload.general && Object.keys(payload.general).length ? validateBackup(payload.general) : [];
+                const counselList = Array.isArray(payload.counsel) ? payload.counsel : [];
+                if (!confirm(`일반 자료 ${generalEntries.length}종류와 상담 기록 ${counselList.length}건을 복원할까요?`)) return;
+                for (const [k, v] of generalEntries) Storage.set(k, v);
+                if (counselList.length) {
+                    const map = new Map(getCounsel().map(r => [r.id, r]));
+                    counselList.forEach(r => { if (r && r.id) map.set(r.id, r); });
+                    saveCounsel([...map.values()]);
+                }
+                showToast('통합 백업을 복원했습니다. 화면을 새로고침합니다.');
+                setTimeout(() => window.location.reload(), 900);
+            } catch (err) { showToast(err.message || '백업 파일을 읽지 못했습니다.', 'error'); }
+        }
+
         function resetAllData() {
             if (!confirm('정말로 모든 기록을 지우시겠습니까? 복구할 수 없습니다.')) return;
             if (!Storage.clearAll()) return; // 같은 github.io 도메인의 다른 앱 자료는 건드리지 않음
@@ -2356,41 +2727,66 @@
         // 4. 전체 화면(교실 TV·전자칠판) 모드
         // ====================================================
         let presentKind = null, presentIsFullscreen = false;
+        function setTimerPreset(sec) { pauseTimer(); timerSeconds = sec; updateTimerDisplay(); }
         function openPresent(kind) {
             const ov = document.getElementById('present-overlay'); if (!ov) return;
             presentKind = kind; unlockAudio();
             const bigBtn = 'px-6 py-3 rounded-2xl text-lg font-bold transition';
+            const tabs = [
+                ['timer', 'fa-stopwatch', '타이머'],
+                ['pick', 'fa-wand-magic-sparkles', '발표자 뽑기'],
+                ['seats', 'fa-chair', '자리 배치표'],
+                ['clock', 'fa-clock', '현재 교시·시계'],
+                ['memo', 'fa-chalkboard', '칠판 알림 메모']
+            ];
+            const navBar = `<div class="absolute top-4 left-4 right-16 flex flex-wrap items-center gap-2 z-10">${tabs.map(([k, ic, label]) => `<button type="button" onclick="openPresent('${k}')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 ${presentKind === k ? 'bg-white text-slate-900 shadow-lg' : 'bg-white/10 hover:bg-white/20 text-slate-200'}"><i class="fa-solid ${ic}"></i><span>${label}</span></button>`).join('')}</div>`;
             let body = '';
             if (kind === 'timer') {
-                body = `<div class="timer-display-text font-black tabular-nums leading-none tracking-tighter" style="font-size:min(26vw,48vh)">00:00</div>
-                    <div class="flex flex-wrap gap-3 justify-center mt-10">
+                body = `<div class="timer-display-text font-black tabular-nums leading-none tracking-tighter" style="font-size:min(26vw,44vh)">00:00</div>
+                    <div class="flex flex-wrap gap-2 justify-center mt-6">
+                        ${[[60,'1분'],[180,'3분'],[300,'5분'],[600,'10분']].map(([sec, lbl]) => `<button onclick="setTimerPreset(${sec})" class="px-4 py-1.5 rounded-xl text-sm font-bold bg-white/10 hover:bg-white/20 text-slate-200">${lbl}</button>`).join('')}
+                    </div>
+                    <div class="flex flex-wrap gap-3 justify-center mt-6">
                         <button onclick="addTimer(-60)" class="${bigBtn} bg-white/10 hover:bg-white/20">-1분</button>
                         <button onclick="toggleTimer()" class="${bigBtn} bg-blue-600 hover:bg-blue-500 min-w-[140px]"><span class="timer-toggle-label">시작</span></button>
                         <button onclick="addTimer(60)" class="${bigBtn} bg-white/10 hover:bg-white/20">+1분</button>
                         <button onclick="resetTimer()" class="${bigBtn} bg-white/10 hover:bg-white/20">리셋</button>
                     </div>
-                    <p class="text-slate-400 text-sm mt-8">스페이스: 시작/정지 · ↑↓: 1분 더하기/빼기 · R: 리셋 · Esc: 닫기</p>`;
+                    <p class="text-slate-400 text-sm mt-6">스페이스: 시작/정지 · ↑↓: 1분 더하기/빼기 · R: 리셋 · Esc: 닫기</p>`;
             } else if (kind === 'pick') {
                 body = `<p class="text-2xl md:text-3xl text-slate-400 font-bold mb-6">오늘의 발표자는?</p>
                     <div id="present-pick" class="font-black text-amber-300 break-all" style="font-size:min(14vw,26vh)">?</div>
-                    <button onclick="pickRandom()" class="${bigBtn} bg-rose-600 hover:bg-rose-500 mt-10"><i class="fa-solid fa-wand-magic-sparkles"></i> 뽑기</button>
+                    <div class="flex flex-wrap gap-3 justify-center mt-10">
+                        <button onclick="pickRandom()" class="${bigBtn} bg-rose-600 hover:bg-rose-500"><i class="fa-solid fa-wand-magic-sparkles"></i> 1명 뽑기</button>
+                        <button onclick="resetPicked()" class="${bigBtn} bg-white/10 hover:bg-white/20 text-base">기록 초기화</button>
+                    </div>
                     <p class="pick-remain text-slate-400 text-base mt-4"></p>
                     <p class="text-slate-500 text-sm mt-4">스페이스·엔터: 뽑기 · Esc: 닫기</p>`;
             } else if (kind === 'seats') {
-                body = `<div class="mb-8"><span class="px-16 py-3 bg-white/15 rounded-xl text-xl font-bold">교 탁</span></div>${seatsHTML(Storage.get('seat_result', null), true)}`;
+                body = `<div class="mb-6 flex items-center gap-4 justify-center"><span class="px-16 py-3 bg-white/15 rounded-xl text-xl font-bold">교 탁</span><button onclick="generateSeats(); openPresent('seats');" class="px-4 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-sm font-bold shadow"><i class="fa-solid fa-shuffle mr-1"></i>다시 배치</button></div>${seatsHTML(Storage.get('seat_result', null), true)}`;
             } else if (kind === 'clock') {
                 body = `<div class="now-clock font-black tabular-nums leading-none" style="font-size:min(22vw,34vh)">--:--</div>
                     <p class="now-status-title font-extrabold mt-6" style="font-size:min(8vw,10vh)">-</p>
                     <p class="now-status-sub text-slate-300 mt-2" style="font-size:min(4vw,5vh)">-</p>
                     <div class="w-[min(70vw,720px)] bg-white/15 h-3 rounded-full overflow-hidden mt-8"><div class="now-status-bar bg-blue-400 h-full transition-all" style="width:0%"></div></div>`;
+            } else if (kind === 'memo') {
+                const note = getSettings().presentNote || '1. 교과서와 필기도구 준비하기\n2. 모둠별로 오늘의 탐구 주제 이야기 나누기\n3. 다 마친 모둠은 조용히 손들기 ✋';
+                body = `<div class="w-[min(90vw,960px)] text-left space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-lg font-extrabold text-amber-300"><i class="fa-solid fa-chalkboard mr-2"></i>오늘의 활동 · 칠판 안내판 (직접 클릭해 수정하세요)</span>
+                        <span class="now-clock text-2xl font-black text-slate-300 tabular-nums">--:--</span>
+                    </div>
+                    <textarea id="present-memo-input" oninput="saveSetting('presentNote', this.value)" rows="6" class="w-full p-6 rounded-3xl bg-white/10 border-2 border-white/20 text-white font-extrabold leading-relaxed outline-none focus:border-amber-300 resize-none" style="font-size:min(4.2vw,42px)">${escapeHTML(note)}</textarea>
+                </div>`;
             }
-            ov.innerHTML = `<button onclick="closePresent()" class="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-2xl z-10" aria-label="전체 화면 닫기"><i class="fa-solid fa-xmark"></i></button><div class="w-full h-full flex flex-col items-center justify-center p-6 text-center overflow-auto">${body}</div>`;
+            ov.innerHTML = `${navBar}<button onclick="closePresent()" class="absolute top-4 right-4 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-2xl z-10" aria-label="전체 화면 닫기"><i class="fa-solid fa-xmark"></i></button><div class="w-full h-full flex flex-col items-center justify-center p-6 pt-20 text-center overflow-auto">${body}</div>`;
             ov.classList.remove('hidden'); ov.classList.add('flex');
-            if (ov.requestFullscreen) ov.requestFullscreen().catch(() => {});
+            if (ov.requestFullscreen && document.fullscreenElement !== ov) ov.requestFullscreen().catch(() => {});
+            document.removeEventListener('keydown', presentKeyHandler);
             document.addEventListener('keydown', presentKeyHandler);
             if (kind === 'timer') updateTimerDisplay();
             if (kind === 'pick') updatePickRemain();
-            if (kind === 'clock') startClock();
+            if (kind === 'clock' || kind === 'memo') startClock();
         }
         function closePresent() {
             if (!presentKind) return;
@@ -2403,6 +2799,7 @@
         function presentKeyHandler(e) {
             if (e.isComposing) return;
             if (e.key === 'Escape') { closePresent(); return; }
+            if (e.target && (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT')) return;
             if (presentKind === 'timer') {
                 if (e.code === 'Space') { e.preventDefault(); toggleTimer(); }
                 else if (e.key === 'ArrowUp') { e.preventDefault(); addTimer(60); }
@@ -2419,7 +2816,7 @@
         });
 
         // ====================================================
-        // 7. 생기부 문장 도우미
+        // 7. 생기부 문장 도우미 (학생별 관리 · 엑셀 CSV 내보내기 · 문장 공유)
         // ====================================================
         const RECORD_AREAS = [
             { id: 'behavior', name: '행동특성 및 종합의견' },
@@ -2465,21 +2862,61 @@
             found.forEach(f => { if (f.start >= lastEnd) { out.push(f); lastEnd = f.end; } });
             return out;
         }
+        function getRecordStudents() {
+            const fromClass = parseNameList(Storage.get('class_names', ''));
+            const fromDrafts = Object.keys(getRecordDrafts()).filter(k => k.startsWith('student:')).map(k => k.split(':')[1]).filter(Boolean);
+            return [...new Set([...fromClass, ...fromDrafts])];
+        }
 
         function renderToolsRecord(container) {
             const area = RECORD_AREAS.find(a => a.id === recordArea) || RECORD_AREAS[0];
-            const draft = getRecordDrafts()[area.id] || '';
+            const allDrafts = getRecordDrafts();
+            const draft = allDrafts[recordDraftKey(area.id, recordStudent)] || '';
+            const students = getRecordStudents();
+            const curIdx = recordStudent ? students.indexOf(recordStudent) : -1;
+            const prevStudent = curIdx > 0 ? students[curIdx - 1] : '';
+            const nextStudent = curIdx >= 0 && curIdx < students.length - 1 ? students[curIdx + 1] : (curIdx === -1 && students.length ? students[0] : '');
             const myPhrases = Storage.get('record_my_phrases', []);
             const bank = { ...PHRASE_BANK, ...(myPhrases.length ? { '내 문장': myPhrases } : {}) };
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">생기부 문장 도우미</h2><p class="text-sm text-slate-500 dark:text-slate-400">문장 조각을 골라 다듬고, 나이스 글자 수와 기재 금지 표현을 실시간으로 확인하세요.</p></div>
-                    <div class="flex flex-wrap gap-2">${RECORD_AREAS.map(a => `<button onclick="switchRecordArea('${a.id}')" class="px-4 py-2 rounded-xl text-xs font-bold transition ${a.id === area.id ? 'bg-blue-600 text-white shadow' : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'}">${a.name}</button>`).join('')}</div>
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">생기부 문장 도우미</h2><p class="text-sm text-slate-500 dark:text-slate-400">우리 반 학생별로 문장을 조합·저장하고, 나이스 바이트와 기재 금지어를 점검한 뒤 엑셀(CSV)로 한 번에 내보내세요.</p></div>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" onclick="exportRecordsCSV()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow"><i class="fa-solid fa-file-csv mr-1"></i>학급 전체 엑셀(CSV) 내보내기</button>
+                            <button type="button" onclick="openSetupWizard()" class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold"><i class="fa-solid fa-users mr-1"></i>학생 명단 편집</button>
+                        </div>
+                    </div>
+
+                    <!-- 학생별 선택 바 -->
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-extrabold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-user-check text-blue-600 mr-1"></i>작성 대상:</span>
+                                <button type="button" onclick="switchRecordStudent('')" class="px-3 py-1.5 rounded-xl text-xs font-bold transition ${!recordStudent ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">공통 연습장</button>
+                                ${recordStudent ? `<span class="px-3 py-1.5 rounded-xl text-xs font-extrabold bg-blue-600 text-white shadow">${escapeHTML(recordStudent)} (${curIdx + 1}/${students.length}번)</span>` : ''}
+                            </div>
+                            ${students.length ? `<div class="flex items-center gap-1.5">
+                                <button type="button" ${prevStudent ? `data-st="${escapeHTML(prevStudent)}" onclick="switchRecordStudent(this.dataset.st)"` : 'disabled'} class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 disabled:opacity-40">← 이전 학생</button>
+                                <button type="button" ${nextStudent ? `data-st="${escapeHTML(nextStudent)}" onclick="switchRecordStudent(this.dataset.st)"` : 'disabled'} class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 disabled:opacity-40">다음 학생 →</button>
+                            </div>` : ''}
+                        </div>
+                        ${students.length ? `<div class="flex flex-wrap gap-1.5">${students.map((st, idx) => {
+                            const hasDraft = RECORD_AREAS.some(a => (allDrafts[recordDraftKey(a.id, st)] || '').trim().length > 0);
+                            const active = recordStudent === st;
+                            return `<button type="button" data-st="${escapeHTML(st)}" onclick="switchRecordStudent(this.dataset.st)" class="px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1 ${active ? 'bg-blue-600 text-white shadow' : hasDraft ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800' : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}"><span>${idx + 1}. ${escapeHTML(st)}</span>${hasDraft ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}</button>`;
+                        }).join('')}</div>` : `<p class="text-xs text-slate-400">학급 세팅에서 학생 명단을 등록하면 번호순으로 한 명씩 클릭하며 생기부를 작성할 수 있어요.</p>`}
+                    </div>
+
+                    <div class="flex flex-wrap gap-2">${RECORD_AREAS.map(a => {
+                        const hasAreaDraft = (allDrafts[recordDraftKey(a.id, recordStudent)] || '').trim().length > 0;
+                        return `<button onclick="switchRecordArea('${a.id}')" class="px-4 py-2 rounded-xl text-xs font-bold transition ${a.id === area.id ? 'bg-blue-600 text-white shadow' : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'}">${a.name}${hasAreaDraft ? ' ●' : ''}</button>`;
+                    }).join('')}</div>
                     <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
                         <div class="lg:col-span-3 space-y-4">
                             <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-3">
                                 <div class="flex flex-wrap items-center justify-between gap-2">
-                                    <label for="record-editor" class="text-sm font-bold text-slate-900 dark:text-white">${area.name}</label>
+                                    <label for="record-editor" class="text-sm font-bold text-slate-900 dark:text-white">${recordStudent ? `[${escapeHTML(recordStudent)}] ` : ''}${area.name}</label>
                                     <select onchange="setRecordLimit(Number(this.value))" class="px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200" aria-label="글자 수 제한">${RECORD_LIMITS.map(l => `<option value="${l.b}" ${getRecordLimit(area.id) === l.b ? 'selected' : ''}>제한 ${l.label}</option>`).join('')}</select>
                                 </div>
                                 <textarea id="record-editor" rows="9" oninput="onRecordInput()" oncompositionend="onRecordInput()" placeholder="오른쪽 문장 조각을 누르면 여기에 이어서 들어가요. 직접 써도 됩니다." class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm leading-relaxed text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-blue-500 resize-y">${escapeHTML(draft)}</textarea>
@@ -2503,12 +2940,18 @@
                             </div>
                         </div>
                         <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4 lg:max-h-[80vh] lg:overflow-y-auto hide-scrollbar">
-                            <h3 class="text-sm font-bold text-slate-900 dark:text-white"><i class="fa-solid fa-puzzle-piece text-purple-500"></i> 문장 조각 <span class="text-[11px] font-medium text-slate-400">(누르면 추가)</span></h3>
+                            <div class="flex items-center justify-between gap-2">
+                                <h3 class="text-sm font-bold text-slate-900 dark:text-white"><i class="fa-solid fa-puzzle-piece text-purple-500"></i> 문장 조각 <span class="text-[11px] font-medium text-slate-400">(누르면 추가)</span></h3>
+                                ${myPhrases.length ? `<button type="button" onclick="shareMyPhrases()" class="text-[11px] font-bold text-purple-600 dark:text-purple-400 hover:underline"><i class="fa-solid fa-share-nodes"></i> 내 문장 공유</button>` : ''}
+                            </div>
                             ${Object.entries(bank).map(([cat, list]) => `
                                 <div><p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-2">${escapeHTML(cat)}</p>
                                 <div class="space-y-1.5">${list.map((p, i) => `<div class="flex items-start gap-1"><button data-p="${escapeHTML(p)}" onclick="appendPhrase(this.dataset.p)" class="flex-1 text-left px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 hover:bg-blue-50 dark:hover:bg-slate-700 border border-slate-100 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200 transition">${escapeHTML(p)}</button>${cat === '내 문장' ? `<button onclick="removeMyPhrase(${i})" class="p-2 text-slate-400 hover:text-rose-500" aria-label="내 문장 삭제"><i class="fa-solid fa-xmark"></i></button>` : ''}</div>`).join('')}</div></div>`).join('')}
-                            <div class="pt-3 border-t border-slate-100 dark:border-slate-700">
-                                <p class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-2">내 문장 추가</p>
+                            <div class="pt-3 border-t border-slate-100 dark:border-slate-700 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <p class="text-xs font-bold text-slate-500 dark:text-slate-400">내 문장 추가</p>
+                                    <button type="button" onclick="promptImportSharedPhrases()" class="text-[11px] font-bold text-slate-500 hover:text-purple-600"><i class="fa-solid fa-file-import"></i> 동료 문장 가져오기</button>
+                                </div>
                                 <div class="flex gap-2"><input id="my-phrase-input" type="text" maxlength="200" placeholder="자주 쓰는 문장을 저장해 두세요" class="flex-1 p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 outline-none"><button onclick="addMyPhrase()" class="px-3 bg-purple-600 text-white text-xs font-bold rounded-lg">저장</button></div>
                             </div>
                         </div>
@@ -2517,11 +2960,12 @@
             ` + FOOTER_HTML;
             updateRecordAnalysis();
         }
-        let pendingRecordDraft = null, recordDraftTimer = null;
+        let pendingRecordDraft = null, recordDraftTimer = null, recordStudent = '';
+        function recordDraftKey(area = recordArea, student = recordStudent) { return student ? `student:${student}:${area}` : area; }
         function captureRecordDraft() {
             const el = document.getElementById('record-editor');
             if (!el) return;
-            pendingRecordDraft = { area: recordArea, text: el.value };
+            pendingRecordDraft = { key: recordDraftKey(recordArea, recordStudent), text: el.value };
             const status = document.getElementById('record-save-status'); if (status) status.textContent = '저장 중…';
             clearTimeout(recordDraftTimer);
             recordDraftTimer = setTimeout(saveRecordDraftNow, 400);
@@ -2531,7 +2975,7 @@
             if (!pendingRecordDraft) return true;
             const draft = pendingRecordDraft;
             const saved = getRecordDrafts();
-            saved[draft.area] = draft.text;
+            saved[draft.key] = draft.text;
             if (!Storage.set('record_drafts', saved)) {
                 const status = document.getElementById('record-save-status');
                 if (status) status.innerHTML = '저장하지 못했습니다. <button type="button" onclick="saveRecordDraftNow()" class="underline font-bold">다시 시도</button> · 아래 복사 버튼으로 내용을 보관할 수 있습니다.';
@@ -2545,6 +2989,11 @@
             captureRecordDraft();
             if (!saveRecordDraftNow()) return;
             recordArea = id; router.render();
+        }
+        function switchRecordStudent(student) {
+            captureRecordDraft();
+            if (!saveRecordDraftNow()) return;
+            recordStudent = student || ''; router.render();
         }
         function onRecordInput() { updateRecordAnalysis(); captureRecordDraft(); }
         function updateRecordAnalysis() {
@@ -2578,6 +3027,43 @@
             showToast('내 문장을 저장했습니다.'); router.render();
         }
         function removeMyPhrase(i) { const list = Storage.get('record_my_phrases', []); list.splice(i, 1); Storage.set('record_my_phrases', list); router.render(); }
+        function shareMyPhrases() {
+            const list = Storage.get('record_my_phrases', []);
+            if (!list.length) { showToast('공유할 내 문장이 없습니다.', 'info'); return; }
+            const code = encodeSharePayload({ type: 'phrases', list });
+            copyText('share:' + code, `내 문장 ${list.length}개 공유 코드를 복사했습니다! 동료 선생님께 전달하세요.`);
+        }
+        function promptImportSharedPhrases() {
+            const raw = prompt('동료 선생님께 받은 문장 공유 코드를 붙여넣어 주세요:');
+            if (!raw || !raw.trim()) return;
+            const decoded = decodeSharePayload(raw.trim());
+            if (!decoded || !Array.isArray(decoded.list)) { showToast('유효한 문장 공유 코드가 아닙니다.', 'error'); return; }
+            const cur = Storage.get('record_my_phrases', []);
+            const merged = [...new Set([...cur, ...decoded.list.filter(x => typeof x === 'string' && x.trim()).map(x => x.trim().slice(0, 200))])].slice(-100);
+            if (Storage.set('record_my_phrases', merged)) { showToast(`문장 ${merged.length - cur.length}개를 추가했습니다!`); router.render(); }
+        }
+        function exportRecordsCSV() {
+            captureRecordDraft(); saveRecordDraftNow();
+            const drafts = getRecordDrafts();
+            const students = getRecordStudents();
+            const csvCell = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+            const rows = [['번호', '학생명', '행동특성 및 종합의견', '행발 바이트', '교과 세부능력 및 특기사항', '세특 바이트', '창의적 체험활동 특기사항', '창체 바이트']];
+            if (RECORD_AREAS.some(a => (drafts[a.id] || '').trim())) {
+                const b = drafts.behavior || '', s = drafts.subject || '', ac = drafts.activity || '';
+                rows.push(['-', '(공통 연습장)', b, neisBytes(b), s, neisBytes(s), ac, neisBytes(ac)]);
+            }
+            students.forEach((st, idx) => {
+                const b = drafts[recordDraftKey('behavior', st)] || '';
+                const s = drafts[recordDraftKey('subject', st)] || '';
+                const ac = drafts[recordDraftKey('activity', st)] || '';
+                rows.push([String(idx + 1), st, b, neisBytes(b), s, neisBytes(s), ac, neisBytes(ac)]);
+            });
+            if (rows.length <= 1) { showToast('내보낼 학생 명단이나 작성된 생기부 초안이 없습니다.', 'error'); return; }
+            const csv = '\uFEFF' + rows.map(r => r.map(csvCell).join(',')).join('\r\n');
+            const s = getSettings();
+            downloadFile(`생기부초안_${s.className ? s.className + '_' : ''}${ymd(new Date())}.csv`, csv, 'text/csv;charset=utf-8');
+            showToast('엑셀(CSV) 파일을 저장했습니다. 나이스 업로드 참고용으로 활용하세요!', 'success');
+        }
 
         // ====================================================
         // 8. 학부모 상담 기록장 (기기 안에만 저장 · 암호화 백업)
@@ -2815,9 +3301,228 @@
             menuTrigger = null;
         }
 
+        // ====================================================
+        // 3. 글자 크기 배율 (100% / 110% / 120%) · 1분 학급 세팅 마법사 · 빠른 실행 팔레트 (Ctrl+K)
+        // ====================================================
+        function applyFontScale() {
+            const scale = ['100', '110', '120'].includes(String(getSettings().fontScale)) ? String(getSettings().fontScale) : '100';
+            document.documentElement.style.fontSize = scale + '%';
+            const lbl = document.getElementById('font-scale-label');
+            if (lbl) lbl.textContent = scale + '%';
+        }
+        function setFontScale(scale) {
+            const valid = ['100', '110', '120'].includes(String(scale)) ? String(scale) : '100';
+            saveSetting('fontScale', valid);
+            applyFontScale();
+            showToast(`글자 크기를 ${valid}%로 변경했습니다.`, 'info');
+            if (router.currentPage === 'mybox') router.render();
+        }
+        function cycleFontScale() {
+            const cur = String(getSettings().fontScale || '100');
+            const next = cur === '100' ? '110' : cur === '110' ? '120' : '100';
+            setFontScale(next);
+        }
+
+        function openSetupWizard() {
+            const m = document.getElementById('setup-wizard-modal');
+            const c = document.getElementById('setup-wizard-content');
+            if (!m || !c) return;
+            const s = getSettings();
+            const names = getClassNames();
+            c.innerHTML = `
+                <div class="p-6 md:p-8">
+                    <div class="flex items-start justify-between gap-4 mb-5">
+                        <div>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 text-xs font-extrabold mb-2">🪄 1분 학급 초기 세팅</span>
+                            <h3 id="setup-wizard-title" class="text-xl md:text-2xl font-black text-slate-900 dark:text-white">한 번 입력하면 모든 도구가 우리 반에 맞춰집니다</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">입력한 내용은 서버로 전송되지 않고 선생님의 기기(브라우저)에만 안전하게 저장됩니다.</p>
+                        </div>
+                        <button onclick="closeSetupWizard()" aria-label="닫기" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                        <label class="text-xs font-bold text-slate-600 dark:text-slate-300">학교명
+                            <input id="wiz-school" value="${escapeHTML(s.school || '')}" placeholder="예: 행복초등학교" class="mt-1 w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-white">
+                        </label>
+                        <label class="text-xs font-bold text-slate-600 dark:text-slate-300">학반명
+                            <input id="wiz-class" value="${escapeHTML(s.className || '')}" placeholder="예: 3학년 2반" class="mt-1 w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-white">
+                        </label>
+                        <label class="text-xs font-bold text-slate-600 dark:text-slate-300">담임 교사 성함
+                            <input id="wiz-teacher" value="${escapeHTML(s.teacher || '')}" placeholder="예: 김교사" class="mt-1 w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-white">
+                        </label>
+                        <label class="text-xs font-bold text-slate-600 dark:text-slate-300">소속 시·도교육청 (지침·누리집 바로가기 연동)
+                            <select id="wiz-office" class="mt-1 w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-white">
+                                ${EDUCATION_OFFICES.map(o => `<option value="${o.code}" ${(s.office || 'seoul') === o.code ? 'selected' : ''}>${escapeHTML(o.name)}</option>`).join('')}
+                            </select>
+                        </label>
+                    </div>
+                    <div class="mb-5">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="wiz-names" class="text-xs font-bold text-slate-600 dark:text-slate-300">우리 반 학생 명렬표 <span class="font-normal text-slate-400">(발표자 뽑기·자리배치·체크리스트·생기부·상담에 자동 연동)</span></label>
+                            <button type="button" onclick="fillSampleClassNamesInWizard()" class="text-xs font-extrabold text-indigo-600 dark:text-indigo-400 hover:underline">✨ 예시 명렬표 채우기 (체험용)</button>
+                        </div>
+                        <textarea id="wiz-names" rows="4" placeholder="줄바꿈 또는 쉼표(,)로 구분해 입력해 주세요. (예: 1.강하늘, 2.김바다, 3.박별...)" class="w-full p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-white">${escapeHTML(names.join(', '))}</textarea>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-slate-100 dark:border-slate-700">
+                        <span class="text-xs text-slate-400"><i class="fa-solid fa-wand-magic-sparkles text-indigo-500 mr-1"></i>가정통신문·알림장·상담표에 학교/학반/교사명이 자동 입력됩니다.</span>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="closeSetupWizard()" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 text-xs font-bold">나중에</button>
+                            <button type="button" onclick="saveSetupWizard()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-sm"><i class="fa-solid fa-check mr-1"></i>저장하고 시작하기</button>
+                        </div>
+                    </div>
+                </div>`;
+            m.classList.remove('hidden');
+            setTimeout(() => document.getElementById('wiz-school')?.focus(), 50);
+        }
+        function fillSampleClassNamesInWizard() {
+            const sample = ['1.강하늘', '2.김바다', '3.김서연', '4.박도윤', '5.박지우', '6.서민준', '7.손예린', '8.신유찬', '9.안소율', '10.오시우', '11.윤채원', '12.이서준', '13.이지호', '14.임하은', '15.장현우', '16.정다은', '17.조은우', '18.최수아', '19.한지민', '20.홍준서'];
+            const el = document.getElementById('wiz-names');
+            if (el) el.value = sample.join(', ');
+            const sch = document.getElementById('wiz-school'); if (sch && !sch.value.trim()) sch.value = '행복초등학교';
+            const cls = document.getElementById('wiz-class'); if (cls && !cls.value.trim()) cls.value = '3학년 2반';
+            const tch = document.getElementById('wiz-teacher'); if (tch && !tch.value.trim()) tch.value = '김교사';
+            showToast('체험용 예시 학급 정보와 20명 명렬표를 채웠습니다.', 'info');
+        }
+        function closeSetupWizard() {
+            const m = document.getElementById('setup-wizard-modal');
+            if (m) m.classList.add('hidden');
+        }
+        function saveSetupWizard() {
+            const school = (document.getElementById('wiz-school')?.value || '').trim();
+            const className = (document.getElementById('wiz-class')?.value || '').trim();
+            const teacher = (document.getElementById('wiz-teacher')?.value || '').trim();
+            const office = (document.getElementById('wiz-office')?.value || 'seoul').trim();
+            const rawNames = (document.getElementById('wiz-names')?.value || '');
+            const names = rawNames.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+            const cur = getSettings();
+            Storage.set('settings', { ...cur, school, className, teacher, office });
+            Storage.set('class_names', names);
+            closeSetupWizard();
+            showToast(`학급 세팅 완료! (${className || '우리 반'} · 학생 ${names.length}명)`);
+            router.render();
+        }
+
+        let cmdPaletteItems = [];
+        let cmdPaletteIdx = 0;
+        function buildCommandPaletteItems(query) {
+            const q = (query || '').trim().toLowerCase();
+            const all = [
+                { badge: '1초 실행', icon: 'fa-stopwatch', color: 'text-rose-500', title: '수업 타이머 (전체화면 바로 열기)', sub: '교실 TV용 큰 숫자 타이머 · 1/3/5/10분 프리셋', run: () => openPresent('timer') },
+                { badge: '1초 실행', icon: 'fa-dice', color: 'text-amber-500', title: '발표자 뽑기 (전체화면 바로 열기)', sub: '우리 반 명렬표 연동 무작위 발표자 추첨', run: () => openPresent('pick') },
+                { badge: '1초 실행', icon: 'fa-chair', color: 'text-emerald-500', title: '자리 배치표 (전체화면 바로 열기)', sub: '칠판 기준 자리표 확대 · 즉시 다시 섞기', run: () => openPresent('seat') },
+                { badge: '1초 실행', icon: 'fa-chalkboard', color: 'text-amber-600', title: '칠판 알림 메모 (전체화면 바로 열기)', sub: '오늘의 준비물·과제·아침 자습 안내를 TV에 크게 표시', run: () => openPresent('memo') },
+                { badge: '1초 실행', icon: 'fa-clock', color: 'text-indigo-500', title: '현재 교시·시계 (전체화면 바로 열기)', sub: '시종 시간표 연동 현재 교시와 남은 시간 표시', run: () => openPresent('clock') },
+                { badge: '학급 설정', icon: 'fa-wand-magic-sparkles', color: 'text-indigo-600', title: '1분 학급 초기 세팅 마법사', sub: '학교·학반·교사명·교육청·학생 명렬표 한 번에 등록', run: () => openSetupWizard() },
+                { badge: '백업/복원', icon: 'fa-shield-halved', color: 'text-indigo-600', title: '전체 데이터 통합 암호화 백업·복원', sub: '마이박스 > 일반 설정 + 생기부 초안 + 상담 기록 원클릭 백업', run: () => router.navigate('mybox') },
+                { badge: '글자 크기', icon: 'fa-text-height', color: 'text-slate-600', title: '화면 글자 크기 배율 전환 (100% / 110% / 120%)', sub: '현재 배율을 다음 단계로 즉시 변경합니다', run: () => cycleFontScale() }
+            ];
+            Object.entries(PAGE_META).forEach(([id, meta]) => {
+                all.push({ badge: '메뉴 이동', icon: 'fa-compass', color: 'text-indigo-500', title: meta.title, sub: meta.desc || '', run: () => router.navigate(id) });
+            });
+            DOC_TEMPLATES.forEach(t => {
+                all.push({ badge: '통신문/알림장', icon: 'fa-file-signature', color: 'text-violet-500', title: `[문서 서식] ${t.title}`, sub: `${t.type} · 빈칸 채우기로 3초 완성`, run: () => { currentDocTemplate = t.id; docFieldValues = {}; router.navigate('tools-doc'); } });
+            });
+            NAVIGATOR_COURSES.forEach(c => {
+                all.push({ badge: '실무 코스', icon: 'fa-route', color: 'text-emerald-600', title: `[실무 내비게이터] ${c.title}`, sub: `${c.when} · 단계별 체크리스트`, run: () => { currentCourseId = c.id; router.navigate('navigator'); } });
+            });
+            SITUATIONS.forEach(s => {
+                const act = SITUATION_ACTION_MAP[s.id];
+                all.push({ badge: '상황별 대처', icon: 'fa-bolt', color: 'text-amber-500', title: `[상황 레시피] ${s.title}`, sub: s.steps.join(' → '), run: () => { router.navigate('situations'); setTimeout(() => filterSituations(s.cat), 60); } });
+                if (act && act.script) {
+                    all.push({ badge: '학부모 통화 대본', icon: 'fa-phone-volume', color: 'text-emerald-600', title: `[통화 스크립트 복사] ${s.title}`, sub: act.script, run: () => copySituationScript(s.id) });
+                }
+            });
+            if (termsData && termsData.length) {
+                const pool = q ? termsData : curatedTerms().slice(0, 30);
+                pool.forEach(t => {
+                    if (!q || (t.term && t.term.toLowerCase().includes(q)) || (t.summary && t.summary.toLowerCase().includes(q)) || (t.category && t.category.toLowerCase().includes(q))) {
+                        all.push({ badge: `백과 #${t.id}`, icon: 'fa-book-open', color: 'text-slate-500', title: t.term, sub: `${t.category} · ${t.summary}`, run: () => openDetail(t.id) });
+                    }
+                });
+            }
+            if (!q) return all.slice(0, 28);
+            return all.filter(item =>
+                item.title.toLowerCase().includes(q) ||
+                item.sub.toLowerCase().includes(q) ||
+                item.badge.toLowerCase().includes(q)
+            ).slice(0, 40);
+        }
+        function openCommandPalette() {
+            const m = document.getElementById('command-palette-modal');
+            const input = document.getElementById('command-palette-input');
+            if (!m || !input) return;
+            m.classList.remove('hidden');
+            input.value = '';
+            cmdPaletteIdx = 0;
+            renderCommandPaletteList('');
+            setTimeout(() => input.focus(), 30);
+        }
+        function closeCommandPalette() {
+            const m = document.getElementById('command-palette-modal');
+            if (m) m.classList.add('hidden');
+        }
+        function renderCommandPaletteList(q) {
+            const box = document.getElementById('command-palette-list');
+            if (!box) return;
+            cmdPaletteItems = buildCommandPaletteItems(q);
+            if (cmdPaletteIdx >= cmdPaletteItems.length) cmdPaletteIdx = 0;
+            if (!cmdPaletteItems.length) {
+                box.innerHTML = `<div class="p-8 text-center text-sm text-slate-400">일치하는 도구·문서 서식·백과 항목이 없습니다.</div>`;
+                return;
+            }
+            box.innerHTML = cmdPaletteItems.map((it, idx) => `
+                <button type="button" onclick="runCommandPaletteItem(${idx})" onmouseenter="cmdPaletteIdx=${idx}" class="w-full text-left px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 transition-colors ${idx === cmdPaletteIdx ? 'bg-indigo-50 dark:bg-indigo-900/40 text-indigo-900 dark:text-white' : 'hover:bg-slate-50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-200'}">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <i class="fa-solid ${it.icon} ${it.color} w-5 text-center shrink-0"></i>
+                        <div class="min-w-0">
+                            <div class="text-sm font-bold truncate">${escapeHTML(it.title)}</div>
+                            <div class="text-xs text-slate-400 dark:text-slate-400 truncate">${escapeHTML(it.sub)}</div>
+                        </div>
+                    </div>
+                    <span class="shrink-0 text-[11px] font-extrabold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">${escapeHTML(it.badge)}</span>
+                </button>
+            `).join('');
+        }
+        function handleCommandPaletteKey(e) {
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (cmdPaletteItems.length) { cmdPaletteIdx = (cmdPaletteIdx + 1) % cmdPaletteItems.length; renderCommandPaletteList(e.target.value); }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (cmdPaletteItems.length) { cmdPaletteIdx = (cmdPaletteIdx - 1 + cmdPaletteItems.length) % cmdPaletteItems.length; renderCommandPaletteList(e.target.value); }
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                runCommandPaletteItem(cmdPaletteIdx);
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                closeCommandPalette();
+            }
+        }
+        function runCommandPaletteItem(idx) {
+            const item = cmdPaletteItems[idx];
+            if (!item) return;
+            closeCommandPalette();
+            item.run();
+        }
+        document.addEventListener('keydown', e => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                const m = document.getElementById('command-palette-modal');
+                if (m && !m.classList.contains('hidden')) closeCommandPalette();
+                else openCommandPalette();
+                return;
+            }
+            if (e.key === 'Escape') {
+                const cp = document.getElementById('command-palette-modal');
+                if (cp && !cp.classList.contains('hidden')) { closeCommandPalette(); return; }
+                const sw = document.getElementById('setup-wizard-modal');
+                if (sw && !sw.classList.contains('hidden')) { closeSetupWizard(); return; }
+            }
+        });
+
         // 안정적인 초기화 시작점: 테마 먼저 적용 → 데이터(terms.json) 로딩 → 화면 표시
         async function boot() {
             applyThemeMode();
+            applyFontScale();
             await loadData();
             router.init();
             startBellWatcher();
