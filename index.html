@@ -602,8 +602,8 @@
             const allCats = [...new Set([...CATEGORIES, ...DB.map(d => d.category)])];
             FILTER_CATEGORIES = allCats.filter(c => DB.some(d => d.category === c));
 
-            SITUATIONS = pick('situations', DEFAULT_DATA.situations).filter(s => s && s.title).map((s, i) => ({ id: i + 1, publicId: PUBLIC_LINKS.situations.find(link => link.title === s.title)?.id || String(i + 1), category: '기타', summary: '', firstCheck: [], steps: [], caution: [], relatedKeywords: [], ...s }));
-            NAVIGATOR_COURSES = pick('courses', DEFAULT_DATA.courses).filter(c => c && c.title).map((c, i) => ({ id: i + 1, publicId: PUBLIC_LINKS.courses.find(link => link.title === c.title)?.id || String(i + 1), category: '기타', steps: [], targetKeyword: '', ...c }));
+            SITUATIONS = pick('situations', DEFAULT_DATA.situations).filter(s => s && s.title).map((s, i) => ({ id: i + 1, publicId: PUBLIC_LINKS.situations.find(link => link.title === s.title)?.id || `situation:${String(i + 1).padStart(2, '0')}`, category: '기타', summary: '', firstCheck: [], steps: [], caution: [], relatedKeywords: [], ...s }));
+            NAVIGATOR_COURSES = pick('courses', DEFAULT_DATA.courses).filter(c => c && c.title).map((c, i) => ({ id: i + 1, publicId: PUBLIC_LINKS.courses.find(link => link.title === c.title)?.id || `workflow:${String(i + 1).padStart(2, '0')}`, category: '기타', steps: [], targetKeyword: '', ...c }));
 
             const yt = (data.yearTasks && typeof data.yearTasks === 'object') ? data.yearTasks : DEFAULT_DATA.yearTasks;
             YEAR_TASKS = {};
@@ -1949,6 +1949,7 @@
                 </div>
             `;
             modal.classList.remove('hidden'); document.body.style.overflow = 'hidden';
+            content.scrollTop = 0;
             window.addEventListener('keydown', handleModalKeyDown);
             content.querySelector('button')?.focus();
         }
@@ -2023,7 +2024,7 @@
                 const courseIdx = act.course || act.nav;
                 const navPublicId = courseIdx ? NAVIGATOR_COURSES[courseIdx - 1]?.publicId : '';
                 return `
-                <div id="situation-${escapeHTML(sit.publicId)}" class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between hover:border-blue-300 transition group">
+                <div id="situation-${escapeHTML(sit.publicId)}" class="bg-white dark:bg-slate-800 p-6 rounded-2xl border ${router.param && (sit.publicId === router.param || String(sit.id) === router.param) ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-slate-200/80 dark:border-slate-700'} shadow-sm flex flex-col justify-between hover:border-blue-300 transition group">
                     <div>
                         <span class="text-xs font-bold px-3 py-1 bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-lg mb-3 inline-block">${escapeHTML(sit.category)}</span>
                         <h3 class="text-lg font-bold mb-2 text-slate-900 dark:text-white">${escapeHTML(sit.title)}</h3>
@@ -2058,7 +2059,7 @@
                     <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">교직 내비게이터</h2><p class="text-sm text-slate-500 dark:text-slate-400">목적에 따른 굵직한 교직 업무 플로우차트를 안내합니다.</p></div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         ${NAVIGATOR_COURSES.map(course => `
-                            <div id="course-${escapeHTML(course.publicId)}" class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                            <div id="course-${escapeHTML(course.publicId)}" class="bg-white dark:bg-slate-800 p-6 rounded-3xl border ${router.param && (course.publicId === router.param || String(course.id) === router.param) ? 'border-emerald-500 ring-2 ring-emerald-500/20' : 'border-slate-200/80 dark:border-slate-700'} shadow-sm flex flex-col justify-between">
                                 <div>
                                     <span class="text-xs font-bold px-3 py-1 bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-lg mb-3 inline-block">${escapeHTML(course.category)}</span>
                                     <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">${escapeHTML(course.title)}</h3>
