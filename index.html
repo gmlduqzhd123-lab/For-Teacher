@@ -132,6 +132,10 @@
         .editorial-header button:focus-visible, .editorial-home button:focus-visible, .editorial-menu-panel button:focus-visible, .editorial-search:focus-within { outline: 2px solid var(--paper-accent); outline-offset: 3px; }
         @media (max-width: 1120px) { .editorial-header-inner { gap: 16px; padding: 0 20px; } .editorial-primary-nav { gap: 16px; } .editorial-primary-nav button { font-size: 12px; } .editorial-action:not(.editorial-menu-trigger):not(.editorial-mobile-keep):not(.editorial-tablet-keep) { display: none; } } @media (max-width: 960px) { .editorial-hero { grid-template-columns: 1fr; gap: 22px; padding: 30px 0 26px; } .editorial-content-grid { grid-template-columns: 1fr; gap: 28px; padding-top: 24px; } }
         @media (max-width: 767.98px) { input:not([type="checkbox"]):not([type="radio"]), textarea, select { font-size: 16px !important; } .editorial-header-inner { min-height: 61px; justify-content: space-between; padding: 0 14px; } .editorial-primary-nav { display: none; } .editorial-action.editorial-tablet-keep { display: none; } .editorial-header-actions { gap: 6px; } #app-view { padding: 16px 16px calc(96px + env(safe-area-inset-bottom)); } .editorial-hero { padding: 20px 0 22px; } .editorial-hero h2 { font-size: 28px; } .editorial-story { min-height: 200px; padding: 22px; } .editorial-menu-panel { padding: 21px; } }
+        /* 📱 휴대폰: 맨 윗줄 = 교직백서 1000 + 빠른 이동(번개만) · 전체 메뉴 · 📲 설치 · 📱 QR */
+        @media (max-width: 767.98px) { .editorial-wide { display: none; } }
+        @media (max-width: 480px) { .editorial-header-inner { padding: 0 10px; } .editorial-header-actions { gap: 4px; } .editorial-header-actions .editorial-action { padding: 7px 8px; } .editorial-header-actions .editorial-label { display: none; } .editorial-header-actions .editorial-action .fa-bolt { margin-right: 0; } }
+        @media (max-width: 340px) { .editorial-brand { font-size: 15px; } .editorial-header-inner { padding: 0 8px; } .editorial-header-actions { gap: 3px; } .editorial-header-actions .editorial-action { padding: 6px 6px; } }
         @media (max-width: 540px) { .editorial-shortcuts { grid-template-columns: 1fr; } .editorial-menu-grid { grid-template-columns: 1fr; gap: 18px; } }
     </style>
 </head>
@@ -151,12 +155,13 @@
                 <button type="button" data-primary-nav="quiz" onclick="router.navigate('quiz')">학습</button>
             </nav>
             <div class="editorial-header-actions">
-                <button type="button" class="editorial-action editorial-mobile-keep" onclick="openCommandPalette()" aria-label="빠른 이동 및 통합 검색 열기" title="단축키: Ctrl+K 또는 /"><i class="fa-solid fa-bolt text-amber-600 mr-1"></i>빠른 이동</button>
+                <button type="button" class="editorial-action editorial-mobile-keep" onclick="openCommandPalette()" aria-label="빠른 이동 및 통합 검색 열기" title="단축키: Ctrl+K 또는 /"><i class="fa-solid fa-bolt text-amber-600 mr-1"></i><span class="editorial-label">빠른 이동</span></button>
                 <button type="button" class="editorial-action editorial-tablet-keep" onclick="openSetupWizard()" aria-label="1분 학급 세팅 열기"><i class="fa-solid fa-wand-magic-sparkles text-emerald-600 mr-1"></i>학급 세팅</button>
                 <button type="button" class="editorial-action" data-font-toggle onclick="cycleFontScale()" aria-label="글자 크기 조절">가+ 100%</button>
                 <button type="button" class="editorial-action editorial-menu-trigger" onclick="openMobileMenu()" aria-label="전체 메뉴 열기">전체 메뉴</button>
                 <button type="button" class="editorial-action" data-theme-toggle onclick="toggleQuickDarkMode()" aria-label="다크 모드로 전환">다크 모드</button>
-                <button type="button" class="editorial-action" data-ys-install>앱 설치</button>
+                <button type="button" class="editorial-action editorial-mobile-keep" data-ys-install>📲 <span class="editorial-wide">앱 </span>설치</button>
+                <button type="button" class="editorial-action editorial-mobile-keep" data-qr aria-label="QR 코드로 접속">📱 QR</button>
                 <span id="bookmark-badge" class="hidden" aria-hidden="true"></span>
             </div>
         </div>
