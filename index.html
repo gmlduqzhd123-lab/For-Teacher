@@ -86,7 +86,7 @@
         .editorial-action-primary { background: var(--paper-deep); color: #fff; border-color: var(--paper-deep); }
         .editorial-shell { width: 100%; min-height: 0; display: flex; flex: 1; }
         #desktop-sidebar { display: none !important; }
-        #app-view { width: 100%; background: var(--paper); padding: 0 28px 70px; -webkit-overflow-scrolling: touch; }
+        #app-view { width: 100%; background: var(--paper); padding: 24px 28px 72px; -webkit-overflow-scrolling: touch; } #app-view > div { max-width: 1200px; margin-left: auto; margin-right: auto; }
         .editorial-home { max-width: 1160px; margin: auto; }
         .editorial-hero { display: grid; grid-template-columns: 1.3fr 1fr; gap: 42px; align-items: end; padding: 52px 0 37px; border-bottom: 1px solid var(--paper-line); }
         .editorial-eyebrow { display: block; color: var(--paper-accent); font-size: 11px; font-weight: 800; letter-spacing: .17em; margin-bottom: 17px; }
@@ -130,9 +130,9 @@
         .editorial-bottom-nav .mob-item { color: var(--paper-muted) !important; font-weight: 650; }
         .editorial-bottom-nav .mob-item.font-bold { color: var(--paper-accent) !important; }
         .editorial-header button:focus-visible, .editorial-home button:focus-visible, .editorial-menu-panel button:focus-visible, .editorial-search:focus-within { outline: 2px solid var(--paper-accent); outline-offset: 3px; }
-        @media (max-width: 850px) { .editorial-header-inner { gap: 14px; padding: 0 18px; } .editorial-primary-nav { gap: 12px; } .editorial-primary-nav button { font-size: 12px; } .editorial-action:not(.editorial-menu-trigger):not(.editorial-mobile-keep) { display: none; } .editorial-hero { grid-template-columns: 1fr; gap: 22px; } .editorial-content-grid { gap: 22px; } }
-        @media (max-width: 768px) { input:not([type="checkbox"]):not([type="radio"]), textarea, select { font-size: 16px !important; } }
-        @media (max-width: 650px) { .editorial-header-inner { min-height: 61px; justify-content: space-between; padding: 0 14px; } .editorial-primary-nav { display: none; } .editorial-header-actions { gap: 6px; } #app-view { padding: 0 16px 104px; } .editorial-hero { grid-template-columns: 1fr; gap: 22px; padding: 28px 0 24px; } .editorial-hero h2 { font-size: 28px; } .editorial-content-grid { grid-template-columns: 1fr; gap: 28px; padding-top: 24px; } .editorial-story { min-height: 200px; padding: 22px; } .editorial-shortcuts { grid-template-columns: 1fr; } .editorial-menu-panel { padding: 21px; } .editorial-menu-grid { grid-template-columns: 1fr; gap: 18px; } }
+        @media (max-width: 1120px) { .editorial-header-inner { gap: 16px; padding: 0 20px; } .editorial-primary-nav { gap: 16px; } .editorial-primary-nav button { font-size: 12px; } .editorial-action:not(.editorial-menu-trigger):not(.editorial-mobile-keep):not(.editorial-tablet-keep) { display: none; } } @media (max-width: 960px) { .editorial-hero { grid-template-columns: 1fr; gap: 22px; padding: 30px 0 26px; } .editorial-content-grid { grid-template-columns: 1fr; gap: 28px; padding-top: 24px; } }
+        @media (max-width: 767.98px) { input:not([type="checkbox"]):not([type="radio"]), textarea, select { font-size: 16px !important; } .editorial-header-inner { min-height: 61px; justify-content: space-between; padding: 0 14px; } .editorial-primary-nav { display: none; } .editorial-action.editorial-tablet-keep { display: none; } .editorial-header-actions { gap: 6px; } #app-view { padding: 16px 16px calc(96px + env(safe-area-inset-bottom)); } .editorial-hero { padding: 20px 0 22px; } .editorial-hero h2 { font-size: 28px; } .editorial-story { min-height: 200px; padding: 22px; } .editorial-menu-panel { padding: 21px; } }
+        @media (max-width: 540px) { .editorial-shortcuts { grid-template-columns: 1fr; } .editorial-menu-grid { grid-template-columns: 1fr; gap: 18px; } }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 h-screen flex flex-col overflow-hidden transition-colors duration-200">
@@ -152,7 +152,7 @@
             </nav>
             <div class="editorial-header-actions">
                 <button type="button" class="editorial-action editorial-mobile-keep" onclick="openCommandPalette()" aria-label="빠른 이동 및 통합 검색 열기" title="단축키: Ctrl+K 또는 /"><i class="fa-solid fa-bolt text-amber-600 mr-1"></i>빠른 이동</button>
-                <button type="button" class="editorial-action" onclick="openSetupWizard()" aria-label="1분 학급 세팅 열기"><i class="fa-solid fa-wand-magic-sparkles text-emerald-600 mr-1"></i>학급 세팅</button>
+                <button type="button" class="editorial-action editorial-tablet-keep" onclick="openSetupWizard()" aria-label="1분 학급 세팅 열기"><i class="fa-solid fa-wand-magic-sparkles text-emerald-600 mr-1"></i>학급 세팅</button>
                 <button type="button" class="editorial-action" data-font-toggle onclick="cycleFontScale()" aria-label="글자 크기 조절">가+ 100%</button>
                 <button type="button" class="editorial-action editorial-menu-trigger" onclick="openMobileMenu()" aria-label="전체 메뉴 열기">전체 메뉴</button>
                 <button type="button" class="editorial-action" data-theme-toggle onclick="toggleQuickDarkMode()" aria-label="다크 모드로 전환">다크 모드</button>
@@ -237,7 +237,7 @@
         <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-700">
             <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-slate-700 flex items-center gap-3">
                 <i class="fa-solid fa-bolt text-amber-500 text-lg"></i>
-                <input id="command-palette-input" type="search" oninput="cmdPaletteIdx=0; renderCommandPaletteList(this.value)" onkeydown="handleCommandPaletteKey(event)" placeholder="도구, 상황, 교직어 초성 검색 (예: 타이머, 생기부)..." class="flex-1 bg-transparent text-sm font-semibold text-slate-900 dark:text-white outline-none" autocomplete="off" aria-labelledby="command-palette-title">
+                <input id="command-palette-input" type="search" enterkeyhint="search" oninput="cmdPaletteIdx=0; renderCommandPaletteList(this.value)" onkeydown="handleCommandPaletteKey(event)" placeholder="도구, 상황, 교직어 초성 검색 (예: 타이머, 생기부)..." class="flex-1 bg-transparent text-sm font-semibold text-slate-900 dark:text-white outline-none" autocomplete="off" aria-labelledby="command-palette-title">
                 <span id="command-palette-title" class="sr-only">빠른 이동 및 통합 검색</span>
                 <button type="button" onclick="closeCommandPalette()" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-500 dark:text-slate-300">닫기</button>
             </div>
@@ -803,7 +803,7 @@
             container.innerHTML = `
                 <div class="editorial-home animate-fade-in">
                     <!-- 1분 학급 세팅 온보딩 배너 / 내 학급 상태 바 -->
-                    <div class="mt-5 p-4 rounded-2xl border border-slate-200/90 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    <div class="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
                         ${hasSetup ? `
                             <div class="flex flex-wrap items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-200">
                                 <span class="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300"><i class="fa-solid fa-school mr-1"></i>${escapeHTML(s.schoolName || '학교 미설정')} ${escapeHTML(s.className || '')} ${escapeHTML(s.teacherName ? s.teacherName + ' 선생님' : '')}</span>
@@ -837,7 +837,7 @@
                         <div class="space-y-2">
                             <div class="editorial-search">
                                 <label for="home-search-input" class="sr-only">교직 업무 검색</label>
-                                <input type="search" id="home-search-input" placeholder="학폭 · 학생이 다쳤어요 · 현장체험학습 준비" autocomplete="off">
+                                <input type="search" id="home-search-input" enterkeyhint="search" placeholder="학폭 · 학생이 다쳤어요 · 현장체험학습 준비" autocomplete="off">
                                 <button type="button" onclick="triggerHomeSearch()">검색</button>
                             </div>
                             <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 px-1">
@@ -856,8 +856,8 @@
                             <span class="text-[11px] font-semibold text-slate-400">${homeDockTab === 'class' ? '전자칠판·TV에 바로 띄우는 수업 진행 도구' : '기안문·생기부·상담·체크리스트 실무 도구'}</span>
                         </div>
                         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                            ${dockItems.map(item => `
-                                <button type="button" onclick="${item.action}" class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 hover:bg-blue-50/70 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700 text-left transition group">
+                            ${dockItems.map((item, idx) => `
+                                <button type="button" onclick="${item.action}" class="${idx === 4 ? 'col-span-2 sm:col-span-1 ' : ''}p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 hover:bg-blue-50/70 dark:hover:bg-slate-700/80 border border-slate-200/80 dark:border-slate-700 text-left transition group">
                                     <div class="text-base mb-1.5"><i class="fa-solid ${item.icon}"></i></div>
                                     <strong class="block text-xs font-extrabold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">${escapeHTML(item.title)}</strong>
                                     <small class="block text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">${escapeHTML(item.sub)}</small>
@@ -1490,7 +1490,7 @@
                                     <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700 relative group">
                                         <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase block mb-1">추천 프롬프트 예시</span>
                                         <p class="text-sm italic pr-8 text-slate-700 dark:text-slate-300">"${tool.prompt}"</p>
-                                        <button onclick="copyText(EDUTECH_TOOLS[${i}].prompt, '복사되었습니다.')" class="absolute top-2 right-2 p-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-slate-400 hover:text-blue-500 shadow-sm md:opacity-0 md:group-hover:opacity-100 transition focus:opacity-100" aria-label="프롬프트 복사"><i class="fa-solid fa-copy"></i></button>
+                                        <button onclick="copyText(EDUTECH_TOOLS[${i}].prompt, '복사되었습니다.')" class="absolute top-2 right-2 p-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-slate-500 hover:text-blue-500 shadow-sm transition" aria-label="프롬프트 복사"><i class="fa-solid fa-copy"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -1512,7 +1512,7 @@
                     <div><h2 class="text-2xl font-bold mb-1 text-slate-900 dark:text-white">교직어 검색</h2><p class="text-sm text-slate-500 dark:text-slate-400">${new Set(DB.map(item => canonicalTermId(item.id))).size}개 대표 교직어 · 초성 검색 지원</p></div>
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4 relative w-full">
                         <div class="relative">
-                            <input type="text" id="main-search-input" value="${escapeHTML(queryStr)}" placeholder="용어, 초성 검색..." class="w-full pl-12 pr-10 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
+                            <input type="text" id="main-search-input" enterkeyhint="search" value="${escapeHTML(queryStr)}" placeholder="용어, 초성 검색..." class="w-full pl-12 pr-10 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <button onclick="clearSearch()" id="clear-search-btn" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 hidden" aria-label="검색어 지우기"><i class="fa-solid fa-circle-xmark"></i></button>
                             <div id="autocomplete-box" class="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 hidden z-30 overflow-y-auto max-h-60 hide-scrollbar"></div>
@@ -1778,7 +1778,7 @@
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
                     <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">이럴 땐 어떻게?</h2><p class="text-sm text-slate-500 dark:text-slate-400">학교 현장의 당황스러운 순간, 실전 대응 가이드와 양식·업무 순서를 바로 연결해 드립니다.</p></div>
-                    <div class="relative max-w-md"><input type="text" id="situation-search-input" placeholder="다침, 학폭, 예산 검색" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500"><i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i></div>
+                    <div class="relative max-w-md"><input type="text" id="situation-search-input" enterkeyhint="search" placeholder="다침, 학폭, 예산 검색" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500"><i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i></div>
                     <div id="situations-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </div>
             ` + FOOTER_HTML;
