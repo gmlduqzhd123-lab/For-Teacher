@@ -230,7 +230,7 @@
                 <section class="editorial-menu-group"><h4>찾기</h4><button onclick="closeMobileMenu(); router.navigate('search')">교직어 검색</button><button onclick="closeMobileMenu(); router.navigate('situations')">상황 가이드</button><button onclick="closeMobileMenu(); router.navigate('navigator')">교직 내비게이터</button><button onclick="closeMobileMenu(); router.navigate('map')">교직 지식맵</button><button onclick="closeMobileMenu(); openCommandPalette()">⚡ 빠른 이동 · 통합 검색 (Ctrl+K)</button></section>
                 <section class="editorial-menu-group"><h4>업무</h4><button onclick="closeMobileMenu(); router.navigate('year')">교사의 1년</button><button onclick="closeMobileMenu(); router.navigate('tools-board')">태스크 보드</button><button onclick="closeMobileMenu(); router.navigate('tools-doc')">문서 · 알림장 생성기</button><button onclick="closeMobileMenu(); router.navigate('career')">교직 커리어맵</button></section>
                 <section class="editorial-menu-group"><h4>수업과 기록</h4><button onclick="closeMobileMenu(); router.navigate('tools-class')">학급 경영 도구</button><button onclick="closeMobileMenu(); router.navigate('timetable')">시간표 · 종 알림</button><button onclick="closeMobileMenu(); router.navigate('tools-record')">생기부 문장 도우미</button><button onclick="closeMobileMenu(); router.navigate('counsel')">상담 기록장</button><button onclick="closeMobileMenu(); openPresent('timer')">📺 전자칠판 수업 칠판모드</button></section>
-                <section class="editorial-menu-group"><h4>학습과 설정</h4><button onclick="closeMobileMenu(); openSosModal()">🚨 위급 상황 SOS 퀵 가이드</button><button onclick="closeMobileMenu(); openCalcModal()">🧮 교무실 미니 계산기 (출석·병가)</button><button onclick="closeMobileMenu(); openGuideModal()">❓ 30초 사용법 가이드</button><button onclick="closeMobileMenu(); openSetupWizard()">🪄 1분 학급 세팅 위저드</button><button onclick="closeMobileMenu(); router.navigate('quiz')">교직력 테스트</button><button onclick="closeMobileMenu(); router.navigate('card')">오늘의 교직카드</button><button onclick="closeMobileMenu(); router.navigate('tools-edutech')">에듀테크 큐레이션</button><button onclick="closeMobileMenu(); router.navigate('mybox')">나의 교직함 (백업·설정)</button><button data-font-toggle onclick="cycleFontScale()">가+ 글자 크기 조절</button><button data-ys-install>앱 설치</button><button data-theme-toggle onclick="toggleQuickDarkMode(); closeMobileMenu()" aria-label="다크 모드로 전환">다크 모드</button><button data-qr onclick="closeMobileMenu()">QR 코드로 접속</button></section>
+                <section class="editorial-menu-group"><h4>학습과 설정</h4><button onclick="closeMobileMenu(); openSosModal()">🚨 위급 상황 SOS 퀵 가이드</button><button onclick="closeMobileMenu(); openCalcModal()">🧮 교무실 미니 계산기 (출석·병가)</button><button onclick="closeMobileMenu(); openGuideModal()">❓ 30초 사용법 가이드</button><button onclick="closeMobileMenu(); openSetupWizard()">🪄 1분 학급 세팅 위저드</button><button onclick="closeMobileMenu(); router.navigate('quiz')">교직력 테스트</button><button onclick="closeMobileMenu(); router.navigate('card')">오늘의 교직카드</button><button onclick="closeMobileMenu(); router.navigate('tools-edutech')">에듀테크 큐레이션</button><button onclick="closeMobileMenu(); router.navigate('mybox')">나의 교직함 (백업·설정)</button><button data-font-toggle onclick="cycleFontScale()">가+ 글자 크기 조절</button><button data-ys-install onclick="closeMobileMenu()">앱 설치</button><button data-theme-toggle onclick="toggleQuickDarkMode(); closeMobileMenu()" aria-label="다크 모드로 전환">다크 모드</button><button data-qr onclick="closeMobileMenu()">QR 코드로 접속</button></section>
             </div>
         </div>
     </div>
@@ -801,7 +801,7 @@
         function calcWeekdaysBetween(startYmd, endYmd) {
             const s = parseYMD(startYmd);
             const e = parseYMD(endYmd);
-            if (!s || !e || e < s) return { weekdays: 0, totalDays: 0, weekendDays: 0 };
+            if (!s || !e || isNaN(s) || isNaN(e) || e < s) return { weekdays: 0, totalDays: 0, weekendDays: 0 };
             let weekdays = 0, totalDays = 0, weekendDays = 0;
             const cur = new Date(s.getTime());
             while (cur <= e && totalDays < 366) {
@@ -898,7 +898,7 @@
                 { icon: 'fa-calendar-check text-blue-600', title: '1월 학사 마무리 체크리스트', sub: '겨울방학 중 연수 · 새 학년 교육과정 구상', action: "router.navigate('year')" }
             ],
             2: [
-                { icon: 'fa-truck-Moving text-indigo-600', title: '전입·복직 · 업무분장 인수인계', sub: '새 학교 부임 인사 · 학년 및 부서 업무 파악', action: "openDetail(1)" },
+                { icon: 'fa-truck-moving text-indigo-600', title: '전입·복직 · 업무분장 인수인계', sub: '새 학교 부임 인사 · 학년 및 부서 업무 파악', action: "openDetail(1)" },
                 { icon: 'fa-wand-magic-sparkles text-emerald-600', title: '신학기 우리 반 1분 초기 세팅', sub: '학교·학반·명렬표 미리 등록하기', action: "openSetupWizard()" }
             ],
             3: [
@@ -2219,6 +2219,9 @@
 
         function openDetail(id, pushHash = true) {
             const item = DB.find(d => d.id === canonicalTermId(id)); if(!item) return;
+            if (typeof window !== 'undefined' && 'speechSynthesis' in window && window.speechSynthesis.speaking && ttsSpeakingId !== item.id) {
+                try { window.speechSynthesis.cancel(); ttsSpeakingId = null; } catch (_) {}
+            }
             applyTermEnrichment(item);
             if (!isModalOpen()) lastFocusedElement = document.activeElement; // 연관어로 연쇄 이동해도 처음 위치로 포커스 복귀
             const modal = document.getElementById('detail-modal'); const content = document.getElementById('modal-content');
@@ -2426,6 +2429,10 @@
         }
 
         function handleModalKeyDown(e) {
+            const cp = document.getElementById('command-palette-modal');
+            const sw = document.getElementById('setup-wizard-modal');
+            const mm = document.getElementById('mobile-menu-modal');
+            if ((cp && !cp.classList.contains('hidden')) || (sw && !sw.classList.contains('hidden')) || (mm && !mm.classList.contains('hidden')) || document.querySelector('.yq-back, .ysi-back')) return;
             if(e.key === 'Escape') { closeModal(true); return; }
             if (e.key !== 'Tab') return;
             const modal = document.getElementById('detail-modal');
@@ -2465,7 +2472,7 @@
             if (!Storage.set('bookmarks', b)) return;
             showToast(exists ? '즐겨찾기 해제' : '즐겨찾기 저장', exists ? 'info' : 'success');
             updateBookmarkBadge();
-            if (isModalOpen() && currentDetailId === id) openDetail(id, false);
+            if (isModalOpen() && currentDetailId === canonical) openDetail(canonical, false);
             // 검색 화면은 전체 재렌더링 대신 결과만 갱신 (입력한 검색어·필터 유지)
             if (router.current === 'search') handleSearch();
             else if (router.current === 'mybox') router.render();
@@ -3052,8 +3059,12 @@
             const label = document.getElementById('offline-status'); if (!label) return;
             if (!('caches' in window)) { label.textContent = '이 브라우저에서는 오프라인 상태를 확인할 수 없습니다.'; return; }
             try {
-                const keys = await caches.keys();
-                const cacheName = keys.find(k => k.startsWith('gb1000-v')) || 'gb1000-v12';
+                const keys = (await caches.keys()).filter(k => k.startsWith('gb1000-v'));
+                if (!keys.length) {
+                    label.textContent = '오프라인 열람 자료를 아직 모두 저장하지 못했습니다. 온라인에서 다시 열어 주세요.';
+                    return;
+                }
+                const cacheName = keys.sort((a, b) => (parseInt(b.slice(8), 10) || 0) - (parseInt(a.slice(8), 10) || 0))[0];
                 const cache = await caches.open(cacheName);
                 const required = ['./index.html', './terms.json', './data/legacy-map.json', './data/public-links.json', './data/content-meta.json'];
                 const found = await Promise.all(required.map(path => cache.match(new URL(path, location.href))));
@@ -3259,7 +3270,11 @@
         const WEEKDAYS = ['일','월','화','수','목','금','토'];
         function pad2(n) { return String(n).padStart(2, '0'); }
         function ymd(d) { return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`; }
-        function parseYMD(s) { const [y, m, d] = String(s || '').split('-').map(Number); return new Date(y, (m || 1) - 1, d || 1); }
+        function parseYMD(s) {
+            if (typeof s !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return new Date(NaN);
+            const [y, m, d] = s.split('-').map(Number);
+            return new Date(y, m - 1, d);
+        }
         function koreanDate(d = new Date()) { return `${d.getFullYear()}. ${d.getMonth() + 1}. ${d.getDate()}.(${WEEKDAYS[d.getDay()]})`; }
         // 나이스 글자 수 기준: 한글 3바이트, 영문·숫자·공백 1바이트, 줄바꿈 2바이트
         function neisBytes(str) { let b = 0; for (const ch of String(str || '')) { if (ch === '\n') b += 2; else if (ch === '\r') continue; else b += ch.charCodeAt(0) > 127 ? 3 : 1; } return b; }
@@ -4023,9 +4038,10 @@
             m.querySelector('.editorial-menu-head button')?.focus();
         }
         document.addEventListener('keydown', e => {
+            if (document.querySelector('.yq-back, .ysi-back')) return;
             const m = document.getElementById('mobile-menu-modal');
             if (!m || m.classList.contains('hidden')) return;
-            if (e.key === 'Escape') { closeMobileMenu(); return; }
+            if (e.key === 'Escape') { e.stopPropagation(); closeMobileMenu(); return; }
             if (e.key !== 'Tab') return;
             const buttons = [...m.querySelectorAll('button')].filter(el => getComputedStyle(el).display !== 'none');
             if (!buttons.length) return;
@@ -4508,6 +4524,7 @@
                 runCommandPaletteItem(cmdPaletteIdx);
             } else if (e.key === 'Escape') {
                 e.preventDefault();
+                e.stopPropagation();
                 closeCommandPalette();
             }
         }
@@ -4537,10 +4554,11 @@
                 return;
             }
             if (e.key === 'Escape') {
+                if (document.querySelector('.yq-back, .ysi-back')) return;
                 const cp = document.getElementById('command-palette-modal');
-                if (cp && !cp.classList.contains('hidden')) { closeCommandPalette(); return; }
+                if (cp && !cp.classList.contains('hidden')) { e.stopPropagation(); closeCommandPalette(); return; }
                 const sw = document.getElementById('setup-wizard-modal');
-                if (sw && !sw.classList.contains('hidden')) { closeSetupWizard(); return; }
+                if (sw && !sw.classList.contains('hidden')) { e.stopPropagation(); closeSetupWizard(); return; }
             }
         });
 
@@ -4588,7 +4606,7 @@
             back.remove();
             if (last && last.focus) last.focus();
         }
-        function onKey(e) { if (e.key === 'Escape') close(); }
+        function onKey(e) { if (e.key === 'Escape') { e.stopPropagation(); close(); } }
         back.addEventListener('click', function (e) { if (e.target === back || e.target.closest('.yq-close')) close(); });
         document.addEventListener('keydown', onKey);
         document.body.appendChild(back);
