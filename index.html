@@ -1522,6 +1522,7 @@ ${weeklyAgendaHTML()}
                             <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
                                 <span class="text-sm font-bold text-slate-900 dark:text-white">완성된 텍스트 <span class="text-[11px] font-medium text-slate-400">(직접 고쳐도 돼요)</span></span>
                                 <div class="flex gap-2">
+                                    ${aiButtonHTML('doc-output', 'letter')}
                                     <button onclick="printDoc()" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition"><i class="fa-solid fa-print"></i> 가정통신문 인쇄</button>
                                     <button onclick="copyDocText()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow transition"><i class="fa-regular fa-copy"></i> 복사하기</button>
                                 </div>
@@ -2772,6 +2773,153 @@ ${weeklyAgendaHTML()}
             ` + FOOTER_HTML;
         }
 
+        // AI 문장 도우미 (선택): 선생님 본인의 Anthropic API 키로 이 기기에서 직접 요청. 키는 백업에 포함되지 않음
+        const AI_CONFIG = { model: 'claude-opus-5-5', sdkUrl: 'https://cdn.jsdelivr.net/npm/@anthropic-ai/sdk@1.3.0/+esm', keyName: 'gb1000_ai_key' };
+        const AI_RULES = '대괄호 표시([학생1], [학교명], [전화번호] 등)는 개인정보를 가린 자리이므로 글자 그대로 두세요. 초안에 없는 사실은 지어내지 마세요. 설명이나 머리말 없이 고친 글만 출력하세요.';
+        const AI_MODES = {
+            record: { label: '생기부 문장 다듬기', system: `초등학교 교사의 학교생활기록부 문장 작성을 돕습니다. 초안을 학교생활기록부 기재 문체로 다듬으세요: 관찰한 사실과 성장 중심, 객관적 서술, '~함', '~임'처럼 명사형으로 끝맺음. 분량은 초안과 비슷하게 유지하세요. ${AI_RULES}` },
+            letter: { label: '가정통신문·알림장 정중하게', system: `초등학교 교사가 학부모에게 보낼 글을 다듬습니다. 정중하고 읽기 쉬운 문장으로 고치되 날짜·시간·장소·준비물 같은 정보는 바꾸지 마세요. ${AI_RULES}` },
+            spell: { label: '맞춤법·띄어쓰기만', system: `한국어 맞춤법·띄어쓰기와 명백한 문법 오류만 고치세요. 표현과 내용, 문체는 바꾸지 마세요. ${AI_RULES}` }
+        };
+        let aiCtx = { targetId: '', mode: 'record', masked: '', map: [], result: '' };
+        function aiGetKey() { try { return sessionStorage.getItem(AI_CONFIG.keyName) || localStorage.getItem(AI_CONFIG.keyName) || ''; } catch (_) { return ''; } }
+        function aiSetKey(key, remember) {
+            try {
+                sessionStorage.removeItem(AI_CONFIG.keyName); localStorage.removeItem(AI_CONFIG.keyName);
+                if (key) (remember ? localStorage : sessionStorage).setItem(AI_CONFIG.keyName, key);
+                return true;
+            } catch (_) { return false; }
+        }
+        function aiKeyRemembered() { try { return !!localStorage.getItem(AI_CONFIG.keyName); } catch (_) { return false; } }
+        // 개인정보 가리기: 학급 명단·학생 이름, 학교/교사 이름, 전화번호·이메일·주민번호. 보낸 뒤 결과에서 이 기기 안에서만 되돌림
+        function aiMask(text) {
+            const map = []; let out = String(text || '');
+            const swap = (value, label) => {
+                if (!value || value.length < 2 || !out.includes(value)) return;
+                let entry = map.find(m => m.value === value);
+                if (!entry) { entry = { token: `[${label}]`, value }; map.push(entry); }
+                out = out.split(value).join(entry.token);
+            };
+            const s = getSettings();
+            const names = [...new Set([...parseNameList(Storage.get('class_names', '')), typeof recordStudent === 'string' ? recordStudent : ''].map(n => String(n || '').trim()).filter(n => n.length >= 2))].sort((a, b) => b.length - a.length);
+            names.forEach((name, i) => swap(name, `학생${i + 1}`));
+            swap(String(s.schoolName || '').trim(), '학교명');
+            swap(String(s.teacherName || '').trim(), '교사');
+            const patterns = [[/\d{6}-?[1-4]\d{6}/g, '주민번호'], [/01[016789][-.\s]?\d{3,4}[-.\s]?\d{4}/g, '전화번호'], [/0\d{1,2}-\d{3,4}-\d{4}/g, '전화번호'], [/[\w.+-]+@[\w-]+\.[\w.-]+/g, '이메일']];
+            patterns.forEach(([re, label]) => { out = out.replace(re, m => { const n = map.filter(x => x.token.startsWith(`[${label}`)).length + 1; const token = `[${label}${n}]`; map.push({ token, value: m }); return token; }); });
+            return { masked: out, map };
+        }
+        function aiUnmask(text, map) { let out = String(text || ''); map.forEach(m => { out = out.split(m.token).join(m.value); }); return out; }
+        function openAiAssist(targetId, mode = 'record') {
+            const el = document.getElementById(targetId);
+            const m = document.getElementById('setup-wizard-modal'); const c = document.getElementById('setup-wizard-content'); if (!m || !c) return;
+            const text = (el?.value || '').trim();
+            aiCtx = { targetId, mode: AI_MODES[mode] ? mode : 'record', masked: '', map: [], result: '' };
+            const { masked, map } = aiMask(text); aiCtx.masked = masked; aiCtx.map = map;
+            const hasKey = !!aiGetKey();
+            const field = 'w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-100 outline-none';
+            c.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div><h3 id="setup-wizard-title" class="text-xl font-black text-slate-900 dark:text-white">AI 문장 도우미 <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 align-middle">선택 기능</span></h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">개인정보를 가린 글만 Anthropic(Claude)으로 보내고, 결과는 이 기기에서 이름을 되돌려 보여 줍니다.</p></div>
+                        <button type="button" onclick="closeSetupWizard()" class="shrink-0 p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700" aria-label="닫기"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    ${hasKey ? '' : aiKeyFormHTML()}
+                    <div class="flex flex-wrap gap-2" role="radiogroup" aria-label="다듬는 방식">${Object.entries(AI_MODES).map(([key, v]) => `<button type="button" role="radio" aria-checked="${key === aiCtx.mode}" onclick="aiCtx.mode='${key}'; this.parentNode.querySelectorAll('button').forEach(b => { const on = b === this; b.setAttribute('aria-checked', on); b.className = on ? '${AI_BTN_ON}' : '${AI_BTN_OFF}'; })" class="${key === aiCtx.mode ? AI_BTN_ON : AI_BTN_OFF}">${v.label}</button>`).join('')}</div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">보낼 내용 (개인정보 가림 ${map.length}곳)</p>
+                        <pre id="ai-masked" class="${field} whitespace-pre-wrap break-words max-h-40 overflow-y-auto font-sans">${escapeHTML(masked || '(글이 비어 있어요. 먼저 초안을 써 주세요.)')}</pre>
+                        <p class="text-[11px] text-amber-700 dark:text-amber-300 mt-1">학급 명단에 없는 이름·별명, 주소 등은 자동으로 가려지지 않아요. 보내기 전에 위 내용을 꼭 확인하세요.</p>
+                    </div>
+                    <div id="ai-result-box" class="hidden">
+                        <p class="text-xs font-bold text-emerald-700 dark:text-emerald-300 mb-1">다듬은 글</p>
+                        <textarea id="ai-result" rows="6" class="${field}"></textarea>
+                        <div class="flex flex-wrap justify-end gap-2 mt-2">
+                            <button type="button" onclick="copyText(document.getElementById('ai-result').value, '다듬은 글을 복사했습니다.')" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200">복사</button>
+                            <button type="button" onclick="applyAiResult()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold">원래 글을 이걸로 바꾸기</button>
+                        </div>
+                    </div>
+                    <p id="ai-status" class="text-sm text-slate-500 dark:text-slate-400" aria-live="polite"></p>
+                    <div class="flex flex-wrap justify-between items-center gap-2 pt-3 border-t border-slate-100 dark:border-slate-700">
+                        <button type="button" onclick="router.navigate('mybox', 'ai')" class="text-xs font-bold text-slate-500 hover:underline">API 키 관리</button>
+                        <button type="button" id="ai-run-btn" onclick="runAiAssist()" ${masked ? '' : 'disabled'} class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white text-sm font-bold">다듬기 요청</button>
+                    </div>
+                </div>`;
+            m.classList.remove('hidden');
+        }
+        const AI_BTN_ON = 'px-3 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white';
+        const AI_BTN_OFF = 'px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200';
+        function aiKeyFormHTML() {
+            return `
+                    <div class="p-4 rounded-2xl bg-blue-50/70 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 space-y-2">
+                        <label for="ai-key-input" class="block text-xs font-bold text-blue-900 dark:text-blue-200">내 Anthropic API 키</label>
+                        <input id="ai-key-input" type="password" autocomplete="off" placeholder="sk-ant-..." class="w-full p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm">
+                        <label class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300"><input id="ai-key-remember" type="checkbox" class="w-4 h-4"> 이 기기에 기억하기 (끄면 브라우저를 닫을 때 지워짐)</label>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">키는 <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer" class="underline font-bold">Anthropic 콘솔</a>에서 만들 수 있고 사용량만큼 요금이 청구됩니다. 키는 이 기기에만 저장되며 백업 파일에 들어가지 않습니다. 공용 컴퓨터에서는 기억하기를 켜지 마세요.</p>
+                        <button type="button" onclick="saveAiKeyFromForm()" class="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold">키 저장</button>
+                    </div>`;
+        }
+        function saveAiKeyFromForm() {
+            const key = (document.getElementById('ai-key-input')?.value || '').trim();
+            if (!/^sk-ant-[\w-]{10,}$/.test(key)) { showToast('키 형식을 확인해 주세요. sk-ant- 로 시작합니다.', 'error'); return; }
+            if (!aiSetKey(key, !!document.getElementById('ai-key-remember')?.checked)) { showToast('이 브라우저에서는 키를 저장할 수 없어요.', 'error'); return; }
+            showToast('API 키를 저장했습니다.');
+            if (router.current === 'mybox') router.render();
+            if (aiCtx.targetId && !document.getElementById('setup-wizard-modal')?.classList.contains('hidden')) openAiAssist(aiCtx.targetId, aiCtx.mode);
+        }
+        function forgetAiKey() { aiSetKey('', false); showToast('API 키를 이 기기에서 지웠습니다.'); if (router.current === 'mybox') router.render(); }
+        let aiSdkPromise = null;
+        function loadAiSdk() { if (!aiSdkPromise) aiSdkPromise = import(AI_CONFIG.sdkUrl).catch(err => { aiSdkPromise = null; throw err; }); return aiSdkPromise; }
+        async function runAiAssist() {
+            const status = document.getElementById('ai-status'); const btn = document.getElementById('ai-run-btn');
+            const say = (msg, tone = '') => { if (status) { status.textContent = msg; status.className = `text-sm ${tone || 'text-slate-500 dark:text-slate-400'}`; } };
+            const apiKey = aiGetKey();
+            if (!apiKey) { say('먼저 API 키를 저장해 주세요.', 'text-rose-600'); return; }
+            if (!aiCtx.masked) return;
+            if (!navigator.onLine) { say('인터넷에 연결된 상태에서만 쓸 수 있어요.', 'text-rose-600'); return; }
+            if (btn) btn.disabled = true; say('다듬는 중… (보통 몇 초~십여 초)');
+            let sdk;
+            try { sdk = await loadAiSdk(); } catch (_) { say('AI 도구를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.', 'text-rose-600'); if (btn) btn.disabled = false; return; }
+            const Anthropic = sdk.default;
+            try {
+                const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
+                const response = await client.beta.messages.create({
+                    model: AI_CONFIG.model,
+                    max_tokens: 16000,
+                    output_config: { effort: 'low' },
+                    betas: ['server-side-fallback-2026-07-01'],
+                    fallbacks: 'default',
+                    system: AI_MODES[aiCtx.mode].system,
+                    messages: [{ role: 'user', content: aiCtx.masked }]
+                });
+                if (response.stop_reason === 'refusal') { say('이 글은 AI가 처리하지 않았습니다. 내용을 확인하고 다시 시도해 주세요.', 'text-rose-600'); return; }
+                const text = response.content.filter(block => block.type === 'text').map(block => block.text).join('').trim();
+                if (!text) { say('결과가 비어 있습니다. 다시 시도해 주세요.', 'text-rose-600'); return; }
+                aiCtx.result = aiUnmask(text, aiCtx.map);
+                document.getElementById('ai-result-box')?.classList.remove('hidden');
+                const out = document.getElementById('ai-result'); if (out) { out.value = aiCtx.result; out.focus(); }
+                say(response.stop_reason === 'max_tokens' ? '글이 길어 끝까지 다듬지 못했어요. 나눠서 요청해 주세요.' : '완료! 고친 내용을 확인한 뒤 적용하세요. AI 결과는 틀릴 수 있어요.', response.stop_reason === 'max_tokens' ? 'text-amber-700' : 'text-emerald-700 dark:text-emerald-300');
+            } catch (err) {
+                if (err instanceof sdk.AuthenticationError || err instanceof sdk.PermissionDeniedError) say('API 키가 올바르지 않거나 권한이 없습니다. 키를 다시 확인해 주세요.', 'text-rose-600');
+                else if (err instanceof sdk.RateLimitError) say('요청이 많아 잠시 막혔어요. 1분쯤 뒤에 다시 시도해 주세요.', 'text-rose-600');
+                else if (err instanceof sdk.BadRequestError) say(`요청을 처리할 수 없습니다: ${err.message}`.slice(0, 200), 'text-rose-600');
+                else if (err instanceof sdk.APIConnectionError) say('AI 서버에 연결하지 못했습니다. 인터넷 연결을 확인해 주세요.', 'text-rose-600');
+                else if (err instanceof sdk.APIError) say(`AI 서버 오류(${err.status ?? '알 수 없음'})입니다. 잠시 뒤 다시 시도해 주세요.`, 'text-rose-600');
+                else say('알 수 없는 오류가 났습니다. 다시 시도해 주세요.', 'text-rose-600');
+            } finally { if (btn) btn.disabled = false; }
+        }
+        function applyAiResult() {
+            const el = document.getElementById(aiCtx.targetId); const out = document.getElementById('ai-result');
+            if (!el || !out) return;
+            el.value = out.value;
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+            closeSetupWizard(); showToast('다듬은 글로 바꿨습니다.');
+        }
+        function aiButtonHTML(targetId, mode) {
+            return aiGetKey() ? `<button type="button" onclick="openAiAssist('${targetId}', '${mode}')" class="px-3 py-2 bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-xs font-bold rounded-xl"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>AI로 다듬기</button>` : '';
+        }
+
         function renderNavigator(container) {
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
@@ -3334,6 +3482,12 @@ ${weeklyAgendaHTML()}
                         </div>
                     </div>
 
+                    <div id="ai-settings-card" class="${card}">
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-violet-500"></i> AI 문장 도우미 <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300">선택 기능 · 기본 꺼짐</span></h3>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">본인의 Anthropic API 키를 넣으면 생기부 문장 도우미와 기안·알림장 생성기에 <b>AI로 다듬기</b> 버튼이 생깁니다. 학급 명단의 이름, 학교·교사 이름, 전화번호·이메일·주민번호는 가린 뒤 보내고, 보내기 전에 보낼 내용을 보여 줍니다. 키는 이 기기에만 저장되고 백업 파일에는 들어가지 않습니다.</p>
+                        ${aiGetKey() ? `<div class="flex flex-wrap items-center gap-2"><span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">켜짐 · ${aiKeyRemembered() ? '이 기기에 기억 중' : '브라우저를 닫으면 지워짐'}</span><button type="button" onclick="forgetAiKey()" class="px-3 py-1.5 rounded-lg bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 text-xs font-bold">키 지우고 끄기</button></div>` : aiKeyFormHTML()}
+                    </div>
+
                     <div class="${card}">
                         <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-scale-balanced text-amber-500"></i> 내용 검수 현황</h3>
                         <div class="flex flex-wrap gap-2"><button type="button" onclick="openFeedback('error')" class="px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 text-xs font-bold">틀린 내용 신고</button><button type="button" onclick="openFeedback('request')" class="px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-bold">용어·가이드 추가 요청</button></div>
@@ -3408,6 +3562,7 @@ ${weeklyAgendaHTML()}
             ` + FOOTER_HTML;
             updateOfflineStatus();
             if (router.param === 'calendar') requestAnimationFrame(() => document.getElementById('school-calendar-card')?.scrollIntoView({ block: 'center' }));
+            if (router.param === 'ai') requestAnimationFrame(() => document.getElementById('ai-settings-card')?.scrollIntoView({ block: 'center' }));
         }
 
         async function updateOfflineStatus() {
@@ -3620,6 +3775,7 @@ ${weeklyAgendaHTML()}
         function resetAllData() {
             if (!confirm('정말로 모든 기록을 지우시겠습니까? 복구할 수 없습니다.')) return;
             if (!Storage.clearAll()) return; // 같은 github.io 도메인의 다른 앱 자료는 건드리지 않음
+            aiSetKey('', false); // AI 문장 도우미 키도 함께 삭제
             window.location.hash = ''; window.location.reload();
         }
 
@@ -4065,6 +4221,7 @@ ${weeklyAgendaHTML()}
                                     </div>
                                     <div class="flex gap-2">
                                         <button onclick="clearRecord()" class="px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold rounded-xl">지우기</button>
+                                        ${aiButtonHTML('record-editor', 'record')}
                                         <button onclick="copyText(document.getElementById('record-editor').value, '복사했습니다. 나이스에 붙여 넣으세요.')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow"><i class="fa-regular fa-copy"></i> 복사</button>
                                     </div>
                                 </div>
