@@ -1100,12 +1100,12 @@
                         </div>
                     </section>
 
-                    <!-- 빠른 실행 독 (교실 수업 독 | 행정 칼퇴 독 | 이달의 브리핑 | 내 고정핀) -->
-                    <section class="mt-6 p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4" aria-label="빠른 실행 독">
+                    <!-- 빠른 실행 도구 (교실 수업 도구 | 행정 칼퇴 도구 | 이달의 브리핑 | 내 고정핀) -->
+                    <section class="mt-6 p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4" aria-label="빠른 실행 도구">
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <div class="flex flex-wrap items-center gap-1.5">
-                                <button type="button" onclick="switchHomeDock('class')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${homeDockTab === 'class' ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}"><i class="fa-solid fa-chalkboard-user mr-1"></i>교실 수업 독</button>
-                                <button type="button" onclick="switchHomeDock('admin')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${homeDockTab === 'admin' ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}"><i class="fa-solid fa-briefcase mr-1"></i>행정 · 기록 독</button>
+                                <button type="button" onclick="switchHomeDock('class')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${homeDockTab === 'class' ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}"><i class="fa-solid fa-chalkboard-user mr-1"></i>교실 수업 도구</button>
+                                <button type="button" onclick="switchHomeDock('admin')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${homeDockTab === 'admin' ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}"><i class="fa-solid fa-briefcase mr-1"></i>행정 · 기록 도구</button>
                                 <button type="button" onclick="switchHomeDock('monthly')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${homeDockTab === 'monthly' ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}"><i class="fa-regular fa-calendar-check mr-1"></i>${month}월 브리핑</button>
                                 <button type="button" onclick="switchHomeDock('pins')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${homeDockTab === 'pins' ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}"><i class="fa-solid fa-thumbtack mr-1"></i>내 고정핀 (${pinnedDockItems.length})</button>
                             </div>
@@ -5138,7 +5138,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
         }
 
         const MENU_PAGES = [
-            ['home', '홈 대시보드', '1초 실행 독 · 오늘의 안내 · 주요 일정'],
+            ['home', '홈 대시보드', '1초 실행 도구 · 오늘의 안내 · 주요 일정'],
             ['search', '교직어 검색', '1,000개 교직 용어 · 초성 검색 지원'],
             ['situations', '이럴 땐 어떻게? (상황 가이드 15선)', '돌발 상황별 대응 순서 · 통화 스크립트 · 양식 연결'],
             ['navigator', '교직 내비게이터', '업무 목적별 단계별 플로우차트'],
