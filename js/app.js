@@ -2452,7 +2452,8 @@ ${weeklyAgendaHTML()}
         }
         function chooseStartCourse(courseId) {
             const st = startCourseState(); st.active = START_COURSES.some(c => c.id === courseId) ? courseId : '';
-            Storage.set('start_courses', st); router.render(); scrollViewTop();
+            Storage.set('start_courses', st);
+            router.navigate('start', st.active || null);
         }
         function openStartCourseItem(courseId, index) {
             const course = START_COURSES.find(c => c.id === courseId); const it = course?.items[index]; if (!it) return;
@@ -2884,9 +2885,10 @@ ${weeklyAgendaHTML()}
             const items = [];
             [month === 1 ? 12 : month - 1, month, month === 12 ? 1 : month + 1].forEach(m => {
                 const done = Storage.get(`checklist_${m}`, {});
+                const yearOf = month === 3 && m === 2 ? sy - 1 : month === 2 && m === 3 ? sy + 1 : sy; // 학년도는 3월에 바뀜
                 (YEAR_TASKS[m] || []).forEach((task, idx) => {
                     if (done[idx]) return;
-                    const custom = savedDates && savedDates[`${sy}_${m}_${idx}`];
+                    const custom = savedDates && savedDates[`${yearOf}_${m}_${idx}`];
                     if (custom) {
                         const date = parseYMD(custom); if (isNaN(date)) return;
                         const days = Math.round((date - today) / 86400000);
@@ -3525,7 +3527,8 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                 try {
                     const entries = parseBackup(String(ev.target.result));
                     if (Vault.isLocked() && entries.some(([key]) => Vault.KEYS.includes(key))) { showToast('개인 기록 잠금을 먼저 풀고 다시 가져와 주세요.', 'error'); return; }
-                    const conflicts = entries.filter(([key]) => localStorage.getItem(Storage.PREFIX + key) !== null || localStorage.getItem(Storage.LEGACY + key) !== null).length;
+                    const existing = new Set(Storage.ownKeys());
+                    const conflicts = entries.filter(([key]) => existing.has(key)).length;
                     if (!confirm(`${entries.length}종류의 자료를 가져옵니다. 기존 자료 ${conflicts}종류는 교체됩니다. 계속할까요?`)) return;
                     const applied = [], failed = [];
                     for (const [key, value] of entries) (Storage.set(key, value) ? applied : failed).push(key);
@@ -3712,13 +3715,16 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                 this.key = key; this.cache = {};
                 for (const k of this.KEYS) { const rec = await this.getRec('items', k); if (rec) this.cache[k] = JSON.parse(await this.decrypt(rec)); }
                 this.state = 'unlocked'; this.touch();
-                if (meta.stage !== 'complete') await this.migrate(); // 중단된 보호 작업 이어서
+                if (meta.stage !== 'complete') { // 중단된 보호 작업 이어서
+                    try { await this.migrate(); } catch (_) { showToast('남은 보호 작업을 마치지 못했습니다. 기록은 그대로 있으며 다음에 잠금을 풀 때 다시 시도합니다.', 'error'); }
+                }
                 return true;
             },
             async lock(message) {
                 if (this.state !== 'unlocked') return;
                 if (typeof saveRecordDraftNow === 'function' && router.current === 'tools-record') saveRecordDraftNow();
-                await this.pending.catch(() => {});
+                let settled; do { settled = this.pending; await settled.catch(() => {}); } while (settled !== this.pending); // 기다리는 동안 들어온 저장까지 마친 뒤 잠금
+                if (this.state !== 'unlocked') return;
                 this.key = null; this.cache = {}; this.state = 'locked'; clearTimeout(this.idleTimer);
                 this.releaseEditLock();
                 if (message) showToast(message, 'info');
@@ -4867,9 +4873,13 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
         function sendFeedback(target = 'github') {
             const d = feedbackDraft();
             if (!d.ok) { showToast('항목이나 내용을 적어 주세요.', 'error'); return; }
-            const url = target === 'form' && FEEDBACK_CONFIG.formUrl
+            let url = target === 'form' && FEEDBACK_CONFIG.formUrl
                 ? FEEDBACK_CONFIG.formUrl
                 : `https://github.com/${FEEDBACK_CONFIG.repo}/issues/new?title=${encodeURIComponent(d.title)}&body=${encodeURIComponent(d.body)}`;
+            if (target !== 'form' && url.length > 7000) { // 주소가 너무 길면 열리지 않으므로 본문은 복사해 붙여 넣게 함
+                copyText(`${d.title}\n\n${d.body}`, '내용이 길어 복사해 두었어요. 열리는 창의 본문에 붙여 넣어 주세요.');
+                url = `https://github.com/${FEEDBACK_CONFIG.repo}/issues/new?title=${encodeURIComponent(d.title)}`;
+            }
             if (target === 'form') copyText(`${d.title}\n\n${d.body}`, '내용을 복사했어요. 설문에 붙여 넣어 주세요.');
             window.open(url, '_blank', 'noopener');
             Usage.event('feedback_send');
