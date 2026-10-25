@@ -1070,14 +1070,45 @@
             } catch (_) { return null; }
         }
 
+        const REVIEW_STATUS = {
+            reviewed: { icon: '✅', label: '공식 근거와 대조 완료', tone: 'text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-800/60' },
+            'needs-update': { icon: '⚠️', label: '지침 변경 확인 중', tone: 'text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-900/30 border-rose-200 dark:border-rose-800/60' },
+            'needs-review': { icon: '📝', label: '검수 전 · 실무 경험 기반 정리', tone: 'text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800/50' }
+        };
+        // 검수 기록: data/content-meta.json (콘텐츠 버전이 맞을 때만 사용). 'reviewed'는 근거와 확인일이 모두 있어야 인정
+        function reviewInfo(publicId) {
+            const record = CONTENT_META?.items?.[publicId] || null;
+            const sources = (record?.sourceIds || []).map(id => (CONTENT_META.sources || []).find(src => src.id === id)).filter(Boolean);
+            let status = record?.reviewStatus || 'needs-review';
+            if (!REVIEW_STATUS[status] || (status === 'reviewed' && !(record.checkedAt && sources.length))) status = 'needs-review';
+            return { status, checkedAt: status === 'needs-review' ? null : (record?.checkedAt || null), scope: record?.scope || null, sources, dataDate: DATA_META.updatedAt || '' };
+        }
         function reviewLabel(publicId) {
+            const info = reviewInfo(publicId); const st = REVIEW_STATUS[info.status];
             const office = currentOffice();
-            const suffix = office ? `${office.name} 지침 대조 권장` : '시도교육청별 지침 확인 권장';
-            if (!CONTENT_META?.items?.[publicId]) return `📌 공통 실무 기준 · ${suffix}`;
-            const record = CONTENT_META.items[publicId];
-            // No item is labeled reviewed until its content hash can be checked at runtime.
-            if (record.reviewStatus === 'reviewed') return `✅ 공식 기준 대조 · ${suffix}`;
-            return record.reviewStatus === 'needs-update' ? `⚠️ 지침 변경 확인 필요 · ${suffix}` : `📌 공통 실무 기준 · ${suffix}`;
+            const when = info.checkedAt ? `최종 확인 ${info.checkedAt}` : (info.dataDate ? `내용 기준일 ${info.dataDate}` : '확인일 없음');
+            return `${st.icon} ${st.label} · ${when} · ${office ? `${office.name} 지침 대조 권장` : '시도교육청별 지침 확인 권장'}`;
+        }
+        function reviewPanelHTML(publicId) {
+            const info = reviewInfo(publicId); const st = REVIEW_STATUS[info.status];
+            const office = currentOffice();
+            return `
+                    <section aria-label="내용 확인 정보" class="p-3.5 rounded-2xl border ${st.tone} text-xs space-y-2">
+                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                            <span class="font-extrabold whitespace-nowrap">${st.icon} ${st.label}</span>
+                            <span class="whitespace-nowrap">최종 확인일 <b>${escapeHTML(info.checkedAt || '아직 없음')}</b></span>
+                            ${info.dataDate ? `<span class="whitespace-nowrap">내용 기준일 <b>${escapeHTML(info.dataDate)}</b></span>` : ''}
+                            ${info.scope ? `<span class="whitespace-nowrap">적용 범위 <b>${escapeHTML(info.scope)}</b></span>` : ''}
+                        </div>
+                        ${info.sources.length ? `<div class="flex flex-wrap items-center gap-1.5"><span class="font-bold">대조한 근거</span>${info.sources.map(src => `<a href="${escapeHTML(src.url)}" target="_blank" rel="noopener noreferrer" class="px-2 py-0.5 rounded-md bg-white/80 dark:bg-slate-800 border border-current/20 font-semibold hover:underline">${escapeHTML(src.title)} ↗</a>`).join('')}</div>` : ''}
+                        <p class="leading-relaxed opacity-90">${info.status === 'reviewed' ? '위 근거와 대조한 날짜 기준입니다. 이후 개정 여부는 근거 링크에서 확인하세요.' : '아직 공식 근거와 한 줄씩 대조하지 않은 내용입니다. 실제 처리 전 아래 근거 법령과 소속 교육청 지침을 확인하세요.'} ${office ? `${escapeHTML(office.name)} 기준 확인 권장.` : '시도교육청별로 다를 수 있습니다.'}</p>
+                    </section>`;
+        }
+        function reviewSummary() {
+            const items = Object.keys(CONTENT_META?.items || {});
+            const counts = { reviewed: 0, 'needs-update': 0, 'needs-review': 0 };
+            items.forEach(id => { counts[reviewInfo(id).status]++; });
+            return { total: items.length, ...counts };
         }
 
         function findItemByKeyword(kw) {
@@ -2268,7 +2299,7 @@
                         <span class="text-xs font-bold text-blue-600 dark:text-blue-400 block mb-1">💡 쉽게 말하면</span>
                         <p class="font-semibold text-slate-900 dark:text-slate-100">${escapeHTML(item.simple)}</p>
                     </div>
-                    <p class="text-xs text-amber-700 dark:text-amber-300">${reviewLabel(`term:${item.id}`)} · 적용 범위 확인 필요</p>
+                    ${reviewPanelHTML(`term:${item.id}`)}
 
                     <div>
                         <span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase block mb-1.5">📖 상세 실무 설명</span>
@@ -2509,7 +2540,7 @@
                     <div>
                         <span class="text-xs font-bold px-3 py-1 bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-lg mb-3 inline-block">${escapeHTML(sit.category)}</span>
                         <h3 class="text-base sm:text-lg font-bold tracking-tight mb-2 text-slate-900 dark:text-white">${escapeHTML(sit.title)}</h3>
-                        <p class="text-[11px] text-amber-700 dark:text-amber-300 mb-2">${reviewLabel(sit.publicId)} · 적용 범위 확인 필요</p>
+                        <p class="text-[11px] text-amber-700 dark:text-amber-300 mb-2">${reviewLabel(sit.publicId)}</p>
                         ${sit.summary ? `<p class="text-xs text-slate-500 dark:text-slate-400 mb-4">${escapeHTML(sit.summary)}</p>` : ''}
                         ${sit.firstCheck.length ? `<div class="flex flex-wrap items-center gap-1.5 mb-3"><span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mr-1">먼저 확인</span>${chips(sit.firstCheck, 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300')}</div>` : ''}
                         ${sit.script ? `
@@ -2544,7 +2575,7 @@
                                 <div>
                                     <span class="text-xs font-bold px-3 py-1 bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-lg mb-3 inline-block">${escapeHTML(course.category)}</span>
                                     <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">${escapeHTML(course.title)}</h3>
-                                    <p class="text-[11px] text-amber-700 dark:text-amber-300">${reviewLabel(course.publicId)} · 적용 범위 확인 필요</p>
+                                    <p class="text-[11px] text-amber-700 dark:text-amber-300">${reviewLabel(course.publicId)}</p>
                                     <div class="space-y-3 relative pl-4 border-l-2 border-emerald-500/30 my-4">
                                         ${course.steps.map((st, i) => `<div><span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block mb-0.5">STEP ${i+1}</span><p class="font-bold text-sm text-slate-800 dark:text-slate-200">${escapeHTML(st)}</p></div>`).join('')}
                                     </div>
@@ -2987,6 +3018,14 @@
                             <label class="text-xs font-semibold text-slate-500 dark:text-slate-400">담임 이름<input type="text" value="${escapeHTML(s.teacherName)}" onchange="if(saveSetting('teacherName', this.value.trim())) showToast('저장했습니다.')" placeholder="예: 김엽" class="${field}"></label>
                             <label class="text-xs font-semibold text-slate-500 dark:text-slate-400">학년·반<input type="text" value="${escapeHTML(s.className)}" onchange="if(saveSetting('className', this.value.trim())) showToast('저장했습니다.')" placeholder="예: 3학년 2반" class="${field}"></label>
                         </div>
+                    </div>
+
+                    <div class="${card}">
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-scale-balanced text-amber-500"></i> 내용 검수 현황</h3>
+                        ${(() => { const r = reviewSummary(); const pct = r.total ? Math.round(r.reviewed / r.total * 100) : 0; return r.total ? `
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">용어·상황 가이드·업무 순서 ${r.total}개 중 공식 근거와 대조를 마친 항목은 <b>${r.reviewed}개(${pct}%)</b>입니다. 검수 전 항목은 실무 경험을 바탕으로 정리한 내용이라, 처리 전에 상세 화면의 근거 법령과 소속 교육청 지침을 꼭 확인해 주세요.</p>
+                        <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden" aria-hidden="true"><div class="bg-emerald-500 h-full" style="width:${pct}%"></div></div>
+                        <div class="flex flex-wrap gap-2 text-xs font-bold"><span class="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">✅ 대조 완료 ${r.reviewed}</span><span class="px-2.5 py-1 rounded-lg bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300">⚠️ 변경 확인 중 ${r['needs-update']}</span><span class="px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-300">📝 검수 전 ${r['needs-review']}</span></div>` : `<p class="text-xs text-slate-500 dark:text-slate-400">검수 기록을 불러오지 못했습니다. 인터넷에 연결된 상태에서 다시 열어 주세요.</p>`; })()}
                     </div>
 
                     <div class="${card}">

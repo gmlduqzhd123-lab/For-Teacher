@@ -95,10 +95,18 @@ const metadata = JSON.parse(fs.readFileSync(new URL('../data/content-meta.json',
 assert.equal(metadata.metadataSchemaVersion, 1);
 assert.equal(metadata.contentVersion, `${terms.version}-${terms.updatedAt}`);
 assert.equal(Object.keys(metadata.items).length, terms.terms.length + terms.situations.length + terms.courses.length);
+const sourceIds = new Set(metadata.sources.map(src => src.id));
+assert.equal(sourceIds.size, metadata.sources.length);
+for (const src of metadata.sources) assert.match(src.url, /^https:\/\/www\.law\.go\.kr\//);
 for (const item of Object.values(metadata.items)) {
-  assert.equal(item.reviewStatus, 'needs-review');
-  assert.equal(item.checkedAt, null);
-  assert.deepEqual(item.sourceIds, []);
+  assert.ok(['needs-review', 'reviewed', 'needs-update'].includes(item.reviewStatus));
+  for (const id of item.sourceIds) assert.ok(sourceIds.has(id), `unknown source ${id}`);
+  // 'reviewed' must carry both an official source and a check date
+  if (item.reviewStatus === 'reviewed') {
+    assert.match(item.checkedAt, /^\d{4}-\d{2}-\d{2}$/);
+    assert.ok(item.sourceIds.length > 0);
+  }
+  if (item.reviewStatus === 'needs-review') assert.equal(item.checkedAt, null);
 }
 assert.equal(map.termIdMap['295'], 'term:11');
 assert.equal(map.termIdMap['153'], 'term:11');
