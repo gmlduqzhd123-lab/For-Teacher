@@ -1,0 +1,105 @@
+/* 교직백서 1000 — 화면 스타일 (index.html에서 분리) */
+        @font-face { font-family: 'Maru Buri'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-Regular.woff2') format('woff2'); font-style: normal; font-weight: 400; font-display: swap; }
+        @font-face { font-family: 'Maru Buri'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-SemiBold.woff2') format('woff2'); font-style: normal; font-weight: 600; font-display: swap; }
+        @font-face { font-family: 'Maru Buri'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-Bold.woff2') format('woff2'); font-style: normal; font-weight: 700; font-display: swap; }
+        body, button, input, textarea, select { font-family: 'Maru Buri', 'Nanum Myeongjo', 'AppleMyungjo', serif; }
+        body { word-break: keep-all; overflow-wrap: break-word; }
+        button { word-break: keep-all; }
+        th { white-space: nowrap; }
+        button, a, label, summary { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+        .font-serif-kr { font-family: 'Maru Buri', 'Nanum Myeongjo', 'AppleMyungjo', serif; word-break: keep-all; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .timer-blink { animation: blinker 1s linear infinite; color: #ef4444; }
+        @keyframes blinker { 50% { opacity: 0; } }
+        .animate-fade-in { animation: fadeIn 0.25s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .slot-machine-spin { animation: slotSpin 0.1s linear infinite; }
+        #print-root { display: none; }
+        #print-root .pl-letter { max-width: 170mm; margin: 0 auto; font-size: 12pt; line-height: 1.8; color: #000; }
+        #print-root .pl-top { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 4mm; font-weight: 700; }
+        #print-root h1 { text-align: center; font-size: 18pt; font-weight: 800; margin: 8mm 0 6mm; color: #000; }
+        #print-root .pl-body { white-space: pre-wrap; word-break: keep-all; min-height: 120mm; }
+        #print-root .pl-date { text-align: center; margin-top: 12mm; }
+        #print-root .pl-sign { text-align: center; font-size: 15pt; font-weight: 800; margin-top: 6mm; letter-spacing: 0.3em; }
+        #print-root .pl-sub { text-align: center; color: #444; margin: -3mm 0 6mm; }
+        #print-root .pl-desk { width: 60mm; margin: 0 auto 8mm; padding: 3mm; text-align: center; border: 1.5px solid #000; font-weight: 700; }
+        #print-root .pl-row { display: flex; justify-content: center; gap: 3mm; margin-bottom: 3mm; }
+        #print-root .pl-seat { width: 26mm; height: 16mm; border: 1.5px solid #000; border-radius: 2mm; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12pt; text-align: center; color: #000; }
+        #print-root .pl-seat.pl-aisle { margin-right: 7mm; }
+        #print-root table { width: 100%; border-collapse: collapse; font-size: 11pt; color: #000; }
+        #print-root th, #print-root td { border: 1px solid #000; padding: 2.5mm 2mm; text-align: center; }
+        #print-root th { background: #eee; }
+        @media print {
+            @page { size: A4; margin: 15mm; }
+            html, body { height: auto !important; overflow: visible !important; background: #fff !important; }
+            body > *:not(#print-root) { display: none !important; }
+            #print-root { display: block !important; }
+        }
+        @keyframes slotSpin { 0% { transform: translateY(-3px); opacity: 0.5; } 50% { transform: translateY(3px); opacity: 1; } 100% { transform: translateY(-3px); opacity: 0.5; } }
+        :root { --paper: #f7f5f0; --paper-card: #fffefa; --paper-line: #e7e3da; --paper-ink: #282b28; --paper-muted: #526058; --paper-accent: #965d3c; --paper-deep: #2e3c35; }
+        .dark { --paper: #191e1b; --paper-card: #242a26; --paper-line: #3b443e; --paper-ink: #f0f0e9; --paper-muted: #acb8ae; --paper-accent: #e3ae90; --paper-deep: #304c40; }
+        body { background: var(--paper) !important; color: var(--paper-ink) !important; height: 100vh; height: 100dvh; }
+        .editorial-header { flex: none; background: var(--paper); border-bottom: 1px solid var(--paper-line); z-index: 30; }
+        .editorial-header-inner { max-width: 1240px; margin: auto; min-height: 76px; padding: 0 28px; display: flex; align-items: center; gap: 34px; }
+        .editorial-brand { border: 0; background: none; color: var(--paper-ink); font-family: 'Maru Buri', Georgia, serif; font-size: 19px; font-weight: 700; letter-spacing: -.07em; white-space: nowrap; padding: 0; }
+        .editorial-brand span { color: var(--paper-accent); }
+        .editorial-primary-nav { display: flex; align-self: stretch; align-items: stretch; gap: 24px; margin: 0 auto; }
+        .editorial-primary-nav button { border: 0; border-bottom: 2px solid transparent; background: none; color: var(--paper-muted); font-size: 13px; font-weight: 600; padding: 0 2px; white-space: nowrap; }
+        .editorial-primary-nav button.active { border-bottom-color: var(--paper-accent); color: var(--paper-ink); }
+        .editorial-header-actions { display: flex; gap: 9px; align-items: center; }
+        .editorial-action { border: 1px solid var(--paper-line); background: var(--paper-card); color: var(--paper-ink); border-radius: 8px; padding: 8px 11px; font-size: 12px; font-weight: 600; min-height: 39px; white-space: nowrap; }
+        .editorial-action-primary { background: var(--paper-deep); color: #fff; border-color: var(--paper-deep); }
+        .editorial-shell { width: 100%; min-height: 0; display: flex; flex: 1; }
+        #desktop-sidebar { display: none !important; }
+        #app-view { width: 100%; background: var(--paper); padding: 24px 28px 72px; -webkit-overflow-scrolling: touch; } #app-view > div { max-width: 1200px; margin-left: auto; margin-right: auto; }
+        .editorial-home { max-width: 1160px; margin: auto; }
+        .editorial-hero { display: grid; grid-template-columns: 1.3fr 1fr; gap: 42px; align-items: end; padding: 52px 0 37px; border-bottom: 1px solid var(--paper-line); }
+        .editorial-eyebrow { display: block; color: var(--paper-accent); font-size: 11px; font-weight: 800; letter-spacing: .17em; margin-bottom: 17px; }
+        .editorial-hero h2 { font-family: 'Maru Buri', Georgia, serif; font-size: clamp(31px, 3.6vw, 48px); line-height: 1.34; letter-spacing: -.055em; font-weight: 700; margin: 0 0 17px; word-break: keep-all; }
+        .editorial-hero h2 em { color: var(--paper-accent); font-style: normal; }
+        .editorial-hero p { color: var(--paper-muted); font-size: 14px; font-weight: 600; line-height: 1.7; margin: 0; }
+        .editorial-search { display: flex; align-items: center; padding: 8px; border: 1px solid var(--paper-line); background: var(--paper-card); border-radius: 8px; box-shadow: 0 8px 28px rgba(35, 35, 20, .04); }
+        .editorial-search input { flex: 1; min-width: 0; padding: 10px 11px; background: transparent; border: 0; outline: none; color: var(--paper-ink); font-size: 14px; font-weight: 600; }
+        .editorial-search input::placeholder { color: var(--paper-muted); opacity: 1; }
+        .editorial-search button { min-height: 42px; padding: 0 17px; background: var(--paper-deep); color: #fff; border: 0; border-radius: 5px; font-size: 13px; font-weight: 750; }
+        .editorial-content-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; padding-top: 32px; }
+        .editorial-section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 17px; }
+        .editorial-section-head h3 { font-family: 'Maru Buri', Georgia, serif; color: var(--paper-ink); font-size: 22px; font-weight: 700; letter-spacing: -.06em; margin: 0; }
+        .editorial-section-head button { border: 0; background: none; color: var(--paper-accent); font-size: 12px; font-weight: 600; white-space: nowrap; }
+        .editorial-story { display: flex; flex-direction: column; justify-content: space-between; min-height: 218px; padding: 27px 29px; border-radius: 8px; background: var(--paper-deep); color: #faf9f1; text-align: left; width: 100%; border: 0; }
+        .editorial-story small { color: #c4d7c8; font-size: 11px; font-weight: 800; letter-spacing: .12em; }
+        .editorial-story strong { font-family: 'Maru Buri', Georgia, serif; font-size: 26px; font-weight: 700; line-height: 1.35; letter-spacing: -.06em; word-break: keep-all; }
+        .editorial-story span { color: #edf2e9; font-size: 12px; font-weight: 600; line-height: 1.6; }
+        .editorial-shortcuts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 13px; }
+        .editorial-shortcut { text-align: left; padding: 17px 18px; min-height: 79px; border: 1px solid var(--paper-line); background: var(--paper-card); border-radius: 6px; color: var(--paper-ink); }
+        .editorial-shortcut strong { display: block; font-size: 13px; font-weight: 800; }
+        .editorial-shortcut small { display: block; color: var(--paper-muted); font-size: 11px; font-weight: 600; margin-top: 7px; }
+        .editorial-list { border-top: 1px solid var(--paper-ink); }
+        .editorial-list button { width: 100%; display: flex; align-items: center; gap: 18px; padding: 18px 0; border: 0; border-bottom: 1px solid var(--paper-line); background: transparent; color: var(--paper-ink); text-align: left; }
+        .editorial-list-index { width: 38px; flex: none; color: var(--paper-accent); font-family: 'Maru Buri', Georgia, serif; font-size: 21px; }
+        .editorial-list strong { display: block; font-size: 13px; font-weight: 600; }
+        .editorial-list small { display: block; color: var(--paper-muted); font-size: 11px; font-weight: 600; margin-top: 5px; }
+        .editorial-note { color: var(--paper-muted); font-size: 11px; font-weight: 600; line-height: 1.5; margin: 17px 0 0; }
+        .editorial-recent { border-top: 1px solid var(--paper-line); margin-top: 35px; padding-top: 20px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; color: var(--paper-muted); font-size: 12px; font-weight: 600; }
+        .editorial-home + div > span { color: var(--paper-muted) !important; }
+        .editorial-recent button { border: 1px solid var(--paper-line); background: var(--paper-card); color: var(--paper-ink); border-radius: 99px; padding: 7px 12px; font-size: 12px; }
+        #mobile-menu-modal { align-items: center; justify-content: center; padding: 16px; }
+        .editorial-menu-panel { width: min(780px, 100%); max-height: min(85dvh, 760px); overflow-y: auto; overscroll-behavior: contain; padding: 27px; border-radius: 14px; background: var(--paper-card); color: var(--paper-ink); }
+        .editorial-menu-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--paper-line); padding-bottom: 16px; margin-bottom: 23px; }
+        .editorial-menu-head h3 { font-family: 'Maru Buri', Georgia, serif; font-size: 22px; font-weight: 700; margin: 0; }
+        .editorial-menu-head button { color: var(--paper-muted); border: 0; background: transparent; font-size: 20px; }
+        .editorial-menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px 35px; }
+        .editorial-menu-group h4 { color: var(--paper-accent); font-size: 11px; font-weight: 800; letter-spacing: .1em; margin: 0 0 10px; }
+        .editorial-menu-group button { display: block; width: 100%; text-align: left; padding: 8px 0; border: 0; border-bottom: 1px solid var(--paper-line); background: transparent; color: var(--paper-ink); font-size: 13px; font-weight: 650; }
+        .editorial-bottom-nav { background: var(--paper-card) !important; border-color: var(--paper-line) !important; }
+        .editorial-bottom-nav .mob-item { color: var(--paper-muted) !important; font-weight: 650; }
+        .editorial-bottom-nav .mob-item.font-bold { color: var(--paper-accent) !important; }
+        .editorial-header button:focus-visible, .editorial-home button:focus-visible, .editorial-menu-panel button:focus-visible, .editorial-search:focus-within { outline: 2px solid var(--paper-accent); outline-offset: 3px; }
+        @media (max-width: 1120px) { .editorial-header-inner { gap: 16px; padding: 0 20px; } .editorial-primary-nav { gap: 16px; } .editorial-primary-nav button { font-size: 12px; } .editorial-action:not(.editorial-menu-trigger):not(.editorial-mobile-keep):not(.editorial-tablet-keep) { display: none; } } @media (max-width: 960px) { .editorial-hero { grid-template-columns: 1fr; gap: 22px; padding: 30px 0 26px; } .editorial-content-grid { grid-template-columns: 1fr; gap: 28px; padding-top: 24px; } }
+        @media (max-width: 767.98px) { input:not([type="checkbox"]):not([type="radio"]), textarea, select { font-size: 16px !important; } .editorial-header-inner { min-height: 61px; justify-content: space-between; padding: 0 14px; } .editorial-primary-nav { display: none; } .editorial-action.editorial-tablet-keep { display: none; } .editorial-header-actions { gap: 6px; } #app-view { padding: 16px 16px calc(96px + env(safe-area-inset-bottom)); } .editorial-hero { padding: 20px 0 22px; } .editorial-hero h2 { font-size: 28px; } .editorial-story { min-height: 200px; padding: 22px; } .editorial-menu-panel { padding: 21px; } }
+        /* 📱 휴대폰: 맨 윗줄 = 교직백서 1000 + 빠른 이동(번개만) · 전체 메뉴 · 📲 설치 · 📱 QR */
+        @media (max-width: 767.98px) { .editorial-wide { display: none; } }
+        @media (max-width: 480px) { .editorial-header-inner { padding: 0 10px; } .editorial-header-actions { gap: 4px; } .editorial-header-actions .editorial-action { padding: 7px 8px; } .editorial-header-actions .editorial-label { display: none; } .editorial-header-actions .editorial-action .fa-bolt { margin-right: 0; } }
+        @media (max-width: 340px) { .editorial-brand { font-size: 15px; } .editorial-header-inner { padding: 0 8px; } .editorial-header-actions { gap: 3px; } .editorial-header-actions .editorial-action { padding: 6px 6px; } }
+        @media (max-width: 540px) { .editorial-shortcuts { grid-template-columns: 1fr; } .editorial-menu-grid { grid-template-columns: 1fr; gap: 18px; } }

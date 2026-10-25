@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+// App code lives in index.html plus js/data.js and js/app.js; read them together in load order
+const html = ['../index.html', '../js/data.js', '../js/app.js'].map(file => fs.readFileSync(new URL(file, import.meta.url), 'utf8')).join('\n');
 const between = (start, end) => {
   const first = html.indexOf(start);
   const last = html.indexOf(end, first);
