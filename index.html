@@ -1265,21 +1265,12 @@
             const month = new Date().getMonth() + 1;
             const monthlyTasks = YEAR_TASKS[month] || [];
             const feature = SITUATIONS.find(s => s.title.includes('체험학습')) || SITUATIONS[0];
-            const savedBoard = Storage.get('board_tasks', null);
-            const savedBoardCount = savedBoard && typeof savedBoard === 'object' && !Array.isArray(savedBoard) ? Object.keys(savedBoard).length : null;
-            const recentIds = Storage.get('recent_views', []);
-            const recentItems = [...new Set((Array.isArray(recentIds) ? recentIds : []).map(canonicalTermId))].map(id => DB.find(item => item.id === id)).filter(Boolean).slice(0, 3);
             const s = getSettings();
             const office = currentOffice();
             const studentCount = parseNameList(Storage.get('class_names', '')).length;
             const hasSetup = !!(s.schoolName || s.className || s.teacherName);
             const nowSt = getNowStatus();
 
-            const list = [
-                { title: monthlyTasks[0]?.title || `${month}월 주요 업무`, desc: '연간 업무 타임라인에서 체크하기', route: 'year' },
-                { title: '진행 중인 태스크 보드', desc: savedBoardCount === null ? '공개수업·체육대회·생기부 템플릿으로 시작' : `저장된 할 일 ${savedBoardCount}개`, route: 'tools-board' },
-                { title: recentItems[0] ? `최근 본 용어 · ${recentItems[0].keyword}` : '오늘의 핵심 교직카드', desc: recentItems[0] ? '나의 교직함에서 다시 열기' : '하루 1개 핵심 실무 개념 익히기', route: recentItems[0] ? 'mybox' : 'card' }
-            ];
             const classDockItems = [
                 { icon: 'fa-stopwatch text-blue-600', title: '스마트 타이머', sub: '전자칠판 전체화면', action: "openPresent('timer')" },
                 { icon: 'fa-wand-magic-sparkles text-rose-600', title: '발표자 랜덤 뽑기', sub: `명단 ${studentCount}명 연동`, action: "openPresent('pick')" },
@@ -1406,12 +1397,9 @@
                                 ${shortcuts.map(([route, title, desc]) => `<button type="button" class="editorial-shortcut" onclick="router.navigate('${route}')"><strong>${title}</strong><small>${desc}</small></button>`).join('')}
                             </div>
                         </section>
-                        <section aria-label="지금 살펴볼 일">
-                            <div class="editorial-section-head"><h3>지금 살펴볼 일</h3><button type="button" onclick="router.navigate('year')">교사의 1년 →</button></div>
-                            <div class="editorial-list">
-                                ${list.map((item, i) => `<button type="button" onclick="router.navigate('${item.route}')"><span class="editorial-list-index">${String(i + 1).padStart(2, '0')}</span><span><strong>${escapeHTML(item.title)}</strong><small>${escapeHTML(item.desc)}</small></span></button>`).join('')}
-                            </div>
-                            <p class="editorial-note">학교별 일정은 직접 설정한 경우에만 표시됩니다. 위 연간 업무는 일반 목록입니다.</p>
+                        <section aria-label="이번 주 할 일">
+                            <div class="editorial-section-head"><h3>이번 주 할 일</h3><button type="button" onclick="router.navigate('year')">교사의 1년 →</button></div>
+${weeklyAgendaHTML()}
                         </section>
                     </div>
                     <div class="editorial-recent"><span>자주 찾는 주제</span>${['관외 전보', '학교폭력', '품의', '안전사고', '출석인정결석', '생기부'].map(kw => `<button type="button" data-kw="${escapeHTML(kw)}" onclick="router.navigate('search', this.dataset.kw)">${escapeHTML(kw)}</button>`).join('')}</div>
@@ -2700,6 +2688,92 @@
         function rerenderKeepScroll() {
             const v = document.getElementById('app-view'); const top = v ? v.scrollTop : 0;
             router.render(); if (v) v.scrollTop = top;
+        }
+
+        // 이번 주 할 일: 연간 업무(직접 정한 날짜 또는 해당 월) + 우리 학교 학사일정을 오늘 기준으로 모음
+        function weeklyAgenda(now = new Date()) {
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const month = today.getMonth() + 1; const sy = getIcsYear();
+            const savedDates = Storage.get('year_task_dates', {});
+            const items = [];
+            [month === 1 ? 12 : month - 1, month, month === 12 ? 1 : month + 1].forEach(m => {
+                const done = Storage.get(`checklist_${m}`, {});
+                (YEAR_TASKS[m] || []).forEach((task, idx) => {
+                    if (done[idx]) return;
+                    const custom = savedDates && savedDates[`${sy}_${m}_${idx}`];
+                    if (custom) {
+                        const date = parseYMD(custom); if (isNaN(date)) return;
+                        const days = Math.round((date - today) / 86400000);
+                        if (days < -14 || days > 13) return;
+                        items.push({ type: 'task', m, idx, title: task.title, role: task.role, days, when: days < 0 ? `${-days}일 지남` : days === 0 ? '오늘' : days <= 6 ? `이번 주 · D-${days}` : `다음 주 · D-${days}` });
+                    } else if (m === month) {
+                        items.push({ type: 'task', m, idx, title: task.title, role: task.role, days: 30, when: `${m}월 중` });
+                    } else if (m === (month === 12 ? 1 : month + 1) && today.getDate() >= 22) {
+                        items.push({ type: 'task', m, idx, title: task.title, role: task.role, days: 40, when: `${m}월 준비` });
+                    }
+                });
+            });
+            const cal = schoolCalendar();
+            SCHOOL_EVENTS.forEach(ev => {
+                const date = parseYMD(cal[ev.key] || ''); if (isNaN(date)) return;
+                const days = Math.round((date - today) / 86400000);
+                if (days >= 0 && days <= 13) items.push({ type: 'event', title: ev.label, days, when: days === 0 ? '오늘' : `D-${days}` });
+            });
+            return items.sort((a, b) => a.days - b.days);
+        }
+        function weeklyAgendaHTML() {
+            const items = weeklyAgenda().slice(0, 6);
+            const reminder = !!getSettings().weeklyReminder;
+            const tone = it => it.days < 0 ? 'text-rose-600 dark:text-rose-400' : it.days <= 6 ? 'text-blue-700 dark:text-blue-300' : 'text-slate-500 dark:text-slate-400';
+            return `
+                            <div class="space-y-1.5" id="weekly-agenda">
+                                ${items.length ? items.map(it => it.type === 'task' ? `
+                                <div class="flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
+                                    <input type="checkbox" id="wa-${it.m}-${it.idx}" onchange="toggleAgendaTask(${it.m}, ${it.idx})" class="w-5 h-5 shrink-0 accent-blue-600 cursor-pointer">
+                                    <label for="wa-${it.m}-${it.idx}" class="flex-1 min-w-0 text-sm font-semibold text-slate-800 dark:text-slate-100 cursor-pointer truncate">${escapeHTML(it.title)}</label>
+                                    <span class="shrink-0 text-xs font-bold ${tone(it)}">${it.when}</span>
+                                </div>` : `
+                                <button type="button" onclick="router.navigate('mybox', 'calendar')" class="w-full flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200/70 dark:border-indigo-800/50 text-left">
+                                    <i class="fa-regular fa-calendar text-indigo-600 dark:text-indigo-300 w-5 text-center"></i>
+                                    <span class="flex-1 text-sm font-bold text-indigo-900 dark:text-indigo-100">${escapeHTML(it.title)}</span>
+                                    <span class="shrink-0 text-xs font-bold text-indigo-700 dark:text-indigo-300">${it.when}</span>
+                                </button>`).join('') : `<p class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 text-sm text-slate-500 dark:text-slate-400">이번 주에 남은 연간 업무가 없어요. 교사의 1년에서 업무별 날짜를 정하면 마감이 다가올 때 여기에 먼저 보여요.</p>`}
+                            </div>
+                            <div class="flex flex-wrap items-center justify-between gap-2 mt-2">
+                                <p class="editorial-note !mt-0">업무 날짜는 교사의 1년 › 내 달력에 넣기에서 바꿀 수 있어요.</p>
+                                <button type="button" onclick="toggleWeeklyReminder()" aria-pressed="${reminder}" class="px-3 py-1.5 rounded-lg text-xs font-bold ${reminder ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200'}"><i class="fa-regular fa-bell mr-1"></i>${reminder ? '마감 알림 켜짐' : '마감 알림 받기'}</button>
+                            </div>`;
+        }
+        function toggleAgendaTask(month, idx) {
+            const state = Storage.get(`checklist_${month}`, {});
+            state[idx] = true;
+            if (Storage.set(`checklist_${month}`, state)) showToast('완료로 표시했어요. 교사의 1년에서 되돌릴 수 있어요.', 'success');
+            if (router.current === 'home') router.render();
+        }
+        async function toggleWeeklyReminder() {
+            const on = !getSettings().weeklyReminder;
+            if (on && 'Notification' in window && Notification.permission === 'default') { try { await Notification.requestPermission(); } catch (_) {} }
+            saveSetting('weeklyReminder', on);
+            showToast(on ? '앱을 열 때 하루 한 번, 3일 안에 마감인 업무를 알려 드려요.' : '마감 알림을 껐어요.');
+            if (on) { const s = getSettings(); delete s.lastAgendaNotice; Storage.set('settings', s); remindWeeklyAgenda(); }
+            if (router.current === 'home') router.render();
+        }
+        // 앱을 열 때 하루 한 번: 지났거나 3일 안에 다가온 업무·학사일정 알림
+        function remindWeeklyAgenda() {
+            const s = getSettings(); if (!s.weeklyReminder) return;
+            const day = ymd(new Date()); if (s.lastAgendaNotice === day) return;
+            const due = weeklyAgenda().filter(it => it.days <= 3);
+            saveSetting('lastAgendaNotice', day);
+            if (!due.length) return;
+            const title = `마감이 다가온 일 ${due.length}개`;
+            const body = due.slice(0, 3).map(it => `${it.title}(${it.when})`).join(', ');
+            showToast(`🗓 ${title} · ${body}`, 'info');
+            if ('Notification' in window && Notification.permission === 'granted') {
+                const opts = { body, icon: 'icons/icon-192.png', badge: 'icons/icon-192.png', tag: `agenda-${day}` };
+                const plain = () => { try { new Notification(title, opts); } catch (_) {} };
+                if ('serviceWorker' in navigator && navigator.serviceWorker.controller) navigator.serviceWorker.ready.then(r => r.showNotification(title, opts)).catch(plain);
+                else plain();
+            }
         }
 
         function toggleYearChecklist(month, idx) {
@@ -4716,6 +4790,7 @@
             router.init();
             startBellWatcher();
             registerSW();
+            setTimeout(remindWeeklyAgenda, 1500);
         }
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
         else boot();
