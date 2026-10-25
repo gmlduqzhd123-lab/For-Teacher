@@ -16,6 +16,7 @@ assert.deepEqual(backup.parseBackup(wrap({ checklist_3: { 0: true, 1: false } })
 assert.deepEqual(backup.parseBackup(wrap({ quiz_history: [{ date: '10/19/2026', score: 80, level: 'Lv.4' }] })).length, 1);
 // settings may hold the school calendar (dates) and the agenda reminder flag; situation runs hold check times only
 assert.equal(backup.parseBackup(wrap({ settings: { schoolName: '한빛초', weeklyReminder: true, calendar: { winterStart: '2026-12-24' } } })).length, 1);
+assert.equal(backup.parseBackup(wrap({ start_courses: { active: 'newbie', done: { newbie: { 'term:3': true, 'situation:05': true } } } })).length, 1);
 assert.equal(backup.parseBackup(wrap({ situation_runs: { 'situation:student-injury': { startedAt: '2026-10-25T01:00:00.000Z', checks: { s0: '2026-10-25T01:02:00.000Z' } } } })).length, 1);
 for (const bad of [
   wrap({ bookmarks: {} }),
@@ -26,6 +27,7 @@ for (const bad of [
   wrap({ settings: { calendar: { winterStart: '2026-13-01' } } }),
   wrap({ settings: { weeklyReminder: 'yes', calendar: [] } }),
   wrap({ situation_runs: { x: { startedAt: 1, checks: {} } } }),
+  wrap({ start_courses: { active: 'newbie', done: { newbie: { 'term:3': 'yes' } } } }),
   JSON.stringify({ app: 'other-app', version: 3, data: { bookmarks: [1] } }),
   JSON.stringify({ app: 'gyojik-baekseo-1000', version: 4, data: { bookmarks: [1] } }),
   JSON.stringify({ app: 'gyojik-baekseo-1000', version: 3, data: [] }),
