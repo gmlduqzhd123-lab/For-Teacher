@@ -37,6 +37,7 @@
     "counsel_records": { "target": "vault.counsel.records", "private": true, "rule": "Preserve names, details and follow-up; student matching requires confirmation." },
     "counsel_schedule_opts": { "target": "vault.counsel.scheduleOptions", "private": true, "rule": "Preserve user-entered names and scheduling options." },
     "theme_mode": { "target": "settings.themeMode", "private": false, "rule": "Only light, dark or system; available while locked." },
-    "situation_runs": { "target": "vault.situationRuns", "private": true, "rule": "Added after the R0a baseline. Per situation publicId: startedAt and per-step check times (ISO strings) only, no free text. Preserve as-is." }
+    "situation_runs": { "target": "vault.situationRuns", "private": true, "rule": "Added after the R0a baseline. Per situation publicId: startedAt and per-step check times (ISO strings) only, no free text. Preserve as-is." },
+    "start_courses": { "target": "learning.startCourses", "private": false, "rule": "Added after the R0a baseline. Active course id and per-course done flags keyed by item reference. No free text." }
   }
 }

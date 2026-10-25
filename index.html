@@ -190,6 +190,7 @@
             <a onclick="router.navigate('counsel')" id="nav-counsel" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-comments w-5 text-center"></i> 상담 기록장</a>
 
             <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mt-6 mb-2 uppercase">성장 & 학습</div>
+            <a onclick="router.navigate('start')" id="nav-start" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-flag-checkered w-5 text-center"></i> 역할별 시작 코스</a>
             <a onclick="router.navigate('year')" id="nav-year" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-calendar-days w-5 text-center"></i> 교사의 1년</a>
             <a onclick="router.navigate('career')" id="nav-career" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-route w-5 text-center"></i> 교직 커리어맵</a>
             <a onclick="router.navigate('quiz')" id="nav-quiz" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-gamepad w-5 text-center"></i> 교직력 테스트</a>
@@ -230,7 +231,7 @@
                 <section class="editorial-menu-group"><h4>찾기</h4><button onclick="closeMobileMenu(); router.navigate('search')">교직어 검색</button><button onclick="closeMobileMenu(); router.navigate('situations')">상황 가이드</button><button onclick="closeMobileMenu(); router.navigate('navigator')">교직 내비게이터</button><button onclick="closeMobileMenu(); router.navigate('map')">교직 지식맵</button><button onclick="closeMobileMenu(); openCommandPalette()">⚡ 빠른 이동 · 통합 검색 (Ctrl+K)</button></section>
                 <section class="editorial-menu-group"><h4>업무</h4><button onclick="closeMobileMenu(); router.navigate('year')">교사의 1년</button><button onclick="closeMobileMenu(); router.navigate('tools-board')">태스크 보드</button><button onclick="closeMobileMenu(); router.navigate('tools-doc')">문서 · 알림장 생성기</button><button onclick="closeMobileMenu(); router.navigate('career')">교직 커리어맵</button></section>
                 <section class="editorial-menu-group"><h4>수업과 기록</h4><button onclick="closeMobileMenu(); router.navigate('tools-class')">학급 경영 도구</button><button onclick="closeMobileMenu(); router.navigate('timetable')">시간표 · 종 알림</button><button onclick="closeMobileMenu(); router.navigate('tools-record')">생기부 문장 도우미</button><button onclick="closeMobileMenu(); router.navigate('counsel')">상담 기록장</button><button onclick="closeMobileMenu(); openPresent('timer')">📺 전자칠판 수업 칠판모드</button></section>
-                <section class="editorial-menu-group"><h4>학습과 설정</h4><button onclick="closeMobileMenu(); openSosModal()">🚨 위급 상황 SOS 퀵 가이드</button><button onclick="closeMobileMenu(); openCalcModal()">🧮 교무실 미니 계산기 (출석·병가)</button><button onclick="closeMobileMenu(); openGuideModal()">❓ 30초 사용법 가이드</button><button onclick="closeMobileMenu(); openSetupWizard()">🪄 1분 학급 세팅 위저드</button><button onclick="closeMobileMenu(); router.navigate('quiz')">교직력 테스트</button><button onclick="closeMobileMenu(); router.navigate('card')">오늘의 교직카드</button><button onclick="closeMobileMenu(); router.navigate('tools-edutech')">에듀테크 큐레이션</button><button onclick="closeMobileMenu(); router.navigate('mybox')">나의 교직함 (백업·설정)</button><button data-font-toggle onclick="cycleFontScale()">가+ 글자 크기 조절</button><button data-ys-install onclick="closeMobileMenu()">앱 설치</button><button data-theme-toggle onclick="toggleQuickDarkMode(); closeMobileMenu()" aria-label="다크 모드로 전환">다크 모드</button><button data-qr onclick="closeMobileMenu()">QR 코드로 접속</button></section>
+                <section class="editorial-menu-group"><h4>학습과 설정</h4><button onclick="closeMobileMenu(); router.navigate('start')">🚩 역할별 시작 코스</button><button onclick="closeMobileMenu(); openSosModal()">🚨 위급 상황 SOS 퀵 가이드</button><button onclick="closeMobileMenu(); openCalcModal()">🧮 교무실 미니 계산기 (출석·병가)</button><button onclick="closeMobileMenu(); openGuideModal()">❓ 30초 사용법 가이드</button><button onclick="closeMobileMenu(); openSetupWizard()">🪄 1분 학급 세팅 위저드</button><button onclick="closeMobileMenu(); router.navigate('quiz')">교직력 테스트</button><button onclick="closeMobileMenu(); router.navigate('card')">오늘의 교직카드</button><button onclick="closeMobileMenu(); router.navigate('tools-edutech')">에듀테크 큐레이션</button><button onclick="closeMobileMenu(); router.navigate('mybox')">나의 교직함 (백업·설정)</button><button data-font-toggle onclick="cycleFontScale()">가+ 글자 크기 조절</button><button data-ys-install onclick="closeMobileMenu()">앱 설치</button><button data-theme-toggle onclick="toggleQuickDarkMode(); closeMobileMenu()" aria-label="다크 모드로 전환">다크 모드</button><button data-qr onclick="closeMobileMenu()">QR 코드로 접속</button></section>
             </div>
         </div>
     </div>
@@ -1182,7 +1183,7 @@
             render() {
                 try {
                     if (this.current === 'tools-record' && pendingRecordDraft && !saveRecordDraftNow()) return;
-                     const navGroup = { situations: 'search', navigator: 'search', map: 'search', 'tools-board': 'year', 'tools-doc': 'year', career: 'year', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', card: 'quiz', 'tools-edutech': 'quiz' };
+                     const navGroup = { start: 'quiz', situations: 'search', navigator: 'search', map: 'search', 'tools-board': 'year', 'tools-doc': 'year', career: 'year', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', card: 'quiz', 'tools-edutech': 'quiz' };
                      const mobGroup = { home: 'home', search: 'search', navigator: 'search', map: 'search', situations: 'situations', 'tools-class': 'tools-class', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', 'tools-doc': 'tools-class', 'tools-board': 'tools-class', year: 'menu', career: 'menu', quiz: 'menu', card: 'menu', 'tools-edutech': 'menu', mybox: 'menu' };
                      const activeNav = navGroup[this.current] || this.current;
                      document.querySelectorAll('[data-primary-nav]').forEach(el => { const active = el.dataset.primaryNav === activeNav; el.classList.toggle('active', active); if (active) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current'); });
@@ -1194,7 +1195,7 @@
                     updateBookmarkBadge();
 
                     const viewContainer = document.getElementById('app-view'); if (!viewContainer) return;
-                    const pageTitles = { home:'홈', search:'교직어 검색', situations:'상황 가이드', navigator:'교직 내비게이터', year:'교사의 1년', 'tools-doc':'문서 양식', 'tools-record':'생기부 문장 도우미', counsel:'상담 기록장', mybox:'나의 교직함' };
+                    const pageTitles = { start:'역할별 시작 코스', home:'홈', search:'교직어 검색', situations:'상황 가이드', navigator:'교직 내비게이터', year:'교사의 1년', 'tools-doc':'문서 양식', 'tools-record':'생기부 문장 도우미', counsel:'상담 기록장', mybox:'나의 교직함' };
                     document.title = `${pageTitles[this.current] || '교직 도구'} | 교직백서 1000`;
 
                     switch(this.current) {
@@ -1215,6 +1216,7 @@
                         case 'timetable': renderTimetable(viewContainer); break;
                         case 'tools-record': renderToolsRecord(viewContainer); break;
                         case 'counsel': renderCounsel(viewContainer); break;
+                        case 'start': renderStartCourses(viewContainer); break;
                         default: this.current = 'home'; renderHome(viewContainer); break;
                     }
                 } catch (error) { this.renderError(error); }
@@ -1336,6 +1338,7 @@
                             </div>
                             <div class="flex flex-wrap items-center gap-2 shrink-0">
                                 <button type="button" onclick="openSosModal()" class="px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-300 text-xs font-extrabold">🚨 긴급 SOS</button>
+                                <button type="button" onclick="router.navigate('start')" class="px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs font-bold">🚩 역할별 시작 코스</button>
                                 <button type="button" onclick="openGuideModal()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold">❓ 30초 사용법</button>
                                 <button type="button" onclick="openSetupWizard()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow">🪄 1분 학급 세팅</button>
                             </div>
@@ -2635,6 +2638,140 @@ ${weeklyAgendaHTML()}
             copyText(lines.join('\n'), '처리 경과를 복사했습니다.');
         }
 
+        // 역할별 시작 코스: 앱에 있는 용어·상황 가이드·업무 순서·도구를 역할에 맞는 순서로 묶음
+        const START_COURSES = [
+            { id: 'newbie', label: '신규 교사 첫 달', icon: 'fa-seedling', who: '첫 발령 · 저경력', items: [
+                { t: 'term', id: 147, why: '신규 교사가 처음 마주치는 일의 큰 그림' },
+                { t: 'term', id: 152, why: '교무실에서 서로 기대하는 기본 예절' },
+                { t: 'view', view: 'mybox', param: null, label: '내 학교·학급 기본 정보 입력', why: '서식 자동 입력과 교육청 지침 바로가기의 출발점' },
+                { t: 'term', id: 5, why: '출결·성적·복무를 처리하는 시스템' },
+                { t: 'term', id: 6, why: '공문과 예산을 처리하는 시스템' },
+                { t: 'term', id: 60, why: '모든 업무 처리의 기본 단위' },
+                { t: 'term', id: 65, why: '공문 문장의 기본 형식' },
+                { t: 'term', id: 3, why: '돈을 쓰기 전에 먼저 받는 결재' },
+                { t: 'situation', id: 'situation:05', why: '아파서 출근이 어려울 때 처리 순서' },
+                { t: 'term', id: 31, why: '해마다 챙기는 복지 제도' },
+                { t: 'term', id: 148, why: '물어볼 선배를 정식으로 두는 방법' }
+            ] },
+            { id: 'homeroom', label: '담임 한 학기', icon: 'fa-people-roof', who: '처음 담임 · 학년 변경', items: [
+                { t: 'term', id: 151, why: '새 학기 첫 주에 몰리는 일' },
+                { t: 'term', id: 149, why: '1년 학급 운영의 뼈대' },
+                { t: 'view', view: 'tools-class', param: null, label: '학급 경영 도구 둘러보기', why: '자리 배치·발표자 뽑기·타이머' },
+                { t: 'view', view: 'timetable', param: null, label: '우리 반 시간표 입력', why: '홈에 지금 몇 교시인지와 종 알림 표시' },
+                { t: 'term', id: 83, why: '매일 하는 출결 처리' },
+                { t: 'situation', id: 'situation:06', why: '학생이 연락 없이 안 왔을 때' },
+                { t: 'situation', id: 'situation:01', why: '수업 중 다쳤을 때 처리 순서' },
+                { t: 'situation', id: 'situation:03', why: '학교폭력 신고를 받았을 때' },
+                { t: 'situation', id: 'situation:02', why: '학부모 항의가 들어왔을 때' },
+                { t: 'workflow', id: 'workflow:07', why: '상담주간 준비부터 마무리까지' },
+                { t: 'situation', id: 'situation:15', why: '학기말 생활기록부 마감' }
+            ] },
+            { id: 'transfer', label: '새 학교 전입', icon: 'fa-school-flag', who: '전보 · 복직 후 새 학교', items: [
+                { t: 'view', view: 'mybox', param: 'calendar', label: '새 학교 학사일정 입력', why: '방학·개학 D-day와 이번 주 할 일의 기준' },
+                { t: 'view', view: 'timetable', param: null, label: '새 시간표 입력', why: '학교마다 다른 교시 시각 반영' },
+                { t: 'term', id: 42, why: '예산·물품·시설을 함께 처리할 부서' },
+                { t: 'term', id: 50, why: '안전사고·감염병 때 먼저 찾을 사람' },
+                { t: 'term', id: 51, why: '학생 상담을 함께 할 사람' },
+                { t: 'term', id: 39, why: '학교 주요 결정이 이뤄지는 곳' },
+                { t: 'term', id: 62, why: '새 학교 공문 흐름 익히기' },
+                { t: 'situation', id: 'situation:11', why: '알레르기 학생 확인' },
+                { t: 'situation', id: 'situation:14', why: '학생 정보를 보낼 때 주의할 점' },
+                { t: 'situation', id: 'situation:12', why: '복직 후 전입이라면' }
+            ] },
+            { id: 'manager', label: '처음 맡은 부장·업무담당', icon: 'fa-briefcase', who: '부장 · 업무담당자', items: [
+                { t: 'term', id: 53, why: '내년 예산을 미리 요구하는 절차' },
+                { t: 'workflow', id: 'workflow:06', why: '물품 구입 전 과정 한 번에' },
+                { t: 'term', id: 56, why: '물건이 도착했을 때 할 일' },
+                { t: 'term', id: 55, why: '업체에 일을 맡길 때' },
+                { t: 'term', id: 54, why: '한 해 예산 마무리' },
+                { t: 'term', id: 66, why: '행사·사업이 끝나면 쓰는 문서' },
+                { t: 'workflow', id: 'workflow:01', why: '체험학습 기획부터 정산까지' },
+                { t: 'view', view: 'tools-board', param: null, label: '업무 체크리스트 보드 만들기', why: '행사 준비를 동학년과 나눠 관리' },
+                { t: 'term', id: 58, why: '외부 정보 요청에 답할 때' },
+                { t: 'term', id: 59, why: '명단·자료를 다룰 때 지킬 것' }
+            ] }
+        ];
+        function startCourseItemKey(it) { return it.t === 'view' ? `view:${it.view}:${it.param || ''}` : it.t === 'term' ? `term:${it.id}` : it.id; }
+        function startCourseItemInfo(it) {
+            if (it.t === 'term') { const term = DB.find(d => d.id === it.id); return term ? { title: term.keyword, kind: '용어', icon: 'fa-book-open' } : null; }
+            if (it.t === 'situation') { const sit = SITUATIONS.find(x => x.publicId === it.id); return sit ? { title: sit.title, kind: '상황 가이드', icon: 'fa-triangle-exclamation' } : null; }
+            if (it.t === 'workflow') { const course = NAVIGATOR_COURSES.find(x => x.publicId === it.id); return course ? { title: course.title, kind: '업무 순서', icon: 'fa-route' } : null; }
+            return { title: it.label, kind: '도구', icon: 'fa-screwdriver-wrench' };
+        }
+        function startCourseState() {
+            const st = Storage.get('start_courses', {});
+            return st && typeof st === 'object' && !Array.isArray(st) ? { active: typeof st.active === 'string' ? st.active : '', done: st.done && typeof st.done === 'object' ? st.done : {} } : { active: '', done: {} };
+        }
+        function startCourseProgress(course) {
+            const done = startCourseState().done[course.id] || {};
+            const items = course.items.filter(startCourseItemInfo);
+            return { done: items.filter(it => done[startCourseItemKey(it)]).length, total: items.length };
+        }
+        function setStartCourseDone(courseId, key, value) {
+            const st = startCourseState(); st.done[courseId] = st.done[courseId] || {};
+            if (value) st.done[courseId][key] = true; else delete st.done[courseId][key];
+            Storage.set('start_courses', st);
+        }
+        function chooseStartCourse(courseId) {
+            const st = startCourseState(); st.active = START_COURSES.some(c => c.id === courseId) ? courseId : '';
+            Storage.set('start_courses', st); router.render(); scrollViewTop();
+        }
+        function openStartCourseItem(courseId, index) {
+            const course = START_COURSES.find(c => c.id === courseId); const it = course?.items[index]; if (!it) return;
+            setStartCourseDone(courseId, startCourseItemKey(it), true);
+            if (it.t === 'term') { router.render(); openDetail(it.id); }
+            else if (it.t === 'situation') router.navigate('situations', it.id);
+            else if (it.t === 'workflow') router.navigate('navigator', it.id);
+            else router.navigate(it.view, it.param);
+        }
+        function toggleStartCourseItem(courseId, index) {
+            const course = START_COURSES.find(c => c.id === courseId); const it = course?.items[index]; if (!it) return;
+            const key = startCourseItemKey(it);
+            setStartCourseDone(courseId, key, !(startCourseState().done[courseId] || {})[key]);
+            router.render();
+        }
+        function renderStartCourses(container) {
+            const st = startCourseState();
+            const active = START_COURSES.find(c => c.id === (router.param || st.active)) || null;
+            const cards = START_COURSES.map(c => {
+                const pr = startCourseProgress(c); const pct = pr.total ? Math.round(pr.done / pr.total * 100) : 0;
+                const on = active && active.id === c.id;
+                return `<button type="button" onclick="chooseStartCourse('${c.id}')" aria-pressed="${!!on}" class="text-left p-3 sm:p-4 rounded-2xl border ${on ? 'border-blue-600 ring-2 ring-blue-500/20 bg-blue-50/60 dark:bg-blue-900/20' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-blue-400'} transition">
+                    <span class="flex items-center gap-2 text-sm font-extrabold text-slate-900 dark:text-white"><i class="fa-solid ${c.icon} text-blue-600 dark:text-blue-400"></i>${c.label}</span>
+                    <span class="block text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1">${c.who}</span>
+                    <span class="mt-3 flex items-center gap-2"><span class="flex-1 h-1.5 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden"><span class="block h-full bg-blue-600" style="width:${pct}%"></span></span><span class="text-xs font-bold text-slate-600 dark:text-slate-300">${pr.done}/${pr.total}</span></span>
+                </button>`;
+            }).join('');
+            const doneMap = active ? (st.done[active.id] || {}) : {};
+            const list = active ? active.items.map((it, i) => ({ it, i, info: startCourseItemInfo(it) })).filter(x => x.info).map(({ it, i, info }, n) => {
+                const done = !!doneMap[startCourseItemKey(it)];
+                return `<li class="flex items-center gap-3 p-3 rounded-2xl border ${done ? 'bg-emerald-50/60 dark:bg-emerald-900/10 border-emerald-200 dark:border-emerald-800/40' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}">
+                    <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleStartCourseItem('${active.id}', ${i})" aria-label="${escapeHTML(info.title)} 완료" class="w-5 h-5 shrink-0 accent-emerald-600 cursor-pointer">
+                    <span class="w-7 text-xs font-extrabold text-slate-400 shrink-0">${String(n + 1).padStart(2, '0')}</span>
+                    <button type="button" onclick="openStartCourseItem('${active.id}', ${i})" class="flex-1 min-w-0 text-left group">
+                        <span class="flex flex-wrap items-center gap-x-2"><span class="text-sm font-bold ${done ? 'text-slate-500 dark:text-slate-400' : 'text-slate-900 dark:text-white'} group-hover:text-blue-600">${escapeHTML(info.title)}</span><span class="text-[11px] font-semibold text-slate-400"><i class="fa-solid ${info.icon} mr-0.5"></i>${info.kind}</span></span>
+                        <span class="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">${escapeHTML(it.why)}</span>
+                    </button>
+                    <span class="text-slate-300 dark:text-slate-600 shrink-0" aria-hidden="true">›</span>
+                </li>`;
+            }).join('') : '';
+            container.innerHTML = `
+                <div class="space-y-6 animate-fade-in">
+                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">역할별 시작 코스</h2><p class="text-sm text-slate-500 dark:text-slate-400">지금 내 상황에 맞는 코스를 고르면, 먼저 알아 둘 용어·상황 가이드·도구를 순서대로 안내합니다. 열어 본 항목은 자동으로 체크돼요.</p></div>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">${cards}</div>
+                    ${active ? `
+                    <section class="space-y-3" aria-label="${active.label} 코스">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">${active.label}</h3>
+                            <button type="button" onclick="copyText(location.origin + location.pathname + '#view=start&param=${active.id}', '코스 주소를 복사했습니다. 동료에게 보내 보세요.')" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-link mr-1"></i>코스 링크 복사</button>
+                        </div>
+                        <ol class="space-y-2">${list}</ol>
+                        <p class="text-xs text-slate-400 dark:text-slate-500">각 항목의 내용은 시도교육청·학교마다 다를 수 있으니 상세 화면의 근거와 학교 안내를 함께 확인하세요.</p>
+                    </section>` : `<p class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 text-sm text-slate-500 dark:text-slate-400 text-center">위에서 코스를 하나 골라 주세요.</p>`}
+                </div>
+            ` + FOOTER_HTML;
+        }
+
         function renderNavigator(container) {
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
@@ -3320,7 +3457,7 @@ ${weeklyAgendaHTML()}
             year_task_dates:'object', board_title:'string', board_tasks:'object', custom_templates:'array', settings:'object',
             class_names:'string', seat_opts:'object', seat_result:'object', pick_norepeat:'boolean', timetable:'object',
             record_drafts:'object', record_limits:'object', record_my_phrases:'array', counsel_schedule_opts:'object',
-            theme_mode:'string', ics_year:'number', situation_runs:'object'
+            theme_mode:'string', ics_year:'number', situation_runs:'object', start_courses:'object'
         };
         for (let month = 1; month <= 12; month++) BACKUP_TYPES[`checklist_${month}`] = 'object';
         const BACKUP_MAX_BYTES = 20 * 1024 * 1024;
@@ -3342,6 +3479,7 @@ ${weeklyAgendaHTML()}
             if (key === 'settings' && !Object.entries(value).every(([name, field]) => typeof field === 'string'
                 || (name === 'weeklyReminder' && typeof field === 'boolean')
                 || (name === 'calendar' && field && typeof field === 'object' && !Array.isArray(field) && Object.values(field).every(validBackupDate)))) return false;
+            if (key === 'start_courses' && !(Object.keys(value).every(k => ['active', 'done'].includes(k)) && (value.active === undefined || typeof value.active === 'string') && (value.done === undefined || (value.done && typeof value.done === 'object' && !Array.isArray(value.done) && Object.values(value.done).every(m => m && typeof m === 'object' && !Array.isArray(m) && Object.values(m).every(v => v === true)))))) return false;
             if (key === 'situation_runs' && !Object.values(value).every(run => run && typeof run === 'object' && !Array.isArray(run) && typeof run.startedAt === 'string' && run.checks && typeof run.checks === 'object' && Object.values(run.checks).every(t => typeof t === 'string'))) return false;
             if (key === 'record_limits' && !Object.values(value).every(limit => Number.isInteger(limit) && limit > 0)) return false;
             if (key === 'year_task_dates' && !Object.values(value).every(validBackupDate)) return false;
@@ -4736,6 +4874,7 @@ ${weeklyAgendaHTML()}
             ['timetable', '시간표 · 종 알림', '주간 시간표 관리 및 수업 시작/종료 알림'],
             ['tools-record', '생기부 문장 도우미', '학생별 작성 · 나이스 바이트 · 금지어 점검 · 엑셀 저장'],
             ['counsel', '학부모 상담 기록장', '상담 기록 · 상담주간 시간표 자동 배정 · 암호화 백업'],
+            ['start', '역할별 시작 코스', '신규·담임·전입·부장 맞춤 순서 안내'],
             ['year', '교사의 1년 타임라인', '월별 주요 학사·행정 업무 체크 및 달력(.ics) 내보내기'],
             ['career', '교직 커리어맵', '수석교사 · 장학사 · 교감/교장 성장 경로'],
             ['quiz', '교직력 테스트 & 오답 노트', '실무 상황 판단 퀴즈 및 틀린 문제 복습'],
