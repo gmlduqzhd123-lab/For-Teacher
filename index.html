@@ -299,6 +299,7 @@
                 if (!this.warned) { this.warned = true; showToast('일부 저장 자료를 읽지 못했습니다. 기존 자료는 보존했습니다.', 'error'); }
             },
             get(k, def) {
+                if (typeof Vault !== 'undefined' && Vault && Vault.protects(k)) return Vault.get(k, def);
                 try {
                     const current = localStorage.getItem(this.PREFIX+k);
                     const legacy = localStorage.getItem(this.LEGACY+k);
@@ -315,6 +316,7 @@
                 return def;
             },
             set(k, v) {
+                if (typeof Vault !== 'undefined' && Vault && Vault.protects(k)) return Vault.set(k, v);
                 try {
                     // A damaged current value is kept intact for recovery instead of being overwritten.
                     const raw = localStorage.getItem(this.PREFIX+k);
@@ -333,6 +335,7 @@
             ownKeys() {
                 const out = new Set();
                 try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (!k) continue; if (k.startsWith(this.PREFIX)) out.add(k.slice(this.PREFIX.length)); else if (k.startsWith(this.LEGACY)) out.add(k.slice(this.LEGACY.length)); } } catch(e) { this.error = { kind: 'unavailable' }; this.warnReadError(); }
+                if (typeof Vault !== 'undefined' && Vault) Vault.presentKeys().forEach(k => out.add(k));
                 return [...out];
             },
             // github.io 도메인은 같은 계정의 다른 앱과 localStorage를 공유하므로 이 앱의 키만 삭제
@@ -3482,7 +3485,7 @@ ${weeklyAgendaHTML()}
                         </div>
                     </div>
 
-                    <div id="ai-settings-card" class="${card}">
+${vaultCardHTML(card)}                    <div id="ai-settings-card" class="${card}">
                         <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-violet-500"></i> AI 문장 도우미 <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300">선택 기능 · 기본 꺼짐</span></h3>
                         <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">본인의 Anthropic API 키를 넣으면 생기부 문장 도우미와 기안·알림장 생성기에 <b>AI로 다듬기</b> 버튼이 생깁니다. 학급 명단의 이름, 학교·교사 이름, 전화번호·이메일·주민번호는 가린 뒤 보내고, 보내기 전에 보낼 내용을 보여 줍니다. 키는 이 기기에만 저장되고 백업 파일에는 들어가지 않습니다.</p>
                         ${aiGetKey() ? `<div class="flex flex-wrap items-center gap-2"><span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">켜짐 · ${aiKeyRemembered() ? '이 기기에 기억 중' : '브라우저를 닫으면 지워짐'}</span><button type="button" onclick="forgetAiKey()" class="px-3 py-1.5 rounded-lg bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 text-xs font-bold">키 지우고 끄기</button></div>` : aiKeyFormHTML()}
@@ -3676,7 +3679,7 @@ ${weeklyAgendaHTML()}
             saveSetting('lastBackupAt', ymd(new Date()));
             const data = {};
             Storage.error = null;
-            const keys = Storage.ownKeys().filter(key => !BACKUP_EXCLUDE.includes(key));
+            const keys = Storage.ownKeys().filter(key => !BACKUP_EXCLUDE.includes(key) && !Vault.protects(key));
             if (Storage.error) { showToast('저장소 목록을 읽지 못해 백업을 중지했습니다.', 'error'); return; }
             for (const k of keys) {
                 if (!Object.prototype.hasOwnProperty.call(BACKUP_TYPES, k)) continue;
@@ -3704,6 +3707,7 @@ ${weeklyAgendaHTML()}
             r.onload = ev => {
                 try {
                     const entries = parseBackup(String(ev.target.result));
+                    if (Vault.isLocked() && entries.some(([key]) => Vault.KEYS.includes(key))) { showToast('개인 기록 잠금을 먼저 풀고 다시 가져와 주세요.', 'error'); return; }
                     const conflicts = entries.filter(([key]) => localStorage.getItem(Storage.PREFIX + key) !== null || localStorage.getItem(Storage.LEGACY + key) !== null).length;
                     if (!confirm(`${entries.length}종류의 자료를 가져옵니다. 기존 자료 ${conflicts}종류는 교체됩니다. 계속할까요?`)) return;
                     const applied = [], failed = [];
@@ -3724,6 +3728,7 @@ ${weeklyAgendaHTML()}
             const pw = pwEl ? pwEl.value : '';
             if (pw.length < 8) { showToast('비밀번호를 8자 이상 입력해 주세요.', 'error'); return; }
             if (!cryptoReady()) return;
+            if (Vault.isLocked()) { showToast('개인 기록 잠금을 먼저 풀어야 상담 기록까지 백업할 수 있어요.', 'error'); router.navigate('counsel'); return; }
             saveSetting('lastBackupAt', ymd(new Date()));
             const general = {};
             for (const k of Storage.ownKeys().filter(key => !BACKUP_EXCLUDE.includes(key))) {
@@ -3758,6 +3763,7 @@ ${weeklyAgendaHTML()}
                     plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64ToBuf(env.iv) }, key, b64ToBuf(env.data));
                 } catch (_) { showToast('비밀번호가 틀렸거나 파일이 손상되었습니다.', 'error'); return; }
                 const payload = JSON.parse(new TextDecoder().decode(plain));
+                if (Vault.isLocked()) { showToast('개인 기록 잠금을 먼저 풀고 다시 가져와 주세요.', 'error'); return; }
                 const generalEntries = payload.general && Object.keys(payload.general).length ? validateBackup(payload.general) : [];
                 const counselList = Array.isArray(payload.counsel) ? payload.counsel : [];
                 if (!confirm(`일반 자료 ${generalEntries.length}종류와 상담 기록 ${counselList.length}건을 복원할까요?`)) return;
@@ -3772,9 +3778,302 @@ ${weeklyAgendaHTML()}
             } catch (err) { showToast(err.message || '백업 파일을 읽지 못했습니다.', 'error'); }
         }
 
-        function resetAllData() {
+        // ====================================================
+        // 개인 기록 잠금 (보호 저장소): 상담 기록·상담 일정·생기부 초안을 비밀번호로 암호화해 IndexedDB에 저장
+        // docs/DATA_CONTRACT.md M01–M05: 암호화 사본을 다시 읽어 검증한 뒤에만 평문을 지우고, 단계를 저장해 중단돼도 이어서 진행
+        // ====================================================
+        var Vault = {
+            KEYS: ['counsel_records', 'counsel_schedule_opts', 'record_drafts'],
+            DB_NAME: 'gb1000-vault', ITERATIONS: 250000, IDLE_MS: 15 * 60 * 1000,
+            state: 'off', // off | locked | unlocked | unavailable
+            stage: null, db: null, key: null, cache: {}, pending: Promise.resolve(), failed: false,
+            lockHandle: null, channel: null, idleTimer: null,
+            protects(k) { return (this.state === 'locked' || this.state === 'unlocked') && this.KEYS.includes(k); },
+            isLocked() { return this.state === 'locked'; },
+            get(k, def) {
+                if (this.state !== 'unlocked' || !Object.prototype.hasOwnProperty.call(this.cache, k)) return def;
+                return JSON.parse(JSON.stringify(this.cache[k]));
+            },
+            set(k, v) {
+                if (this.state !== 'unlocked') { showToast('개인 기록 잠금을 먼저 풀어 주세요.', 'error'); return false; }
+                const serialized = JSON.stringify(v);
+                if (typeof serialized !== 'string') return false;
+                this.cache[k] = JSON.parse(serialized);
+                this.touch();
+                this.pending = this.pending.then(() => this.writeItem(k, serialized)).then(() => { if (this.failed) { this.failed = false; showToast('개인 기록을 다시 저장했습니다.'); } }).catch(() => {
+                    this.failed = true;
+                    showToast('개인 기록을 암호화해 저장하지 못했습니다. 화면을 닫지 말고 다시 시도해 주세요.', 'error');
+                });
+                return true;
+            },
+            presentKeys() { return this.state === 'unlocked' ? this.KEYS.filter(k => Object.prototype.hasOwnProperty.call(this.cache, k)) : []; },
+            // ---- IndexedDB ----
+            open() {
+                return new Promise((resolve, reject) => {
+                    if (!('indexedDB' in window)) { reject(new Error('no-idb')); return; }
+                    const req = indexedDB.open(this.DB_NAME, 1);
+                    req.onupgradeneeded = () => { const db = req.result; ['meta', 'items', 'snapshots'].forEach(name => { if (!db.objectStoreNames.contains(name)) db.createObjectStore(name, { keyPath: 'id' }); }); };
+                    req.onsuccess = () => {
+                        const db = req.result;
+                        // 다른 탭이 보호를 끄거나 초기화하면 연결을 닫아 삭제가 막히지 않게 함
+                        db.onversionchange = () => {
+                            db.close(); if (this.db === db) this.db = null;
+                            this.key = null; this.cache = {}; clearTimeout(this.idleTimer); this.releaseEditLock();
+                            this.state = 'off'; this.stage = null;
+                            setTimeout(() => this.open().then(fresh => { this.db = fresh; }).catch(() => { this.state = 'unavailable'; }), 300);
+                            if (['counsel', 'tools-record', 'mybox'].includes(router.current)) router.render();
+                        };
+                        resolve(db);
+                    };
+                    req.onerror = () => reject(req.error);
+                });
+            },
+            tx(store, mode, fn) {
+                return new Promise((resolve, reject) => {
+                    const t = this.db.transaction(store, mode); const os = t.objectStore(store); let result;
+                    const r = fn(os); if (r) r.onsuccess = () => { result = r.result; };
+                    t.oncomplete = () => resolve(result); t.onerror = () => reject(t.error); t.onabort = () => reject(t.error || new Error('abort'));
+                });
+            },
+            getRec(store, id) { return this.tx(store, 'readonly', os => os.get(id)); },
+            putRec(store, rec) { return this.tx(store, 'readwrite', os => os.put(rec)); },
+            async encrypt(text) {
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const data = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, this.key, new TextEncoder().encode(text));
+                return { iv: bufToB64(iv), data: bufToB64(data) };
+            },
+            async decrypt(env, key = this.key) { return new TextDecoder().decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64ToBuf(env.iv) }, key, b64ToBuf(env.data))); },
+            async writeItem(k, serialized) {
+                const prev = await this.getRec('items', k);
+                const env = await this.encrypt(serialized);
+                await this.putRec('items', { id: k, ...env, revision: (prev?.revision || 0) + 1, updatedAt: new Date().toISOString() });
+            },
+            async setStage(stage) { const meta = await this.getRec('meta', 'meta'); meta.stage = stage; meta.stageAt = new Date().toISOString(); await this.putRec('meta', meta); this.stage = stage; },
+            // ---- 시작 ----
+            async init() {
+                try {
+                    if (!window.crypto?.subtle) throw new Error('no-crypto');
+                    this.db = await this.open();
+                    const meta = await this.getRec('meta', 'meta');
+                    this.state = meta ? 'locked' : 'off'; this.stage = meta?.stage || null;
+                } catch (_) { this.state = 'unavailable'; }
+                try {
+                    this.channel = new BroadcastChannel('gb1000-vault');
+                    this.channel.onmessage = ev => { if (ev.data === 'release' && this.state === 'unlocked') this.lock('다른 탭에서 개인 기록을 열어 이 탭은 잠갔습니다.'); };
+                } catch (_) {}
+                ['pointerdown', 'keydown'].forEach(type => window.addEventListener(type, () => this.touch(), { passive: true }));
+                window.addEventListener('beforeunload', e => { if (this.failed) { e.preventDefault(); e.returnValue = ''; } });
+            },
+            touch() {
+                if (this.state !== 'unlocked') return;
+                clearTimeout(this.idleTimer);
+                this.idleTimer = setTimeout(() => this.lock('15분 동안 사용하지 않아 개인 기록을 잠갔습니다.'), this.IDLE_MS);
+            },
+            // 한 번에 한 탭만 편집: Web Locks로 잡고, 다른 탭이 잡고 있으면 그 탭에 잠금 요청
+            async acquireEditLock() {
+                if (!navigator.locks) { this.channel?.postMessage('release'); return true; }
+                const tryOnce = () => new Promise(resolve => {
+                    navigator.locks.request('gb1000-vault-edit', { ifAvailable: true }, lock => {
+                        if (!lock) { resolve(false); return; }
+                        resolve(true);
+                        return new Promise(release => { this.lockHandle = release; });
+                    });
+                });
+                if (await tryOnce()) return true;
+                this.channel?.postMessage('release');
+                for (let i = 0; i < 10; i++) { await new Promise(r => setTimeout(r, 300)); if (await tryOnce()) return true; }
+                return false;
+            },
+            releaseEditLock() { if (this.lockHandle) { this.lockHandle(); this.lockHandle = null; } },
+            async unlock(pw) {
+                if (this.state !== 'locked') return false;
+                const meta = await this.getRec('meta', 'meta');
+                let key;
+                try { key = await deriveKey(pw, b64ToBuf(meta.salt), meta.iterations); if (await this.decrypt(meta.check, key) !== 'gb1000-vault') throw new Error('bad'); }
+                catch (_) { return 'wrong'; }
+                if (!(await this.acquireEditLock())) return 'busy';
+                this.key = key; this.cache = {};
+                for (const k of this.KEYS) { const rec = await this.getRec('items', k); if (rec) this.cache[k] = JSON.parse(await this.decrypt(rec)); }
+                this.state = 'unlocked'; this.touch();
+                if (meta.stage !== 'complete') await this.migrate(); // 중단된 보호 작업 이어서
+                return true;
+            },
+            async lock(message) {
+                if (this.state !== 'unlocked') return;
+                if (typeof saveRecordDraftNow === 'function' && router.current === 'tools-record') saveRecordDraftNow();
+                await this.pending.catch(() => {});
+                this.key = null; this.cache = {}; this.state = 'locked'; clearTimeout(this.idleTimer);
+                this.releaseEditLock();
+                if (message) showToast(message, 'info');
+                if (['counsel', 'tools-record', 'mybox'].includes(router.current)) router.render();
+            },
+            // ---- 켜기 / 이전 (M01–M05) ----
+            rawLocal(k) { const out = {}; [Storage.PREFIX, Storage.LEGACY].forEach(p => { const v = localStorage.getItem(p + k); if (v !== null) out[p + k] = v; }); return out; },
+            readPlain(k) {
+                const pick = raw => { try { return { ok: true, value: JSON.parse(raw) }; } catch (_) { return { ok: false }; } };
+                const cur = localStorage.getItem(Storage.PREFIX + k), leg = localStorage.getItem(Storage.LEGACY + k);
+                if (cur !== null) { const r = pick(cur); if (r.ok) return r; }
+                if (leg !== null) { const r = pick(leg); if (r.ok) return r; }
+                return { ok: false, missing: cur === null && leg === null };
+            },
+            async enable(pw) {
+                if (this.state !== 'off') return false;
+                const salt = crypto.getRandomValues(new Uint8Array(16));
+                this.key = await deriveKey(pw, salt, this.ITERATIONS);
+                if (!(await this.acquireEditLock())) { this.key = null; return 'busy'; }
+                const check = await this.encrypt('gb1000-vault');
+                await this.putRec('meta', { id: 'meta', v: 1, kdf: 'PBKDF2-SHA256', iterations: this.ITERATIONS, salt: bufToB64(salt), check, stage: 'detected', createdAt: new Date().toISOString() });
+                this.cache = {}; this.state = 'unlocked'; this.touch();
+                await this.migrate();
+                return true;
+            },
+            // 평문 원본(손상된 값 포함)을 암호화 스냅숏에 더하고 다시 읽어 확인. 같은 키의 다른 값은 시각을 붙여 함께 보관
+            async snapshotRaw() {
+                const raw = {}; this.KEYS.forEach(k => Object.assign(raw, this.rawLocal(k)));
+                const prev = await this.getRec('snapshots', 'legacy-raw');
+                const merged = prev ? JSON.parse(await this.decrypt(prev)) : {};
+                const stamp = new Date().toISOString();
+                for (const [full, value] of Object.entries(raw)) {
+                    if (merged[full] === undefined) merged[full] = value;
+                    else if (merged[full] !== value && !Object.values(merged).includes(value)) merged[`${full}@${stamp}`] = value;
+                }
+                if (prev && !Object.keys(raw).length) return raw;
+                await this.putRec('snapshots', { id: 'legacy-raw', ...(await this.encrypt(JSON.stringify(merged))), takenAt: stamp });
+                const check = JSON.parse(await this.decrypt(await this.getRec('snapshots', 'legacy-raw')));
+                for (const value of Object.values(raw)) if (!Object.values(check).includes(value)) throw new Error('verify snapshot');
+                return raw;
+            },
+            async migrate() {
+                const meta = await this.getRec('meta', 'meta'); let stage = meta.stage;
+                if (stage === 'detected' || stage === 'snapshotted' || stage === 'converted' || stage === 'verified') {
+                    // 1) 원본(두 접두어, 손상된 값 포함) 암호화 스냅숏
+                    await this.snapshotRaw();
+                    await this.setStage('snapshotted');
+                    // 2) 변환: 평문이 남아 있는 키만 (보호 저장소에 이미 있는 값은 그대로)
+                    const plain = {};
+                    for (const k of this.KEYS) { const r = this.readPlain(k); if (r.ok && !Object.prototype.hasOwnProperty.call(this.cache, k)) plain[k] = r.value; }
+                    for (const [k, v] of Object.entries(plain)) { this.cache[k] = v; await this.writeItem(k, JSON.stringify(v)); }
+                    await this.setStage('converted');
+                    // 3) 검증: 다시 읽어 복호화한 값과 스냅숏 바이트 비교
+                    for (const [k, v] of Object.entries(plain)) {
+                        const rec = await this.getRec('items', k);
+                        if (!rec || await this.decrypt(rec) !== JSON.stringify(v)) throw new Error(`verify ${k}`);
+                    }
+                    await this.setStage('verified');
+                    stage = 'verified';
+                }
+                if (stage === 'verified' || stage === 'cleanupPending') {
+                    // 4) 정리: 검증된 키의 평문만 두 접두어에서 삭제하고 삭제를 확인 (지우기 직전 남은 평문도 스냅숏에 보관)
+                    await this.setStage('cleanupPending');
+                    await this.snapshotRaw();
+                    const leftover = [];
+                    for (const k of this.KEYS) {
+                        const r = this.readPlain(k);
+                        if (r.missing) continue;
+                        if (r.ok && !Object.prototype.hasOwnProperty.call(this.cache, k)) { leftover.push(k); continue; } // 검증 전 값은 지우지 않음
+                        [Storage.PREFIX, Storage.LEGACY].forEach(p => { try { localStorage.removeItem(p + k); } catch (_) {} });
+                        if (Object.keys(this.rawLocal(k)).length) leftover.push(k);
+                    }
+                    if (leftover.length) { showToast('일부 평문 기록을 지우지 못했습니다. 다음에 잠금을 풀 때 다시 시도합니다.', 'error'); return false; }
+                    await this.setStage('complete');
+                }
+                return true;
+            },
+            // 끄기: 복호화한 기록을 원래 위치로 되돌리고 확인한 뒤 보호 저장소 삭제
+            async disable() {
+                if (this.state !== 'unlocked') return false;
+                await this.pending.catch(() => {});
+                for (const k of this.KEYS) if (Object.prototype.hasOwnProperty.call(this.cache, k)) localStorage.setItem(Storage.PREFIX + k, JSON.stringify(this.cache[k]));
+                for (const k of this.KEYS) if (Object.prototype.hasOwnProperty.call(this.cache, k) && localStorage.getItem(Storage.PREFIX + k) !== JSON.stringify(this.cache[k])) throw new Error('restore');
+                // 변환하지 못한(손상된) 원본은 스냅숏에서 원래 키로 되돌려 보존
+                const snap = await this.getRec('snapshots', 'legacy-raw');
+                if (snap) {
+                    const raw = JSON.parse(await this.decrypt(snap));
+                    for (const [full, value] of Object.entries(raw)) {
+                        if (full.includes('@')) continue;
+                        const k = full.startsWith(Storage.PREFIX) ? full.slice(Storage.PREFIX.length) : full.slice(Storage.LEGACY.length);
+                        if (!Object.prototype.hasOwnProperty.call(this.cache, k) && localStorage.getItem(full) === null) localStorage.setItem(full, value);
+                    }
+                }
+                await this.destroy();
+                return true;
+            },
+            async destroy() {
+                this.key = null; this.cache = {}; clearTimeout(this.idleTimer); this.releaseEditLock();
+                try { this.db?.close(); } catch (_) {}
+                await new Promise(resolve => { const req = indexedDB.deleteDatabase(this.DB_NAME); req.onsuccess = req.onerror = req.onblocked = () => resolve(); });
+                this.db = null; this.state = 'off'; this.stage = null;
+                try { this.db = await this.open(); } catch (_) { this.state = 'unavailable'; }
+            }
+        };
+        function vaultLockHTML(where) {
+            return `
+                <div class="max-w-md mx-auto mt-6 p-6 rounded-3xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4 animate-fade-in">
+                    <div class="flex items-center gap-3"><span class="w-11 h-11 rounded-2xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 flex items-center justify-center text-lg"><i class="fa-solid fa-lock"></i></span>
+                    <div><h2 class="text-lg font-black text-slate-900 dark:text-white">개인 기록이 잠겨 있어요</h2><p class="text-xs text-slate-500 dark:text-slate-400">${where}은(는) 암호화되어 이 기기에 저장되어 있습니다.</p></div></div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300">잠금 비밀번호<input id="vault-pw" type="password" autocomplete="current-password" class="mt-1 w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm" onkeydown="if (event.key === 'Enter') unlockVaultFromForm()"></label>
+                    <p id="vault-msg" class="text-xs text-rose-600 min-h-[1rem]" aria-live="polite"></p>
+                    <button type="button" onclick="unlockVaultFromForm()" class="w-full min-h-[44px] rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold">잠금 풀기</button>
+                    <p class="text-[11px] text-slate-400 dark:text-slate-500">15분 동안 쓰지 않거나 화면을 새로 열면 다시 잠깁니다. 비밀번호를 잊으면 나의 교직함 › 개인 기록 잠금에서 보호 저장소를 초기화할 수 있지만, 잠긴 기록은 되살릴 수 없습니다.</p>
+                </div>`;
+        }
+        async function unlockVaultFromForm() {
+            const pw = document.getElementById('vault-pw')?.value || ''; const msg = document.getElementById('vault-msg');
+            if (!pw) { if (msg) msg.textContent = '비밀번호를 입력해 주세요.'; return; }
+            if (msg) { msg.className = 'text-xs text-slate-500 min-h-[1rem]'; msg.textContent = '확인 중…'; }
+            const r = await Vault.unlock(pw).catch(() => 'error');
+            if (r === true) { showToast('개인 기록 잠금을 풀었습니다.'); router.render(); return; }
+            if (msg) { msg.className = 'text-xs text-rose-600 min-h-[1rem]'; msg.textContent = r === 'wrong' ? '비밀번호가 맞지 않습니다.' : r === 'busy' ? '다른 탭에서 쓰는 중입니다. 그 탭을 닫거나 잠근 뒤 다시 시도해 주세요.' : '잠금을 풀지 못했습니다. 다시 시도해 주세요.'; }
+        }
+        async function enableVaultFromForm() {
+            const pw = document.getElementById('vault-new-pw')?.value || ''; const pw2 = document.getElementById('vault-new-pw2')?.value || '';
+            if (pw.length < 8) { showToast('비밀번호를 8자 이상으로 정해 주세요.', 'error'); return; }
+            if (pw !== pw2) { showToast('두 비밀번호가 다릅니다.', 'error'); return; }
+            if (!confirm('비밀번호를 잊으면 잠긴 기록을 되살릴 수 없습니다. 먼저 통합 암호화 백업을 받아 두셨나요? 계속할까요?')) return;
+            try {
+                const r = await Vault.enable(pw);
+                if (r === 'busy') { showToast('다른 탭에서 쓰는 중입니다. 다른 탭을 닫고 다시 시도해 주세요.', 'error'); return; }
+                showToast(Vault.stage === 'complete' ? '개인 기록을 암호화해 보호했습니다.' : '암호화는 끝났지만 일부 정리가 남았습니다. 다음에 잠금을 풀 때 이어서 합니다.', Vault.stage === 'complete' ? 'success' : 'error');
+            } catch (_) { showToast('보호 작업을 마치지 못했습니다. 기존 기록은 그대로 있습니다. 다시 시도해 주세요.', 'error'); }
+            router.render();
+        }
+        async function disableVaultFromUi() {
+            if (!confirm('보호를 끄면 상담 기록·생기부 초안이 다시 암호화 없이 이 브라우저에 저장됩니다. 계속할까요?')) return;
+            try { await Vault.disable(); showToast('보호를 껐습니다. 기록은 그대로 남아 있습니다.'); } catch (_) { showToast('보호를 끄지 못했습니다. 기록은 보호 저장소에 그대로 있습니다.', 'error'); }
+            router.render();
+        }
+        async function resetVaultFromUi() {
+            if (!confirm('비밀번호를 잊은 경우에만 쓰세요. 잠긴 상담 기록과 생기부 초안이 모두 영구 삭제됩니다. 정말 초기화할까요?')) return;
+            if (prompt('확인을 위해 "초기화"라고 입력해 주세요.') !== '초기화') return;
+            await Vault.destroy(); showToast('보호 저장소를 초기화했습니다.'); router.render();
+        }
+        function vaultCardHTML(card) {
+            const st = Vault.state;
+            const field = 'w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm mt-1';
+            return `
+                    <div id="vault-card" class="${card}">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-lock text-indigo-500"></i> 개인 기록 잠금</h3>
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-lg ${st === 'unlocked' ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' : st === 'locked' ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${st === 'unlocked' ? '보호 중 · 열림' : st === 'locked' ? '보호 중 · 잠김' : st === 'unavailable' ? '이 브라우저에서 사용 불가' : '꺼짐'}</span>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">상담 기록, 상담주간 일정(학생·학부모 이름), 생기부 초안을 비밀번호로 암호화해 저장합니다. 암호화 사본을 다시 읽어 확인한 다음에만 암호화되지 않은 원래 기록을 지웁니다. 잠긴 동안에는 두 도구를 열 때 비밀번호가 필요하고, 일반 백업에는 이 기록이 들어가지 않습니다(통합 암호화 백업에는 포함).</p>
+                        ${st === 'off' ? `
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <label class="text-xs font-semibold text-slate-500 dark:text-slate-400">새 비밀번호 (8자 이상)<input id="vault-new-pw" type="password" autocomplete="new-password" class="${field}"></label>
+                            <label class="text-xs font-semibold text-slate-500 dark:text-slate-400">비밀번호 확인<input id="vault-new-pw2" type="password" autocomplete="new-password" class="${field}"></label>
+                        </div>
+                        <button type="button" onclick="enableVaultFromForm()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">잠금 켜기</button>` : ''}
+                        ${st === 'unlocked' ? `<div class="flex flex-wrap gap-2"><button type="button" onclick="Vault.lock('개인 기록을 잠갔습니다.')" class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">지금 잠그기</button><button type="button" onclick="disableVaultFromUi()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200">보호 끄기</button></div>` : ''}
+                        ${st === 'locked' ? `<div class="flex flex-wrap gap-2"><button type="button" onclick="router.navigate('counsel')" class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">잠금 풀러 가기</button><button type="button" onclick="resetVaultFromUi()" class="px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:underline">비밀번호를 잊었어요 (초기화)</button></div>` : ''}
+                    </div>
+
+`;
+        }
+
+        async function resetAllData() {
             if (!confirm('정말로 모든 기록을 지우시겠습니까? 복구할 수 없습니다.')) return;
             if (!Storage.clearAll()) return; // 같은 github.io 도메인의 다른 앱 자료는 건드리지 않음
+            await Vault.destroy();
             aiSetKey('', false); // AI 문장 도우미 키도 함께 삭제
             window.location.hash = ''; window.location.reload();
         }
@@ -4162,6 +4461,7 @@ ${weeklyAgendaHTML()}
         }
 
         function renderToolsRecord(container) {
+            if (Vault.isLocked()) { container.innerHTML = vaultLockHTML('생기부 초안') + FOOTER_HTML; setTimeout(() => document.getElementById('vault-pw')?.focus(), 30); return; }
             const area = RECORD_AREAS.find(a => a.id === recordArea) || RECORD_AREAS[0];
             const allDrafts = getRecordDrafts();
             const draft = allDrafts[recordDraftKey(area.id, recordStudent)] || '';
@@ -4373,6 +4673,7 @@ ${weeklyAgendaHTML()}
         function counselStudents() { return [...new Set([...parseNameList(Storage.get('class_names', '')), ...getCounsel().map(r => r.student).filter(Boolean)])]; }
 
         function renderCounsel(container) {
+            if (Vault.isLocked()) { container.innerHTML = vaultLockHTML('상담 기록') + FOOTER_HTML; setTimeout(() => document.getElementById('vault-pw')?.focus(), 30); return; }
             const list = getCounsel();
             const editing = counselEditId ? list.find(r => r.id === counselEditId) : null;
             const r = editing || { date: ymd(new Date()), student: '', who: '학부모', how: '대면', topic: '', summary: '', followup: '' };
@@ -5177,6 +5478,7 @@ ${weeklyAgendaHTML()}
             applyThemeMode();
             applyFontScale();
             await loadData();
+            await Vault.init();
             router.init();
             startBellWatcher();
             registerSW();
