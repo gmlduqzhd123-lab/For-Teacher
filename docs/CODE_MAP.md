@@ -1,5 +1,7 @@
 # R0a code map
 
+> 2026-10-25: the inline style and script moved out of `index.html` unchanged — styles to `css/app.css`, the four embedded data constants (`DEFAULT_DATA`, `CATEGORY_PLAYBOOKS`, `TERM_VS_GROUPS`, `TERM_ENRICH_MAP`) to `js/data.js`, and the rest of the app code to `js/app.js` (loaded in that order). `index.html:<line>` references below point at the pre-split layout; search `js/app.js` by name.
+
 Baseline: `1aae4b714acd73fd6c6a6da4fb38f6e1d2fdb03f`. At R0a start, `main` equaled this commit and the worktree was clean. There was no applicable `AGENTS.md`. The app remains one static `index.html` plus `terms.json`, `sw.js`, manifest and assets.
 
 | Concern | Current code | R0a contract / next integration |

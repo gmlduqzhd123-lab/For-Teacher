@@ -139,7 +139,7 @@ function verify(map, fixture) {
   assert.equal(current.courses.length, 10);
   const storage = json('data/storage-map.json');
   assert.deepEqual(storage.prefixes, prefixes);
-  const source = text('index.html');
+  const source = ['index.html', 'js/data.js', 'js/app.js'].map(text).join('\n');
   const literalKeys = [...source.matchAll(/Storage\.(?:get|set)\('([^']+)'/g)].map(m => m[1]);
   for (const key of literalKeys) assert(Object.hasOwn(storage.keys, key), `storage key lacks contract: ${key}`);
   for (let month = 1; month <= 12; month++) assert(Object.hasOwn(storage.keys, `checklist_${month}`));
