@@ -2544,6 +2544,7 @@ ${weeklyAgendaHTML()}
                         ${sit.caution.length ? `<div class="flex flex-wrap items-center gap-1.5 mb-4"><span class="text-[10px] font-bold text-rose-500 mr-1"><i class="fa-solid fa-triangle-exclamation"></i> 주의</span>${chips(sit.caution, 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-300')}</div>` : ''}
                     </div>
                     <div>
+                        ${(() => { const pr = situationProgress(sit); return `<button type="button" data-public-id="${escapeHTML(sit.publicId)}" onclick="openSituationRun(this.dataset.publicId)" class="w-full mb-3 min-h-[44px] px-4 rounded-xl ${pr ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-blue-600 hover:bg-blue-700'} text-white text-sm font-bold flex items-center justify-between gap-2"><span><i class="fa-solid fa-list-check mr-1.5"></i>${pr ? '이어서 처리하기' : '단계별로 처리하기'}</span>${pr ? `<span class="text-xs font-extrabold bg-white/20 px-2 py-0.5 rounded-lg">${pr.done}/${pr.total}</span>` : ''}</button>`; })()}
                         ${kw ? `<div class="pt-4 border-t border-slate-100 dark:border-slate-700">
                             <button data-kw="${escapeHTML(kw)}" onclick="openDetailByKeyword(this.dataset.kw)" class="text-xs font-bold text-blue-600 dark:text-blue-400 group-hover:underline w-full text-left">핵심 교직어 '${escapeHTML(kw)}' 상세보기 →</button>
                         </div>` : ''}
@@ -2552,6 +2553,86 @@ ${weeklyAgendaHTML()}
                 </div>`;
             }).join('');
             if (router.param) requestAnimationFrame(() => document.getElementById(`situation-${SITUATIONS.find(item => item.publicId === router.param || String(item.id) === router.param)?.publicId}`)?.scrollIntoView({ block: 'start' }));
+        }
+
+        // 상황 가이드 단계별 처리: 체크한 시각만 이 기기에 저장 (메모·이름 등 자유 입력 없음)
+        function situationRuns() { const r = Storage.get('situation_runs', {}); return r && typeof r === 'object' && !Array.isArray(r) ? r : {}; }
+        function situationRunItems(sit) {
+            return [
+                ...sit.firstCheck.map((text, i) => ({ key: `f${i}`, group: '먼저 확인', text })),
+                ...sit.steps.map((text, i) => ({ key: `s${i}`, group: '처리 단계', text, n: i + 1 }))
+            ];
+        }
+        function situationProgress(sit) {
+            const run = situationRuns()[sit.publicId]; if (!run) return null;
+            const items = situationRunItems(sit);
+            const done = items.filter(it => run.checks?.[it.key]).length;
+            return { run, done, total: items.length };
+        }
+        function hhmm(iso) { const d = new Date(iso); return isNaN(d) ? '' : `${pad2(d.getHours())}:${pad2(d.getMinutes())}`; }
+        function openSituationRun(publicId) {
+            const sit = SITUATIONS.find(item => item.publicId === publicId); if (!sit) return;
+            const m = document.getElementById('setup-wizard-modal'); const c = document.getElementById('setup-wizard-content'); if (!m || !c) return;
+            const runs = situationRuns();
+            if (!runs[publicId]) { runs[publicId] = { startedAt: new Date().toISOString(), checks: {} }; Storage.set('situation_runs', runs); }
+            const run = runs[publicId];
+            const items = situationRunItems(sit);
+            const done = items.filter(it => run.checks[it.key]).length;
+            const pct = Math.round(done / items.length * 100);
+            const act = SITUATION_ACTION_MAP[sit.id] || {};
+            const row = it => `
+                        <label class="flex items-start gap-3 min-h-[48px] p-3 rounded-xl border cursor-pointer ${run.checks[it.key] ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800/50' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}">
+                            <input type="checkbox" ${run.checks[it.key] ? 'checked' : ''} onchange="toggleSituationStep('${escapeHTML(publicId)}', '${it.key}')" class="w-5 h-5 mt-0.5 shrink-0 accent-emerald-600">
+                            <span class="flex-1 text-sm ${run.checks[it.key] ? 'text-slate-500 dark:text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100 font-semibold'}">${it.n ? `<b class="mr-1">${it.n}.</b>` : ''}${escapeHTML(it.text)}</span>
+                            ${run.checks[it.key] ? `<span class="shrink-0 text-xs font-bold text-emerald-700 dark:text-emerald-300">${hhmm(run.checks[it.key])}</span>` : ''}
+                        </label>`;
+            c.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <span class="text-xs font-bold px-2.5 py-1 bg-amber-50 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 rounded-lg">${escapeHTML(sit.category)}</span>
+                            <h3 id="setup-wizard-title" class="text-xl font-black text-slate-900 dark:text-white mt-2">${escapeHTML(sit.title)}</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">시작 ${hhmm(run.startedAt)} · 체크하면 시각이 기록돼요</p>
+                        </div>
+                        <button type="button" onclick="closeSetupWizard(); if (router.current === 'situations') updateSituationsGrid(document.getElementById('situation-search-input')?.value.trim() || '')" class="shrink-0 p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700" aria-label="닫기"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="flex items-center gap-3"><div class="flex-1 h-2 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden" aria-hidden="true"><div class="h-full bg-emerald-500" style="width:${pct}%"></div></div><span class="text-sm font-extrabold text-emerald-700 dark:text-emerald-300">${done}/${items.length}</span></div>
+                    ${sit.firstCheck.length ? `<div class="space-y-2"><h4 class="text-xs font-extrabold text-emerald-700 dark:text-emerald-300">먼저 확인</h4>${items.filter(it => it.group === '먼저 확인').map(row).join('')}</div>` : ''}
+                    <div class="space-y-2"><h4 class="text-xs font-extrabold text-blue-700 dark:text-blue-300">처리 단계</h4>${items.filter(it => it.group === '처리 단계').map(row).join('')}</div>
+                    ${sit.caution.length ? `<div class="p-3 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800/50 text-xs text-rose-800 dark:text-rose-200"><b>주의</b> · ${sit.caution.map(escapeHTML).join(' · ')}</div>` : ''}
+                    <div class="flex flex-wrap gap-2">
+                        ${sit.script ? `<button type="button" data-script="${escapeHTML(sit.script)}" onclick="copyText(this.dataset.script, '통화 스크립트를 복사했습니다.')" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200">통화 스크립트 복사</button>` : ''}
+                        ${act.doc ? `<button type="button" onclick="closeSetupWizard(); router.navigate('tools-doc', '${escapeHTML(act.doc)}')" class="px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-xs font-bold text-blue-700 dark:text-blue-300">관련 서식 열기</button>` : ''}
+                        ${sit.relatedKeywords[0] ? `<button type="button" data-kw="${escapeHTML(sit.relatedKeywords[0])}" onclick="closeSetupWizard(); openDetailByKeyword(this.dataset.kw)" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200">'${escapeHTML(sit.relatedKeywords[0])}' 설명</button>` : ''}
+                    </div>
+                    <div class="flex flex-wrap justify-between gap-2 pt-3 border-t border-slate-100 dark:border-slate-700">
+                        <button type="button" onclick="resetSituationRun('${escapeHTML(publicId)}')" class="px-3 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-rose-600">처음부터 다시</button>
+                        <button type="button" onclick="copySituationLog('${escapeHTML(publicId)}')" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold">처리 경과 복사</button>
+                    </div>
+                    <p class="text-[11px] text-slate-400 dark:text-slate-500">체크한 시각만 이 기기에 저장됩니다. 경과를 복사해 보고서·기록에 붙여 넣을 때 학생 이름은 직접 채워 주세요.</p>
+                </div>`;
+            m.classList.remove('hidden');
+        }
+        function toggleSituationStep(publicId, key) {
+            const runs = situationRuns(); const run = runs[publicId]; if (!run) return;
+            if (run.checks[key]) delete run.checks[key]; else run.checks[key] = new Date().toISOString();
+            run.updatedAt = new Date().toISOString();
+            Storage.set('situation_runs', runs);
+            openSituationRun(publicId);
+        }
+        function resetSituationRun(publicId) {
+            if (!confirm('체크한 기록을 지우고 처음부터 다시 할까요?')) return;
+            const runs = situationRuns(); delete runs[publicId]; Storage.set('situation_runs', runs);
+            closeSetupWizard();
+            if (router.current === 'situations') updateSituationsGrid(document.getElementById('situation-search-input')?.value.trim() || '');
+            showToast('기록을 지웠습니다.');
+        }
+        function copySituationLog(publicId) {
+            const sit = SITUATIONS.find(item => item.publicId === publicId); const run = situationRuns()[publicId]; if (!sit || !run) return;
+            const day = new Date(run.startedAt);
+            const lines = [`[${sit.title}] 처리 경과`, `시작: ${koreanDate(day)} ${hhmm(run.startedAt)}`, ''];
+            situationRunItems(sit).forEach(it => lines.push(`${run.checks[it.key] ? `✔ ${hhmm(run.checks[it.key])}` : '☐ --:--'}  ${it.group === '먼저 확인' ? '(확인) ' : `${it.n}. `}${it.text}`));
+            copyText(lines.join('\n'), '처리 경과를 복사했습니다.');
         }
 
         function renderNavigator(container) {
@@ -2719,6 +2800,11 @@ ${weeklyAgendaHTML()}
                 const days = Math.round((date - today) / 86400000);
                 if (days >= 0 && days <= 13) items.push({ type: 'event', title: ev.label, days, when: days === 0 ? '오늘' : `D-${days}` });
             });
+            const runs = situationRuns();
+            SITUATIONS.forEach(sit => {
+                const pr = runs[sit.publicId] && situationProgress(sit);
+                if (pr && pr.done < pr.total) items.push({ type: 'run', publicId: sit.publicId, title: sit.title, days: -999, when: `처리 중 ${pr.done}/${pr.total}` });
+            });
             return items.sort((a, b) => a.days - b.days);
         }
         function weeklyAgendaHTML() {
@@ -2732,7 +2818,12 @@ ${weeklyAgendaHTML()}
                                     <input type="checkbox" id="wa-${it.m}-${it.idx}" onchange="toggleAgendaTask(${it.m}, ${it.idx})" class="w-5 h-5 shrink-0 accent-blue-600 cursor-pointer">
                                     <label for="wa-${it.m}-${it.idx}" class="flex-1 min-w-0 text-sm font-semibold text-slate-800 dark:text-slate-100 cursor-pointer truncate">${escapeHTML(it.title)}</label>
                                     <span class="shrink-0 text-xs font-bold ${tone(it)}">${it.when}</span>
-                                </div>` : `
+                                </div>` : it.type === 'run' ? `
+                                <button type="button" data-public-id="${escapeHTML(it.publicId)}" onclick="openSituationRun(this.dataset.publicId)" class="w-full flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200/70 dark:border-emerald-800/50 text-left">
+                                    <i class="fa-solid fa-list-check text-emerald-600 dark:text-emerald-300 w-5 text-center"></i>
+                                    <span class="flex-1 min-w-0 truncate text-sm font-bold text-emerald-900 dark:text-emerald-100">${escapeHTML(it.title)}</span>
+                                    <span class="shrink-0 text-xs font-bold text-emerald-700 dark:text-emerald-300">${it.when}</span>
+                                </button>` : `
                                 <button type="button" onclick="router.navigate('mybox', 'calendar')" class="w-full flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200/70 dark:border-indigo-800/50 text-left">
                                     <i class="fa-regular fa-calendar text-indigo-600 dark:text-indigo-300 w-5 text-center"></i>
                                     <span class="flex-1 text-sm font-bold text-indigo-900 dark:text-indigo-100">${escapeHTML(it.title)}</span>
@@ -3229,7 +3320,7 @@ ${weeklyAgendaHTML()}
             year_task_dates:'object', board_title:'string', board_tasks:'object', custom_templates:'array', settings:'object',
             class_names:'string', seat_opts:'object', seat_result:'object', pick_norepeat:'boolean', timetable:'object',
             record_drafts:'object', record_limits:'object', record_my_phrases:'array', counsel_schedule_opts:'object',
-            theme_mode:'string', ics_year:'number'
+            theme_mode:'string', ics_year:'number', situation_runs:'object'
         };
         for (let month = 1; month <= 12; month++) BACKUP_TYPES[`checklist_${month}`] = 'object';
         const BACKUP_MAX_BYTES = 20 * 1024 * 1024;
@@ -3248,7 +3339,10 @@ ${weeklyAgendaHTML()}
             if (key.startsWith('checklist_') && !Object.entries(value).every(([index, done]) => /^\d+$/.test(index) && typeof done === 'boolean')) return false;
             if (key === 'recent_searches' && !value.every(query => typeof query === 'string')) return false;
             if (key === 'custom_templates' && !value.every(item => item && typeof item === 'object' && !Array.isArray(item) && ['id','title','content'].every(field => typeof item[field] === 'string'))) return false;
-            if (key === 'settings' && !Object.values(value).every(field => typeof field === 'string')) return false;
+            if (key === 'settings' && !Object.entries(value).every(([name, field]) => typeof field === 'string'
+                || (name === 'weeklyReminder' && typeof field === 'boolean')
+                || (name === 'calendar' && field && typeof field === 'object' && !Array.isArray(field) && Object.values(field).every(validBackupDate)))) return false;
+            if (key === 'situation_runs' && !Object.values(value).every(run => run && typeof run === 'object' && !Array.isArray(run) && typeof run.startedAt === 'string' && run.checks && typeof run.checks === 'object' && Object.values(run.checks).every(t => typeof t === 'string'))) return false;
             if (key === 'record_limits' && !Object.values(value).every(limit => Number.isInteger(limit) && limit > 0)) return false;
             if (key === 'year_task_dates' && !Object.values(value).every(validBackupDate)) return false;
             if (key === 'seat_result' && value.date !== undefined && !validBackupDate(value.date)) return false;

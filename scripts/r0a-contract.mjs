@@ -143,7 +143,10 @@ function verify(map, fixture) {
   const literalKeys = [...source.matchAll(/Storage\.(?:get|set)\('([^']+)'/g)].map(m => m[1]);
   for (const key of literalKeys) assert(Object.hasOwn(storage.keys, key), `storage key lacks contract: ${key}`);
   for (let month = 1; month <= 12; month++) assert(Object.hasOwn(storage.keys, `checklist_${month}`));
-  assert.equal(Object.keys(storage.keys).length, 35);
+  // 35 keys frozen at the R0a baseline; keys added afterwards are listed here and must also carry a contract entry
+  const addedAfterBaseline = ['situation_runs'];
+  for (const key of addedAfterBaseline) assert(Object.hasOwn(storage.keys, key), `added key lacks contract: ${key}`);
+  assert.equal(Object.keys(storage.keys).length, 35 + addedAfterBaseline.length);
   assert(source.includes('eb_1000_final_') && source.includes('eb_1000_v7_'));
   assert.equal(fixture.syntheticOnly, true);
   const cases = fixture.storageCases;
