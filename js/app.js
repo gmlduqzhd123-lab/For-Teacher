@@ -891,6 +891,7 @@
                 if (typeof closeSetupWizard === 'function') closeSetupWizard();
                 if (typeof closeMobileMenu === 'function') closeMobileMenu();
                 this.current = view; this.param = param || null;
+                Usage.view(view);
                 const h = buildHash(view, this.param);
                 if (window.location.hash !== h) window.location.hash = h; // hashchange에서는 상태가 같으므로 재렌더링 생략
                 this.render(); scrollViewTop();
@@ -910,6 +911,7 @@
                         return;
                     }
                     this.current = s.view; this.param = s.param;
+                    Usage.view(s.view);
                     this.render();
                 } catch(e) { this.renderError(e); }
             },
@@ -1922,6 +1924,7 @@ ${weeklyAgendaHTML()}
             }
 
             if(results.length === 0) {
+                if (query && !(relatedBox && relatedBox.textContent.trim())) Usage.noteZero(query);
                 grid.innerHTML = `<div class="col-span-full py-8 text-center bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700"><h3 class="text-base font-bold text-slate-800 dark:text-slate-200">일치하는 교직어가 없어요</h3><div class="mt-4 flex justify-center gap-3"><button type="button" onclick="clearSearch()" class="px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700">검색어 지우기</button><button type="button" onclick="router.navigate('situations')" class="px-3 py-2 rounded-lg bg-blue-600 text-white">상황 안내 보기</button></div><button type="button" onclick="openFeedback('request', document.getElementById('main-search-input')?.value || '')" class="mt-4 text-sm font-bold text-blue-600 dark:text-blue-400 underline">이 용어 추가 요청하기</button></div>`;
                 loadMoreBtn?.classList.add('hidden'); return;
             }
@@ -1980,6 +1983,7 @@ ${weeklyAgendaHTML()}
                 try { window.speechSynthesis.cancel(); ttsSpeakingId = null; } catch (_) {}
             }
             applyTermEnrichment(item);
+            if (currentDetailId !== item.id) Usage.event('detail_open');
             if (!isModalOpen()) lastFocusedElement = document.activeElement; // 연관어로 연쇄 이동해도 처음 위치로 포커스 복귀
             const modal = document.getElementById('detail-modal'); const content = document.getElementById('modal-content');
             const isBookmarked = Storage.get('bookmarks', []).some(saved => canonicalTermId(saved) === item.id);
@@ -2311,7 +2315,7 @@ ${weeklyAgendaHTML()}
             const sit = SITUATIONS.find(item => item.publicId === publicId); if (!sit) return;
             const m = document.getElementById('setup-wizard-modal'); const c = document.getElementById('setup-wizard-content'); if (!m || !c) return;
             const runs = situationRuns();
-            if (!runs[publicId]) { runs[publicId] = { startedAt: new Date().toISOString(), checks: {} }; Storage.set('situation_runs', runs); }
+            if (!runs[publicId]) { runs[publicId] = { startedAt: new Date().toISOString(), checks: {} }; Storage.set('situation_runs', runs); Usage.event('situation_run'); }
             const run = runs[publicId];
             const items = situationRunItems(sit);
             const done = items.filter(it => run.checks[it.key]).length;
@@ -2453,6 +2457,7 @@ ${weeklyAgendaHTML()}
         function openStartCourseItem(courseId, index) {
             const course = START_COURSES.find(c => c.id === courseId); const it = course?.items[index]; if (!it) return;
             setStartCourseDone(courseId, startCourseItemKey(it), true);
+            Usage.event('start_course_open');
             if (it.t === 'term') { router.render(); openDetail(it.id); }
             else if (it.t === 'situation') router.navigate('situations', it.id);
             else if (it.t === 'workflow') router.navigate('navigator', it.id);
@@ -2611,7 +2616,7 @@ ${weeklyAgendaHTML()}
             if (!apiKey) { say('먼저 API 키를 저장해 주세요.', 'text-rose-600'); return; }
             if (!aiCtx.masked) return;
             if (!navigator.onLine) { say('인터넷에 연결된 상태에서만 쓸 수 있어요.', 'text-rose-600'); return; }
-            if (btn) btn.disabled = true; say('다듬는 중… (보통 몇 초~십여 초)');
+            if (btn) btn.disabled = true; say('다듬는 중… (보통 몇 초~십여 초)'); Usage.event('ai_run');
             let sdk;
             try { sdk = await loadAiSdk(); } catch (_) { say('AI 도구를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.', 'text-rose-600'); if (btn) btn.disabled = false; return; }
             const Anthropic = sdk.default;
@@ -2651,6 +2656,88 @@ ${weeklyAgendaHTML()}
         }
         function aiButtonHTML(targetId, mode) {
             return aiGetKey() ? `<button type="button" onclick="openAiAssist('${targetId}', '${mode}')" class="px-3 py-2 bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-xs font-bold rounded-xl"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>AI로 다듬기</button>` : '';
+        }
+
+        // 사용 통계: 이 기기 안에서만 집계(서버 전송 없음). 끌 수 있고, 원하면 요약만 직접 보내기
+        const Usage = {
+            KEY: 'usage_stats', MAX_QUERIES: 50, zeroTimer: null,
+            enabled() { return getSettings().usageStats !== false; },
+            load() {
+                const st = Storage.get(this.KEY, null);
+                return st && typeof st === 'object' && !Array.isArray(st) && st.v === 1 ? st : { v: 1, since: ymd(new Date()), views: {}, events: {}, zero: {} };
+            },
+            save(st) { try { localStorage.setItem(Storage.PREFIX + this.KEY, JSON.stringify(st)); } catch (_) {} }, // 통계 저장 실패는 알리지 않음
+            view(name) { if (!this.enabled() || !name) return; const st = this.load(); st.views[name] = (st.views[name] || 0) + 1; this.save(st); },
+            event(name) { if (!this.enabled()) return; const st = this.load(); st.events[name] = (st.events[name] || 0) + 1; this.save(st); },
+            // 결과 0건 검색어: 입력을 멈춘 뒤에만 기록. 숫자·이메일·학급 명단 이름이 들어간 말, 긴 문장은 기록하지 않음
+            noteZero(query) {
+                clearTimeout(this.zeroTimer);
+                const q = normalizeSearch(query);
+                if (!this.enabled() || q.length < 2 || q.length > 30 || /\d|@/.test(q)) return;
+                const names = parseNameList(Storage.get('class_names', '')).map(n => normalizeSearch(n)).filter(n => n.length >= 2);
+                if (names.some(n => q.includes(n))) return;
+                this.zeroTimer = setTimeout(() => {
+                    const current = normalizeSearch(document.getElementById('main-search-input')?.value || '');
+                    if (current !== q) return;
+                    const st = this.load(); const rec = st.zero[q] || { n: 0, last: '' };
+                    st.zero[q] = { n: rec.n + 1, last: ymd(new Date()) };
+                    const keys = Object.keys(st.zero);
+                    if (keys.length > this.MAX_QUERIES) keys.sort((a, b) => st.zero[a].last.localeCompare(st.zero[b].last) || st.zero[a].n - st.zero[b].n).slice(0, keys.length - this.MAX_QUERIES).forEach(k => delete st.zero[k]);
+                    this.save(st);
+                }, 2500);
+            },
+            clear() { try { localStorage.removeItem(Storage.PREFIX + this.KEY); localStorage.removeItem(Storage.LEGACY + this.KEY); } catch (_) {} }
+        };
+        const USAGE_EVENT_LABELS = { detail_open: '용어 상세 열기', situation_run: '상황 단계별 처리 시작', start_course_open: '시작 코스 항목 열기', ai_run: 'AI로 다듬기', feedback_send: '의견 보내기' };
+        function usageCardHTML(card) {
+            const on = Usage.enabled(); const st = Usage.load();
+            const viewNames = Object.fromEntries(MENU_PAGES.map(([id, title]) => [id, title.replace(/\s*\(.*\)$/, '')]));
+            const views = Object.entries(st.views).sort((a, b) => b[1] - a[1]).slice(0, 6);
+            const max = views[0]?.[1] || 1;
+            const zero = Object.entries(st.zero).sort((a, b) => b[1].n - a[1].n || b[1].last.localeCompare(a[1].last)).slice(0, 10);
+            const events = Object.entries(st.events).filter(([k]) => USAGE_EVENT_LABELS[k]);
+            return `
+                    <div id="usage-card" class="${card}">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-chart-simple text-teal-500"></i> 내 사용 통계 <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300">이 기기에만 저장</span></h3>
+                            <div class="flex flex-wrap gap-2">
+                                <button type="button" onclick="toggleUsageStats()" aria-pressed="${on}" class="px-3 py-1.5 rounded-lg text-xs font-bold ${on ? 'bg-teal-600 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200'}">${on ? '집계 켜짐' : '집계 꺼짐'}</button>
+                                <button type="button" onclick="if (confirm('사용 통계를 지울까요?')) { Usage.clear(); router.render(); }" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200">지우기</button>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">어느 화면을 자주 쓰는지, 검색했는데 결과가 없던 말은 무엇인지 <b>이 기기 안에서만</b> 셉니다. 어디로도 자동 전송하지 않고 백업에도 넣지 않습니다. 숫자·이메일이 들어간 검색어와 학급 명단의 이름이 들어간 검색어는 기록하지 않습니다.</p>
+                        ${views.length || zero.length || events.length ? `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-2">많이 연 화면 (${escapeHTML(st.since)}부터)</h4>
+                                <ul class="space-y-1.5">${views.map(([v, n]) => `<li class="text-xs"><div class="flex justify-between gap-2 mb-0.5"><span class="font-semibold text-slate-700 dark:text-slate-200 truncate">${escapeHTML(viewNames[v] || v)}</span><span class="text-slate-500">${n}회</span></div><div class="h-1.5 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden"><div class="h-full bg-teal-500" style="width:${Math.round(n / max * 100)}%"></div></div></li>`).join('') || '<li class="text-xs text-slate-400">아직 없음</li>'}</ul>
+                                ${events.length ? `<p class="mt-3 text-[11px] text-slate-500 dark:text-slate-400">${events.map(([k, n]) => `${USAGE_EVENT_LABELS[k]} ${n}회`).join(' · ')}</p>` : ''}
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-2">찾았지만 결과가 없던 말</h4>
+                                ${zero.length ? `<ul class="flex flex-wrap gap-1.5">${zero.map(([q, r]) => `<li><button type="button" data-q="${escapeHTML(q)}" onclick="openFeedback('request', this.dataset.q)" title="이 용어 추가 요청하기" class="px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-200 text-xs font-semibold hover:underline">${escapeHTML(q)} <span class="opacity-60">${r.n}</span></button></li>`).join('')}</ul><p class="mt-2 text-[11px] text-slate-400">누르면 그 말을 넣어 용어 추가 요청 창이 열려요.</p>` : '<p class="text-xs text-slate-400">아직 없음</p>'}
+                            </div>
+                        </div>
+                        <div class="flex justify-end"><button type="button" onclick="shareUsageSummary()" class="px-3 py-2 rounded-xl bg-teal-50 dark:bg-teal-900/30 text-teal-800 dark:text-teal-200 text-xs font-bold">요약을 개발자에게 보내기 (선택)</button></div>` : `<p class="text-xs text-slate-400">${on ? '앱을 쓰면 여기에 쌓입니다.' : '집계가 꺼져 있습니다.'}</p>`}
+                    </div>
+
+`;
+        }
+        function toggleUsageStats() {
+            const on = !Usage.enabled();
+            saveSetting('usageStats', on);
+            if (!on && confirm('집계를 껐습니다. 지금까지 모은 통계도 지울까요?')) Usage.clear();
+            router.render();
+        }
+        // 화면별 횟수와 결과 없는 검색어만 담은 요약을 의견 창에 채워 보여 줌. 보내기 전에 직접 확인·수정
+        function shareUsageSummary() {
+            const st = Usage.load();
+            const views = Object.entries(st.views).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([v, n]) => `${v} ${n}`).join(', ');
+            const zero = Object.entries(st.zero).sort((a, b) => b[1].n - a[1].n).slice(0, 15).map(([q, r]) => `${q}(${r.n})`).join(', ');
+            openFeedback('request', '사용 통계 요약');
+            const body = document.getElementById('fb-body');
+            if (body) body.value = `집계 시작: ${st.since}\n많이 연 화면: ${views || '-'}\n결과 없던 검색어: ${zero || '-'}\n\n(보내기 전에 빼고 싶은 내용은 지워 주세요.)`;
+            const reason = document.getElementById('fb-reason'); if (reason) reason.value = '기타';
         }
 
         function renderNavigator(container) {
@@ -3215,7 +3302,7 @@ ${weeklyAgendaHTML()}
                         </div>
                     </div>
 
-${vaultCardHTML(card)}                    <div id="ai-settings-card" class="${card}">
+${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-settings-card" class="${card}">
                         <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-violet-500"></i> AI 문장 도우미 <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300">선택 기능 · 기본 꺼짐</span></h3>
                         <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">본인의 Anthropic API 키를 넣으면 생기부 문장 도우미와 기안·알림장 생성기에 <b>AI로 다듬기</b> 버튼이 생깁니다. 학급 명단의 이름, 학교·교사 이름, 전화번호·이메일·주민번호는 가린 뒤 보내고, 보내기 전에 보낼 내용을 보여 줍니다. 키는 이 기기에만 저장되고 백업 파일에는 들어가지 않습니다.</p>
                         ${aiGetKey() ? `<div class="flex flex-wrap items-center gap-2"><span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">켜짐 · ${aiKeyRemembered() ? '이 기기에 기억 중' : '브라우저를 닫으면 지워짐'}</span><button type="button" onclick="forgetAiKey()" class="px-3 py-1.5 rounded-lg bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 text-xs font-bold">키 지우고 끄기</button></div>` : aiKeyFormHTML()}
@@ -3365,7 +3452,7 @@ ${vaultCardHTML(card)}                    <div id="ai-settings-card" class="${ca
             if (key === 'recent_searches' && !value.every(query => typeof query === 'string')) return false;
             if (key === 'custom_templates' && !value.every(item => item && typeof item === 'object' && !Array.isArray(item) && ['id','title','content'].every(field => typeof item[field] === 'string'))) return false;
             if (key === 'settings' && !Object.entries(value).every(([name, field]) => typeof field === 'string'
-                || (name === 'weeklyReminder' && typeof field === 'boolean')
+                || (['weeklyReminder', 'usageStats'].includes(name) && typeof field === 'boolean')
                 || (name === 'calendar' && field && typeof field === 'object' && !Array.isArray(field) && Object.values(field).every(validBackupDate)))) return false;
             if (key === 'start_courses' && !(Object.keys(value).every(k => ['active', 'done'].includes(k)) && (value.active === undefined || typeof value.active === 'string') && (value.done === undefined || (value.done && typeof value.done === 'object' && !Array.isArray(value.done) && Object.values(value.done).every(m => m && typeof m === 'object' && !Array.isArray(m) && Object.values(m).every(v => v === true)))))) return false;
             if (key === 'situation_runs' && !Object.values(value).every(run => run && typeof run === 'object' && !Array.isArray(run) && typeof run.startedAt === 'string' && run.checks && typeof run.checks === 'object' && Object.values(run.checks).every(t => typeof t === 'string'))) return false;
@@ -4785,6 +4872,7 @@ ${vaultCardHTML(card)}                    <div id="ai-settings-card" class="${ca
                 : `https://github.com/${FEEDBACK_CONFIG.repo}/issues/new?title=${encodeURIComponent(d.title)}&body=${encodeURIComponent(d.body)}`;
             if (target === 'form') copyText(`${d.title}\n\n${d.body}`, '내용을 복사했어요. 설문에 붙여 넣어 주세요.');
             window.open(url, '_blank', 'noopener');
+            Usage.event('feedback_send');
             closeSetupWizard();
         }
         function closeSetupWizard() {

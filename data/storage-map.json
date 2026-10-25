@@ -38,6 +38,7 @@
     "counsel_schedule_opts": { "target": "vault.counsel.scheduleOptions", "private": true, "rule": "Preserve user-entered names and scheduling options." },
     "theme_mode": { "target": "settings.themeMode", "private": false, "rule": "Only light, dark or system; available while locked." },
     "situation_runs": { "target": "vault.situationRuns", "private": true, "rule": "Added after the R0a baseline. Per situation publicId: startedAt and per-step check times (ISO strings) only, no free text. Preserve as-is." },
-    "start_courses": { "target": "learning.startCourses", "private": false, "rule": "Added after the R0a baseline. Active course id and per-course done flags keyed by item reference. No free text." }
+    "start_courses": { "target": "learning.startCourses", "private": false, "rule": "Added after the R0a baseline. Active course id and per-course done flags keyed by item reference. No free text." },
+    "usage_stats": { "target": "settings.usageStats", "private": false, "rule": "Added after the R0a baseline. On-device counts only (screen visits, feature events, zero-result queries without digits or class-list names, capped at 50). Never exported or migrated; may be discarded." }
   }
 }
