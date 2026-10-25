@@ -2197,7 +2197,7 @@
             }
 
             if(results.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-8 text-center bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700"><h3 class="text-base font-bold text-slate-800 dark:text-slate-200">일치하는 교직어가 없어요</h3><div class="mt-4 flex justify-center gap-3"><button type="button" onclick="clearSearch()" class="px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700">검색어 지우기</button><button type="button" onclick="router.navigate('situations')" class="px-3 py-2 rounded-lg bg-blue-600 text-white">상황 안내 보기</button></div></div>`;
+                grid.innerHTML = `<div class="col-span-full py-8 text-center bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700"><h3 class="text-base font-bold text-slate-800 dark:text-slate-200">일치하는 교직어가 없어요</h3><div class="mt-4 flex justify-center gap-3"><button type="button" onclick="clearSearch()" class="px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700">검색어 지우기</button><button type="button" onclick="router.navigate('situations')" class="px-3 py-2 rounded-lg bg-blue-600 text-white">상황 안내 보기</button></div><button type="button" onclick="openFeedback('request', document.getElementById('main-search-input')?.value || '')" class="mt-4 text-sm font-bold text-blue-600 dark:text-blue-400 underline">이 용어 추가 요청하기</button></div>`;
                 loadMoreBtn?.classList.add('hidden'); return;
             }
 
@@ -2446,7 +2446,7 @@
                     </div>
 
                     <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400 flex flex-wrap items-center justify-between gap-2">
-                        <div><i class="fa-solid fa-triangle-exclamation mr-1"></i> 지침은 시도교육청별로 다를 수 있습니다.</div>
+                        <div><i class="fa-solid fa-triangle-exclamation mr-1"></i> 지침은 시도교육청별로 다를 수 있습니다. <button type="button" onclick="openFeedback('error', DB.find(d => d.id === ${item.id})?.keyword || '', 'term:${item.id}')" class="ml-1 font-bold text-rose-600 dark:text-rose-400 underline">내용이 틀렸나요?</button></div>
                         <div class="flex items-center gap-3 shrink-0">
                             ${office ? `<a href="${escapeHTML(office.url)}" target="_blank" rel="noopener noreferrer" class="font-bold text-amber-700 dark:text-amber-300 hover:underline">${escapeHTML(office.name)} 바로가기 ↗</a>` : `<button type="button" onclick="closeModal(false); openSetupWizard()" class="font-bold text-emerald-600 dark:text-emerald-400 hover:underline">소속 교육청 설정</button>`}
                             <button onclick="router.navigate('search', DB.find(d => d.id === ${item.id}).keyword)" class="font-bold underline hover:text-blue-600 transition">탐험 시작</button>
@@ -3034,6 +3034,7 @@
 
                     <div class="${card}">
                         <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-scale-balanced text-amber-500"></i> 내용 검수 현황</h3>
+                        <div class="flex flex-wrap gap-2"><button type="button" onclick="openFeedback('error')" class="px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 text-xs font-bold">틀린 내용 신고</button><button type="button" onclick="openFeedback('request')" class="px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-bold">용어·가이드 추가 요청</button></div>
                         ${(() => { const r = reviewSummary(); const pct = r.total ? Math.round(r.reviewed / r.total * 100) : 0; return r.total ? `
                         <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">용어·상황 가이드·업무 순서 ${r.total}개 중 공식 근거와 대조를 마친 항목은 <b>${r.reviewed}개(${pct}%)</b>입니다. 검수 전 항목은 실무 경험을 바탕으로 정리한 내용이라, 처리 전에 상세 화면의 근거 법령과 소속 교육청 지침을 꼭 확인해 주세요.</p>
                         <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden" aria-hidden="true"><div class="bg-emerald-500 h-full" style="width:${pct}%"></div></div>
@@ -4222,6 +4223,75 @@
             const cls = document.getElementById('wiz-class'); if (cls && !cls.value.trim()) cls.value = '3학년 2반';
             const tch = document.getElementById('wiz-teacher'); if (tch && !tch.value.trim()) tch.value = '김교사';
             showToast('체험용 예시 학급 정보와 20명 명렬표를 채웠습니다.', 'info');
+        }
+        // 내용 오류 신고 · 용어 추가 요청. 깃허브 이슈(공개)로 보내거나 내용을 복사해 다른 경로로 전달
+        const FEEDBACK_CONFIG = { repo: 'gmlduqzhd123-lab/For-Teacher', formUrl: '' };
+        const FEEDBACK_KINDS = {
+            error: { title: '내용 오류 신고', prefix: '[오류 신고]', reasons: ['내용이 틀렸어요', '지침·법령이 바뀌었어요', '우리 지역은 달라요', '설명이 어려워요', '기타'] },
+            request: { title: '용어·가이드 추가 요청', prefix: '[추가 요청]', reasons: ['새 용어를 넣어 주세요', '상황 가이드가 필요해요', '서식이 필요해요', '기타'] }
+        };
+        let feedbackCtx = { kind: 'error', subject: '', ref: '' };
+        function openFeedback(kind = 'error', subject = '', ref = '') {
+            const m = document.getElementById('setup-wizard-modal'); const c = document.getElementById('setup-wizard-content');
+            if (!m || !c) return;
+            if (isModalOpen()) closeModal(true);
+            feedbackCtx = { kind: FEEDBACK_KINDS[kind] ? kind : 'error', subject: String(subject || '').slice(0, 80), ref: String(ref || '') };
+            const k = FEEDBACK_KINDS[feedbackCtx.kind];
+            const field = 'w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-blue-500 mt-1';
+            c.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <h3 id="setup-wizard-title" class="text-xl font-black text-slate-900 dark:text-white">${k.title}</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">보내 주신 의견으로 내용을 고치고 새 항목을 만듭니다.</p>
+                        </div>
+                        <button type="button" onclick="closeSetupWizard()" class="shrink-0 p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700" aria-label="닫기"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="flex flex-wrap gap-2" role="tablist" aria-label="의견 종류">
+                        ${Object.entries(FEEDBACK_KINDS).map(([key, v]) => `<button type="button" role="tab" aria-selected="${key === feedbackCtx.kind}" onclick="openFeedback('${key}', document.getElementById('fb-subject')?.value || '', feedbackCtx.ref)" class="px-3 py-2 rounded-xl text-xs font-bold ${key === feedbackCtx.kind ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200'}">${v.title}</button>`).join('')}
+                    </div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300">${feedbackCtx.kind === 'error' ? '어느 항목인가요?' : '어떤 용어·상황인가요?'}<input id="fb-subject" type="text" maxlength="80" value="${escapeHTML(feedbackCtx.subject)}" placeholder="${feedbackCtx.kind === 'error' ? '예: 관외 전보' : '예: 교원능력개발평가'}" class="${field}"></label>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300">종류<select id="fb-reason" class="${field}">${k.reasons.map(r => `<option>${r}</option>`).join('')}</select></label>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300">자세한 내용<textarea id="fb-body" rows="4" maxlength="1500" placeholder="${feedbackCtx.kind === 'error' ? '어떤 부분이 어떻게 다른지 적어 주세요.' : '언제 필요했는지, 어떤 내용이 있으면 좋을지 적어 주세요.'}" class="${field}"></textarea></label>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-300">근거 링크 (선택)<input id="fb-source" type="url" maxlength="300" placeholder="법령·공문·교육청 안내 주소" class="${field}"></label>
+                    <p class="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 text-xs text-amber-900 dark:text-amber-200 leading-relaxed"><b>학생·학부모 이름, 연락처 등 개인정보는 적지 마세요.</b> 깃허브로 보내면 누구나 볼 수 있는 공개 글로 등록됩니다(깃허브 계정 필요). 계정이 없으면 <b>내용 복사</b> 후 원하는 곳에 붙여 넣어 전달해 주세요.</p>
+                    <div class="flex flex-wrap justify-end gap-2">
+                        <button type="button" onclick="copyFeedback()" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-bold">내용 복사</button>
+                        ${FEEDBACK_CONFIG.formUrl ? `<button type="button" onclick="sendFeedback('form')" class="px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-bold">설문으로 보내기</button>` : ''}
+                        <button type="button" onclick="sendFeedback('github')" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold">깃허브로 보내기 ↗</button>
+                    </div>
+                </div>`;
+            m.classList.remove('hidden');
+            setTimeout(() => document.getElementById(feedbackCtx.subject ? 'fb-body' : 'fb-subject')?.focus(), 30);
+        }
+        function feedbackDraft() {
+            const k = FEEDBACK_KINDS[feedbackCtx.kind];
+            const v = id => (document.getElementById(id)?.value || '').trim();
+            const subject = v('fb-subject'), reason = v('fb-reason'), body = v('fb-body'), source = v('fb-source');
+            const lines = [
+                `- 종류: ${reason}`,
+                `- 항목: ${subject || '(미입력)'}${feedbackCtx.ref ? ` (${feedbackCtx.ref})` : ''}`,
+                `- 내용 기준일: ${DATA_META.updatedAt || '-'}`,
+                ...(currentOffice() ? [`- 소속 교육청: ${currentOffice().name}`] : []),
+                '', body || '(내용 없음)',
+                ...(source ? ['', `근거: ${source}`] : [])
+            ];
+            return { title: `${k.prefix} ${subject || reason}`.slice(0, 120), body: lines.join('\n'), ok: !!(subject || body) };
+        }
+        function copyFeedback() {
+            const d = feedbackDraft();
+            if (!d.ok) { showToast('항목이나 내용을 적어 주세요.', 'error'); return; }
+            copyText(`${d.title}\n\n${d.body}`, '의견 내용을 복사했습니다.');
+        }
+        function sendFeedback(target = 'github') {
+            const d = feedbackDraft();
+            if (!d.ok) { showToast('항목이나 내용을 적어 주세요.', 'error'); return; }
+            const url = target === 'form' && FEEDBACK_CONFIG.formUrl
+                ? FEEDBACK_CONFIG.formUrl
+                : `https://github.com/${FEEDBACK_CONFIG.repo}/issues/new?title=${encodeURIComponent(d.title)}&body=${encodeURIComponent(d.body)}`;
+            if (target === 'form') copyText(`${d.title}\n\n${d.body}`, '내용을 복사했어요. 설문에 붙여 넣어 주세요.');
+            window.open(url, '_blank', 'noopener');
+            closeSetupWizard();
         }
         function closeSetupWizard() {
             const m = document.getElementById('setup-wizard-modal');
