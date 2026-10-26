@@ -2095,7 +2095,7 @@ ${weeklyAgendaHTML()}
                                     <span>${escapeHTML(tl.label)} →</span>
                                 </button>
                             `).join('')}
-                            ${['학적·출결', '복무·휴가', '현장체험학습'].includes(item.category) ? `<button type="button" onclick="const cat='${escapeHTML(item.category)}'; closeModal(false); openCalcModal(cat==='복무·휴가'?'sick':cat==='현장체험학습'?'trip':'att');" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5"><i class="fa-solid fa-calculator"></i><span>실무 일수·병가 계산기 열기 →</span></button>` : ''}
+                            ${['학적·출결', '복무·휴가', '현장체험학습'].includes(item.category) ? `<button type="button" onclick="const cat='${escapeHTML(item.category)}'; closeModal(true); openCalcModal(cat==='복무·휴가'?'sick':cat==='현장체험학습'?'trip':'att');" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5"><i class="fa-solid fa-calculator"></i><span>실무 일수·병가 계산기 열기 →</span></button>` : ''}
                         </div>
                     </div>` : ''}
 
@@ -2181,7 +2181,7 @@ ${weeklyAgendaHTML()}
                     <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400 flex flex-wrap items-center justify-between gap-2">
                         <div><i class="fa-solid fa-triangle-exclamation mr-1"></i> 지침은 시도교육청별로 다를 수 있습니다. <button type="button" onclick="openFeedback('error', DB.find(d => d.id === ${item.id})?.keyword || '', 'term:${item.id}')" class="ml-1 font-bold text-rose-600 dark:text-rose-400 underline">내용이 틀렸나요?</button></div>
                         <div class="flex items-center gap-3 shrink-0">
-                            ${office ? `<a href="${escapeHTML(office.url)}" target="_blank" rel="noopener noreferrer" class="font-bold text-amber-700 dark:text-amber-300 hover:underline">${escapeHTML(office.name)} 바로가기 ↗</a>` : `<button type="button" onclick="closeModal(false); openSetupWizard()" class="font-bold text-emerald-600 dark:text-emerald-400 hover:underline">소속 교육청 설정</button>`}
+                            ${office ? `<a href="${escapeHTML(office.url)}" target="_blank" rel="noopener noreferrer" class="font-bold text-amber-700 dark:text-amber-300 hover:underline">${escapeHTML(office.name)} 바로가기 ↗</a>` : `<button type="button" onclick="closeModal(true); openSetupWizard()" class="font-bold text-emerald-600 dark:text-emerald-400 hover:underline">소속 교육청 설정</button>`}
                             <button onclick="router.navigate('search', DB.find(d => d.id === ${item.id}).keyword)" class="font-bold underline hover:text-blue-600 transition">탐험 시작</button>
                         </div>
                     </div>
@@ -2987,7 +2987,7 @@ ${weeklyAgendaHTML()}
         // ---------- 9. 달력(.ics) 내보내기 ----------
         function getIcsYear() { const d = new Date(); const def = d.getMonth() + 1 >= 3 ? d.getFullYear() : d.getFullYear() - 1; const y = Number(Storage.get('ics_year', def)); return Number.isFinite(y) && y > 2000 ? y : def; }
         function getTaskDate(sy, m, idx) { const saved = Storage.get('year_task_dates', {})[`${sy}_${m}_${idx}`]; return saved || `${m >= 3 ? sy : sy + 1}-${pad2(m)}-01`; }
-        function setTaskDate(sy, m, idx, v) { const all = Storage.get('year_task_dates', {}); if (v) all[`${sy}_${m}_${idx}`] = v; else delete all[`${sy}_${m}_${idx}`]; Storage.set('year_task_dates', all); }
+        function setTaskDate(sy, m, idx, v) { const all = Storage.get('year_task_dates', {}); if (v && !isNaN(parseYMD(v))) all[`${sy}_${m}_${idx}`] = v; else delete all[`${sy}_${m}_${idx}`]; Storage.set('year_task_dates', all); }
         function icsEscape(s) { return String(s).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n'); }
         // RFC 5545: 한 줄은 75바이트 이하, 넘으면 줄바꿈 + 공백으로 이어 씀
         function foldIcsLine(line) {
@@ -3499,7 +3499,6 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             return validateBackup(wrapped ? payload.data : payload);
         }
         function backupData() {
-            saveSetting('lastBackupAt', ymd(new Date()));
             const data = {};
             Storage.error = null;
             const keys = Storage.ownKeys().filter(key => !BACKUP_EXCLUDE.includes(key) && !Vault.protects(key));
@@ -3511,12 +3510,15 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                 if (Storage.error) { showToast('읽을 수 없는 자료가 있어 백업을 중지했습니다.', 'error'); return; }
                 if (val !== null && val !== undefined) data[k] = val;
             }
+            const today = ymd(new Date());
+            data.settings = { ...(data.settings && typeof data.settings === 'object' && !Array.isArray(data.settings) ? data.settings : getSettings()), lastBackupAt: today };
             const payload = { app: 'gyojik-baekseo-1000', version: 3, exportedAt: new Date().toISOString(), data };
             try {
                 validateBackup(data);
                 const json = JSON.stringify(payload);
                 if (new TextEncoder().encode(json).length > BACKUP_MAX_BYTES) throw new Error('백업 크기가 20 MiB를 넘습니다.');
-                downloadFile(`baekseo_backup_${ymd(new Date())}.json`, json, 'application/json');
+                saveSetting('lastBackupAt', today);
+                downloadFile(`baekseo_backup_${today}.json`, json, 'application/json');
                 showToast('백업 파일을 만들었습니다. 다운로드 위치를 확인해 주세요.', 'success');
                 if (router.current === 'mybox') router.render();
             } catch (err) { showToast(err.message, 'error'); }
@@ -3553,24 +3555,32 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             if (pw.length < 8) { showToast('비밀번호를 8자 이상 입력해 주세요.', 'error'); return; }
             if (!cryptoReady()) return;
             if (Vault.isLocked()) { showToast('개인 기록 잠금을 먼저 풀어야 상담 기록까지 백업할 수 있어요.', 'error'); router.navigate('counsel'); return; }
-            saveSetting('lastBackupAt', ymd(new Date()));
             const general = {};
-            for (const k of Storage.ownKeys().filter(key => !BACKUP_EXCLUDE.includes(key))) {
+            Storage.error = null;
+            const keys = Storage.ownKeys().filter(key => !BACKUP_EXCLUDE.includes(key));
+            if (Storage.error) { showToast('저장소 목록을 읽지 못해 백업을 중지했습니다.', 'error'); return; }
+            for (const k of keys) {
                 if (Object.prototype.hasOwnProperty.call(BACKUP_TYPES, k)) {
+                    Storage.error = null;
                     const val = Storage.get(k, null);
+                    if (Storage.error) { showToast('읽을 수 없는 자료가 있어 백업을 중지했습니다.', 'error'); return; }
                     if (val !== null && val !== undefined) general[k] = val;
                 }
             }
+            const today = ymd(new Date());
+            general.settings = { ...(general.settings && typeof general.settings === 'object' && !Array.isArray(general.settings) ? general.settings : getSettings()), lastBackupAt: today };
             const counsel = getCounsel();
             try {
+                validateBackup(general);
                 const iterations = 250000; const salt = crypto.getRandomValues(new Uint8Array(16)); const iv = crypto.getRandomValues(new Uint8Array(12));
                 const key = await deriveKey(pw, salt, iterations);
                 const plain = new TextEncoder().encode(JSON.stringify({ general, counsel, exportedAt: new Date().toISOString() }));
                 const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plain);
-                downloadFile(`교직백서_통합암호화백업_${ymd(new Date())}.json`, JSON.stringify({ app: 'gyojik-baekseo-1000', type: 'full-encrypted', v: 1, kdf: 'PBKDF2-SHA256', iterations, salt: bufToB64(salt), iv: bufToB64(iv), data: bufToB64(ct) }), 'application/json');
+                saveSetting('lastBackupAt', today);
+                downloadFile(`교직백서_통합암호화백업_${today}.json`, JSON.stringify({ app: 'gyojik-baekseo-1000', type: 'full-encrypted', v: 1, kdf: 'PBKDF2-SHA256', iterations, salt: bufToB64(salt), iv: bufToB64(iv), data: bufToB64(ct) }), 'application/json');
                 showToast('모든 데이터와 상담 기록을 통합 암호화 백업했습니다!', 'success');
                 if (router.current === 'mybox') router.render();
-            } catch (err) { showToast('통합 암호화 백업 중 오류가 발생했습니다.', 'error'); }
+            } catch (err) { showToast(err.message || '통합 암호화 백업 중 오류가 발생했습니다.', 'error'); }
         }
 
         async function importFullEncryptedBackup(e) {
@@ -3591,11 +3601,16 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                 const generalEntries = payload.general && Object.keys(payload.general).length ? validateBackup(payload.general) : [];
                 const counselList = Array.isArray(payload.counsel) ? payload.counsel : [];
                 if (!confirm(`일반 자료 ${generalEntries.length}종류와 상담 기록 ${counselList.length}건을 복원할까요?`)) return;
-                for (const [k, v] of generalEntries) Storage.set(k, v);
+                const failed = [];
+                for (const [k, v] of generalEntries) if (!Storage.set(k, v)) failed.push(k);
                 if (counselList.length) {
                     const map = new Map(getCounsel().map(r => [r.id, r]));
                     counselList.forEach(r => { if (r && r.id) map.set(r.id, r); });
-                    saveCounsel([...map.values()]);
+                    if (!saveCounsel([...map.values()])) failed.push('counsel_records');
+                }
+                if (failed.length) {
+                    showToast(`일부 자료를 저장하지 못했습니다(${failed.length}종류). 다시 시도해 주세요.`, 'error');
+                    return;
                 }
                 showToast('통합 백업을 복원했습니다. 화면을 새로고침합니다.');
                 setTimeout(() => window.location.reload(), 900);
@@ -3914,7 +3929,8 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
         function parseYMD(s) {
             if (typeof s !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return new Date(NaN);
             const [y, m, d] = s.split('-').map(Number);
-            return new Date(y, m - 1, d);
+            const dt = new Date(y, m - 1, d);
+            return dt.getFullYear() === y && dt.getMonth() + 1 === m && dt.getDate() === d ? dt : new Date(NaN);
         }
         // 우리 학교 학사일정 (설정 > calendar). 입력한 날짜만 쓰고, 비어 있으면 표시하지 않음
         const SCHOOL_EVENTS = [
@@ -4107,7 +4123,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             ` + FOOTER_HTML;
             startClock();
         }
-        function updatePeriod(i, key, value) { const tt = getTimetable(); if (!tt.periods[i]) return; tt.periods[i][key] = value; saveTimetable(tt); refreshNowStatus(); }
+        function updatePeriod(i, key, value) { const tt = getTimetable(); if (!tt.periods[i] || !/^\d{2}:\d{2}$/.test(value)) { rerenderKeepScroll(); return; } tt.periods[i][key] = value; saveTimetable(tt); refreshNowStatus(); }
         function updateSubject(di, i, value) { const tt = getTimetable(); tt.grid[di][i] = value.trim(); saveTimetable(tt); refreshNowStatus(); }
         function addPeriod() {
             const tt = getTimetable(); if (tt.periods.length >= 10) { showToast('교시는 10개까지 만들 수 있어요.', 'error'); return; }
@@ -4588,7 +4604,8 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
         }
         function saveCounselRecord() {
             const v = id => document.getElementById(id).value;
-            const rec = { date: v('cs-date') || ymd(new Date()), student: v('cs-student').trim(), who: v('cs-who'), how: v('cs-how'), topic: v('cs-topic').trim(), summary: v('cs-summary').trim(), followup: v('cs-followup').trim() };
+            const rawDate = v('cs-date');
+            const rec = { date: rawDate && !isNaN(parseYMD(rawDate)) ? rawDate : ymd(new Date()), student: v('cs-student').trim(), who: v('cs-who'), how: v('cs-how'), topic: v('cs-topic').trim(), summary: v('cs-summary').trim(), followup: v('cs-followup').trim() };
             if (!rec.student) { showToast('학생 이름을 입력해 주세요.', 'error'); return; }
             if (!rec.summary && !rec.topic) { showToast('주제나 상담 내용을 입력해 주세요.', 'error'); return; }
             const list = getCounsel();
@@ -4611,11 +4628,11 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
         function makeCounselSchedule() {
             const v = id => document.getElementById(id).value;
             const o = { from: v('sc-from'), to: v('sc-to'), start: v('sc-start'), end: v('sc-end'), slot: Number(v('sc-slot')) || 20, names: v('sc-names') };
+            const from = parseYMD(o.from), to = parseYMD(o.to); const s = toMin(o.start), e = toMin(o.end);
+            if (isNaN(from) || isNaN(to) || !(to >= from) || !/^\d{2}:\d{2}$/.test(o.start) || !/^\d{2}:\d{2}$/.test(o.end) || !(e > s)) { showToast('날짜·시간 범위를 확인해 주세요.', 'error'); return; }
             Storage.set('counsel_schedule_opts', o);
             const names = parseNameList(o.names).length ? parseNameList(o.names) : parseNameList(Storage.get('class_names', ''));
             if (!names.length) { showToast('상담할 학생 이름을 입력해 주세요.', 'error'); return; }
-            const from = parseYMD(o.from), to = parseYMD(o.to); const s = toMin(o.start), e = toMin(o.end);
-            if (!(to >= from) || !(e > s)) { showToast('날짜·시간 범위를 확인해 주세요.', 'error'); return; }
             const slots = [];
             for (let d = new Date(from); d <= to && slots.length < 500; d.setDate(d.getDate() + 1)) {
                 if (d.getDay() === 0 || d.getDay() === 6) continue;
