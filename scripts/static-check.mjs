@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
 const root = new URL('../', import.meta.url);
 const read = file => fs.readFileSync(new URL(file, root), 'utf8');
@@ -13,7 +14,7 @@ for (const file of ['terms.json', 'manifest.webmanifest', ...fs.readdirSync(new 
 }
 
 for (const file of ['js/data.js', 'js/app.js', 'sw.js', 'ys-install.js']) {
-  try { execFileSync(process.execPath, ['--check', new URL(file, root).pathname], { stdio: 'pipe' }); }
+  try { execFileSync(process.execPath, ['--check', fileURLToPath(new URL(file, root))], { stdio: 'pipe' }); }
   catch (err) { problems.push(`syntax ${file}: ${String(err.stderr || err.message).split('\n').slice(0, 4).join(' ')}`); }
 }
 

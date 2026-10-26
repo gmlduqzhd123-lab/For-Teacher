@@ -919,7 +919,7 @@
                 try {
                     if (this.current === 'tools-record' && pendingRecordDraft && !saveRecordDraftNow()) return;
                      const navGroup = { start: 'quiz', situations: 'search', navigator: 'search', map: 'search', 'tools-board': 'year', 'tools-doc': 'year', career: 'year', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', card: 'quiz', 'tools-edutech': 'quiz' };
-                     const mobGroup = { home: 'home', search: 'search', navigator: 'search', map: 'search', situations: 'situations', 'tools-class': 'tools-class', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', 'tools-doc': 'tools-class', 'tools-board': 'tools-class', year: 'menu', career: 'menu', quiz: 'menu', card: 'menu', 'tools-edutech': 'menu', mybox: 'menu' };
+                     const mobGroup = { home: 'home', search: 'search', navigator: 'search', map: 'search', situations: 'situations', 'tools-class': 'tools-class', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', 'tools-doc': 'tools-class', 'tools-board': 'tools-class', year: 'menu', career: 'menu', quiz: 'menu', card: 'menu', 'tools-edutech': 'menu', mybox: 'menu', start: 'menu' };
                      const activeNav = navGroup[this.current] || this.current;
                      document.querySelectorAll('[data-primary-nav]').forEach(el => { const active = el.dataset.primaryNav === activeNav; el.classList.toggle('active', active); if (active) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current'); });
                     document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('bg-blue-50', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400'));
@@ -981,7 +981,11 @@
                 return;
             }
             stopIntervals(); closePresent();
+            if (typeof closeCommandPalette === 'function') closeCommandPalette();
+            if (typeof closeSetupWizard === 'function') closeSetupWizard();
+            if (typeof closeMobileMenu === 'function') closeMobileMenu();
             router.current = s.view; router.param = s.param;
+            Usage.view(s.view);
             router.render(); scrollViewTop();
         });
 
@@ -2210,7 +2214,7 @@ ${weeklyAgendaHTML()}
             currentDetailId = null;
             // body는 원래 overflow-hidden 클래스이므로 'auto'로 덮어쓰지 않고 인라인 스타일만 제거
             document.body.style.overflow = ''; window.removeEventListener('keydown', handleModalKeyDown);
-            document.title = `${({home:'홈',search:'교직어 검색',situations:'상황 가이드',navigator:'교직 내비게이터'})[router.current] || '교직 도구'} | 교직백서 1000`;
+            document.title = `${({start:'역할별 시작 코스',home:'홈',search:'교직어 검색',situations:'상황 가이드',navigator:'교직 내비게이터',year:'교사의 1년','tools-doc':'문서 양식','tools-record':'생기부 문장 도우미',counsel:'상담 기록장',mybox:'나의 교직함'})[router.current] || '교직 도구'} | 교직백서 1000`;
             if(lastFocusedElement && document.body.contains(lastFocusedElement)) { try { lastFocusedElement.focus(); } catch(e) {} }
             lastFocusedElement = null;
             // 검색어(param)를 유지한 채 주소만 되돌림 → 닫을 때 검색 화면이 초기화되던 문제 해결
@@ -2477,7 +2481,7 @@ ${weeklyAgendaHTML()}
                 const pr = startCourseProgress(c); const pct = pr.total ? Math.round(pr.done / pr.total * 100) : 0;
                 const on = active && active.id === c.id;
                 return `<button type="button" onclick="chooseStartCourse('${c.id}')" aria-pressed="${!!on}" class="text-left p-3 sm:p-4 rounded-2xl border ${on ? 'border-blue-600 ring-2 ring-blue-500/20 bg-blue-50/60 dark:bg-blue-900/20' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-blue-400'} transition">
-                    <span class="flex items-center gap-2 text-sm font-extrabold text-slate-900 dark:text-white"><i class="fa-solid ${c.icon} text-blue-600 dark:text-blue-400"></i>${c.label}</span>
+                    <span class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white whitespace-nowrap"><i class="fa-solid ${c.icon} text-blue-600 dark:text-blue-400"></i>${c.label}</span>
                     <span class="block text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1">${c.who}</span>
                     <span class="mt-3 flex items-center gap-2"><span class="flex-1 h-1.5 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden"><span class="block h-full bg-blue-600" style="width:${pct}%"></span></span><span class="text-xs font-bold text-slate-600 dark:text-slate-300">${pr.done}/${pr.total}</span></span>
                 </button>`;
@@ -2489,7 +2493,7 @@ ${weeklyAgendaHTML()}
                     <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleStartCourseItem('${active.id}', ${i})" aria-label="${escapeHTML(info.title)} 완료" class="w-5 h-5 shrink-0 accent-emerald-600 cursor-pointer">
                     <span class="w-7 text-xs font-extrabold text-slate-400 shrink-0">${String(n + 1).padStart(2, '0')}</span>
                     <button type="button" onclick="openStartCourseItem('${active.id}', ${i})" class="flex-1 min-w-0 text-left group">
-                        <span class="flex flex-wrap items-center gap-x-2"><span class="text-sm font-bold ${done ? 'text-slate-500 dark:text-slate-400' : 'text-slate-900 dark:text-white'} group-hover:text-blue-600">${escapeHTML(info.title)}</span><span class="text-[11px] font-semibold text-slate-400"><i class="fa-solid ${info.icon} mr-0.5"></i>${info.kind}</span></span>
+                        <span class="flex flex-wrap items-center gap-x-2"><span class="text-sm font-bold ${done ? 'text-slate-500 dark:text-slate-400' : 'text-slate-900 dark:text-white'} group-hover:text-blue-600">${escapeHTML(info.title)}</span><span class="text-[11px] font-semibold text-slate-400 whitespace-nowrap"><i class="fa-solid ${info.icon} mr-0.5"></i>${info.kind}</span></span>
                         <span class="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">${escapeHTML(it.why)}</span>
                     </button>
                     <span class="text-slate-300 dark:text-slate-600 shrink-0" aria-hidden="true">›</span>
@@ -2594,7 +2598,7 @@ ${weeklyAgendaHTML()}
                     <div class="p-4 rounded-2xl bg-blue-50/70 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 space-y-2">
                         <label for="ai-key-input" class="block text-xs font-bold text-blue-900 dark:text-blue-200">내 Anthropic API 키</label>
                         <input id="ai-key-input" type="password" autocomplete="off" placeholder="sk-ant-..." class="w-full p-2.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm">
-                        <label class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300"><input id="ai-key-remember" type="checkbox" class="w-4 h-4"> 이 기기에 기억하기 (끄면 브라우저를 닫을 때 지워짐)</label>
+                        <label class="flex items-center gap-2 text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 whitespace-nowrap"><input id="ai-key-remember" type="checkbox" class="w-4 h-4 shrink-0"> 이 기기에 기억하기 (끄면 창 닫을 때 삭제)</label>
                         <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">키는 <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer" class="underline font-bold">Anthropic 콘솔</a>에서 만들 수 있고 사용량만큼 요금이 청구됩니다. 키는 이 기기에만 저장되며 백업 파일에 들어가지 않습니다. 공용 컴퓨터에서는 기억하기를 켜지 마세요.</p>
                         <button type="button" onclick="saveAiKeyFromForm()" class="px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold">키 저장</button>
                     </div>`;
