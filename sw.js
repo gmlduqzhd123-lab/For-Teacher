@@ -3,7 +3,7 @@
  * - CDN 파일(Tailwind, 폰트, 아이콘): 저장본 우선 → 없으면 네트워크
  * 앱 파일 구성을 크게 바꾸면 아래 VERSION 숫자를 올려 주세요. (CORE에 없는 새 파일은 scripts/static-check.mjs가 알려 줍니다)
  */
-const VERSION = 'gb1000-v23';
+const VERSION = 'gb1000-v24';
 // 같은 주소(gmlduqzhd123-lab.github.io)의 다른 앱들과 저장소를 함께 쓰므로, 이 앱의 이전 캐시만 지운다.
 const CACHE_PREFIX = 'gb1000-v';
 const CORE = ['./', './index.html', './css/app.css', './js/data.js', './js/app.js', './terms.json', './data/legacy-map.json', './data/public-links.json', './data/content-meta.json', './manifest.webmanifest', './ys-install.js', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'];

@@ -24,6 +24,21 @@
             if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(() => showToast(msg)).catch(fallback);
             else fallback();
         }
+        // 일반 텍스트(메신저용)와 HTML 표(한글·워드·엑셀 붙여넣기용)를 동시에 클립보드에 복사
+        function copyRichTable(plainText, htmlTable, msg = '클립보드에 복사되었습니다.') {
+            if (!plainText) return;
+            if (navigator.clipboard && window.isSecureContext && typeof ClipboardItem !== 'undefined' && htmlTable) {
+                try {
+                    const item = new ClipboardItem({
+                        'text/plain': new Blob([plainText], { type: 'text/plain' }),
+                        'text/html': new Blob([htmlTable], { type: 'text/html' })
+                    });
+                    navigator.clipboard.write([item]).then(() => showToast(msg)).catch(() => copyText(plainText, msg));
+                    return;
+                } catch (_) {}
+            }
+            copyText(plainText, msg);
+        }
 
         const Storage = {
             PREFIX: 'eb_1000_final_', LEGACY: 'eb_1000_v7_',
@@ -547,6 +562,71 @@
             }
             return { weekdays, totalDays, weekendDays };
         }
+        function parseSmartCalcQuery(rawQuery) {
+            const q = String(rawQuery || '').trim();
+            if (q.length < 2) return null;
+            // 1. 병가 6일(48시간) 누계 계산
+            if (/병가|진단서\s*기준|48\s*시간/.test(q) && (/\d/.test(q) || /병가\s*계산|진단서\s*기준/.test(q))) {
+                const dm = q.match(/(\d+)\s*일/);
+                const hm = q.match(/(\d+)\s*시간/);
+                const mm = q.match(/(\d+)\s*분/);
+                const hasExplicitTime = !!(dm || hm || mm);
+                const d = dm ? Number(dm[1]) : (hasExplicitTime ? 0 : 4);
+                const h = hm ? Number(hm[1]) : (hasExplicitTime ? 0 : 5);
+                const m = mm ? Number(mm[1]) : (hasExplicitTime ? 0 : 30);
+                const r = calcSickLeave6(d, h, m);
+                return {
+                    tab: 'sick',
+                    title: `병가 누계 ${r.usedLabel}`,
+                    sub: r.remainLabel,
+                    warn: r.needsDoctorNote
+                };
+            }
+            // 2. 수업일수 2/3 출석·결석 계산
+            if (/수업\s*일수|출석\s*일수|결석\s*\d+|\d+\s*일?\s*결석|2\/3|유급\s*기준|수료\s*기준/.test(q)) {
+                const nums = [...q.matchAll(/\d+/g)].map(m => Number(m[0])).filter(n => n !== 2 && n !== 3);
+                const total = nums.find(n => n >= 150 && n <= 240) || 190;
+                const absMatch = q.match(/결석\s*(\d+)|(\d+)\s*일?\s*결석/);
+                const absent = absMatch ? Number(absMatch[1] || absMatch[2]) : (nums.find(n => n > 0 && n < 150) || 0);
+                const r = calcAttendance23(total, absent);
+                return {
+                    tab: 'att',
+                    title: `연간 ${r.totalDays}일 기준 수료 최소 출석 ${r.requiredDays}일 (최대 결석 허용 ${r.maxAbsentDays}일)`,
+                    sub: r.currentAbsent > 0 ? (r.remainAllowance >= 0 ? `현재 결석 ${r.currentAbsent}일 반영 시 수료 마지노선까지 ${r.remainAllowance}일 여유` : `수료 기준보다 ${Math.abs(r.remainAllowance)}일 부족 (유급·미수료 주의)`) : '초·중등교육법 시행령 기준 수업일수의 2/3 이상 출석 시 수료 인정',
+                    warn: r.remainAllowance < 0
+                };
+            }
+            // 3. 날짜 기간 평일 일수 계산 (YYYY-MM-DD~YYYY-MM-DD 또는 M/D~M/D)
+            const ymdRange = q.match(/(\d{4}-\d{2}-\d{2})\s*[~∼\-부터]\s*(\d{4}-\d{2}-\d{2})/);
+            const mdRange = !ymdRange && q.match(/(\d{1,2})\s*[./월]\s*(\d{1,2})\s*일?\s*[~∼\-부터]\s*(\d{1,2})\s*[./월]\s*(\d{1,2})\s*일?/);
+            if (ymdRange || mdRange) {
+                const yr = new Date().getFullYear();
+                const sYmd = ymdRange ? ymdRange[1] : `${yr}-${pad2(mdRange[1])}-${pad2(mdRange[2])}`;
+                const eYmd = ymdRange ? ymdRange[2] : `${yr}-${pad2(mdRange[3])}-${pad2(mdRange[4])}`;
+                const r = calcWeekdaysBetween(sYmd, eYmd);
+                if (r.totalDays > 0) {
+                    return {
+                        tab: 'trip',
+                        title: `${sYmd} ~ ${eYmd} 주말 제외 평일 ${r.weekdays}일`,
+                        sub: `전체 ${r.totalDays}일 중 주말(토·일) ${r.weekendDays}일 제외 (공휴일·재량휴업일은 별도 제외)`,
+                        warn: false
+                    };
+                }
+            }
+            return null;
+        }
+        function buildSmartSearchAnswerHTML(rawQuery) {
+            const res = parseSmartCalcQuery(rawQuery);
+            if (!res) return '';
+            return `<div class="p-3.5 rounded-2xl bg-indigo-50/90 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div class="flex flex-wrap items-center gap-2 min-w-0">
+                    <span class="px-2 py-0.5 rounded-md bg-indigo-600 text-white font-extrabold shrink-0">🧮 즉시 계산</span>
+                    <span class="font-extrabold text-slate-900 dark:text-white">${escapeHTML(res.title)}</span>
+                    <span class="${res.warn ? 'text-rose-600 dark:text-rose-400 font-extrabold' : 'text-indigo-700 dark:text-indigo-300 font-semibold'}">· ${escapeHTML(res.sub)}</span>
+                </div>
+                <button type="button" onclick="openCalcModal('${res.tab}')" class="shrink-0 px-3 py-1 rounded-lg bg-white dark:bg-slate-800 border border-indigo-200 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300 font-bold hover:bg-indigo-100">계산기 열기 →</button>
+            </div>`;
+        }
 
         const SOS_CASES = [
             {
@@ -1001,6 +1081,15 @@
 
         let homeDockTab = 'class';
         function switchHomeDock(tab) { homeDockTab = tab; renderHome(document.getElementById('app-view')); }
+        function getActiveSituationRun() {
+            const candidates = SITUATIONS.map(sit => {
+                const pr = situationProgress(sit);
+                if (!pr || pr.done <= 0 || pr.done >= pr.total) return null;
+                const ts = Date.parse(pr.run.updatedAt || pr.run.startedAt || '') || 0;
+                return { sit, pr, ts };
+            }).filter(Boolean).sort((a, b) => b.ts - a.ts);
+            return candidates[0] || null;
+        }
 
         function renderHome(container) {
             const month = new Date().getMonth() + 1;
@@ -1011,6 +1100,7 @@
             const studentCount = parseNameList(Storage.get('class_names', '')).length;
             const hasSetup = !!(s.schoolName || s.className || s.teacherName);
             const nowSt = getNowStatus();
+            const activeRun = getActiveSituationRun();
 
             const classDockItems = [
                 { icon: 'fa-stopwatch text-blue-600', title: '스마트 타이머', sub: '전자칠판 전체화면', action: "openPresent('timer')" },
@@ -1060,6 +1150,7 @@
                                 <button type="button" onclick="router.navigate('timetable')" class="px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300"><i class="fa-regular fa-clock mr-1"></i><span class="now-status-title">${escapeHTML(nowSt.title)}</span> · <span class="now-status-sub">${escapeHTML(nowSt.sub)}</span></button>
                                 ${office ? `<a href="${escapeHTML(office.url)}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:underline">${escapeHTML(office.name)} ↗</a>` : ''}
                                 ${(() => { const ev = nextSchoolEvent(); return ev ? `<button type="button" onclick="router.navigate('mybox', 'calendar')" class="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300" title="우리 학교 학사일정"><i class="fa-regular fa-calendar mr-1"></i>${escapeHTML(ev.label)} ${ev.days === 0 ? '오늘' : `D-${ev.days}`}</button>` : `<button type="button" onclick="router.navigate('mybox', 'calendar')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-indigo-600"><i class="fa-regular fa-calendar mr-1"></i>학사일정 입력하고 방학 D-day 보기</button>`; })()}
+                                ${activeRun ? `<button type="button" onclick="openSituationRun('${escapeHTML(activeRun.sit.publicId)}')" class="px-2.5 py-1 rounded-lg bg-rose-600 text-white font-extrabold shadow-sm"><i class="fa-solid fa-bolt mr-1"></i>진행 중: ${escapeHTML(activeRun.sit.title)} (${activeRun.pr.done}/${activeRun.pr.total}) 이어하기 →</button>` : ''}
                             </div>
                             <div class="flex flex-wrap items-center gap-1.5 shrink-0">
                                 <button type="button" onclick="openSosModal()" class="px-3 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-300 text-xs font-extrabold hover:bg-rose-100"><i class="fa-solid fa-kit-medical mr-1"></i>긴급 SOS</button>
@@ -1076,6 +1167,7 @@
                                 </div>
                             </div>
                             <div class="flex flex-wrap items-center gap-2 shrink-0">
+                                ${activeRun ? `<button type="button" onclick="openSituationRun('${escapeHTML(activeRun.sit.publicId)}')" class="px-3 py-2 rounded-xl bg-rose-600 text-white text-xs font-extrabold shadow-sm"><i class="fa-solid fa-bolt mr-1"></i>진행 중: ${escapeHTML(activeRun.sit.title)} (${activeRun.pr.done}/${activeRun.pr.total}) 이어하기 →</button>` : ''}
                                 <button type="button" onclick="openSosModal()" class="px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-300 text-xs font-extrabold">🚨 긴급 SOS</button>
                                 <button type="button" onclick="router.navigate('start')" class="px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs font-bold">🚩 역할별 시작 코스</button>
                                 <button type="button" onclick="openGuideModal()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold">❓ 30초 사용법</button>
@@ -1192,13 +1284,31 @@ ${weeklyAgendaHTML()}
         function getCustomTemplates() { const t = Storage.get('custom_templates', []); return Array.isArray(t) ? t : []; }
         function getAllTemplates() { return [...DOC_TEMPLATES, ...getCustomTemplates().map(t => ({ ...t, custom: true }))]; }
         // 이름이 이렇게 된 빈칸은 자동으로 채워 둠 (직접 수정 가능)
+        function todayTimetableSummary() {
+            const tt = getTimetable();
+            const dow = new Date().getDay();
+            const di = (dow >= 1 && dow <= 5) ? dow - 1 : 0;
+            const daySubjs = (tt.grid[di] || []).map((subj, idx) => subj ? `${idx + 1}교시(${subj})` : '').filter(Boolean);
+            return daySubjs.length ? daySubjs.join(', ') : '';
+        }
+        function todayFirstSubject() {
+            const tt = getTimetable();
+            const dow = new Date().getDay();
+            const di = (dow >= 1 && dow <= 5) ? dow - 1 : 0;
+            return (tt.grid[di] || []).find(Boolean) || '';
+        }
         const AUTO_VARS = {
             '오늘': () => koreanDate(), '오늘날짜': () => koreanDate(), '날짜': () => koreanDate(), '작성일': () => koreanDate(),
             '학교명': () => getSettings().schoolName, '학교': () => getSettings().schoolName,
             '담임': () => getSettings().teacherName, '담임교사': () => getSettings().teacherName, '교사명': () => getSettings().teacherName,
-            '학년반': () => getSettings().className, '학년/반': () => getSettings().className
+            '학년반': () => getSettings().className, '학년/반': () => getSettings().className,
+            '대상교시': () => todayTimetableSummary(),
+            '과목명': () => todayFirstSubject(),
+            '상담기간': () => { const o = counselScheduleOpts(); return o && o.from && o.to && !isNaN(parseYMD(o.from)) && !isNaN(parseYMD(o.to)) ? `${koreanDate(parseYMD(o.from))} ~ ${koreanDate(parseYMD(o.to))}` : ''; },
+            '상담시간': () => { const o = counselScheduleOpts(); return o && o.start && o.end ? `${o.start} ~ ${o.end}` : ''; }
         };
         let tplEditorMode = null;
+        let docOutputStyle = 'full';
 
         function renderToolsDoc(container, initialTemplateId = null) {
             let sharedNotice = '';
@@ -1259,7 +1369,13 @@ ${weeklyAgendaHTML()}
                         </div>
                         <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm flex flex-col">
                             <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
-                                <span class="text-sm font-bold text-slate-900 dark:text-white">완성된 텍스트 <span class="text-[11px] font-medium text-slate-400">(직접 고쳐도 돼요)</span></span>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="text-sm font-bold text-slate-900 dark:text-white">완성된 텍스트</span>
+                                    <div class="inline-flex rounded-lg bg-slate-100 dark:bg-slate-700 p-0.5 text-[11px] font-bold">
+                                        <button type="button" id="doc-style-full" onclick="setDocOutputStyle('full')" class="px-2.5 py-1 rounded-md ${docOutputStyle === 'full' ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-300'}">문서 원문</button>
+                                        <button type="button" id="doc-style-short" onclick="setDocOutputStyle('short')" class="px-2.5 py-1 rounded-md ${docOutputStyle === 'short' ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-300'}">📱 하이톡·문자 요약</button>
+                                    </div>
+                                </div>
                                 <div class="flex gap-2">
                                     ${aiButtonHTML('doc-output', 'letter')}
                                     <button onclick="printDoc()" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition"><i class="fa-solid fa-print"></i> 가정통신문 인쇄</button>
@@ -1315,12 +1431,41 @@ ${weeklyAgendaHTML()}
             }
         }
 
+        function setDocOutputStyle(style) {
+            docOutputStyle = style === 'short' ? 'short' : 'full';
+            const fullBtn = document.getElementById('doc-style-full');
+            const shortBtn = document.getElementById('doc-style-short');
+            if (fullBtn && shortBtn) {
+                fullBtn.className = `px-2.5 py-1 rounded-md ${docOutputStyle === 'full' ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-300'}`;
+                shortBtn.className = `px-2.5 py-1 rounded-md ${docOutputStyle === 'short' ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-300'}`;
+            }
+            if (currentDocTemplate) updateDocOutput();
+        }
+        function buildShortDocSummary(tpl, fullText, values) {
+            const s = getSettings();
+            const cls = values['학년반'] || values['학년/반'] || s.className || '';
+            const tch = values['담임'] || values['담임교사'] || s.teacherName || '';
+            const head = `[${cls ? cls + ' ' : ''}알림] ${tpl.title}`;
+            const entries = Object.entries(values).filter(([k, v]) => v && !['학교명', '학교', '학년반', '학년/반', '담임', '담임교사', '교사명', '오늘', '오늘날짜', '날짜', '작성일'].includes(k.replace(/\s/g, '')));
+            const lines = fullText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+            const coreLines = entries.length
+                ? entries.map(([k, v]) => `• ${k}: ${v}`)
+                : lines.slice(0, 3).map(l => l.startsWith('-') || l.startsWith('•') ? l : `• ${l}`);
+            const firstSentence = lines[0] ? lines[0].replace(/^학부모님\s*안녕하십니까\.?\s*/, '').trim() : '';
+            return [
+                head,
+                ...(firstSentence && !entries.length ? [firstSentence] : []),
+                ...coreLines.slice(0, 5),
+                `감사합니다.${tch ? ` (${cls ? cls + ' ' : ''}담임 ${tch} 드림)` : ''}`
+            ].filter(Boolean).join('\n');
+        }
         function updateDocOutput() {
             if (!currentDocTemplate) return;
             // 원본 템플릿 기준으로 한 번에 치환 (입력값 안의 [..]가 다시 치환되지 않도록)
             const values = {};
             document.querySelectorAll('.doc-var-input').forEach(input => { values[input.getAttribute('data-var')] = input.value; });
-            document.getElementById('doc-output').value = currentDocTemplate.content.replace(/\[(.*?)\]/g, (m, v) => (values[v] ? values[v] : m));
+            const fullText = currentDocTemplate.content.replace(/\[(.*?)\]/g, (m, v) => (values[v] ? values[v] : m));
+            document.getElementById('doc-output').value = docOutputStyle === 'short' ? buildShortDocSummary(currentDocTemplate, fullText, values) : fullText;
             updateDocCounter();
         }
         function updateDocCounter() {
@@ -1521,6 +1666,7 @@ ${weeklyAgendaHTML()}
         }
 
         // ---- 자리 배치 ----
+        let selectedSeatIdx = null;
         function getSeatOpts() { return { cols: 6, pairMode: true, separate: '', front: '', ...Storage.get('seat_opts', {}) }; }
         function setSeatOpt(k, v) { const o = getSeatOpts(); o[k] = v; Storage.set('seat_opts', o); }
         function parseNameList(s) { return String(s || '').split(/[,\n]/).map(x => x.trim()).filter(Boolean); }
@@ -1529,6 +1675,7 @@ ${weeklyAgendaHTML()}
         function generateSeats() {
             const names = getClassNames();
             if (names.length === 0) { showToast('이름을 입력해주세요.', 'error'); return; }
+            selectedSeatIdx = null;
             const o = getSeatOpts(); const C = Math.max(2, Math.min(10, parseInt(o.cols) || 6));
             const stripNum = s => String(s || '').replace(/^\d+[\s.)번-]*/, '').trim();
             const resolveSeatName = q => {
@@ -1543,11 +1690,24 @@ ${weeklyAgendaHTML()}
             const groups = groupsRaw.map(g => [...new Set(g.map(resolveSeatName).filter(Boolean))]).filter(g => g.length >= 2);
             const unknown = [...new Set([...frontRaw, ...groupsRaw.flat()].filter(n => !resolveSeatName(n)))];
 
+            // 직전 배치의 짝꿍 조합 기억 (짝 중복 최소화)
+            const prevPairs = new Set();
+            const prevRes = Storage.get('seat_result', null);
+            if (prevRes && Array.isArray(prevRes.names) && prevRes.cols) {
+                for (let i = 0; i < prevRes.names.length; i++) {
+                    const ci = i % prevRes.cols;
+                    if (ci % 2 === 0 && ci + 1 < prevRes.cols && i + 1 < prevRes.names.length) {
+                        const a = stripNum(prevRes.names[i]), b = stripNum(prevRes.names[i + 1]);
+                        if (a && b) prevPairs.add([a, b].sort().join('||'));
+                    }
+                }
+            }
+
             const near = (a, b) => Math.abs(Math.floor(a / C) - Math.floor(b / C)) <= 1 && Math.abs(a % C - b % C) <= 1;
             const frontSlots = Math.min(names.length, Math.ceil(front.length / C) * C);
             const others = names.filter(n => !front.includes(n));
-            let best = null, bestV = Infinity;
-            for (let attempt = 0; attempt < 3000 && bestV > 0; attempt++) {
+            let best = null, bestV = Infinity, bestScore = Infinity;
+            for (let attempt = 0; attempt < 3000 && bestScore > 0; attempt++) {
                 const slots = Array(names.length).fill(null);
                 const fPos = shuffle([...Array(frontSlots).keys()]).slice(0, front.length);
                 shuffle(front).forEach((n, i) => { slots[fPos[i]] = n; });
@@ -1556,21 +1716,57 @@ ${weeklyAgendaHTML()}
                 const pos = new Map(); slots.forEach((n, i) => { if (!pos.has(n)) pos.set(n, i); });
                 let v = 0;
                 groups.forEach(g => { for (let a = 0; a < g.length; a++) for (let b = a + 1; b < g.length; b++) if (near(pos.get(g[a]), pos.get(g[b]))) v++; });
-                if (v < bestV) { bestV = v; best = slots; }
+                let pairRepeats = 0;
+                if (o.pairMode && prevPairs.size > 0) {
+                    for (let i = 0; i < slots.length; i++) {
+                        const ci = i % C;
+                        if (ci % 2 === 0 && ci + 1 < C && i + 1 < slots.length) {
+                            const key = [stripNum(slots[i]), stripNum(slots[i + 1])].sort().join('||');
+                            if (prevPairs.has(key)) pairRepeats++;
+                        }
+                    }
+                }
+                const score = v * 100 + pairRepeats;
+                if (score < bestScore) { bestScore = score; bestV = v; best = slots; }
             }
             Storage.set('seat_result', { names: best, cols: C, pairMode: !!o.pairMode, date: ymd(new Date()) });
             const grid = document.getElementById('seats-grid'); if (grid) grid.innerHTML = seatsHTML(Storage.get('seat_result', null));
             if (unknown.length) showToast(`명단에 없는 이름은 제외했어요: ${unknown.slice(0, 3).join(', ')}${unknown.length > 3 ? ' 외' : ''}`, 'info');
             else if (bestV > 0) showToast(`떨어뜨리기 조건을 모두 만족하는 배치를 찾지 못했어요 (붙은 곳 ${bestV}군데). 한 줄 인원을 늘려 보세요.`, 'error');
-            else showToast('자리 배치 완료!');
+            else showToast('자리 배치 완료! (직전 짝 중복 방지 적용)');
+        }
+
+        function swapSeatSelect(idx) {
+            const res = Storage.get('seat_result', null);
+            if (!res || !Array.isArray(res.names) || idx < 0 || idx >= res.names.length) return;
+            if (selectedSeatIdx === null) {
+                selectedSeatIdx = idx;
+            } else if (selectedSeatIdx === idx) {
+                selectedSeatIdx = null;
+            } else {
+                const a = res.names[selectedSeatIdx], b = res.names[idx];
+                res.names[selectedSeatIdx] = b;
+                res.names[idx] = a;
+                selectedSeatIdx = null;
+                Storage.set('seat_result', res);
+                showToast(`'${a}' ↔ '${b}' 자리를 맞바꾸었습니다.`);
+            }
+            const updated = Storage.get('seat_result', null);
+            const grid = document.getElementById('seats-grid'); if (grid) grid.innerHTML = seatsHTML(updated, false);
+            const pGrid = document.getElementById('present-seats-grid'); if (pGrid) pGrid.innerHTML = seatsHTML(updated, true);
         }
 
         function seatRows(res) { const rows = []; for (let i = 0; i < res.names.length; i += res.cols) rows.push(res.names.slice(i, i + res.cols)); return rows; }
         function seatsHTML(res, big = false) {
             if (!res || !Array.isArray(res.names) || !res.names.length) return '<p class="text-slate-400 dark:text-slate-500 text-sm font-medium mx-auto">배치 생성 버튼을 눌러주세요.</p>';
             const boxStyle = big ? `width:min(${Math.floor(80 / res.cols)}vw,150px);height:min(9vh,90px);font-size:clamp(11px,2.6vw,26px)` : '';
-            const boxCls = big ? 'bg-white/10 border border-white/25 text-white' : 'w-16 h-14 sm:w-20 sm:h-16 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 shadow-sm';
-            return `<div class="w-max mx-auto flex flex-col gap-2 items-center">${seatRows(res).map(r => `<div class="flex gap-1.5">${r.map((n, ci) => `<div class="${boxCls} rounded-xl flex items-center justify-center font-bold text-center break-all p-1 ${res.pairMode && ci % 2 === 1 && ci < res.cols - 1 ? (big ? 'mr-3 sm:mr-8' : 'mr-4') : ''}" style="${boxStyle}">${escapeHTML(n)}</div>`).join('')}</div>`).join('')}</div>`;
+            const baseBoxCls = big ? 'bg-white/10 border border-white/25 text-white hover:bg-white/20' : 'w-16 h-14 sm:w-20 sm:h-16 text-xs sm:text-sm bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 shadow-sm hover:border-emerald-400';
+            return `<div class="w-max mx-auto flex flex-col gap-2 items-center">${seatRows(res).map((r, ri) => `<div class="flex gap-1.5">${r.map((n, ci) => {
+                const flatIdx = ri * res.cols + ci;
+                const isSel = selectedSeatIdx === flatIdx;
+                const selCls = isSel ? (big ? 'ring-4 ring-amber-300 bg-amber-500/30 border-amber-300 scale-105' : 'ring-2 ring-amber-400 bg-amber-50 dark:bg-amber-900/40 border-amber-400 scale-105') : '';
+                return `<div onclick="swapSeatSelect(${flatIdx})" title="클릭하여 다른 자리와 1:1 맞바꾸기" class="${baseBoxCls} ${selCls} cursor-pointer select-none transition rounded-xl flex items-center justify-center font-bold text-center break-all p-1 ${res.pairMode && ci % 2 === 1 && ci < res.cols - 1 ? (big ? 'mr-3 sm:mr-8' : 'mr-4') : ''}" style="${boxStyle}">${escapeHTML(n)}</div>`;
+            }).join('')}</div>`).join('')}<p class="text-[11px] ${big ? 'text-slate-400' : 'text-slate-400 dark:text-slate-500'} mt-1">💡 두 자리를 차례로 클릭하면 1:1로 자리를 맞바꿀 수 있어요.</p></div>`;
         }
 
         function exportSeatsImage() {
@@ -1691,8 +1887,10 @@ ${weeklyAgendaHTML()}
         function copyBoardAsText() {
             const title = Storage.get('board_title', '태스크 보드');
             const tasks = getBoardTasks();
-            const lines = Object.values(tasks).map(t => `${t.done ? '☑' : '☐'} ${t.title || '(내용 없음)'}`);
-            copyText(`[${title}]\n${lines.join('\n')}`, '메신저 공유용 체크리스트 텍스트를 복사했습니다.');
+            const items = Object.values(tasks);
+            const lines = items.map(t => `${t.done ? '☑' : '☐'} ${t.title || '(내용 없음)'}`);
+            const htmlTable = `<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-family:'Malgun Gothic',sans-serif;font-size:11pt"><thead><tr style="background:#f1f5f9"><th>완료</th><th>[${escapeHTML(title)}] 할 일 항목</th></tr></thead><tbody>${items.map(t => `<tr><td align="center">${t.done ? '☑' : '☐'}</td><td>${escapeHTML(t.title || '(내용 없음)')}</td></tr>`).join('')}</tbody></table>`;
+            copyRichTable(`[${title}]\n${lines.join('\n')}`, htmlTable, '메신저·문서 붙여넣기용 체크리스트(표 서식 포함)를 복사했습니다.');
         }
 
         function loadBoardPreset(type) {
@@ -1804,6 +2002,7 @@ ${weeklyAgendaHTML()}
                             <select id="sort-select" onchange="handleSearch()" class="whitespace-nowrap shrink-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg px-2 sm:px-2.5 py-1 focus:outline-none"><option value="accuracy">관련도순</option><option value="name">가나다순</option></select>
                         </div>
                     </div>
+                    <div id="search-smart-answer" class="hidden"></div>
                     <div id="search-results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                     <div id="search-related-results" class="space-y-4"></div>
                     <div id="load-more-container" class="text-center pt-4 hidden"><button onclick="searchDisplayLimit+=60;handleSearch();" class="px-6 py-2.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-xl">더 보기</button></div>
@@ -1909,7 +2108,14 @@ ${weeklyAgendaHTML()}
 
         function handleSearch() {
             const input = document.getElementById('main-search-input');
-            const query = input ? normalizeSearch(input.value) : '';
+            const rawQuery = input ? input.value : '';
+            const query = normalizeSearch(rawQuery);
+            const smartBox = document.getElementById('search-smart-answer');
+            if (smartBox) {
+                const smartHTML = buildSmartSearchAnswerHTML(rawQuery);
+                smartBox.innerHTML = smartHTML;
+                smartBox.classList.toggle('hidden', !smartHTML);
+            }
             const sort = (document.getElementById('sort-select') && document.getElementById('sort-select').value) || 'accuracy';
             const clearBtn = document.getElementById('clear-search-btn');
             if (clearBtn) { if (query) clearBtn.classList.remove('hidden'); else clearBtn.classList.add('hidden'); }
@@ -2375,9 +2581,11 @@ ${weeklyAgendaHTML()}
         function copySituationLog(publicId) {
             const sit = SITUATIONS.find(item => item.publicId === publicId); const run = situationRuns()[publicId]; if (!sit || !run) return;
             const day = new Date(run.startedAt);
+            const items = situationRunItems(sit);
             const lines = [`[${sit.title}] 처리 경과`, `시작: ${koreanDate(day)} ${hhmm(run.startedAt)}`, ''];
-            situationRunItems(sit).forEach(it => lines.push(`${run.checks[it.key] ? `✔ ${hhmm(run.checks[it.key])}` : '☐ --:--'}  ${it.group === '먼저 확인' ? '(확인) ' : `${it.n}. `}${it.text}`));
-            copyText(lines.join('\n'), '처리 경과를 복사했습니다.');
+            items.forEach(it => lines.push(`${run.checks[it.key] ? `✔ ${hhmm(run.checks[it.key])}` : '☐ --:--'}  ${it.group === '먼저 확인' ? '(확인) ' : `${it.n}. `}${it.text}`));
+            const htmlTable = `<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-family:'Malgun Gothic',sans-serif;font-size:11pt"><thead><tr style="background:#f1f5f9"><th>완료 시각</th><th>단계 구분</th><th>[${escapeHTML(sit.title)}] 조치 항목</th></tr></thead><tbody>${items.map(it => `<tr><td align="center">${run.checks[it.key] ? `✔ ${escapeHTML(hhmm(run.checks[it.key]))}` : '☐ --:--'}</td><td align="center">${escapeHTML(it.group)}</td><td>${escapeHTML(it.text)}</td></tr>`).join('')}</tbody></table>`;
+            copyRichTable(lines.join('\n'), htmlTable, '처리 경과(한글·엑셀 표 서식 포함)를 복사했습니다.');
         }
 
         // 역할별 시작 코스: 앱에 있는 용어·상황 가이드·업무 순서·도구를 역할에 맞는 순서로 묶음
@@ -4156,12 +4364,23 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
         // ====================================================
         // 4. 전체 화면(교실 TV·전자칠판) 모드
         // ====================================================
-        let presentKind = null, presentIsFullscreen = false;
+        let presentKind = null, presentIsFullscreen = false, presentWakeLock = null;
+        async function requestPresentWakeLock() {
+            try {
+                if ('wakeLock' in navigator && navigator.wakeLock?.request && !presentWakeLock) {
+                    presentWakeLock = await navigator.wakeLock.request('screen');
+                    presentWakeLock.addEventListener?.('release', () => { presentWakeLock = null; });
+                }
+            } catch (_) {}
+        }
+        function releasePresentWakeLock() {
+            try { if (presentWakeLock) { presentWakeLock.release(); presentWakeLock = null; } } catch (_) { presentWakeLock = null; }
+        }
         function setTimerPreset(sec) { pauseTimer(); timerSeconds = sec; updateTimerDisplay(); }
         function openPresent(kind) {
             if (kind === 'seat') kind = 'seats';
             const ov = document.getElementById('present-overlay'); if (!ov) return;
-            presentKind = kind; unlockAudio();
+            presentKind = kind; unlockAudio(); requestPresentWakeLock();
             const bigBtn = 'px-6 py-3 rounded-2xl text-lg font-bold transition';
             const tabs = [
                 ['timer', 'fa-stopwatch', '타이머'],
@@ -4198,7 +4417,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             } else if (kind === 'seats') {
                 if (!Storage.get('seat_result', null) && getClassNames().length > 0) generateSeats();
                 const hasNames = getClassNames().length > 0;
-                body = `<div class="mb-6 flex flex-wrap items-center gap-4 justify-center"><span class="px-10 sm:px-16 py-2.5 sm:py-3 bg-white/15 rounded-xl text-base sm:text-xl font-bold">교 탁</span><button onclick="generateSeats(); openPresent('seats');" class="px-4 py-2.5 sm:py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-xs sm:text-sm font-bold shadow"><i class="fa-solid fa-shuffle mr-1"></i>다시 배치</button>${!hasNames ? `<button onclick="closePresent(); openSetupWizard();" class="px-4 py-2.5 sm:py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-xs sm:text-sm font-bold shadow"><i class="fa-solid fa-users mr-1"></i>학급 명단 등록하기</button>` : ''}</div><div class="w-full overflow-x-auto">${seatsHTML(Storage.get('seat_result', null), true)}</div>`;
+                body = `<div class="mb-6 flex flex-wrap items-center gap-4 justify-center"><span class="px-10 sm:px-16 py-2.5 sm:py-3 bg-white/15 rounded-xl text-base sm:text-xl font-bold">교 탁</span><button onclick="generateSeats(); openPresent('seats');" class="px-4 py-2.5 sm:py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-xs sm:text-sm font-bold shadow"><i class="fa-solid fa-shuffle mr-1"></i>다시 배치</button>${!hasNames ? `<button onclick="closePresent(); openSetupWizard();" class="px-4 py-2.5 sm:py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-xs sm:text-sm font-bold shadow"><i class="fa-solid fa-users mr-1"></i>학급 명단 등록하기</button>` : ''}</div><div id="present-seats-grid" class="w-full overflow-x-auto">${seatsHTML(Storage.get('seat_result', null), true)}</div>`;
             } else if (kind === 'clock') {
                 body = `<div class="now-clock font-black tabular-nums leading-none" style="font-size:min(22vw,34vh)">--:--</div>
                     <p class="now-status-title font-extrabold mt-6" style="font-size:min(8vw,10vh)">-</p>
@@ -4209,7 +4428,10 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                 body = `<div class="w-[min(92vw,960px)] text-left space-y-4">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <span class="text-sm sm:text-lg font-extrabold text-amber-300"><i class="fa-solid fa-chalkboard mr-2"></i>오늘의 활동 · 칠판 안내판 (직접 클릭해 수정하세요)</span>
-                        <span class="now-clock text-xl sm:text-2xl font-black text-slate-300 tabular-nums">--:--</span>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="toggleTimer()" class="px-3 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-amber-300 text-sm sm:text-base font-extrabold tabular-nums transition" title="클릭하여 타이머 시작/일시정지"><i class="fa-solid fa-stopwatch mr-1"></i><span class="timer-display-text">05:00</span></button>
+                            <span class="now-clock text-xl sm:text-2xl font-black text-slate-300 tabular-nums">--:--</span>
+                        </div>
                     </div>
                     <textarea id="present-memo-input" oninput="saveSetting('presentNote', this.value)" rows="6" class="w-full p-4 sm:p-6 rounded-3xl bg-white/10 border-2 border-white/20 text-white font-extrabold leading-relaxed outline-none focus:border-amber-300 resize-none" style="font-size:clamp(18px,4.2vw,42px)">${escapeHTML(note)}</textarea>
                 </div>`;
@@ -4219,13 +4441,13 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             if (ov.requestFullscreen && document.fullscreenElement !== ov) ov.requestFullscreen().catch(() => {});
             document.removeEventListener('keydown', presentKeyHandler);
             document.addEventListener('keydown', presentKeyHandler);
-            if (kind === 'timer') updateTimerDisplay();
+            if (kind === 'timer' || kind === 'memo') updateTimerDisplay();
             if (kind === 'pick') updatePickRemain();
             if (kind === 'clock' || kind === 'memo') startClock();
         }
         function closePresent() {
             if (!presentKind) return;
-            presentKind = null; presentIsFullscreen = false;
+            presentKind = null; presentIsFullscreen = false; releasePresentWakeLock();
             const ov = document.getElementById('present-overlay'); if (ov) { ov.classList.add('hidden'); ov.classList.remove('flex'); ov.innerHTML = ''; }
             document.removeEventListener('keydown', presentKeyHandler);
             if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
@@ -4314,6 +4536,17 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             const nextStudent = curIdx >= 0 && curIdx < students.length - 1 ? students[curIdx + 1] : (curIdx === -1 && students.length ? students[0] : '');
             const myPhrases = Storage.get('record_my_phrases', []);
             const bank = { ...PHRASE_BANK, ...(myPhrases.length ? { '내 문장': myPhrases } : {}) };
+            const studentCounsel = recordStudent ? getCounsel().filter(r => r.student === recordStudent).sort((a, b) => (b.date || '').localeCompare(a.date || '')).slice(0, 5) : [];
+            const counselBridgeHTML = studentCounsel.length ? `
+                <details class="rounded-2xl bg-amber-50/70 dark:bg-amber-900/20 border border-amber-200/80 dark:border-amber-800/50 px-3.5 py-2.5 text-xs">
+                    <summary class="cursor-pointer font-extrabold text-amber-800 dark:text-amber-300 flex items-center justify-between">
+                        <span><i class="fa-solid fa-comments mr-1.5"></i>${escapeHTML(recordStudent)} 학생 상담·관찰 메모 (${studentCounsel.length}건) 참고하기</span>
+                        <span class="text-[11px] font-semibold text-amber-600 dark:text-amber-400">펼치기 ▾</span>
+                    </summary>
+                    <div class="mt-2.5 pt-2 border-t border-amber-200/60 dark:border-amber-800/40 space-y-1.5 text-slate-700 dark:text-slate-200">
+                        ${studentCounsel.map(c => `<div class="flex flex-wrap gap-1.5 items-baseline"><span class="font-bold text-amber-700 dark:text-amber-300 shrink-0">${escapeHTML(c.date || '')}</span>${c.topic ? `<span class="px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/50 text-[10px] font-bold">${escapeHTML(c.topic)}</span>` : ''}<span class="text-slate-600 dark:text-slate-300">${escapeHTML(c.summary || '')}</span></div>`).join('')}
+                    </div>
+                </details>` : '';
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
@@ -4355,6 +4588,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                                     <label for="record-editor" class="text-sm font-bold text-slate-900 dark:text-white">${recordStudent ? `[${escapeHTML(recordStudent)}] ` : ''}${area.name}</label>
                                     <select onchange="setRecordLimit(Number(this.value))" class="px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200" aria-label="글자 수 제한">${RECORD_LIMITS.map(l => `<option value="${l.b}" ${getRecordLimit(area.id) === l.b ? 'selected' : ''}>제한 ${l.label}</option>`).join('')}</select>
                                 </div>
+                                ${counselBridgeHTML}
                                 <textarea id="record-editor" rows="9" oninput="onRecordInput()" oncompositionend="onRecordInput()" placeholder="오른쪽 문장 조각을 누르면 여기에 이어서 들어가요. 직접 써도 됩니다." class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm leading-relaxed text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-blue-500 resize-y">${escapeHTML(draft)}</textarea>
                                 <p id="record-save-status" class="text-xs text-slate-500 dark:text-slate-400" aria-live="polite">입력하면 이 브라우저에 저장합니다.</p>
                                 <div class="flex flex-wrap items-center justify-between gap-2">
@@ -4441,14 +4675,49 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             bEl.className = `font-bold ${over ? 'text-rose-600' : 'text-blue-600 dark:text-blue-400'}`;
             const bar = document.getElementById('record-bar'); bar.style.width = `${Math.min(100, Math.round(bytes / limit * 100))}%`; bar.className = `h-full transition-all ${over ? 'bg-rose-500' : 'bg-blue-600'}`;
             const issues = checkRecord(text);
+            const endCounts = {};
+            (text.match(/[가-힣]{2,}(?:함|임|됨|보임|돋보임|있음|줌)\./g) || []).forEach(w => { endCounts[w] = (endCounts[w] || 0) + 1; });
+            const repeatedEnds = Object.entries(endCounts).filter(([, c]) => c >= 3).map(([w, c]) => `${w}(${c}회)`);
+            const canAutoFix = /[가-힣]다\.(?=\s|$)|[~!♡♥★☆^]|[\u{1F300}-\u{1FAFF}]| {2,}/u.test(text);
             const box = document.getElementById('record-issues'); const pv = document.getElementById('record-preview');
             if (!text.trim()) { box.innerHTML = '<p class="text-xs text-slate-400">내용을 입력하면 점검 결과가 나와요.</p>'; pv.classList.add('hidden'); return; }
-            if (!issues.length) { box.innerHTML = '<p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400"><i class="fa-solid fa-circle-check"></i> 발견된 문제가 없어요.</p>'; pv.classList.add('hidden'); return; }
+            if (!issues.length && !repeatedEnds.length) { box.innerHTML = '<p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400"><i class="fa-solid fa-circle-check"></i> 발견된 문제가 없어요.</p>'; pv.classList.add('hidden'); return; }
             const grouped = {}; issues.forEach(f => { const k = f.rule.msg; (grouped[k] = grouped[k] || { rule: f.rule, words: new Set() }).words.add(f.text.trim() || '(공백)'); });
-            box.innerHTML = Object.values(grouped).map(g => `<div class="flex items-start gap-2 text-xs"><span class="shrink-0 px-2 py-0.5 rounded-md font-bold ${g.rule.level === '금지' ? 'bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-300' : 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300'}">${g.rule.level}</span><span class="text-slate-700 dark:text-slate-200">${escapeHTML(g.rule.msg)} <span class="text-slate-400">— ${escapeHTML([...g.words].slice(0, 5).join(', '))}</span></span></div>`).join('');
+            if (repeatedEnds.length) {
+                grouped['__repeat__'] = { rule: { level: '주의', msg: '같은 서술어 맺음이 3회 이상 반복되었어요. 다양한 표현으로 바꾸어 보세요.' }, words: new Set(repeatedEnds) };
+            }
+            const fixBtnHTML = canAutoFix ? `<div class="pt-1"><button type="button" onclick="autoFixRecordText()" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm transition"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>원클릭 자동 교정 (연속 공백·특수문자·'~다.' 어미 정리)</button></div>` : '';
+            box.innerHTML = Object.values(grouped).map(g => `<div class="flex items-start gap-2 text-xs"><span class="shrink-0 px-2 py-0.5 rounded-md font-bold ${g.rule.level === '금지' ? 'bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-300' : 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300'}">${g.rule.level}</span><span class="text-slate-700 dark:text-slate-200">${escapeHTML(g.rule.msg)} <span class="text-slate-400">— ${escapeHTML([...g.words].slice(0, 5).join(', '))}</span></span></div>`).join('') + fixBtnHTML;
+            if (!issues.length) { pv.classList.add('hidden'); return; }
             let html = '', pos = 0;
             issues.forEach(f => { html += escapeHTML(text.slice(pos, f.start)) + `<mark class="${f.rule.level === '금지' ? 'bg-rose-200 dark:bg-rose-800' : 'bg-amber-200 dark:bg-amber-700'} text-inherit rounded px-0.5">${escapeHTML(f.text)}</mark>`; pos = f.end; });
             pv.innerHTML = html + escapeHTML(text.slice(pos)); pv.classList.remove('hidden');
+        }
+        function autoFixRecordText() {
+            const el = document.getElementById('record-editor'); if (!el || !el.value) return;
+            let t = el.value;
+            t = t.replace(/[~!♡♥★☆^]|[\u{1F300}-\u{1FAFF}]/gu, '');
+            t = t.replace(/했다\.(?=\s|$)/g, '함.')
+                 .replace(/하였다\.(?=\s|$)/g, '함.')
+                 .replace(/이다\.(?=\s|$)/g, '임.')
+                 .replace(/있다\.(?=\s|$)/g, '있음.')
+                 .replace(/없다\.(?=\s|$)/g, '없음.')
+                 .replace(/보인다\.(?=\s|$)/g, '보임.')
+                 .replace(/보였다\.(?=\s|$)/g, '보임.')
+                 .replace(/돋보인다\.(?=\s|$)/g, '돋보임.')
+                 .replace(/돋보였다\.(?=\s|$)/g, '돋보임.')
+                 .replace(/되었다\.(?=\s|$)/g, '됨.')
+                 .replace(/된다\.(?=\s|$)/g, '됨.')
+                 .replace(/높다\.(?=\s|$)/g, '높음.')
+                 .replace(/깊다\.(?=\s|$)/g, '깊음.')
+                 .replace(/바르다\.(?=\s|$)/g, '바름.')
+                 .replace(/뛰어나다\.(?=\s|$)/g, '뛰어남.')
+                 .replace(/우수하다\.(?=\s|$)/g, '우수함.')
+                 .replace(/성실하다\.(?=\s|$)/g, '성실함.');
+            t = t.replace(/ {2,}/g, ' ').trim();
+            el.value = t;
+            onRecordInput();
+            showToast('연속 공백·특수문자·명사형 어미를 자동으로 교정했습니다.');
         }
         function appendPhrase(p) {
             const el = document.getElementById('record-editor'); if (!el) return;
@@ -4656,7 +4925,8 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
         function copyCounselSchedule() {
             if (!counselSchedule) return; const s = getSettings();
             const text = `[${s.className ? s.className + ' ' : ''}학부모 상담 일정 안내]\n` + counselSchedule.rows.map(r => `${koreanDate(parseYMD(r.date))} ${r.time} ${r.name}`).join('\n') + '\n\n시간 변경이 필요하시면 미리 연락 부탁드립니다.';
-            copyText(text, '일정표를 복사했습니다.');
+            const htmlTable = `<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-family:'Malgun Gothic',sans-serif;font-size:11pt"><thead><tr style="background:#f1f5f9"><th>상담 일자</th><th>시간</th><th>학생명</th></tr></thead><tbody>${counselSchedule.rows.map(r => `<tr><td>${escapeHTML(koreanDate(parseYMD(r.date)))}</td><td align="center">${escapeHTML(r.time)}</td><td align="center"><b>${escapeHTML(r.name)}</b></td></tr>`).join('')}</tbody></table>`;
+            copyRichTable(text, htmlTable, '일정표(한글·엑셀 표 서식 포함)를 복사했습니다.');
         }
         function printCounselSchedule() {
             if (!counselSchedule) return; const s = getSettings();
@@ -5225,6 +5495,53 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                 const hay = `${item.title} ${item.sub} ${item.badge}`;
                 return normalizeSearch(hay).includes(q) || compactSearch(hay).includes(qComp) || compactSearch(getChosung(item.title)).includes(qComp);
             });
+            // 자연어 즉시 명령 실행 (타이머 N분 · 테마 전환 · 수식 계산 · 우리 반 학생 바로가기)
+            const naturalCmds = [];
+            if (q) {
+                const tm = String(query || '').match(/(?:타이머\s*(\d{1,3})\s*분?|(\d{1,3})\s*분\s*타이머)/);
+                if (tm) {
+                    const mins = Math.max(1, Math.min(180, Number(tm[1] || tm[2])));
+                    naturalCmds.push({
+                        badge: '⚡ 즉시 실행', icon: 'fa-stopwatch', color: 'text-rose-500',
+                        title: `${mins}분 타이머 즉시 시작 (전체화면)`,
+                        sub: `교실 TV 전체화면 타이머를 ${mins}분(${mins * 60}초)으로 세팅하고 바로 시작합니다`,
+                        run: () => { setTimerPreset(mins * 60); openPresent('timer'); startTimer(); }
+                    });
+                }
+                if (/(다크\s*모드|라이트\s*모드|야간\s*모드|테마\s*변경|화면\s*모드)/.test(query)) {
+                    naturalCmds.push({
+                        badge: '⚡ 즉시 실행', icon: 'fa-circle-half-stroke', color: 'text-amber-500',
+                        title: '다크 / 라이트 모드 즉시 전환',
+                        sub: '현재 화면 테마를 즉시 반전합니다',
+                        run: () => toggleQuickDarkMode()
+                    });
+                }
+                const smartCalc = parseSmartCalcQuery(query);
+                if (smartCalc) {
+                    naturalCmds.push({
+                        badge: '🧮 즉시 계산', icon: 'fa-calculator', color: 'text-indigo-600',
+                        title: smartCalc.title,
+                        sub: `${smartCalc.sub} (클릭하면 상세 계산기 열기)`,
+                        run: () => openCalcModal(smartCalc.tab)
+                    });
+                }
+                const students = [...new Set([...getRecordStudents(), ...counselStudents()])];
+                students.filter(st => normalizeSearch(st).includes(q) || compactSearch(getChosung(st)).includes(qComp)).slice(0, 3).forEach(st => {
+                    naturalCmds.push({
+                        badge: '👩‍🎓 학생 생기부', icon: 'fa-pen-nib', color: 'text-blue-600',
+                        title: `[${st}] 생기부 문장 도우미 바로 열기`,
+                        sub: `${st} 학생의 행동특성·세특·창체 초안 작성 화면으로 이동`,
+                        run: () => { recordStudent = st; router.navigate('tools-record'); }
+                    });
+                    naturalCmds.push({
+                        badge: '💬 학생 상담', icon: 'fa-comments', color: 'text-emerald-600',
+                        title: `[${st}] 학부모·학생 상담 기록 보기`,
+                        sub: `${st} 학생으로 필터링된 상담 기록장을 엽니다`,
+                        run: () => { counselFilter.student = st; router.navigate('counsel'); }
+                    });
+                });
+            }
+            if (naturalCmds.length) matched.unshift(...naturalCmds);
             if (DB && DB.length) {
                 const termPool = q ? rankTerms(q, '전체', 'accuracy').slice(0, 25) : curatedTerms().slice(0, 12);
                 termPool.forEach(t => {
