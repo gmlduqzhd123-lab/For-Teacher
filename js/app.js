@@ -1972,7 +1972,7 @@ ${weeklyAgendaHTML()}
                     </div>
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-3 relative w-full">
                         <div class="relative">
-                            <input type="text" id="main-search-input" enterkeyhint="search" value="${escapeHTML(queryStr)}" placeholder="용어, 초성(ㄱㅇㅈㅂ), 또는 일상어('학생이 다쳤어요', '물건 살 때') 검색..." class="w-full pl-12 pr-20 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
+                            <input type="text" id="main-search-input" enterkeyhint="search" value="${escapeHTML(queryStr)}" placeholder="용어, 초성, 일상어('학생이 다쳤어요', '물건 살 때') 검색..." class="w-full pl-12 pr-20 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
                                 <button type="button" onclick="clearSearch()" id="clear-search-btn" class="text-slate-400 hover:text-slate-600 hidden" aria-label="검색어 지우기"><i class="fa-solid fa-circle-xmark"></i></button>
