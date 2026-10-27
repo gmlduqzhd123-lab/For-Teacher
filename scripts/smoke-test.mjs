@@ -112,10 +112,16 @@ const server = http.createServer((req, res) => {
   fs.createReadStream(file).pipe(res);
 });
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-const base = `http://127.0.0.1:${server.address().port}/`;
+// 프록시를 거쳐야 CDN(Tailwind 등)에 닿는 환경에서는 프록시를 쓰고, 이 정적 서버만 직접 연결
+const proxy = process.env.HTTPS_PROXY || process.env.https_proxy;
+const host = proxy ? 'smoke.test' : '127.0.0.1';
+const base = `http://${host}:${server.address().port}/`;
 
 const views = ['home', 'search', 'situations', 'navigator', 'map', 'year', 'career', 'quiz', 'card', 'mybox', 'start', 'tools-doc', 'tools-class', 'tools-board', 'tools-edutech', 'timetable', 'tools-record', 'counsel'];
-const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
+const browser = await chromium.launch({
+  ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}),
+  ...(proxy ? { proxy: { server: proxy, bypass: host }, args: ['--ignore-certificate-errors', `--host-resolver-rules=MAP ${host} 127.0.0.1`] } : {}),
+});
 const failures = [];
 for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 }, { width: 320, height: 640 }]) {
   const page = await browser.newPage({ viewport });
@@ -136,5 +142,9 @@ for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 
   await page.close();
 }
 await browser.close(); server.close();
-if (failures.length) { console.error(failures.map(f => `✗ ${f}`).join('\n')); process.exit(1); }
+if (failures.length) {
+  console.error(failures.map(f => `✗ ${f}`).join('\n'));
+  if (process.env.GITHUB_ACTIONS) failures.slice(0, 20).forEach(f => console.log(`::error title=smoke-test::${f.replace(/\n/g, ' ')}`)); // Actions 화면·API에 오류 내용 표시
+  process.exit(1);
+}
 console.log(`Smoke test passed: ${views.length} screens × 3 viewport sizes, term detail.`);

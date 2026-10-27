@@ -3575,7 +3575,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                             </div>
                             <p class="text-xs text-emerald-800 dark:text-emerald-300">학급 명단, 생기부 초안, 내 양식, 체크리스트, <b>학부모 상담 기록</b>까지 단 하나의 AES-256 암호화 파일로 묶어 내보내거나 복원합니다.</p>
                             <div class="flex flex-wrap gap-2 items-center">
-                                <input id="full-backup-pw" type="password" autocomplete="new-password" placeholder="백업 비밀번호 (8자 이상)" class="px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 text-xs text-slate-800 dark:text-slate-200 outline-none">
+                                <input id="full-backup-pw" type="password" autocomplete="new-password" placeholder="백업 비밀번호 (8자 이상)" class="w-full sm:w-64 min-w-0 px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 text-xs text-slate-800 dark:text-slate-200 outline-none">
                                 <button type="button" onclick="exportFullEncryptedBackup()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-sm transition"><i class="fa-solid fa-lock mr-1"></i>통합 암호화 백업 받기</button>
                                 <label class="px-4 py-2 bg-white dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-200 font-bold rounded-xl text-xs cursor-pointer hover:bg-emerald-100 transition shadow-sm"><i class="fa-solid fa-unlock mr-1"></i>통합 백업 복원하기<input type="file" accept=".json,application/json" onchange="importFullEncryptedBackup(event)" class="hidden"></label>
                             </div>
@@ -4848,7 +4848,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                         <h3 class="text-sm font-bold text-slate-900 dark:text-white"><i class="fa-solid fa-key text-emerald-500"></i> 상담 기록 암호화 백업</h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400">비밀번호로 잠근 파일(AES-256)로 저장해요. <b>비밀번호를 잊으면 누구도 복구할 수 없어요.</b></p>
                         <div class="flex flex-wrap gap-2 items-center">
-                            <input id="cs-pw" type="password" autocomplete="new-password" placeholder="비밀번호 (8자 이상)" class="px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-200 outline-none">
+                            <input id="cs-pw" type="password" autocomplete="new-password" placeholder="비밀번호 (8자 이상)" class="w-full sm:w-64 min-w-0 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-200 outline-none">
                             <button onclick="exportCounselEncrypted()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl"><i class="fa-solid fa-lock"></i> 암호화 백업 받기</button>
                             <label class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl cursor-pointer"><i class="fa-solid fa-unlock"></i> 백업 불러오기<input type="file" accept=".json,application/json" onchange="importCounselEncrypted(event)" class="hidden"></label>
                         </div>
