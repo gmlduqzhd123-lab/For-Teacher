@@ -116,7 +116,7 @@ const base = `http://127.0.0.1:${server.address().port}/`;
 const views = ['home', 'search', 'situations', 'navigator', 'map', 'year', 'career', 'quiz', 'card', 'mybox', 'start', 'tools-doc', 'tools-class', 'tools-board', 'tools-edutech', 'timetable', 'tools-record', 'counsel'];
 const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
 const failures = [];
-for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 }]) {
+for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 }, { width: 320, height: 640 }]) {
   const page = await browser.newPage({ viewport });
   page.on('pageerror', err => failures.push(`${viewport.width}px ${page.url()}: ${err.message}`));
   page.on('dialog', d => d.dismiss());
@@ -127,10 +127,13 @@ for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 
     await page.waitForTimeout(150);
     const text = await page.evaluate(() => document.getElementById('app-view').textContent);
     if (text.includes('화면 로딩 오류')) failures.push(`${viewport.width}px ${view}: error screen shown`);
+    // 휴대폰에서 화면이 옆으로 밀리면(가로 넘침) 버튼이 화면 밖으로 나가므로 실패로 봄
+    const overflow = await page.evaluate(() => { const a = document.getElementById('app-view'); return a.scrollWidth - a.clientWidth; });
+    if (overflow > 1) failures.push(`${viewport.width}px ${view}: content is ${overflow}px wider than the screen`);
   }
   await page.evaluate(() => openDetail(1)); await page.waitForTimeout(150);
   await page.close();
 }
 await browser.close(); server.close();
 if (failures.length) { console.error(failures.map(f => `✗ ${f}`).join('\n')); process.exit(1); }
-console.log(`Smoke test passed: ${views.length} screens × 2 viewport sizes, term detail.`);
+console.log(`Smoke test passed: ${views.length} screens × 3 viewport sizes, term detail.`);
