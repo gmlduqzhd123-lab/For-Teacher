@@ -3612,6 +3612,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             updateOfflineStatus();
             if (router.param === 'calendar') requestAnimationFrame(() => document.getElementById('school-calendar-card')?.scrollIntoView({ block: 'center' }));
             if (router.param === 'ai') requestAnimationFrame(() => document.getElementById('ai-settings-card')?.scrollIntoView({ block: 'center' }));
+            if (router.param === 'vault') requestAnimationFrame(() => document.getElementById('vault-card')?.scrollIntoView({ block: 'center' }));
         }
 
         async function updateOfflineStatus() {
@@ -4811,7 +4812,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                 <div class="space-y-6 animate-fade-in">
                     <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">상담 기록장</h2><p class="text-sm text-slate-500 dark:text-slate-400">학부모·학생 상담 내용을 기록하고, 상담주간 일정표를 만들어요.</p></div>
                     <div class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 text-xs text-amber-800 dark:text-amber-200 leading-relaxed">
-                        <b><i class="fa-solid fa-lock"></i> 개인정보 안내</b> — 상담 기록은 서버로 전송되지 않고 <b>이 기기의 이 브라우저에만</b> 저장돼요. 공용 PC에서는 쓰지 마시고, 기기를 바꿀 때는 아래 '암호화 백업'으로 옮기세요. 민감한 내용은 학교 공식 상담 기록(나이스 등) 지침을 우선 따르세요.
+                        <b><i class="fa-solid fa-lock"></i> 개인정보 안내</b> — 상담 기록은 서버로 전송되지 않고 <b>이 기기의 이 브라우저에만</b> 저장돼요. ${Vault.state === 'unlocked' ? '<b>개인 기록 잠금</b>으로 비밀번호 암호화되어 있어요. ' : `비밀번호로 잠가 두려면 <button type="button" onclick="router.navigate('mybox', 'vault')" class="underline font-bold">나의 교직함 › 개인 기록 잠금</button>을 켜세요. `}공용 PC에서는 쓰지 마시고, 기기를 바꿀 때는 아래 '암호화 백업'으로 옮기세요. 민감한 내용은 학교 공식 상담 기록(나이스 등) 지침을 우선 따르세요.
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
                         <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-3 self-start">
