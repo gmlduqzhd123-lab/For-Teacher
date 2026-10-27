@@ -318,6 +318,9 @@
 
         // ---------- 10대 교직어 상세 보강 데이터 (실무 팁 100% · 시스템 경로 · 3단계 절차 · VS 비교 · 핵심 수치 · Q&A · 법령 · 도구 직결 · 협의 파트너 · 학교별 메모) ----------
 
+        // 휴대폰 폭(640px 미만)에서는 잘리지 않게 짧은 안내 문구를 씀
+        function narrowScreen() { return !!window.matchMedia?.('(max-width: 639.98px)').matches; }
+
         function applyTermEnrichment(item) {
             if (!item) return item;
             const cid = item._baseId || canonicalTermId(item.id);
@@ -326,7 +329,8 @@
             const vsGroup = TERM_VS_GROUPS.find(g => g.ids.includes(cid)) || null;
             if (!item._shortDesc) item._shortDesc = item.description;
             if (enrich.descAdd) {
-                item.description = `${item._shortDesc} ${enrich.descAdd}`;
+                // descMode 'replace': 보강 설명이 기본 설명을 다시 풀어 쓴 경우 → 상세 설명은 보강본만 (목록 카드는 _shortDesc)
+                item.description = enrich.descMode === 'replace' ? enrich.descAdd : `${item._shortDesc} ${enrich.descAdd}`;
             }
             if (item._origTip === undefined) item._origTip = item.tip || '';
             if (enrich.tip) {
@@ -918,6 +922,9 @@
         function reviewPanelHTML(publicId) {
             const info = reviewInfo(publicId); const st = REVIEW_STATUS[info.status];
             const office = currentOffice();
+            // 검수 전 항목은 한 줄 안내만 (모든 용어에 큰 경고 상자가 뜨지 않게)
+            if (info.status === 'needs-review') return `
+                    <p role="note" aria-label="내용 확인 정보" class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400"><span class="font-bold text-amber-700 dark:text-amber-300">${st.icon} ${st.label}</span>${info.dataDate ? ` · 내용 기준일 ${escapeHTML(info.dataDate)}` : ''} · 실제 처리 전 아래 근거 법령과 ${office ? `${escapeHTML(office.name)} 지침` : '소속 교육청 지침'}을 확인하세요.</p>`;
             return `
                     <section aria-label="내용 확인 정보" class="p-3.5 rounded-2xl border ${st.tone} text-xs space-y-2">
                         <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -1196,12 +1203,12 @@
                         <div class="space-y-2">
                             <div class="editorial-search">
                                 <label for="home-search-input" class="sr-only">교직 업무 검색</label>
-                                <input type="search" id="home-search-input" enterkeyhint="search" placeholder="예: 학생이 다쳤어요 · 물건 살 때 · 아파서 못가요" autocomplete="off">
+                                <input type="search" id="home-search-input" enterkeyhint="search" placeholder="${narrowScreen() ? '예: 학생이 다쳤어요' : '예: 학생이 다쳤어요 · 물건 살 때 · 아파서 못가요'}" autocomplete="off">
                                 <button type="button" onclick="triggerHomeSearch()">검색</button>
                             </div>
                             <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 px-1">
                                 <span class="flex flex-wrap items-center gap-x-3 gap-y-1">
-                                    <button type="button" onclick="openCommandPalette()" class="text-left hover:underline"><i class="fa-solid fa-bolt text-amber-600 mr-1"></i><b>빠른 이동</b> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[11px]">Ctrl+K</kbd></button>
+                                    <button type="button" onclick="openCommandPalette()" class="text-left hover:underline"><i class="fa-solid fa-bolt text-amber-600 mr-1"></i><b>빠른 이동</b> <kbd class="kbd-hint px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[11px]">Ctrl+K</kbd></button>
                                     <button type="button" onclick="openCalcModal()" class="font-bold hover:underline"><i class="fa-solid fa-calculator text-indigo-600 dark:text-indigo-400 mr-1"></i>출석·병가 계산기</button>
                                 </span>
                                 <button type="button" onclick="startVoiceSearch('home-search-input')" class="font-bold text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-microphone mr-1"></i>음성 검색</button>
@@ -1537,7 +1544,7 @@ ${weeklyAgendaHTML()}
         const pickedNames = new Set();
 
         function renderToolsClass(container) {
-            const savedNames = Storage.get('class_names', '김학생, 이학생, 박학생');
+            const savedNames = Storage.get('class_names', '');
             const o = getSeatOpts(); const noRepeat = !!Storage.get('pick_norepeat', false);
             const btn2 = 'px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-600 transition';
             const field = 'w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm outline-none';
@@ -1566,7 +1573,7 @@ ${weeklyAgendaHTML()}
                                     <button onclick="pickRandom()" class="px-4 py-1.5 bg-rose-600 text-white text-xs font-bold rounded-lg shadow"><i class="fa-solid fa-wand-magic-sparkles"></i> 1명 뽑기</button>
                                 </div>
                             </div>
-                            <textarea id="class-names-input" oninput="Storage.set('class_names', this.value); pickedNames.clear(); updatePickRemain();" class="w-full h-24 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm mb-3 resize-none" placeholder="이름을 쉼표(,)나 줄바꿈으로 구분해서 적어주세요.">${escapeHTML(savedNames)}</textarea>
+                            <textarea id="class-names-input" oninput="Storage.set('class_names', this.value); pickedNames.clear(); updatePickRemain();" class="w-full h-24 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm mb-3 resize-none" placeholder="예: 김하늘, 이바다, 박구름 (쉼표나 줄바꿈으로 구분)">${escapeHTML(savedNames)}</textarea>
                             <div class="flex flex-wrap items-center justify-between gap-2 mb-3 text-xs">
                                 <label class="flex items-center gap-2 font-semibold text-slate-600 dark:text-slate-300 cursor-pointer"><input type="checkbox" ${noRepeat ? 'checked' : ''} onchange="Storage.set('pick_norepeat', this.checked); pickedNames.clear(); updatePickRemain();" class="w-4 h-4 rounded"> 한 번 뽑힌 학생은 제외</label>
                                 <span class="flex items-center gap-2"><span class="pick-remain text-slate-400"></span><button onclick="resetPicked()" class="text-blue-600 dark:text-blue-400 font-bold hover:underline">뽑기 기록 초기화</button></span>
@@ -1829,7 +1836,7 @@ ${weeklyAgendaHTML()}
         }
 
         // 저장된 값이 없을 때 기본 할 일로 시작 (이전엔 기본 항목 체크/삭제 시 목록이 통째로 사라지던 버그)
-        function getBoardTasks() { return Storage.get('board_tasks', null) || { 't1': { title: '운동부 대회 출전 기안', done: false }, 't2': { title: '학부모 동의서 취합', done: true } }; }
+        function getBoardTasks() { const t = Storage.get('board_tasks', null); return t && typeof t === 'object' && !Array.isArray(t) ? t : {}; }
 
         function renderToolsBoard(container, initialParam = null) {
             let sharedNotice = '';
@@ -1883,7 +1890,7 @@ ${weeklyAgendaHTML()}
                     <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-700 shadow-sm">
                         <div class="flex items-center gap-2 mb-6 pb-4 border-b border-slate-100 dark:border-slate-700">
                             <i class="fa-solid fa-thumbtack text-emerald-500"></i>
-                            <input type="text" id="board-title" value="${escapeHTML(Storage.get('board_title', '운동부 대회 출전 준비'))}" onchange="Storage.set('board_title', this.value)" class="text-lg font-bold bg-transparent border-none outline-none w-full text-slate-900 dark:text-white" placeholder="프로젝트 이름">
+                            <input type="text" id="board-title" value="${escapeHTML(Storage.get('board_title', ''))}" onchange="Storage.set('board_title', this.value)" placeholder="보드 이름 (예: 운동부 대회 출전 준비)" aria-label="보드 이름" class="text-lg font-bold bg-transparent border-none outline-none w-full text-slate-900 dark:text-white" placeholder="프로젝트 이름">
                         </div>
                         <div id="board-list" class="space-y-3"></div>
                     </div>
@@ -1893,9 +1900,10 @@ ${weeklyAgendaHTML()}
         }
 
         function shareBoardTasks() {
-            const title = Storage.get('board_title', '운동부 대회 출전 준비');
+            const title = String(Storage.get('board_title', '') || '').trim() || '태스크 보드';
             const tasks = getBoardTasks();
             const items = Object.values(tasks).map(t => ({ title: t.title || '', done: !!t.done }));
+            if (!items.some(t => t.title.trim())) { showToast('공유할 할 일을 먼저 적어 주세요.', 'error'); return; }
             const code = encodeSharePayload({ type: 'board', title, items });
             if (!code) { showToast('공유 링크를 만들지 못했습니다.', 'error'); return; }
             const shareUrl = `${location.href.split('#')[0]}#view=tools-board&param=${encodeURIComponent('share:' + code)}`;
@@ -1909,7 +1917,7 @@ ${weeklyAgendaHTML()}
             router.navigate('tools-board', 'share:' + encodeSharePayload({ type: 'board', title: decoded.title, items: decoded.items }));
         }
         function copyBoardAsText() {
-            const title = Storage.get('board_title', '태스크 보드');
+            const title = String(Storage.get('board_title', '') || '').trim() || '태스크 보드';
             const tasks = getBoardTasks();
             const items = Object.values(tasks);
             const lines = items.map(t => `${t.done ? '☑' : '☐'} ${t.title || '(내용 없음)'}`);
@@ -1932,7 +1940,7 @@ ${weeklyAgendaHTML()}
         function renderBoardTasks(tasks) {
             const list = document.getElementById('board-list'); if(!list) return;
             const keys = Object.keys(tasks);
-            if(keys.length === 0) { list.innerHTML = `<p class="text-sm text-slate-400 dark:text-slate-500 text-center py-6">할 일이 없습니다.</p>`; return; }
+            if(keys.length === 0) { list.innerHTML = `<p class="text-sm text-slate-400 dark:text-slate-500 text-center py-6 leading-relaxed">아직 할 일이 없어요.<br>위에서 템플릿을 고르거나 <b>+ 새 할 일 추가</b>를 눌러 시작하세요.</p>`; return; }
             list.innerHTML = keys.map(k => `
                 <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 group transition hover:border-emerald-300 dark:hover:border-emerald-500">
                     <div class="flex items-center gap-3 w-full">
@@ -1996,7 +2004,7 @@ ${weeklyAgendaHTML()}
                     </div>
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-3 relative w-full">
                         <div class="relative">
-                            <input type="text" id="main-search-input" enterkeyhint="search" value="${escapeHTML(queryStr)}" placeholder="용어, 초성, 일상어('학생이 다쳤어요', '물건 살 때') 검색..." class="w-full pl-12 pr-20 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
+                            <input type="text" id="main-search-input" enterkeyhint="search" value="${escapeHTML(queryStr)}" placeholder="${narrowScreen() ? '용어·초성·일상어 검색' : "용어, 초성, 일상어('학생이 다쳤어요', '물건 살 때') 검색..."}" class="w-full pl-12 pr-20 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
                                 <button type="button" onclick="clearSearch()" id="clear-search-btn" class="text-slate-400 hover:text-slate-600 hidden" aria-label="검색어 지우기"><i class="fa-solid fa-circle-xmark"></i></button>
@@ -2179,7 +2187,7 @@ ${weeklyAgendaHTML()}
                         </div>
                         <h3 class="font-bold group-hover:text-blue-600 dark:group-hover:text-blue-400 mb-1 text-slate-800 dark:text-white">${highlightText(item.keyword, query)}</h3>
                         <p class="text-xs text-blue-600 dark:text-blue-400 mb-2">${highlightText(item.simple, query)}</p>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-2.5">${highlightText(item.description, query)}</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-2.5">${highlightText(item._shortDesc || item.description, query)}</p>
                     </div>
                     ${topMetric ? `<div class="pt-2 border-t border-slate-100 dark:border-slate-700/70 flex items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400"><span class="truncate font-semibold">${escapeHTML(topMetric)}</span><span class="shrink-0 text-blue-600 dark:text-blue-400 font-bold">상세 →</span></div>` : ''}
                 </div>`;
@@ -3047,7 +3055,7 @@ ${weeklyAgendaHTML()}
                 <div class="space-y-6 animate-fade-in">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">교사의 1년 타임라인</h2><p class="text-sm text-slate-500 dark:text-slate-400">월별 주요 학사 및 행정 업무를 체크하세요. ‘예시’ 표시는 학교마다 시기가 다를 수 있는 일반 업무예요.</p></div>
-                        <div class="flex gap-2">${tabBtn('all','전체 보기')}${tabBtn('homeroom','담임 업무')}${tabBtn('manager','부장·담당')}</div>
+                        <div class="flex flex-wrap gap-2">${tabBtn('all','전체 보기')}${tabBtn('homeroom','담임 업무')}${tabBtn('manager','부장·담당')}<button type="button" onclick="document.getElementById('year-month-${currentMonth}')?.scrollIntoView({ behavior: 'smooth', block: 'start' })" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition"><i class="fa-solid fa-location-dot"></i> 이번 달(${currentMonth}월)로</button></div>
                     </div>
 
                     <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4">
@@ -3080,7 +3088,7 @@ ${weeklyAgendaHTML()}
                             const checkedState = Storage.get(`checklist_${m}`, {});
 
                             return `
-                                <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border ${isCurrent ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-slate-200/80 dark:border-slate-700'} shadow-sm flex flex-col justify-between">
+                                <div id="year-month-${m}" class="scroll-mt-4 bg-white dark:bg-slate-800 p-6 rounded-3xl border ${isCurrent ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-slate-200/80 dark:border-slate-700'} shadow-sm flex flex-col justify-between">
                                     <div>
                                         <div class="flex items-center justify-between mb-4">
                                             <span class="text-xs font-extrabold px-3 py-1 rounded-full ${isCurrent ? 'bg-blue-600 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${m}월</span>
@@ -4299,6 +4307,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
         }
         function startBellWatcher() { if (bellInterval) return; checkBells(); bellInterval = setInterval(checkBells, 20000); }
 
+        let ttEditRow = -1; // 휴대폰: 시간을 고칠 교시 (그 줄만 시간 입력칸을 펼침)
         function renderTimetable(container) {
             const tt = getTimetable(); const todayIdx = new Date().getDay() - 1;
             const inp = 'w-full min-w-[36px] sm:min-w-[64px] px-1 sm:px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs sm:text-sm text-center outline-none focus:ring-2 focus:ring-blue-500';
@@ -4328,11 +4337,11 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                         </div>
                         <div class="overflow-x-auto -mx-1 px-1">
                             <table class="w-full text-sm sm:min-w-[520px] md:min-w-[640px] border-separate" style="border-spacing:2px">
-                                <thead><tr class="text-xs text-slate-500 dark:text-slate-400"><th class="w-5 sm:w-10 whitespace-nowrap text-[11px] sm:text-xs">교시</th><th class="w-[84px] sm:w-48 whitespace-nowrap">시간</th>${TT_DAYS.map((d, di) => `<th class="${di === todayIdx ? 'text-blue-600 dark:text-blue-400' : ''}">${d}${di === todayIdx ? '<span class="hidden sm:inline"> (오늘)</span>' : ''}</th>`).join('')}<th class="w-8"></th></tr></thead>
+                                <thead><tr class="text-xs text-slate-500 dark:text-slate-400"><th class="w-5 sm:w-10 whitespace-nowrap text-[11px] sm:text-xs">교시</th><th class="w-[52px] sm:w-48 whitespace-nowrap">시간</th>${TT_DAYS.map((d, di) => `<th class="${di === todayIdx ? 'text-blue-600 dark:text-blue-400' : ''}">${d}${di === todayIdx ? '<span class="hidden sm:inline"> (오늘)</span>' : ''}</th>`).join('')}<th class="w-8"></th></tr></thead>
                                 <tbody>${tt.periods.map((p, i) => `
                                     <tr>
                                         <td class="text-center font-bold text-slate-700 dark:text-slate-200">${i + 1}</td>
-                                        <td><div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-1 whitespace-nowrap"><input type="time" value="${escapeHTML(p.start)}" onchange="updatePeriod(${i}, 'start', this.value)" class="${inp} !px-1 tt-time" aria-label="${i + 1}교시 시작"><span class="hidden sm:inline text-slate-400">~</span><input type="time" value="${escapeHTML(p.end)}" onchange="updatePeriod(${i}, 'end', this.value)" class="${inp} !px-1 tt-time" aria-label="${i + 1}교시 끝"></div></td>
+                                        <td><button type="button" onclick="ttEditRow = ${i}; rerenderKeepScroll()" class="${ttEditRow === i ? 'hidden' : 'block'} sm:hidden w-full py-1 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[11px] leading-tight font-semibold tabular-nums text-slate-700 dark:text-slate-200" aria-label="${i + 1}교시 시간 ${escapeHTML(p.start)}부터 ${escapeHTML(p.end)}까지, 눌러서 고치기">${escapeHTML(p.start)}<br><span class="text-slate-400">~</span>${escapeHTML(p.end)}</button><div class="${ttEditRow === i ? 'flex' : 'hidden'} sm:flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-1 whitespace-nowrap"><input type="time" value="${escapeHTML(p.start)}" onchange="updatePeriod(${i}, 'start', this.value)" class="${inp} !px-1 tt-time" aria-label="${i + 1}교시 시작"><span class="hidden sm:inline text-slate-400">~</span><input type="time" value="${escapeHTML(p.end)}" onchange="updatePeriod(${i}, 'end', this.value)" class="${inp} !px-1 tt-time" aria-label="${i + 1}교시 끝"></div></td>
                                         ${TT_DAYS.map((d, di) => `<td><input type="text" maxlength="12" value="${escapeHTML((tt.grid[di] || [])[i] || '')}" oninput="updateSubject(${di}, ${i}, this.value)" placeholder="-" class="${inp} ${di === todayIdx ? 'ring-1 ring-blue-300 dark:ring-blue-700' : ''}" aria-label="${d}요일 ${i + 1}교시 과목"></td>`).join('')}
                                         <td class="w-4 sm:w-8"><button onclick="removePeriod(${i})" class="text-slate-400 hover:text-rose-500 p-0 sm:p-1 text-xs sm:text-sm" aria-label="${i + 1}교시 삭제"><i class="fa-solid fa-xmark"></i></button></td>
                                     </tr>`).join('')}
@@ -5398,7 +5407,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                         </div>
                     </div>
                     <div class="flex flex-wrap justify-between items-center gap-2 pt-3 border-t border-slate-100 dark:border-slate-700">
-                        <span class="text-xs text-slate-400 whitespace-nowrap">💡 <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 font-mono">Ctrl+K</kbd> 또는 상단 <b>⚡ 빠른 이동</b>으로 점프</span>
+                        <span class="text-xs text-slate-400 whitespace-nowrap">💡 <span class="kbd-hint"><kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-700 font-mono">Ctrl+K</kbd> 또는 </span>상단 <b>⚡ 빠른 이동</b>으로 점프</span>
                         <div class="flex gap-2 shrink-0">
                             <button type="button" onclick="openSetupWizard()" class="whitespace-nowrap px-4 py-2 rounded-xl bg-emerald-600 text-white text-xs font-extrabold">🪄 1분 학급 세팅 열기</button>
                             <button type="button" onclick="closeSetupWizard()" class="whitespace-nowrap px-4 py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-extrabold">확인했어요</button>
@@ -5466,7 +5475,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
 
         const MENU_PAGES = [
             ['home', '홈 대시보드', '1초 실행 도구 · 오늘의 안내 · 주요 일정'],
-            ['search', '교직어 검색', '1,000개 교직 용어 · 초성 검색 지원'],
+            ['search', '교직어 검색', '대표 교직 용어 · 일상어·초성 검색 지원'],
             ['situations', '이럴 땐 어떻게? (상황 가이드 15선)', '돌발 상황별 대응 순서 · 통화 스크립트 · 양식 연결'],
             ['navigator', '교직 내비게이터', '업무 목적별 단계별 플로우차트'],
             ['map', '교직 지식맵', '연관 교직 개념 네트워크 탐색'],
