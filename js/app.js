@@ -1598,13 +1598,15 @@ ${weeklyAgendaHTML()}
                                 <div id="seats-grid" class="min-h-[100px] flex items-center"></div>
                             </div>
                         </div>
-                        <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-6 rounded-3xl shadow-sm text-white flex flex-col justify-center items-center text-center">
-                            <span class="text-xs font-bold px-3 py-1 bg-white/20 rounded-full mb-4">이스터에그 🤫</span>
-                            <h3 class="text-lg font-bold mb-2">엽쌤의 조퇴 사유 뽑기</h3>
-                            <p class="text-xs text-purple-100 mb-6">"금요일 오후, 완벽한 변명거리"</p>
-                            <div id="leave-reason-display" class="w-full bg-white/10 p-4 rounded-xl mb-6 font-bold text-lg h-16 flex items-center justify-center overflow-hidden"><span>?</span></div>
-                            <button onclick="pickLeaveReason()" class="w-full py-3 bg-white text-indigo-600 font-bold rounded-xl shadow hover:bg-slate-50 transition">사유 뽑기</button>
-                        </div>
+                        <!-- 재미용 기능: 업무 도구 사이에서 눈에 덜 띄도록 접어 둠 -->
+                        <details class="self-start bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-600 text-sm">
+                            <summary class="cursor-pointer select-none px-4 py-3 text-xs font-bold text-slate-500 dark:text-slate-400">🤫 쉬어 가기 · 엽쌤의 조퇴 사유 뽑기</summary>
+                            <div class="px-4 pb-4 text-center">
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">"금요일 오후, 완벽한 변명거리" (농담용)</p>
+                                <div id="leave-reason-display" class="w-full bg-slate-50 dark:bg-slate-900 p-3 rounded-xl mb-3 font-bold text-base h-14 flex items-center justify-center overflow-hidden text-slate-700 dark:text-slate-200"><span>?</span></div>
+                                <button onclick="pickLeaveReason()" class="w-full py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl hover:bg-slate-200 transition">사유 뽑기</button>
+                            </div>
+                        </details>
                     </div>
                 </div>
             ` + FOOTER_HTML;
@@ -1809,7 +1811,7 @@ ${weeklyAgendaHTML()}
             const display = document.getElementById('leave-reason-display'); let count = 0; display.innerHTML = `<span class="slot-machine-spin">돌아가는 중...</span>`;
             randomLeaveInterval = setInterval(() => {
                 display.innerHTML = `<span class="slot-machine-spin">${reasons[Math.floor(Math.random() * reasons.length)]}</span>`;
-                if(count++ > 15) { clearInterval(randomLeaveInterval); randomLeaveInterval = null; display.innerHTML = `<span class="text-yellow-300 font-extrabold text-xl animate-fade-in">${reasons[Math.floor(Math.random() * reasons.length)]}</span>`; showToast('사유가 결정되었습니다! 결재를 올려볼까요? 😉'); }
+                if(count++ > 15) { clearInterval(randomLeaveInterval); randomLeaveInterval = null; display.innerHTML = `<span class="text-indigo-600 dark:text-indigo-300 font-extrabold text-lg animate-fade-in">${reasons[Math.floor(Math.random() * reasons.length)]}</span>`; showToast('사유가 결정되었습니다! 결재를 올려볼까요? 😉'); }
             }, 50);
         }
 
