@@ -4280,7 +4280,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
 
         function renderTimetable(container) {
             const tt = getTimetable(); const todayIdx = new Date().getDay() - 1;
-            const inp = 'w-full min-w-[64px] px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm text-center outline-none focus:ring-2 focus:ring-blue-500';
+            const inp = 'w-full min-w-[36px] sm:min-w-[64px] px-1 sm:px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs sm:text-sm text-center outline-none focus:ring-2 focus:ring-blue-500';
             const sel = (key, val) => `<select onchange="setTTOption('${key}', Number(this.value))" class="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200">${[0,1,2,3,5,10].map(n => `<option value="${n}" ${val === n ? 'selected' : ''}>${n ? `${n}분 전` : '끄기'}</option>`).join('')}</select>`;
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
@@ -4296,7 +4296,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                         <button onclick="openPresent('clock')" class="self-start md:self-center px-4 py-2.5 bg-white/15 hover:bg-white/25 rounded-xl text-sm font-bold"><i class="fa-solid fa-expand"></i> 교실 화면에 띄우기</button>
                     </div>
 
-                    <div class="bg-white dark:bg-slate-800 p-4 md:p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4">
+                    <div class="bg-white dark:bg-slate-800 p-2 sm:p-4 md:p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4">
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <h3 class="text-sm font-bold text-slate-900 dark:text-white">주간 시간표 <span class="text-[11px] font-medium text-slate-400 whitespace-nowrap">(칸을 눌러 바로 입력 · 자동 저장)</span></h3>
                             <div class="flex flex-wrap gap-2">
@@ -4306,14 +4306,14 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                             </div>
                         </div>
                         <div class="overflow-x-auto -mx-1 px-1">
-                            <table class="w-full text-sm min-w-[520px] md:min-w-[640px] border-separate" style="border-spacing:4px">
-                                <thead><tr class="text-xs text-slate-500 dark:text-slate-400"><th class="w-10 whitespace-nowrap">교시</th><th class="w-32 sm:w-48 whitespace-nowrap">시간</th>${TT_DAYS.map((d, di) => `<th class="${di === todayIdx ? 'text-blue-600 dark:text-blue-400' : ''}">${d}${di === todayIdx ? ' (오늘)' : ''}</th>`).join('')}<th class="w-8"></th></tr></thead>
+                            <table class="w-full text-sm sm:min-w-[520px] md:min-w-[640px] border-separate" style="border-spacing:2px">
+                                <thead><tr class="text-xs text-slate-500 dark:text-slate-400"><th class="w-5 sm:w-10 whitespace-nowrap text-[11px] sm:text-xs">교시</th><th class="w-[84px] sm:w-48 whitespace-nowrap">시간</th>${TT_DAYS.map((d, di) => `<th class="${di === todayIdx ? 'text-blue-600 dark:text-blue-400' : ''}">${d}${di === todayIdx ? '<span class="hidden sm:inline"> (오늘)</span>' : ''}</th>`).join('')}<th class="w-8"></th></tr></thead>
                                 <tbody>${tt.periods.map((p, i) => `
                                     <tr>
                                         <td class="text-center font-bold text-slate-700 dark:text-slate-200">${i + 1}</td>
-                                        <td><div class="flex items-center justify-center gap-1 whitespace-nowrap"><input type="time" value="${escapeHTML(p.start)}" onchange="updatePeriod(${i}, 'start', this.value)" class="${inp} !px-1" aria-label="${i + 1}교시 시작"><span class="text-slate-400">~</span><input type="time" value="${escapeHTML(p.end)}" onchange="updatePeriod(${i}, 'end', this.value)" class="${inp} !px-1" aria-label="${i + 1}교시 끝"></div></td>
+                                        <td><div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-1 whitespace-nowrap"><input type="time" value="${escapeHTML(p.start)}" onchange="updatePeriod(${i}, 'start', this.value)" class="${inp} !px-1 tt-time" aria-label="${i + 1}교시 시작"><span class="hidden sm:inline text-slate-400">~</span><input type="time" value="${escapeHTML(p.end)}" onchange="updatePeriod(${i}, 'end', this.value)" class="${inp} !px-1 tt-time" aria-label="${i + 1}교시 끝"></div></td>
                                         ${TT_DAYS.map((d, di) => `<td><input type="text" maxlength="12" value="${escapeHTML((tt.grid[di] || [])[i] || '')}" oninput="updateSubject(${di}, ${i}, this.value)" placeholder="-" class="${inp} ${di === todayIdx ? 'ring-1 ring-blue-300 dark:ring-blue-700' : ''}" aria-label="${d}요일 ${i + 1}교시 과목"></td>`).join('')}
-                                        <td><button onclick="removePeriod(${i})" class="text-slate-400 hover:text-rose-500 p-1" aria-label="${i + 1}교시 삭제"><i class="fa-solid fa-xmark"></i></button></td>
+                                        <td class="w-4 sm:w-8"><button onclick="removePeriod(${i})" class="text-slate-400 hover:text-rose-500 p-0 sm:p-1 text-xs sm:text-sm" aria-label="${i + 1}교시 삭제"><i class="fa-solid fa-xmark"></i></button></td>
                                     </tr>`).join('')}
                                 </tbody>
                             </table>

@@ -103,3 +103,5 @@
         @media (max-width: 480px) { .editorial-header-inner { padding: 0 10px; } .editorial-header-actions { gap: 4px; } .editorial-header-actions .editorial-action { padding: 7px 8px; } .editorial-header-actions .editorial-label { display: none; } .editorial-header-actions .editorial-action .fa-bolt { margin-right: 0; } }
         @media (max-width: 340px) { .editorial-brand { font-size: 15px; } .editorial-header-inner { padding: 0 8px; } .editorial-header-actions { gap: 3px; } .editorial-header-actions .editorial-action { padding: 6px 6px; } }
         @media (max-width: 540px) { .editorial-shortcuts { grid-template-columns: 1fr; } .editorial-menu-grid { grid-template-columns: 1fr; gap: 18px; } }
+        /* 시간표: 휴대폰에서 시각 칸을 좁게 (눌러서 시각 선택은 그대로) */
+        @media (max-width: 639.98px) { .tt-time::-webkit-calendar-picker-indicator { display: none; } .tt-time { padding-left: 2px !important; padding-right: 2px !important; } }
