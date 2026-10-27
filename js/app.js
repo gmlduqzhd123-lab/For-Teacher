@@ -3037,7 +3037,7 @@ ${weeklyAgendaHTML()}
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">교사의 1년 타임라인</h2><p class="text-sm text-slate-500 dark:text-slate-400">월별 주요 학사 및 행정 업무를 체크하세요. <span class="whitespace-nowrap">‘예시’ 표시는 학교마다 시기가 다를 수 있는 일반 업무예요.</span></p></div>
+                        <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">교사의 1년 타임라인</h2><p class="text-sm text-slate-500 dark:text-slate-400">월별 주요 학사 및 행정 업무를 체크하세요. ‘예시’ 표시는 학교마다 시기가 다를 수 있는 일반 업무예요.</p></div>
                         <div class="flex gap-2">${tabBtn('all','전체 보기')}${tabBtn('homeroom','담임 업무')}${tabBtn('manager','부장·담당')}</div>
                     </div>
 
