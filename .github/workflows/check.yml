@@ -13,6 +13,7 @@ jobs:
   checks:
     name: 데이터·문법·저장 규칙 점검
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,11 +28,14 @@ jobs:
   smoke:
     name: 모든 화면 열어 보기
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install --no-save --no-package-lock playwright@1.56.1
-      - run: npx playwright install --with-deps chromium
+      # 러너에 이미 설치된 Chrome을 써서 브라우저·시스템 패키지 내려받기(가끔 멈춤)를 피함
+      - run: npm install --no-save --no-package-lock playwright-core@1.56.1
       - run: node scripts/smoke-test.mjs
+        env:
+          CHROMIUM_PATH: /usr/bin/google-chrome

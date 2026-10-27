@@ -1,5 +1,6 @@
 // 화면 점검: 정적 서버로 앱을 띄워 모든 화면을 열고, 페이지 오류가 하나라도 나면 실패
 // 실행: npm i --no-save playwright && npx playwright install chromium && node scripts/smoke-test.mjs
+//   (설치된 Chrome 사용: npm i --no-save playwright-core && CHROMIUM_PATH=/usr/bin/google-chrome node scripts/smoke-test.mjs)
 import http from 'node:http';
 import fs from 'node:fs';
 import os from 'node:os';
