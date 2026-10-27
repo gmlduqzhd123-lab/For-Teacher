@@ -1105,7 +1105,7 @@
 
             const classDockItems = [
                 { icon: 'fa-stopwatch text-blue-600', title: '스마트 타이머', sub: '전자칠판 전체화면', action: "openPresent('timer')" },
-                { icon: 'fa-wand-magic-sparkles text-rose-600', title: '발표자 랜덤 뽑기', sub: `명단 ${studentCount}명 연동`, action: "openPresent('pick')" },
+                { icon: 'fa-wand-magic-sparkles text-rose-600', title: '발표자 랜덤 뽑기', sub: studentCount ? `명단 ${studentCount}명 연동` : '학급 명단을 넣으면 바로 연동', action: "openPresent('pick')" },
                 { icon: 'fa-chair text-emerald-600', title: '자리 배치기', sub: '짝·앞자리·분리 조건', action: "router.navigate('tools-class')" },
                 { icon: 'fa-chalkboard text-amber-600', title: '수업 칠판 메모', sub: '오늘 활동 안내 띄우기', action: "openPresent('memo')" },
                 { icon: 'fa-bell text-indigo-600', title: '시간표 · 종 알림', sub: `${nowSt.title}`, action: "router.navigate('timetable')" }
