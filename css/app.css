@@ -1,7 +1,6 @@
 /* 교직백서 1000 — 화면 스타일 (index.html에서 분리) */
         @font-face { font-family: 'Maru Buri'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-Regular.woff2') format('woff2'); font-style: normal; font-weight: 400; font-display: swap; }
-        @font-face { font-family: 'Maru Buri'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-SemiBold.woff2') format('woff2'); font-style: normal; font-weight: 600; font-display: swap; }
-        @font-face { font-family: 'Maru Buri'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-Bold.woff2') format('woff2'); font-style: normal; font-weight: 700; font-display: swap; }
+        @font-face { font-family: 'Maru Buri'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-Bold.woff2') format('woff2'); font-style: normal; font-weight: 600 700; font-display: swap; }
         body, button, input, textarea, select { font-family: 'Maru Buri', 'Nanum Myeongjo', 'AppleMyungjo', serif; }
         body { word-break: keep-all; overflow-wrap: break-word; }
         button { word-break: keep-all; }
