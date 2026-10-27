@@ -1189,7 +1189,10 @@
                                 <button type="button" onclick="triggerHomeSearch()">검색</button>
                             </div>
                             <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 px-1">
-                                <button type="button" onclick="openCommandPalette()" class="text-left hover:underline">💡 <b>⚡ 빠른 이동</b>(<kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[11px]">Ctrl+K</kbd>) · <span onclick="event.stopPropagation(); openCalcModal();" class="underline font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer">🧮 출석·병가 계산기</span></button>
+                                <span class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                    <button type="button" onclick="openCommandPalette()" class="text-left hover:underline"><i class="fa-solid fa-bolt text-amber-600 mr-1"></i><b>빠른 이동</b> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[11px]">Ctrl+K</kbd></button>
+                                    <button type="button" onclick="openCalcModal()" class="font-bold hover:underline"><i class="fa-solid fa-calculator text-indigo-600 dark:text-indigo-400 mr-1"></i>출석·병가 계산기</button>
+                                </span>
                                 <button type="button" onclick="startVoiceSearch('home-search-input')" class="font-bold text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-microphone mr-1"></i>음성 검색</button>
                             </div>
                         </div>
