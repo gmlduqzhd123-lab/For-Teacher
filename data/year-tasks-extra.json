@@ -1,0 +1,18 @@
+{
+  "_설명": "교사의 1년에 덧붙이는 일반적인 학교 업무 예시입니다. terms.json의 yearTasks(기준 24개) 뒤에 이어 붙으며, 기존 체크 상태 위치를 바꾸지 않으려면 항목을 중간에 끼우지 말고 각 달 끝에만 추가하세요. 학교·교육청마다 시기가 다를 수 있습니다.",
+  "version": 1,
+  "tasks": {
+    "3": [{ "title": "학부모 총회·학급 운영 안내", "role": "homeroom" }, { "title": "학생 기초 조사·비상 연락망 정리", "role": "homeroom" }],
+    "4": [{ "title": "장애 이해 교육", "role": "all" }, { "title": "과학의 달 행사", "role": "all" }],
+    "5": [{ "title": "가정의 달 계기 교육", "role": "homeroom" }, { "title": "1학기 평가 계획 중간 점검", "role": "all" }],
+    "6": [{ "title": "현충일 계기 교육", "role": "homeroom" }, { "title": "1학기 평가 결과 정리", "role": "homeroom" }],
+    "7": [{ "title": "여름방학 연수 신청 확인", "role": "all" }, { "title": "1학기 업무 인수인계 메모", "role": "all" }],
+    "8": [{ "title": "2학기 학급 운영 계획 정비", "role": "homeroom" }, { "title": "2학기 첫 주 안전 교육", "role": "homeroom" }],
+    "9": [{ "title": "독서의 달 행사", "role": "all" }, { "title": "2학기 평가 계획 확인", "role": "all" }],
+    "10": [{ "title": "한글날 계기 교육", "role": "homeroom" }, { "title": "학교 교육과정 중간 점검", "role": "manager" }],
+    "11": [{ "title": "학교 교육과정 평가 설문 참여", "role": "all" }, { "title": "학년말 생활기록부 입력 일정 확인", "role": "homeroom" }],
+    "12": [{ "title": "겨울방학 생활 안내·안전 교육", "role": "homeroom" }, { "title": "학급 기록물·문집 정리", "role": "homeroom" }],
+    "1": [{ "title": "방학 중 연수 이수 확인", "role": "all" }, { "title": "학년말 교실·물품 정리", "role": "homeroom" }],
+    "2": [{ "title": "새 학년 학급 운영 계획 구상", "role": "homeroom" }, { "title": "반 편성·생활기록부 이관 확인", "role": "homeroom" }]
+  }
+}

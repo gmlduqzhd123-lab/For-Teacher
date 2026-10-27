@@ -854,6 +854,17 @@
                 const expected = `${DATA_META.version}-${DATA_META.updatedAt}`;
                 if (metadata.metadataSchemaVersion === 1 && metadata.contentVersion === expected) CONTENT_META = metadata;
             } catch (_) { CONTENT_META = null; }
+            // 일반 학교 업무 예시: 기준 연간 업무 뒤에만 이어 붙여 기존 체크 위치(checklist_월의 순번)를 유지
+            try {
+                const extraResponse = await fetch('data/year-tasks-extra.json', { cache: 'no-cache' });
+                if (!extraResponse.ok) throw new Error('extra tasks unavailable');
+                const extra = await extraResponse.json();
+                for (let m = 1; m <= 12; m++) {
+                    const list = Array.isArray(extra?.tasks?.[m]) ? extra.tasks[m] : [];
+                    const seen = new Set((YEAR_TASKS[m] || []).map(t => t.title));
+                    list.filter(t => t && typeof t.title === 'string' && !seen.has(t.title)).forEach(t => YEAR_TASKS[m].push({ role: ['homeroom', 'manager'].includes(t.role) ? t.role : 'all', title: t.title, common: true }));
+                }
+            } catch (_) { /* 예시 업무 없이 기준 업무만 표시 */ }
         }
 
         function curatedTerms() {
@@ -3026,7 +3037,7 @@ ${weeklyAgendaHTML()}
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">교사의 1년 타임라인</h2><p class="text-sm text-slate-500 dark:text-slate-400">월별 주요 학사 및 행정 업무를 체크하세요.</p></div>
+                        <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">교사의 1년 타임라인</h2><p class="text-sm text-slate-500 dark:text-slate-400">월별 주요 학사 및 행정 업무를 체크하세요. <span class="whitespace-nowrap">‘예시’ 표시는 학교마다 시기가 다를 수 있는 일반 업무예요.</span></p></div>
                         <div class="flex gap-2">${tabBtn('all','전체 보기')}${tabBtn('homeroom','담임 업무')}${tabBtn('manager','부장·담당')}</div>
                     </div>
 
@@ -3073,7 +3084,7 @@ ${weeklyAgendaHTML()}
                                                 <div class="flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-300 group">
                                                     <input type="checkbox" ${checkedState[idx] ? 'checked' : ''} onchange="toggleYearChecklist(${m}, ${idx})" class="w-4 h-4 mt-0.5 rounded text-blue-600 border-slate-300 dark:border-slate-600 focus:ring-blue-500 cursor-pointer shrink-0" aria-label="${escapeHTML(task.title)}">
                                                     <div class="flex flex-col">
-                                                        <span class="font-medium cursor-pointer ${checkedState[idx] ? 'line-through text-slate-400 dark:text-slate-500' : 'group-hover:text-blue-600 dark:group-hover:text-blue-400 transition'}" onclick="toggleYearChecklist(${m}, ${idx})">${escapeHTML(task.title)} ${task.isPeak ? '<span class="ml-1 bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 px-1.5 py-0.5 rounded text-[9px] font-black">집중</span>' : ''}</span>
+                                                        <span class="font-medium cursor-pointer ${checkedState[idx] ? 'line-through text-slate-400 dark:text-slate-500' : 'group-hover:text-blue-600 dark:group-hover:text-blue-400 transition'}" onclick="toggleYearChecklist(${m}, ${idx})">${escapeHTML(task.title)} ${task.common ? '<span class="ml-1 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-1.5 py-0.5 rounded text-[9px] font-bold" title="학교마다 시기가 다를 수 있는 일반 예시">예시</span>' : ''}${task.isPeak ? '<span class="ml-1 bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 px-1.5 py-0.5 rounded text-[9px] font-black">집중</span>' : ''}</span>
                                                         ${task.linkToDoc && !checkedState[idx] ? `<button data-doc="${escapeHTML(task.linkToDoc)}" onclick="router.navigate('tools-doc', this.dataset.doc)" class="text-left text-[10px] text-blue-500 hover:underline mt-1">양식 바로가기</button>` : ''}
                                                     </div>
                                                 </div>
