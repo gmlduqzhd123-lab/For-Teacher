@@ -801,8 +801,9 @@
 
             db.forEach(item => {
                 if (item.related.length > 0 && !item._baseId) return;
-                if (item._baseId) { const more = shuffle(db.filter(d => d.category === item.category && !d._baseId && d.id !== item._baseId && d.id !== item.id)).slice(0, 2).map(d => d.keyword); item.related = [...item.related, ...more]; return; }
-                const sameCat = db.filter(d => d.category === item.category && d.id !== item.id);
+                // 자동 생성 변형 항목('실무 ○○' 등)은 실제 용어가 아니므로 관련어로 추천하지 않음
+                if (item._baseId) { const more = shuffle(db.filter(d => d.category === item.category && !d._generated && d.id !== item._baseId && d.id !== item.id)).slice(0, 2).map(d => d.keyword); item.related = [...item.related, ...more]; return; }
+                const sameCat = db.filter(d => d.category === item.category && d.id !== item.id && !d._generated);
                 item.related = sameCat.length > 0 ? shuffle(sameCat).slice(0, 3).map(d => d.keyword) : [db[0].keyword];
             });
 
