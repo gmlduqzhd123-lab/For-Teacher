@@ -553,7 +553,7 @@
             if (!s || !e || isNaN(s) || isNaN(e) || e < s) return { weekdays: 0, totalDays: 0, weekendDays: 0 };
             let weekdays = 0, totalDays = 0, weekendDays = 0;
             const cur = new Date(s.getTime());
-            while (cur <= e && totalDays < 366) {
+            while (cur <= e && totalDays < 3700) {
                 totalDays++;
                 const dow = cur.getDay();
                 if (dow === 0 || dow === 6) weekendDays++;
@@ -577,7 +577,7 @@
                 const r = calcSickLeave6(d, h, m);
                 return {
                     tab: 'sick',
-                    title: `병가 누계 ${r.usedLabel}`,
+                    title: `${hasExplicitTime ? '' : '(예시) '}병가 누계 ${r.usedLabel}`,
                     sub: r.remainLabel,
                     warn: r.needsDoctorNote
                 };
@@ -597,8 +597,8 @@
                 };
             }
             // 3. 날짜 기간 평일 일수 계산 (YYYY-MM-DD~YYYY-MM-DD 또는 M/D~M/D)
-            const ymdRange = q.match(/(\d{4}-\d{2}-\d{2})\s*[~∼\-부터]\s*(\d{4}-\d{2}-\d{2})/);
-            const mdRange = !ymdRange && q.match(/(\d{1,2})\s*[./월]\s*(\d{1,2})\s*일?\s*[~∼\-부터]\s*(\d{1,2})\s*[./월]\s*(\d{1,2})\s*일?/);
+            const ymdRange = q.match(/(\d{4}-\d{2}-\d{2})\s*(?:~|∼|-|부터)\s*(\d{4}-\d{2}-\d{2})/);
+            const mdRange = !ymdRange && q.match(/(\d{1,2})\s*[./월]\s*(\d{1,2})\s*일?\s*(?:~|∼|-|부터)\s*(\d{1,2})\s*[./월]\s*(\d{1,2})\s*일?/);
             if (ymdRange || mdRange) {
                 const yr = new Date().getFullYear();
                 const sYmd = ymdRange ? ymdRange[1] : `${yr}-${pad2(mdRange[1])}-${pad2(mdRange[2])}`;
@@ -1333,7 +1333,9 @@ ${weeklyAgendaHTML()}
                     if (existing) {
                         initialTemplateId = existing.id;
                         sharedNotice = `<div class="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-xs font-bold text-emerald-700 dark:text-emerald-300"><i class="fa-solid fa-circle-check mr-1"></i>이미 내 양식함에 있는 '${escapeHTML(decoded.title)}' 양식을 열었습니다!</div>`;
-                    } else if (list.length < 50) {
+                    } else if (list.length >= 50) {
+                        sharedNotice = '<div class="p-3 rounded-2xl bg-rose-50 dark:bg-rose-900/30 border border-rose-200 dark:border-rose-800 text-xs font-bold text-rose-700 dark:text-rose-300">내 양식이 50개로 가득 차서 공유받은 양식을 추가하지 못했어요. 쓰지 않는 양식을 지운 뒤 링크를 다시 열어 주세요.</div>';
+                    } else {
                         const newId = 'c_' + Date.now();
                         list.push({ id: newId, title: String(decoded.title).slice(0, 40), content: String(decoded.content).slice(0, 5000) });
                         if (Storage.set('custom_templates', list)) {
@@ -1780,7 +1782,7 @@ ${weeklyAgendaHTML()}
                 const flatIdx = ri * res.cols + ci;
                 const isSel = selectedSeatIdx === flatIdx;
                 const selCls = isSel ? (big ? 'ring-4 ring-amber-300 bg-amber-500/30 border-amber-300 scale-105' : 'ring-2 ring-amber-400 bg-amber-50 dark:bg-amber-900/40 border-amber-400 scale-105') : '';
-                return `<div onclick="swapSeatSelect(${flatIdx})" title="클릭하여 다른 자리와 1:1 맞바꾸기" class="${baseBoxCls} ${selCls} cursor-pointer select-none transition rounded-xl flex items-center justify-center font-bold text-center break-all p-1 ${res.pairMode && ci % 2 === 1 && ci < res.cols - 1 ? (big ? 'mr-3 sm:mr-8' : 'mr-4') : ''}" style="${boxStyle}">${escapeHTML(n)}</div>`;
+                return `<button type="button" onclick="swapSeatSelect(${flatIdx})" title="클릭하여 다른 자리와 1:1 맞바꾸기" aria-pressed="${isSel}" class="${baseBoxCls} ${selCls} cursor-pointer select-none transition rounded-xl flex items-center justify-center font-bold text-center break-all p-1 ${res.pairMode && ci % 2 === 1 && ci < res.cols - 1 ? (big ? 'mr-3 sm:mr-8' : 'mr-4') : ''}" style="${boxStyle}">${escapeHTML(n)}</button>`;
             }).join('')}</div>`).join('')}<p class="text-[11px] ${big ? 'text-slate-400' : 'text-slate-400 dark:text-slate-500'} mt-1">💡 두 자리를 차례로 클릭하면 1:1로 자리를 맞바꿀 수 있어요.</p></div>`;
         }
 
@@ -1833,7 +1835,14 @@ ${weeklyAgendaHTML()}
             let sharedNotice = '';
             if (initialParam && String(initialParam).startsWith('share:')) {
                 const decoded = decodeSharePayload(initialParam);
-                if (decoded && decoded.title && Array.isArray(decoded.items) && decoded.items.length) {
+                const ownTasks = Storage.get('board_tasks', null);
+                const hasOwn = ownTasks && typeof ownTasks === 'object' && !Array.isArray(ownTasks) && Object.values(ownTasks).some(t => t && String(t.title || '').trim());
+                const keepOwn = decoded && hasOwn && !confirm(`공유받은 보드 '${String(decoded.title || '').slice(0, 60)}'(${(decoded.items || []).length}개)를 불러오면 지금 저장된 내 보드(${Object.keys(ownTasks).length}개)가 바뀝니다. 불러올까요?\n(취소하면 내 보드를 그대로 둡니다. 먼저 '메신저용 복사'로 내 보드를 보관해 둘 수 있어요.)`);
+                if (keepOwn) {
+                    router.param = null;
+                    try { history.replaceState(null, '', buildHash('tools-board', null)); } catch (_) {}
+                    sharedNotice = '<div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300">공유받은 보드를 불러오지 않고 내 보드를 그대로 두었습니다.</div>';
+                } else if (decoded && decoded.title && Array.isArray(decoded.items) && decoded.items.length) {
                     const importedTasks = {};
                     decoded.items.slice(0, 50).forEach((it, idx) => {
                         if (it && typeof it.title === 'string') importedTasks['s_' + idx] = { title: it.title.slice(0, 120), done: !!it.done };
@@ -4768,7 +4777,8 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             captureRecordDraft(); saveRecordDraftNow();
             const drafts = getRecordDrafts();
             const students = getRecordStudents();
-            const csvCell = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+            // 엑셀이 =,+,-,@로 시작하는 칸을 수식으로 실행하지 않도록 앞에 '를 붙임
+            const csvCell = v => { let t = String(v ?? ''); if (/^[=+\-@\t\r]/.test(t)) t = `'${t}`; return `"${t.replace(/"/g, '""')}"`; };
             const rows = [['번호', '학생명', '행동특성 및 종합의견', '행발 바이트', '교과 세부능력 및 특기사항', '세특 바이트', '창의적 체험활동 특기사항', '창체 바이트']];
             if (RECORD_AREAS.some(a => (drafts[a.id] || '').trim())) {
                 const b = drafts.behavior || '', s = drafts.subject || '', ac = drafts.activity || '';
