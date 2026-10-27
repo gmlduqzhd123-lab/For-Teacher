@@ -1154,7 +1154,6 @@
                                 ${activeRun ? `<button type="button" onclick="openSituationRun('${escapeHTML(activeRun.sit.publicId)}')" class="px-2.5 py-1 rounded-lg bg-rose-600 text-white font-extrabold shadow-sm"><i class="fa-solid fa-bolt mr-1"></i>진행 중: ${escapeHTML(activeRun.sit.title)} (${activeRun.pr.done}/${activeRun.pr.total}) 이어하기 →</button>` : ''}
                             </div>
                             <div class="flex flex-wrap items-center gap-1.5 shrink-0">
-                                <button type="button" onclick="openSosModal()" class="px-3 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-300 text-xs font-extrabold hover:bg-rose-100"><i class="fa-solid fa-kit-medical mr-1"></i>긴급 SOS</button>
                                 <button type="button" onclick="openCalcModal()" class="px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 text-xs font-bold hover:bg-indigo-100"><i class="fa-solid fa-calculator mr-1"></i>실무 계산기</button>
                                 <button type="button" onclick="openSetupWizard()" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-200"><i class="fa-solid fa-sliders mr-1"></i>학급 설정</button>
                                 <button type="button" onclick="openGuideModal()" class="px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200" aria-label="30초 사용법 안내">❓ 사용법</button>
@@ -1169,7 +1168,6 @@
                             </div>
                             <div class="flex flex-wrap items-center gap-2 shrink-0">
                                 ${activeRun ? `<button type="button" onclick="openSituationRun('${escapeHTML(activeRun.sit.publicId)}')" class="px-3 py-2 rounded-xl bg-rose-600 text-white text-xs font-extrabold shadow-sm"><i class="fa-solid fa-bolt mr-1"></i>진행 중: ${escapeHTML(activeRun.sit.title)} (${activeRun.pr.done}/${activeRun.pr.total}) 이어하기 →</button>` : ''}
-                                <button type="button" onclick="openSosModal()" class="px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-300 text-xs font-extrabold">🚨 긴급 SOS</button>
                                 <button type="button" onclick="router.navigate('start')" class="px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs font-bold">🚩 역할별 시작 코스</button>
                                 <button type="button" onclick="openGuideModal()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold">❓ 30초 사용법</button>
                                 <button type="button" onclick="openSetupWizard()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow">🪄 1분 학급 세팅</button>
@@ -5026,7 +5024,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             const lbl = document.getElementById('font-scale-label');
             if (lbl) lbl.textContent = scale + '%';
             document.querySelectorAll('[data-font-toggle]').forEach(btn => {
-                btn.textContent = `가+ ${scale}%`;
+                btn.textContent = `글자 크기 ${scale}%`;
                 btn.setAttribute('aria-label', `글자 크기 조절 (현재 ${scale}%)`);
             });
         }
