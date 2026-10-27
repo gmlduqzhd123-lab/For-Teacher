@@ -4589,7 +4589,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                                     <select onchange="setRecordLimit(Number(this.value))" class="px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200" aria-label="글자 수 제한">${RECORD_LIMITS.map(l => `<option value="${l.b}" ${getRecordLimit(area.id) === l.b ? 'selected' : ''}>제한 ${l.label}</option>`).join('')}</select>
                                 </div>
                                 ${counselBridgeHTML}
-                                <textarea id="record-editor" rows="9" oninput="onRecordInput()" oncompositionend="onRecordInput()" placeholder="오른쪽 문장 조각을 누르면 여기에 이어서 들어가요. 직접 써도 됩니다." class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm leading-relaxed text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-blue-500 resize-y">${escapeHTML(draft)}</textarea>
+                                <textarea id="record-editor" rows="9" oninput="onRecordInput()" oncompositionend="onRecordInput()" placeholder="“문장 조각”을 누르면 여기에 이어서 들어가요. 직접 써도 됩니다." class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm leading-relaxed text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-blue-500 resize-y">${escapeHTML(draft)}</textarea>
                                 <p id="record-save-status" class="text-xs text-slate-500 dark:text-slate-400" aria-live="polite">입력하면 이 브라우저에 저장합니다.</p>
                                 <div class="flex flex-wrap items-center justify-between gap-2">
                                     <div class="flex-1 min-w-[200px]">
@@ -4860,7 +4860,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             const q = counselFilter.q.trim().toLowerCase();
             const list = getCounsel().filter(r => (!counselFilter.student || r.student === counselFilter.student) && (!counselFilter.pending || (r.followup && !r.done)) && (!q || `${r.student} ${r.topic} ${r.summary} ${r.followup}`.toLowerCase().includes(q)))
                 .sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.id || '').localeCompare(a.id || ''));
-            if (!list.length) { box.innerHTML = `<p class="text-xs text-slate-400 dark:text-slate-500 py-8 text-center">${getCounsel().length ? '조건에 맞는 기록이 없어요.' : '아직 상담 기록이 없어요. 왼쪽에서 첫 기록을 남겨 보세요.'}</p>`; return; }
+            if (!list.length) { box.innerHTML = `<p class="text-xs text-slate-400 dark:text-slate-500 py-8 text-center">${getCounsel().length ? '조건에 맞는 기록이 없어요.' : '아직 상담 기록이 없어요. “새 상담 기록”에서 첫 기록을 남겨 보세요.'}</p>`; return; }
             box.innerHTML = `<p class="text-xs text-slate-400">${list.length}건</p>` + list.map(r => `
                 <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-2">
                     <div class="flex flex-wrap items-center justify-between gap-2">
