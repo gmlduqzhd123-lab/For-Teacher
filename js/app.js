@@ -801,8 +801,9 @@
 
             db.forEach(item => {
                 if (item.related.length > 0 && !item._baseId) return;
-                if (item._baseId) { const more = shuffle(db.filter(d => d.category === item.category && !d._baseId && d.id !== item._baseId && d.id !== item.id)).slice(0, 2).map(d => d.keyword); item.related = [...item.related, ...more]; return; }
-                const sameCat = db.filter(d => d.category === item.category && d.id !== item.id);
+                // 자동 생성 변형 항목('실무 ○○' 등)은 실제 용어가 아니므로 관련어로 추천하지 않음
+                if (item._baseId) { const more = shuffle(db.filter(d => d.category === item.category && !d._generated && d.id !== item._baseId && d.id !== item.id)).slice(0, 2).map(d => d.keyword); item.related = [...item.related, ...more]; return; }
+                const sameCat = db.filter(d => d.category === item.category && d.id !== item.id && !d._generated);
                 item.related = sameCat.length > 0 ? shuffle(sameCat).slice(0, 3).map(d => d.keyword) : [db[0].keyword];
             });
 
@@ -853,6 +854,17 @@
                 const expected = `${DATA_META.version}-${DATA_META.updatedAt}`;
                 if (metadata.metadataSchemaVersion === 1 && metadata.contentVersion === expected) CONTENT_META = metadata;
             } catch (_) { CONTENT_META = null; }
+            // 일반 학교 업무 예시: 기준 연간 업무 뒤에만 이어 붙여 기존 체크 위치(checklist_월의 순번)를 유지
+            try {
+                const extraResponse = await fetch('data/year-tasks-extra.json', { cache: 'no-cache' });
+                if (!extraResponse.ok) throw new Error('extra tasks unavailable');
+                const extra = await extraResponse.json();
+                for (let m = 1; m <= 12; m++) {
+                    const list = Array.isArray(extra?.tasks?.[m]) ? extra.tasks[m] : [];
+                    const seen = new Set((YEAR_TASKS[m] || []).map(t => t.title));
+                    list.filter(t => t && typeof t.title === 'string' && !seen.has(t.title)).forEach(t => YEAR_TASKS[m].push({ role: ['homeroom', 'manager'].includes(t.role) ? t.role : 'all', title: t.title, common: true }));
+                }
+            } catch (_) { /* 예시 업무 없이 기준 업무만 표시 */ }
         }
 
         function curatedTerms() {
@@ -1104,7 +1116,7 @@
 
             const classDockItems = [
                 { icon: 'fa-stopwatch text-blue-600', title: '스마트 타이머', sub: '전자칠판 전체화면', action: "openPresent('timer')" },
-                { icon: 'fa-wand-magic-sparkles text-rose-600', title: '발표자 랜덤 뽑기', sub: `명단 ${studentCount}명 연동`, action: "openPresent('pick')" },
+                { icon: 'fa-wand-magic-sparkles text-rose-600', title: '발표자 랜덤 뽑기', sub: studentCount ? `명단 ${studentCount}명 연동` : '학급 명단을 넣으면 바로 연동', action: "openPresent('pick')" },
                 { icon: 'fa-chair text-emerald-600', title: '자리 배치기', sub: '짝·앞자리·분리 조건', action: "router.navigate('tools-class')" },
                 { icon: 'fa-chalkboard text-amber-600', title: '수업 칠판 메모', sub: '오늘 활동 안내 띄우기', action: "openPresent('memo')" },
                 { icon: 'fa-bell text-indigo-600', title: '시간표 · 종 알림', sub: `${nowSt.title}`, action: "router.navigate('timetable')" }
@@ -1153,7 +1165,6 @@
                                 ${activeRun ? `<button type="button" onclick="openSituationRun('${escapeHTML(activeRun.sit.publicId)}')" class="px-2.5 py-1 rounded-lg bg-rose-600 text-white font-extrabold shadow-sm"><i class="fa-solid fa-bolt mr-1"></i>진행 중: ${escapeHTML(activeRun.sit.title)} (${activeRun.pr.done}/${activeRun.pr.total}) 이어하기 →</button>` : ''}
                             </div>
                             <div class="flex flex-wrap items-center gap-1.5 shrink-0">
-                                <button type="button" onclick="openSosModal()" class="px-3 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-300 text-xs font-extrabold hover:bg-rose-100"><i class="fa-solid fa-kit-medical mr-1"></i>긴급 SOS</button>
                                 <button type="button" onclick="openCalcModal()" class="px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 text-xs font-bold hover:bg-indigo-100"><i class="fa-solid fa-calculator mr-1"></i>실무 계산기</button>
                                 <button type="button" onclick="openSetupWizard()" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-200"><i class="fa-solid fa-sliders mr-1"></i>학급 설정</button>
                                 <button type="button" onclick="openGuideModal()" class="px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200" aria-label="30초 사용법 안내">❓ 사용법</button>
@@ -1168,7 +1179,6 @@
                             </div>
                             <div class="flex flex-wrap items-center gap-2 shrink-0">
                                 ${activeRun ? `<button type="button" onclick="openSituationRun('${escapeHTML(activeRun.sit.publicId)}')" class="px-3 py-2 rounded-xl bg-rose-600 text-white text-xs font-extrabold shadow-sm"><i class="fa-solid fa-bolt mr-1"></i>진행 중: ${escapeHTML(activeRun.sit.title)} (${activeRun.pr.done}/${activeRun.pr.total}) 이어하기 →</button>` : ''}
-                                <button type="button" onclick="openSosModal()" class="px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-900/40 text-rose-600 dark:text-rose-300 text-xs font-extrabold">🚨 긴급 SOS</button>
                                 <button type="button" onclick="router.navigate('start')" class="px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs font-bold">🚩 역할별 시작 코스</button>
                                 <button type="button" onclick="openGuideModal()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold">❓ 30초 사용법</button>
                                 <button type="button" onclick="openSetupWizard()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow">🪄 1분 학급 세팅</button>
@@ -1190,7 +1200,10 @@
                                 <button type="button" onclick="triggerHomeSearch()">검색</button>
                             </div>
                             <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 px-1">
-                                <button type="button" onclick="openCommandPalette()" class="text-left hover:underline">💡 <b>⚡ 빠른 이동</b>(<kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[11px]">Ctrl+K</kbd>) · <span onclick="event.stopPropagation(); openCalcModal();" class="underline font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer">🧮 출석·병가 계산기</span></button>
+                                <span class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                    <button type="button" onclick="openCommandPalette()" class="text-left hover:underline"><i class="fa-solid fa-bolt text-amber-600 mr-1"></i><b>빠른 이동</b> <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[11px]">Ctrl+K</kbd></button>
+                                    <button type="button" onclick="openCalcModal()" class="font-bold hover:underline"><i class="fa-solid fa-calculator text-indigo-600 dark:text-indigo-400 mr-1"></i>출석·병가 계산기</button>
+                                </span>
                                 <button type="button" onclick="startVoiceSearch('home-search-input')" class="font-bold text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-microphone mr-1"></i>음성 검색</button>
                             </div>
                         </div>
@@ -1596,13 +1609,15 @@ ${weeklyAgendaHTML()}
                                 <div id="seats-grid" class="min-h-[100px] flex items-center"></div>
                             </div>
                         </div>
-                        <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-6 rounded-3xl shadow-sm text-white flex flex-col justify-center items-center text-center">
-                            <span class="text-xs font-bold px-3 py-1 bg-white/20 rounded-full mb-4">이스터에그 🤫</span>
-                            <h3 class="text-lg font-bold mb-2">엽쌤의 조퇴 사유 뽑기</h3>
-                            <p class="text-xs text-purple-100 mb-6">"금요일 오후, 완벽한 변명거리"</p>
-                            <div id="leave-reason-display" class="w-full bg-white/10 p-4 rounded-xl mb-6 font-bold text-lg h-16 flex items-center justify-center overflow-hidden"><span>?</span></div>
-                            <button onclick="pickLeaveReason()" class="w-full py-3 bg-white text-indigo-600 font-bold rounded-xl shadow hover:bg-slate-50 transition">사유 뽑기</button>
-                        </div>
+                        <!-- 재미용 기능: 업무 도구 사이에서 눈에 덜 띄도록 접어 둠 -->
+                        <details class="self-start bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-600 text-sm">
+                            <summary class="cursor-pointer select-none px-4 py-3 text-xs font-bold text-slate-500 dark:text-slate-400">🤫 쉬어 가기 · 엽쌤의 조퇴 사유 뽑기</summary>
+                            <div class="px-4 pb-4 text-center">
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">"금요일 오후, 완벽한 변명거리" (농담용)</p>
+                                <div id="leave-reason-display" class="w-full bg-slate-50 dark:bg-slate-900 p-3 rounded-xl mb-3 font-bold text-base h-14 flex items-center justify-center overflow-hidden text-slate-700 dark:text-slate-200"><span>?</span></div>
+                                <button onclick="pickLeaveReason()" class="w-full py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl hover:bg-slate-200 transition">사유 뽑기</button>
+                            </div>
+                        </details>
                     </div>
                 </div>
             ` + FOOTER_HTML;
@@ -1807,7 +1822,7 @@ ${weeklyAgendaHTML()}
             const display = document.getElementById('leave-reason-display'); let count = 0; display.innerHTML = `<span class="slot-machine-spin">돌아가는 중...</span>`;
             randomLeaveInterval = setInterval(() => {
                 display.innerHTML = `<span class="slot-machine-spin">${reasons[Math.floor(Math.random() * reasons.length)]}</span>`;
-                if(count++ > 15) { clearInterval(randomLeaveInterval); randomLeaveInterval = null; display.innerHTML = `<span class="text-yellow-300 font-extrabold text-xl animate-fade-in">${reasons[Math.floor(Math.random() * reasons.length)]}</span>`; showToast('사유가 결정되었습니다! 결재를 올려볼까요? 😉'); }
+                if(count++ > 15) { clearInterval(randomLeaveInterval); randomLeaveInterval = null; display.innerHTML = `<span class="text-indigo-600 dark:text-indigo-300 font-extrabold text-lg animate-fade-in">${reasons[Math.floor(Math.random() * reasons.length)]}</span>`; showToast('사유가 결정되었습니다! 결재를 올려볼까요? 😉'); }
             }, 50);
         }
 
@@ -1972,7 +1987,7 @@ ${weeklyAgendaHTML()}
                     </div>
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-3 relative w-full">
                         <div class="relative">
-                            <input type="text" id="main-search-input" enterkeyhint="search" value="${escapeHTML(queryStr)}" placeholder="용어, 초성(ㄱㅇㅈㅂ), 또는 일상어('학생이 다쳤어요', '물건 살 때') 검색..." class="w-full pl-12 pr-20 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
+                            <input type="text" id="main-search-input" enterkeyhint="search" value="${escapeHTML(queryStr)}" placeholder="용어, 초성, 일상어('학생이 다쳤어요', '물건 살 때') 검색..." class="w-full pl-12 pr-20 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
                                 <button type="button" onclick="clearSearch()" id="clear-search-btn" class="text-slate-400 hover:text-slate-600 hidden" aria-label="검색어 지우기"><i class="fa-solid fa-circle-xmark"></i></button>
@@ -3022,7 +3037,7 @@ ${weeklyAgendaHTML()}
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">교사의 1년 타임라인</h2><p class="text-sm text-slate-500 dark:text-slate-400">월별 주요 학사 및 행정 업무를 체크하세요.</p></div>
+                        <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">교사의 1년 타임라인</h2><p class="text-sm text-slate-500 dark:text-slate-400">월별 주요 학사 및 행정 업무를 체크하세요. ‘예시’ 표시는 학교마다 시기가 다를 수 있는 일반 업무예요.</p></div>
                         <div class="flex gap-2">${tabBtn('all','전체 보기')}${tabBtn('homeroom','담임 업무')}${tabBtn('manager','부장·담당')}</div>
                     </div>
 
@@ -3069,7 +3084,7 @@ ${weeklyAgendaHTML()}
                                                 <div class="flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-300 group">
                                                     <input type="checkbox" ${checkedState[idx] ? 'checked' : ''} onchange="toggleYearChecklist(${m}, ${idx})" class="w-4 h-4 mt-0.5 rounded text-blue-600 border-slate-300 dark:border-slate-600 focus:ring-blue-500 cursor-pointer shrink-0" aria-label="${escapeHTML(task.title)}">
                                                     <div class="flex flex-col">
-                                                        <span class="font-medium cursor-pointer ${checkedState[idx] ? 'line-through text-slate-400 dark:text-slate-500' : 'group-hover:text-blue-600 dark:group-hover:text-blue-400 transition'}" onclick="toggleYearChecklist(${m}, ${idx})">${escapeHTML(task.title)} ${task.isPeak ? '<span class="ml-1 bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 px-1.5 py-0.5 rounded text-[9px] font-black">집중</span>' : ''}</span>
+                                                        <span class="font-medium cursor-pointer ${checkedState[idx] ? 'line-through text-slate-400 dark:text-slate-500' : 'group-hover:text-blue-600 dark:group-hover:text-blue-400 transition'}" onclick="toggleYearChecklist(${m}, ${idx})">${escapeHTML(task.title)} ${task.common ? '<span class="ml-1 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-1.5 py-0.5 rounded text-[9px] font-bold" title="학교마다 시기가 다를 수 있는 일반 예시">예시</span>' : ''}${task.isPeak ? '<span class="ml-1 bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 px-1.5 py-0.5 rounded text-[9px] font-black">집중</span>' : ''}</span>
                                                         ${task.linkToDoc && !checkedState[idx] ? `<button data-doc="${escapeHTML(task.linkToDoc)}" onclick="router.navigate('tools-doc', this.dataset.doc)" class="text-left text-[10px] text-blue-500 hover:underline mt-1">양식 바로가기</button>` : ''}
                                                     </div>
                                                 </div>
@@ -3571,7 +3586,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                             </div>
                             <p class="text-xs text-emerald-800 dark:text-emerald-300">학급 명단, 생기부 초안, 내 양식, 체크리스트, <b>학부모 상담 기록</b>까지 단 하나의 AES-256 암호화 파일로 묶어 내보내거나 복원합니다.</p>
                             <div class="flex flex-wrap gap-2 items-center">
-                                <input id="full-backup-pw" type="password" autocomplete="new-password" placeholder="백업 비밀번호 (8자 이상)" class="px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 text-xs text-slate-800 dark:text-slate-200 outline-none">
+                                <input id="full-backup-pw" type="password" autocomplete="new-password" placeholder="백업 비밀번호 (8자 이상)" class="w-full sm:w-64 min-w-0 px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 text-xs text-slate-800 dark:text-slate-200 outline-none">
                                 <button type="button" onclick="exportFullEncryptedBackup()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-sm transition"><i class="fa-solid fa-lock mr-1"></i>통합 암호화 백업 받기</button>
                                 <label class="px-4 py-2 bg-white dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-200 font-bold rounded-xl text-xs cursor-pointer hover:bg-emerald-100 transition shadow-sm"><i class="fa-solid fa-unlock mr-1"></i>통합 백업 복원하기<input type="file" accept=".json,application/json" onchange="importFullEncryptedBackup(event)" class="hidden"></label>
                             </div>
@@ -3597,6 +3612,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             updateOfflineStatus();
             if (router.param === 'calendar') requestAnimationFrame(() => document.getElementById('school-calendar-card')?.scrollIntoView({ block: 'center' }));
             if (router.param === 'ai') requestAnimationFrame(() => document.getElementById('ai-settings-card')?.scrollIntoView({ block: 'center' }));
+            if (router.param === 'vault') requestAnimationFrame(() => document.getElementById('vault-card')?.scrollIntoView({ block: 'center' }));
         }
 
         async function updateOfflineStatus() {
@@ -4276,7 +4292,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
 
         function renderTimetable(container) {
             const tt = getTimetable(); const todayIdx = new Date().getDay() - 1;
-            const inp = 'w-full min-w-[64px] px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm text-center outline-none focus:ring-2 focus:ring-blue-500';
+            const inp = 'w-full min-w-[36px] sm:min-w-[64px] px-1 sm:px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs sm:text-sm text-center outline-none focus:ring-2 focus:ring-blue-500';
             const sel = (key, val) => `<select onchange="setTTOption('${key}', Number(this.value))" class="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200">${[0,1,2,3,5,10].map(n => `<option value="${n}" ${val === n ? 'selected' : ''}>${n ? `${n}분 전` : '끄기'}</option>`).join('')}</select>`;
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
@@ -4292,7 +4308,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                         <button onclick="openPresent('clock')" class="self-start md:self-center px-4 py-2.5 bg-white/15 hover:bg-white/25 rounded-xl text-sm font-bold"><i class="fa-solid fa-expand"></i> 교실 화면에 띄우기</button>
                     </div>
 
-                    <div class="bg-white dark:bg-slate-800 p-4 md:p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4">
+                    <div class="bg-white dark:bg-slate-800 p-2 sm:p-4 md:p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4">
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <h3 class="text-sm font-bold text-slate-900 dark:text-white">주간 시간표 <span class="text-[11px] font-medium text-slate-400 whitespace-nowrap">(칸을 눌러 바로 입력 · 자동 저장)</span></h3>
                             <div class="flex flex-wrap gap-2">
@@ -4302,14 +4318,14 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                             </div>
                         </div>
                         <div class="overflow-x-auto -mx-1 px-1">
-                            <table class="w-full text-sm min-w-[520px] md:min-w-[640px] border-separate" style="border-spacing:4px">
-                                <thead><tr class="text-xs text-slate-500 dark:text-slate-400"><th class="w-10 whitespace-nowrap">교시</th><th class="w-32 sm:w-48 whitespace-nowrap">시간</th>${TT_DAYS.map((d, di) => `<th class="${di === todayIdx ? 'text-blue-600 dark:text-blue-400' : ''}">${d}${di === todayIdx ? ' (오늘)' : ''}</th>`).join('')}<th class="w-8"></th></tr></thead>
+                            <table class="w-full text-sm sm:min-w-[520px] md:min-w-[640px] border-separate" style="border-spacing:2px">
+                                <thead><tr class="text-xs text-slate-500 dark:text-slate-400"><th class="w-5 sm:w-10 whitespace-nowrap text-[11px] sm:text-xs">교시</th><th class="w-[84px] sm:w-48 whitespace-nowrap">시간</th>${TT_DAYS.map((d, di) => `<th class="${di === todayIdx ? 'text-blue-600 dark:text-blue-400' : ''}">${d}${di === todayIdx ? '<span class="hidden sm:inline"> (오늘)</span>' : ''}</th>`).join('')}<th class="w-8"></th></tr></thead>
                                 <tbody>${tt.periods.map((p, i) => `
                                     <tr>
                                         <td class="text-center font-bold text-slate-700 dark:text-slate-200">${i + 1}</td>
-                                        <td><div class="flex items-center justify-center gap-1 whitespace-nowrap"><input type="time" value="${escapeHTML(p.start)}" onchange="updatePeriod(${i}, 'start', this.value)" class="${inp} !px-1" aria-label="${i + 1}교시 시작"><span class="text-slate-400">~</span><input type="time" value="${escapeHTML(p.end)}" onchange="updatePeriod(${i}, 'end', this.value)" class="${inp} !px-1" aria-label="${i + 1}교시 끝"></div></td>
+                                        <td><div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-1 whitespace-nowrap"><input type="time" value="${escapeHTML(p.start)}" onchange="updatePeriod(${i}, 'start', this.value)" class="${inp} !px-1 tt-time" aria-label="${i + 1}교시 시작"><span class="hidden sm:inline text-slate-400">~</span><input type="time" value="${escapeHTML(p.end)}" onchange="updatePeriod(${i}, 'end', this.value)" class="${inp} !px-1 tt-time" aria-label="${i + 1}교시 끝"></div></td>
                                         ${TT_DAYS.map((d, di) => `<td><input type="text" maxlength="12" value="${escapeHTML((tt.grid[di] || [])[i] || '')}" oninput="updateSubject(${di}, ${i}, this.value)" placeholder="-" class="${inp} ${di === todayIdx ? 'ring-1 ring-blue-300 dark:ring-blue-700' : ''}" aria-label="${d}요일 ${i + 1}교시 과목"></td>`).join('')}
-                                        <td><button onclick="removePeriod(${i})" class="text-slate-400 hover:text-rose-500 p-1" aria-label="${i + 1}교시 삭제"><i class="fa-solid fa-xmark"></i></button></td>
+                                        <td class="w-4 sm:w-8"><button onclick="removePeriod(${i})" class="text-slate-400 hover:text-rose-500 p-0 sm:p-1 text-xs sm:text-sm" aria-label="${i + 1}교시 삭제"><i class="fa-solid fa-xmark"></i></button></td>
                                     </tr>`).join('')}
                                 </tbody>
                             </table>
@@ -4589,7 +4605,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                                     <select onchange="setRecordLimit(Number(this.value))" class="px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200" aria-label="글자 수 제한">${RECORD_LIMITS.map(l => `<option value="${l.b}" ${getRecordLimit(area.id) === l.b ? 'selected' : ''}>제한 ${l.label}</option>`).join('')}</select>
                                 </div>
                                 ${counselBridgeHTML}
-                                <textarea id="record-editor" rows="9" oninput="onRecordInput()" oncompositionend="onRecordInput()" placeholder="오른쪽 문장 조각을 누르면 여기에 이어서 들어가요. 직접 써도 됩니다." class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm leading-relaxed text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-blue-500 resize-y">${escapeHTML(draft)}</textarea>
+                                <textarea id="record-editor" rows="9" oninput="onRecordInput()" oncompositionend="onRecordInput()" placeholder="“문장 조각”을 누르면 여기에 이어서 들어가요. 직접 써도 됩니다." class="w-full p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm leading-relaxed text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-blue-500 resize-y">${escapeHTML(draft)}</textarea>
                                 <p id="record-save-status" class="text-xs text-slate-500 dark:text-slate-400" aria-live="polite">입력하면 이 브라우저에 저장합니다.</p>
                                 <div class="flex flex-wrap items-center justify-between gap-2">
                                     <div class="flex-1 min-w-[200px]">
@@ -4796,7 +4812,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                 <div class="space-y-6 animate-fade-in">
                     <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">상담 기록장</h2><p class="text-sm text-slate-500 dark:text-slate-400">학부모·학생 상담 내용을 기록하고, 상담주간 일정표를 만들어요.</p></div>
                     <div class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 text-xs text-amber-800 dark:text-amber-200 leading-relaxed">
-                        <b><i class="fa-solid fa-lock"></i> 개인정보 안내</b> — 상담 기록은 서버로 전송되지 않고 <b>이 기기의 이 브라우저에만</b> 저장돼요. 공용 PC에서는 쓰지 마시고, 기기를 바꿀 때는 아래 '암호화 백업'으로 옮기세요. 민감한 내용은 학교 공식 상담 기록(나이스 등) 지침을 우선 따르세요.
+                        <b><i class="fa-solid fa-lock"></i> 개인정보 안내</b> — 상담 기록은 서버로 전송되지 않고 <b>이 기기의 이 브라우저에만</b> 저장돼요. ${Vault.state === 'unlocked' ? '<b>개인 기록 잠금</b>으로 비밀번호 암호화되어 있어요. ' : `비밀번호로 잠가 두려면 <button type="button" onclick="router.navigate('mybox', 'vault')" class="underline font-bold">나의 교직함 › 개인 기록 잠금</button>을 켜세요. `}공용 PC에서는 쓰지 마시고, 기기를 바꿀 때는 아래 '암호화 백업'으로 옮기세요. 민감한 내용은 학교 공식 상담 기록(나이스 등) 지침을 우선 따르세요.
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
                         <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-3 self-start">
@@ -4844,7 +4860,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                         <h3 class="text-sm font-bold text-slate-900 dark:text-white"><i class="fa-solid fa-key text-emerald-500"></i> 상담 기록 암호화 백업</h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400">비밀번호로 잠근 파일(AES-256)로 저장해요. <b>비밀번호를 잊으면 누구도 복구할 수 없어요.</b></p>
                         <div class="flex flex-wrap gap-2 items-center">
-                            <input id="cs-pw" type="password" autocomplete="new-password" placeholder="비밀번호 (8자 이상)" class="px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-200 outline-none">
+                            <input id="cs-pw" type="password" autocomplete="new-password" placeholder="비밀번호 (8자 이상)" class="w-full sm:w-64 min-w-0 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-200 outline-none">
                             <button onclick="exportCounselEncrypted()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl"><i class="fa-solid fa-lock"></i> 암호화 백업 받기</button>
                             <label class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl cursor-pointer"><i class="fa-solid fa-unlock"></i> 백업 불러오기<input type="file" accept=".json,application/json" onchange="importCounselEncrypted(event)" class="hidden"></label>
                         </div>
@@ -4860,7 +4876,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             const q = counselFilter.q.trim().toLowerCase();
             const list = getCounsel().filter(r => (!counselFilter.student || r.student === counselFilter.student) && (!counselFilter.pending || (r.followup && !r.done)) && (!q || `${r.student} ${r.topic} ${r.summary} ${r.followup}`.toLowerCase().includes(q)))
                 .sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.id || '').localeCompare(a.id || ''));
-            if (!list.length) { box.innerHTML = `<p class="text-xs text-slate-400 dark:text-slate-500 py-8 text-center">${getCounsel().length ? '조건에 맞는 기록이 없어요.' : '아직 상담 기록이 없어요. 왼쪽에서 첫 기록을 남겨 보세요.'}</p>`; return; }
+            if (!list.length) { box.innerHTML = `<p class="text-xs text-slate-400 dark:text-slate-500 py-8 text-center">${getCounsel().length ? '조건에 맞는 기록이 없어요.' : '아직 상담 기록이 없어요. “새 상담 기록”에서 첫 기록을 남겨 보세요.'}</p>`; return; }
             box.innerHTML = `<p class="text-xs text-slate-400">${list.length}건</p>` + list.map(r => `
                 <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-2">
                     <div class="flex flex-wrap items-center justify-between gap-2">
@@ -5025,7 +5041,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             const lbl = document.getElementById('font-scale-label');
             if (lbl) lbl.textContent = scale + '%';
             document.querySelectorAll('[data-font-toggle]').forEach(btn => {
-                btn.textContent = `가+ ${scale}%`;
+                btn.textContent = `글자 크기 ${scale}%`;
                 btn.setAttribute('aria-label', `글자 크기 조절 (현재 ${scale}%)`);
             });
         }

@@ -1,5 +1,6 @@
 // 화면 점검: 정적 서버로 앱을 띄워 모든 화면을 열고, 페이지 오류가 하나라도 나면 실패
 // 실행: npm i --no-save playwright && npx playwright install chromium && node scripts/smoke-test.mjs
+//   (설치된 Chrome 사용: npm i --no-save playwright-core && CHROMIUM_PATH=/usr/bin/google-chrome node scripts/smoke-test.mjs)
 import http from 'node:http';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -111,12 +112,18 @@ const server = http.createServer((req, res) => {
   fs.createReadStream(file).pipe(res);
 });
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-const base = `http://127.0.0.1:${server.address().port}/`;
+// 프록시를 거쳐야 CDN(Tailwind 등)에 닿는 환경에서는 프록시를 쓰고, 이 정적 서버만 직접 연결
+const proxy = process.env.HTTPS_PROXY || process.env.https_proxy;
+const host = proxy ? 'smoke.test' : '127.0.0.1';
+const base = `http://${host}:${server.address().port}/`;
 
 const views = ['home', 'search', 'situations', 'navigator', 'map', 'year', 'career', 'quiz', 'card', 'mybox', 'start', 'tools-doc', 'tools-class', 'tools-board', 'tools-edutech', 'timetable', 'tools-record', 'counsel'];
-const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
+const browser = await chromium.launch({
+  ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}),
+  ...(proxy ? { proxy: { server: proxy, bypass: host }, args: ['--ignore-certificate-errors', `--host-resolver-rules=MAP ${host} 127.0.0.1`] } : {}),
+});
 const failures = [];
-for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 }]) {
+for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 }, { width: 320, height: 640 }]) {
   const page = await browser.newPage({ viewport });
   page.on('pageerror', err => failures.push(`${viewport.width}px ${page.url()}: ${err.message}`));
   page.on('dialog', d => d.dismiss());
@@ -127,10 +134,17 @@ for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 
     await page.waitForTimeout(150);
     const text = await page.evaluate(() => document.getElementById('app-view').textContent);
     if (text.includes('화면 로딩 오류')) failures.push(`${viewport.width}px ${view}: error screen shown`);
+    // 휴대폰에서 화면이 옆으로 밀리면(가로 넘침) 버튼이 화면 밖으로 나가므로 실패로 봄
+    const overflow = await page.evaluate(() => { const a = document.getElementById('app-view'); return a.scrollWidth - a.clientWidth; });
+    if (overflow > 1) failures.push(`${viewport.width}px ${view}: content is ${overflow}px wider than the screen`);
   }
   await page.evaluate(() => openDetail(1)); await page.waitForTimeout(150);
   await page.close();
 }
 await browser.close(); server.close();
-if (failures.length) { console.error(failures.map(f => `✗ ${f}`).join('\n')); process.exit(1); }
-console.log(`Smoke test passed: ${views.length} screens × 2 viewport sizes, term detail.`);
+if (failures.length) {
+  console.error(failures.map(f => `✗ ${f}`).join('\n'));
+  if (process.env.GITHUB_ACTIONS) failures.slice(0, 20).forEach(f => console.log(`::error title=smoke-test::${f.replace(/\n/g, ' ')}`)); // Actions 화면·API에 오류 내용 표시
+  process.exit(1);
+}
+console.log(`Smoke test passed: ${views.length} screens × 3 viewport sizes, term detail.`);

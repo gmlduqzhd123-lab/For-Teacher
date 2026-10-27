@@ -1,7 +1,6 @@
 /* 교직백서 1000 — 화면 스타일 (index.html에서 분리) */
         @font-face { font-family: 'Maru Buri'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-Regular.woff2') format('woff2'); font-style: normal; font-weight: 400; font-display: swap; }
-        @font-face { font-family: 'Maru Buri'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-SemiBold.woff2') format('woff2'); font-style: normal; font-weight: 600; font-display: swap; }
-        @font-face { font-family: 'Maru Buri'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-Bold.woff2') format('woff2'); font-style: normal; font-weight: 700; font-display: swap; }
+        @font-face { font-family: 'Maru Buri'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-Bold.woff2') format('woff2'); font-style: normal; font-weight: 600 700; font-display: swap; }
         body, button, input, textarea, select { font-family: 'Maru Buri', 'Nanum Myeongjo', 'AppleMyungjo', serif; }
         body { word-break: keep-all; overflow-wrap: break-word; }
         button { word-break: keep-all; }
@@ -54,9 +53,10 @@
         #desktop-sidebar { display: none !important; }
         #app-view { width: 100%; background: var(--paper); padding: 24px 28px 72px; -webkit-overflow-scrolling: touch; } #app-view > div { max-width: 1200px; margin-left: auto; margin-right: auto; }
         .editorial-home { max-width: 1160px; margin: auto; }
-        .editorial-hero { display: grid; grid-template-columns: 1.3fr 1fr; gap: 42px; align-items: end; padding: 52px 0 37px; border-bottom: 1px solid var(--paper-line); }
+        .editorial-hero { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 42px; align-items: end; padding: 52px 0 37px; border-bottom: 1px solid var(--paper-line); }
         .editorial-eyebrow { display: block; color: var(--paper-accent); font-size: 11px; font-weight: 800; letter-spacing: .17em; margin-bottom: 17px; }
         .editorial-hero h2 { font-family: 'Maru Buri', Georgia, serif; font-size: clamp(31px, 3.6vw, 48px); line-height: 1.34; letter-spacing: -.055em; font-weight: 700; margin: 0 0 17px; word-break: keep-all; }
+        .editorial-hero > * { min-width: 0; }
         .editorial-hero h2 em { color: var(--paper-accent); font-style: normal; }
         .editorial-hero p { color: var(--paper-muted); font-size: 14px; font-weight: 600; line-height: 1.7; margin: 0; }
         .editorial-search { display: flex; align-items: center; padding: 8px; border: 1px solid var(--paper-line); background: var(--paper-card); border-radius: 8px; box-shadow: 0 8px 28px rgba(35, 35, 20, .04); }
@@ -96,10 +96,12 @@
         .editorial-bottom-nav .mob-item { color: var(--paper-muted) !important; font-weight: 650; }
         .editorial-bottom-nav .mob-item.font-bold { color: var(--paper-accent) !important; }
         .editorial-header button:focus-visible, .editorial-home button:focus-visible, .editorial-menu-panel button:focus-visible, .editorial-search:focus-within { outline: 2px solid var(--paper-accent); outline-offset: 3px; }
-        @media (max-width: 1120px) { .editorial-header-inner { gap: 16px; padding: 0 20px; } .editorial-primary-nav { gap: 16px; } .editorial-primary-nav button { font-size: 12px; } .editorial-action:not(.editorial-menu-trigger):not(.editorial-mobile-keep):not(.editorial-tablet-keep) { display: none; } } @media (max-width: 960px) { .editorial-hero { grid-template-columns: 1fr; gap: 22px; padding: 30px 0 26px; } .editorial-content-grid { grid-template-columns: 1fr; gap: 28px; padding-top: 24px; } }
+        @media (max-width: 1120px) { .editorial-header-inner { gap: 16px; padding: 0 20px; } .editorial-primary-nav { gap: 16px; } .editorial-primary-nav button { font-size: 12px; } .editorial-action:not(.editorial-menu-trigger):not(.editorial-mobile-keep):not(.editorial-tablet-keep) { display: none; } } @media (max-width: 960px) { .editorial-hero { grid-template-columns: minmax(0, 1fr); gap: 22px; padding: 30px 0 26px; } .editorial-content-grid { grid-template-columns: 1fr; gap: 28px; padding-top: 24px; } }
         @media (max-width: 767.98px) { input:not([type="checkbox"]):not([type="radio"]), textarea, select { font-size: 16px !important; } .editorial-header-inner { min-height: 61px; justify-content: space-between; padding: 0 14px; } .editorial-primary-nav { display: none; } .editorial-action.editorial-tablet-keep { display: none; } .editorial-header-actions { gap: 6px; } #app-view { padding: 16px 16px calc(96px + env(safe-area-inset-bottom)); } .editorial-hero { padding: 20px 0 22px; } .editorial-hero h2 { font-size: 28px; } .editorial-story { min-height: 200px; padding: 22px; } .editorial-menu-panel { padding: 21px; } }
         /* 📱 휴대폰: 맨 윗줄 = 교직백서 1000 + 빠른 이동(번개만) · 전체 메뉴 · 📲 설치 · 📱 QR */
         @media (max-width: 767.98px) { .editorial-wide { display: none; } }
         @media (max-width: 480px) { .editorial-header-inner { padding: 0 10px; } .editorial-header-actions { gap: 4px; } .editorial-header-actions .editorial-action { padding: 7px 8px; } .editorial-header-actions .editorial-label { display: none; } .editorial-header-actions .editorial-action .fa-bolt { margin-right: 0; } }
         @media (max-width: 340px) { .editorial-brand { font-size: 15px; } .editorial-header-inner { padding: 0 8px; } .editorial-header-actions { gap: 3px; } .editorial-header-actions .editorial-action { padding: 6px 6px; } }
         @media (max-width: 540px) { .editorial-shortcuts { grid-template-columns: 1fr; } .editorial-menu-grid { grid-template-columns: 1fr; gap: 18px; } }
+        /* 시간표: 휴대폰에서 시각 칸을 좁게 (눌러서 시각 선택은 그대로) */
+        @media (max-width: 639.98px) { .tt-time::-webkit-calendar-picker-indicator { display: none; } .tt-time { padding-left: 2px !important; padding-right: 2px !important; } }
