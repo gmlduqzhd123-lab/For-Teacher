@@ -39,6 +39,8 @@
     "theme_mode": { "target": "settings.themeMode", "private": false, "rule": "Only light, dark or system; available while locked." },
     "situation_runs": { "target": "vault.situationRuns", "private": true, "rule": "Added after the R0a baseline. Per situation publicId: startedAt and per-step check times (ISO strings) only, no free text. Preserve as-is." },
     "start_courses": { "target": "learning.startCourses", "private": false, "rule": "Added after the R0a baseline. Active course id and per-course done flags keyed by item reference. No free text." },
-    "usage_stats": { "target": "settings.usageStats", "private": false, "rule": "Added after the R0a baseline. On-device counts only (screen visits, feature events, zero-result queries without digits or class-list names, capped at 50). Never exported or migrated; may be discarded." }
+    "usage_stats": { "target": "settings.usageStats", "private": false, "rule": "Added after the R0a baseline. On-device counts only (screen visits, feature events, zero-result queries without digits or class-list names, capped at 50). Never exported or migrated; may be discarded." },
+    "reply_deadlines": { "target": "agenda.replyDeadlines", "private": false, "rule": "Added after the R0a baseline. Up to 30 { title (<=60 chars, template title), date YYYY-MM-DD, done boolean } for letter reply due dates shown in the weekly agenda. No student data." },
+    "attendance_evidence": { "target": "vault.attendanceEvidence", "private": true, "rule": "Added after the R0a baseline. Student name, absence kind, dates and evidence-received flags. Protected by the personal-record vault (Vault.KEYS) when it is on; included in backups." }
   }
 }

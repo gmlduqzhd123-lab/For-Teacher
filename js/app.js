@@ -1485,6 +1485,12 @@ ${weeklyAgendaHTML()}
                             </div>
                             <textarea id="doc-output" oninput="updateDocCounter()" class="w-full h-72 p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-200 focus:outline-none resize-y" placeholder="템플릿을 선택하고 빈칸을 채우세요."></textarea>
                             <p id="doc-counter" class="mt-2 text-xs text-slate-500 dark:text-slate-400 text-right">0자</p>
+                            <p id="doc-sms-info" class="hidden mt-1 text-xs text-slate-600 dark:text-slate-300 text-right"></p>
+                            <div class="mt-3 flex flex-wrap items-center justify-end gap-2 text-xs">
+                                <label for="doc-reply-date" class="font-bold text-slate-600 dark:text-slate-300">📌 회신·제출 마감</label>
+                                <input id="doc-reply-date" type="date" class="px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100">
+                                <button type="button" onclick="addReplyDeadline()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold">이번 주 할 일에 넣기</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1569,10 +1575,50 @@ ${weeklyAgendaHTML()}
             document.getElementById('doc-output').value = docOutputStyle === 'short' ? buildShortDocSummary(currentDocTemplate, fullText, values) : fullText;
             updateDocCounter();
         }
+        // 문자 길이: 한글 등 2바이트, 영문·숫자·기호 1바이트 (단문 SMS 90바이트, 장문 LMS 2,000바이트)
+        function smsBytes(text) { let n = 0; for (const ch of String(text || '')) n += ch.charCodeAt(0) > 127 ? 2 : 1; return n; }
+        function smsLengthLabel(bytes) { return bytes <= 90 ? '단문(90바이트) 안 ✓' : bytes <= 2000 ? '장문(LMS 2,000바이트) 안 ✓ · 단문보다 길어요' : '2,000바이트 초과 — 나눠 보내기'; }
+        function fitSmsBytes(text, limit = 90) {
+            let out = ''; for (const ch of String(text || '')) { if (smsBytes(out + ch) > limit) break; out += ch; }
+            return out;
+        }
+        function makeDocSmsShort() {
+            const el = document.getElementById('doc-output'); if (!el || !el.value.trim()) return;
+            const lines = el.value.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+            const head = lines[0] || ''; const key = lines.find((l, i) => i > 0 && /^•/.test(l)) || lines[1] || '';
+            let text = `${head} ${key.replace(/^•\s*/, '')}`.trim();
+            if (smsBytes(text) > 90) text = fitSmsBytes(text, 86).trim() + '…';
+            el.value = text; updateDocCounter();
+            showToast('단문(90바이트)에 맞게 줄였어요. 자세한 내용은 하이클래스·가정통신문으로 안내하세요.');
+        }
+        function replyDeadlines() { const v = Storage.get('reply_deadlines', []); return Array.isArray(v) ? v.filter(r => r && typeof r.title === 'string' && parseYMD(r.date) && !isNaN(parseYMD(r.date))) : []; }
+        function addReplyDeadline() {
+            const date = document.getElementById('doc-reply-date')?.value || '';
+            if (isNaN(parseYMD(date))) { showToast('회신·제출 마감 날짜를 골라 주세요.', 'error'); return; }
+            const title = String(currentDocTemplate?.title || '가정통신문 회신').slice(0, 52) + ' 회신';
+            const today = ymd(new Date());
+            // 끝난 지 30일 넘은 항목은 정리, 최대 30개
+            const list = replyDeadlines().filter(r => !(r.done && r.date < today) && Math.round((new Date() - parseYMD(r.date)) / 86400000) <= 30);
+            if (list.some(r => r.title === title && r.date === date)) { showToast('이미 넣어 둔 마감이에요.', 'info'); return; }
+            list.push({ title, date, done: false });
+            if (Storage.set('reply_deadlines', list.slice(-30))) showToast("'이번 주 할 일'에 회신 마감을 넣었어요.");
+        }
+        function toggleReplyDeadline(idx) {
+            const list = replyDeadlines(); if (!list[idx]) return;
+            list[idx].done = true;
+            if (Storage.set('reply_deadlines', list)) showToast('회신 마감을 완료로 표시했어요.', 'success');
+            if (router.current === 'home') router.render();
+        }
         function updateDocCounter() {
             const el = document.getElementById('doc-output'); const out = document.getElementById('doc-counter'); if (!el || !out) return;
             const t = el.value; const noSpace = t.replace(/\s/g, '').length;
             const left = (t.match(/\[[^\]]+\]/g) || []).length;
+            const sms = document.getElementById('doc-sms-info');
+            if (sms) {
+                const bytes = smsBytes(t);
+                sms.classList.toggle('hidden', docOutputStyle !== 'short' || !t.trim());
+                sms.innerHTML = `📱 문자 기준 ${bytes.toLocaleString()}바이트 · ${smsLengthLabel(bytes)}${bytes > 90 ? ' <button type="button" onclick="makeDocSmsShort()" class="ml-1 font-bold text-blue-700 dark:text-blue-300 hover:underline">단문으로 줄이기</button>' : ''}`;
+            }
             out.innerHTML = `${t.length.toLocaleString()}자 (공백 제외 ${noSpace.toLocaleString()}자) · 나이스 기준 ${neisBytes(t).toLocaleString()}바이트${left ? ` · <span class="text-rose-500 font-bold whitespace-nowrap inline-block">채우지 않은 빈칸 ${left}개</span>` : ''}`;
         }
         function copyDocText() { const el = document.getElementById('doc-output'); if (el && el.value) copyText(el.value); else showToast('먼저 템플릿을 선택해 주세요.', 'error'); }
@@ -3232,6 +3278,11 @@ ${weeklyAgendaHTML()}
                     }
                 });
             });
+            replyDeadlines().forEach((r, idx) => {
+                if (r.done) return;
+                const days = Math.round((parseYMD(r.date) - today) / 86400000);
+                if (days >= -14 && days <= 13) items.push({ type: 'reply', idx, title: r.title, days, when: days < 0 ? `${-days}일 지남` : days === 0 ? '오늘 마감' : `마감 D-${days}` });
+            });
             const cal = schoolCalendar();
             SCHOOL_EVENTS.forEach(ev => {
                 const date = parseYMD(cal[ev.key] || ''); if (isNaN(date)) return;
@@ -3252,7 +3303,12 @@ ${weeklyAgendaHTML()}
             // 날짜가 정해진 일(이번 주·다음 주)과 날짜를 안 정한 이번 달 업무를 나눠 보여 줌
             const dated = items.filter(it => it.days < 30), undated = items.filter(it => it.days >= 30);
             const groupLabel = text => `<p class="pt-2 pb-0.5 text-[11px] font-bold text-slate-500 dark:text-slate-400">${text}</p>`;
-            const listHTML = list => list.map(it => it.type === 'task' ? `
+            const listHTML = list => list.map(it => it.type === 'reply' ? `
+                                <div class="flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-amber-200/80 dark:border-amber-800/60">
+                                    <input type="checkbox" id="wr-${it.idx}" onchange="toggleReplyDeadline(${it.idx})" class="w-5 h-5 shrink-0 accent-blue-600 cursor-pointer">
+                                    <label for="wr-${it.idx}" class="flex-1 min-w-0 text-sm font-semibold text-slate-800 dark:text-slate-100 cursor-pointer truncate">📌 ${escapeHTML(it.title)}</label>
+                                    <span class="shrink-0 text-xs font-bold ${tone(it)}">${it.when}</span>
+                                </div>` : it.type === 'task' ? `
                                 <div class="flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
                                     <input type="checkbox" id="wa-${it.m}-${it.idx}" onchange="toggleAgendaTask(${it.m}, ${it.idx})" class="w-5 h-5 shrink-0 accent-blue-600 cursor-pointer">
                                     <label for="wa-${it.m}-${it.idx}" class="flex-1 min-w-0 text-sm font-semibold text-slate-800 dark:text-slate-100 cursor-pointer truncate">${escapeHTML(it.title)}</label>
@@ -3771,7 +3827,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             year_task_dates:'object', board_title:'string', board_tasks:'object', custom_templates:'array', settings:'object',
             class_names:'string', seat_opts:'object', seat_result:'object', pick_norepeat:'boolean', timetable:'object',
             record_drafts:'object', record_limits:'object', record_my_phrases:'array', counsel_schedule_opts:'object',
-            theme_mode:'string', ics_year:'number', situation_runs:'object', start_courses:'object'
+            theme_mode:'string', ics_year:'number', situation_runs:'object', start_courses:'object', reply_deadlines:'array', attendance_evidence:'array'
         };
         for (let month = 1; month <= 12; month++) BACKUP_TYPES[`checklist_${month}`] = 'object';
         const BACKUP_MAX_BYTES = 20 * 1024 * 1024;
@@ -3780,6 +3836,18 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             const [year, month, day] = value.split('-').map(Number);
             const date = new Date(Date.UTC(year, month - 1, day));
             return date.getUTCFullYear() === year && date.getUTCMonth() + 1 === month && date.getUTCDate() === day;
+        }
+        // 출결 증빙 (학생 이름·결석 종류·기간·서류 받음 여부) — 개인 기록 잠금 대상
+        const ATT_KINDS = {
+            sick: { label: '질병 결석', docs: '보호자 의견서 또는 진료확인서·처방전 (3일 이상이면 진료확인서·진단서)', days: 5 },
+            approved: { label: '출석 인정 결석', docs: '사유 증빙 (경조사 확인서·감염병 진단서·대회 공문 등)', days: 5 },
+            trip: { label: '교외체험학습', docs: '사전 신청서 + 다녀온 뒤 체험학습 보고서', days: 7 },
+            unexcused: { label: '미인정 결석', docs: '보호자 확인·연락 기록 (안전 확인 절차)', days: 1 },
+            partial: { label: '지각·조퇴·결과', docs: '사유에 따라 보호자 확인서 또는 진료확인서', days: 5 }
+        };
+        function validAttendanceRecord(r) {
+            return !!r && typeof r === 'object' && !Array.isArray(r) && typeof r.id === 'string' && r.id.length <= 40 && typeof r.student === 'string' && r.student.length <= 30
+                && Object.prototype.hasOwnProperty.call(ATT_KINDS, r.kind) && validBackupDate(r.from) && validBackupDate(r.to) && r.from <= r.to && typeof r.received === 'boolean';
         }
         function validBackupValue(key, value) {
             const type = Array.isArray(value) ? 'array' : value === null ? 'null' : typeof value;
@@ -3801,6 +3869,8 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             if (key === 'counsel_schedule_opts' && (value.from && !validBackupDate(value.from) || value.to && !validBackupDate(value.to))) return false;
             if (key === 'record_drafts' && !Object.values(value).every(text => typeof text === 'string')) return false;
             if (key === 'record_my_phrases' && !value.every(text => typeof text === 'string')) return false;
+            if (key === 'reply_deadlines' && !(value.length <= 30 && value.every(r => r && typeof r === 'object' && !Array.isArray(r) && typeof r.title === 'string' && r.title.length <= 60 && validBackupDate(r.date) && typeof r.done === 'boolean'))) return false;
+            if (key === 'attendance_evidence' && !(value.length <= 500 && value.every(validAttendanceRecord))) return false;
             return true;
         }
         function validateBackup(data) {
