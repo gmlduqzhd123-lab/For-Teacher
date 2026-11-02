@@ -143,4 +143,19 @@ for (const [query, expected] of [
 }
 assert.equal(new Set(search.rankTerms('초등 가족수당').map(item => item.id)).size, search.rankTerms('초등 가족수당').length);
 for (const query of ['학생이 다쳤어요', '다침']) assert(search.rankTerms(query).slice(0, 3).some(item => item.id === 1002));
-console.log('Usability storage, draft, backup, search, and public ID checks passed.');
+
+// 일상어 검색 연결: 용어 번호는 실제 용어(terms.json), 상황·코스 번호는 public-links.json에 있어야 함 (예전 번호가 남아 엉뚱한 용어로 연결되는 것 방지)
+{
+  const SEARCH_LINKS = new Function(`${between('const SEARCH_LINKS =', 'const QUICK_CONVERSATIONAL_CHIPS')}; return SEARCH_LINKS;`)();
+  const terms = JSON.parse(fs.readFileSync(new URL('../terms.json', import.meta.url), 'utf8'));
+  const termIds = new Set((terms.terms || terms).map(t => t.id));
+  const links = JSON.parse(fs.readFileSync(new URL('../data/public-links.json', import.meta.url), 'utf8'));
+  const sitCount = links.situations.length, courseCount = links.courses.length;
+  for (const link of SEARCH_LINKS) {
+    for (const id of link.terms) assert(termIds.has(id), `검색 연결 '${link.words[0]}'의 용어 번호 ${id}가 terms.json에 없음`);
+    for (const n of link.situations) assert(n >= 1 && n <= sitCount, `검색 연결 '${link.words[0]}'의 상황 번호 ${n}`);
+    for (const n of link.courses) assert(n >= 1 && n <= courseCount, `검색 연결 '${link.words[0]}'의 코스 번호 ${n}`);
+  }
+}
+
+console.log('Usability storage, draft, backup, search, and public ID, search link checks passed.');

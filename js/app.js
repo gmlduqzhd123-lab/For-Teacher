@@ -221,26 +221,34 @@
             { words: ['애가 다쳤어요', '피가 나요', '응급처치', '병원 치료비', '공제회 청구', '보건실'], terms: [10, 50, 1002], situations: [1], courses: [] },
             { words: ['아파서 못가요', '출근 못해요', '몸살', '병가 내기', '진단서 기준', '조퇴할래요', '병원 다녀올게요'], terms: [1001, 82, 5], situations: [5], courses: [] },
             { words: ['내일 쉬고 싶어요', '연차 쓰기', '휴가 신청', '나이스 복무', '반차', '지참'], terms: [5, 35, 82, 1001], situations: [5], courses: [] },
-            { words: ['부모님 전화', '엄마가 화났어요', '학부모 항의', '악성 민원', '폭언', '교권 침해', '밤에 전화'], terms: [2003], situations: [2, 8], courses: [9] },
-            { words: ['아이들이 싸웠어요', '다툼', '괴롭힘', '단톡방 욕설', '사이버폭력', '학폭 신고'], terms: [4], situations: [3], courses: [5] },
+            { words: ['부모님 전화', '엄마가 화났어요', '학부모 항의', '악성 민원', '폭언', '교권 침해', '밤에 전화'], terms: [97, 2003, 99], situations: [2, 8], courses: [9] },
+            { words: ['아이들이 싸웠어요', '다툼', '괴롭힘', '단톡방 욕설', '사이버폭력', '학폭 신고'], terms: [4, 2005], situations: [3], courses: [5] },
             { words: ['애가 안 왔어요', '연락두절', '무단결석', '미등교', '결석계 서류', '아파서 결석'], terms: [80, 5], situations: [6], courses: [] },
             { words: ['가족여행', '교외체험학습 신청', '체험학습 보고서', '국내외 체험학습'], terms: [120, 80], situations: [9], courses: [1] },
-            { words: ['독감 걸렸어요', '코로나', '수두', '전염병', '법정감염병', '등교중지'], terms: [80, 50], situations: [10], courses: [] },
-            { words: ['전학 왔어요', '전학 가요', '전입생', '전출생', '반 배정'], terms: [85, 5, 80], situations: [11], courses: [] },
-            { words: ['생기부 뭐 써요', '행특 예시', '세특 작성', '바이트 계산', '생기부 금지어'], terms: [5, 68, 73], situations: [], courses: [3] },
+            { words: ['독감 걸렸어요', '코로나', '수두', '전염병', '법정감염병', '등교중지'], terms: [131, 80, 50], situations: [10], courses: [] },
+            { words: ['전학 왔어요', '전학 가요', '전입생', '전출생', '반 배정'], terms: [85, 5], situations: [], courses: [] },
+            { words: ['생기부 뭐 써요', '행특 예시', '세특 작성', '바이트 계산', '생기부 금지어'], terms: [2001, 5], situations: [15], courses: [] },
             { words: ['돈 어떻게 써요', '예산 집행', '법인카드 결제', '견적서', '물건 도착', '검수하기'], terms: [3, 6, 53, 55, 56], situations: [4], courses: [6] },
-            { words: ['공문 어떻게 써요', '기안 올리기', '결재 취소', '문서 반려', '공람 처리'], terms: [6, 60, 61, 62, 63, 64, 65], situations: [15], courses: [] },
-            { words: ['수업 방해해요', '돌아다니는 아이', '말 안 듣는 학생', '훈육 방법', '분리 조치'], terms: [51, 260], situations: [7], courses: [] },
-            { words: ['상담주간 준비', '학부모 상담 신청', '학부모 총회'], terms: [40, 51], situations: [], courses: [7] },
+            { words: ['공문 어떻게 써요', '기안 올리기', '결재 취소', '문서 반려', '공람 처리'], terms: [65, 60, 61, 62, 63, 64, 6], situations: [], courses: [] },
+            { words: ['수업 방해해요', '돌아다니는 아이', '말 안 듣는 학생', '훈육 방법', '분리 조치'], terms: [150, 97], situations: [7], courses: [] },
+            { words: ['상담주간 준비', '학부모 상담 신청', '학부모 총회'], terms: [100, 101, 40], situations: [], courses: [7] },
             { words: ['월급 명세서', '수당 신청', '출산 수당', '결혼 수당', '복지포인트', '호봉 언제 올라요'], terms: [30, 31, 32, 33, 34, 35], situations: [], courses: [] },
             { words: ['이사 가요', '다른 학교 가고 싶어요', '전보 내신', '만기 언제예요', '타시도 교류'], terms: [1, 11, 12, 13, 14, 20], situations: [], courses: [4] },
-            { words: ['육아휴직 복직', '복직 신청', '휴직 끝나가요'], terms: [16], situations: [12], courses: [] },
-            { words: ['급식 알레르기', '우유 급식', '배탈 났어요'], terms: [44, 49], situations: [], courses: [] },
-            { words: ['통합학급', '특수학급 아이', '개별화교육', 'IEP'], terms: [52], situations: [13], courses: [] },
-            { words: ['기초학력 부진', '한글 못 읽어요', '진단검사', '두드림'], terms: [73, 74], situations: [], courses: [8] },
-            { words: ['공개수업 준비', '수업 지도안', '동료장학'], terms: [7, 74], situations: [], courses: [] },
+            { words: ['육아휴직', '육아휴직 복직', '휴직 신청', '복직 신청', '휴직 끝나가요'], terms: [16], situations: [12], courses: [] },
+            { words: ['급식 알레르기', '우유 급식', '배탈 났어요'], terms: [135, 49, 44], situations: [11], courses: [] },
+            { words: ['통합학급', '특수학급 아이', '개별화교육', 'IEP'], terms: [109, 52, 110], situations: [13], courses: [] },
+            { words: ['기초학력 부진', '한글 못 읽어요', '진단검사', '두드림'], terms: [103, 106, 104], situations: [], courses: [8] },
+            { words: ['공개수업 준비', '수업 지도안', '동료장학'], terms: [102], situations: [], courses: [] },
             { words: ['교실 고장났어요', '에어컨 고장', '문 고장', '수리 요청'], terms: [42, 43, 57], situations: [], courses: [] },
-            { words: ['개인정보 파일', '명단 암호', '정보공개 청구'], terms: [58, 59], situations: [14], courses: [] }
+            { words: ['개인정보 파일', '명단 암호', '정보공개 청구'], terms: [58, 59], situations: [14], courses: [] },
+            // 따로 용어가 없는 말은 가장 가까운 용어로 안내
+            { words: ['연가', '연차'], terms: [35, 5], situations: [5], courses: [] },
+            { words: ['출장', '출장 신청', '여비'], terms: [5, 6], situations: [], courses: [] },
+            { words: ['초과근무', '시간외근무', '야근 수당'], terms: [5, 30], situations: [], courses: [] },
+            { words: ['담임수당', '교직수당', '보직수당'], terms: [33, 30, 32], situations: [], courses: [] },
+            { words: ['성과급', '성과상여금'], terms: [22, 23], situations: [], courses: [] },
+            { words: ['아동학대 신고', '아동학대'], terms: [99, 97, 150], situations: [], courses: [] },
+            { words: ['보결', '보강 수업', '결강'], terms: [8, 28], situations: [], courses: [] }
         ];
         const QUICK_CONVERSATIONAL_CHIPS = [
             { label: '🩹 학생이 다쳤어요', query: '학생이 다쳤어요' },
@@ -1597,7 +1605,7 @@ ${weeklyAgendaHTML()}
                                 </div>
                             </div>
                             <details class="rounded-2xl border border-slate-200 dark:border-slate-700 p-4 bg-slate-50/60 dark:bg-slate-900/40" ${o.separate || o.front ? 'open' : ''}>
-                                <summary class="text-xs font-bold text-slate-600 dark:text-slate-300 cursor-pointer select-none whitespace-nowrap"><i class="fa-solid fa-sliders"></i> 배치 옵션 (분단·짝·분리·앞자리 고정)</summary>
+                                <summary class="text-xs font-bold text-slate-600 dark:text-slate-300 cursor-pointer select-none"><i class="fa-solid fa-sliders"></i> 배치 옵션 (분단·짝·분리·앞자리 고정)</summary>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                     <div class="space-y-3">
                                         <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400">한 줄에 앉는 인원
@@ -2029,7 +2037,7 @@ ${weeklyAgendaHTML()}
                     </div>
                     <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 px-1">
                         <span id="result-count" class="whitespace-nowrap shrink-0">검색 결과: ${new Set(DB.map(item => canonicalTermId(item.id))).size}개</span>
-                        <div class="flex items-center gap-1.5 sm:gap-2">
+                        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                             <button type="button" onclick="printTermCheatSheet('search')" class="whitespace-nowrap shrink-0 px-2.5 sm:px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-bold hover:bg-slate-200 transition" title="현재 목록을 A4 1장 요약표로 인쇄"><i class="fa-solid fa-print mr-1"></i>요약표 인쇄</button>
                             <button onclick="const c=curatedTerms(); openDetail(c[Math.floor(Math.random()*c.length)].id)" class="whitespace-nowrap shrink-0 px-2.5 sm:px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg font-bold transition"><i class="fa-solid fa-dice"></i> 랜덤</button>
                             <select id="sort-select" aria-label="검색 결과 정렬" onchange="handleSearch()" class="whitespace-nowrap shrink-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg px-2 sm:px-2.5 py-1 focus:outline-none"><option value="accuracy">관련도순</option><option value="name">가나다순</option></select>
@@ -2112,6 +2120,7 @@ ${weeklyAgendaHTML()}
 
         function rankTerms(query, category = '전체', sort = 'accuracy') {
             query = normalizeSearch(query);
+            const links = query ? searchLinks(query) : undefined;
             let scoredResults = DB.map(item => {
                 if (!matchesCategoryOrRole(item, category)) return { item, score: -1 };
                 if (!query) return { item, score: 0 };
@@ -2119,10 +2128,12 @@ ${weeklyAgendaHTML()}
                 if (kwLower === qLower) score += 200; if (kwLower.startsWith(qLower)) score += 100; if (kwLower.includes(qLower)) score += 70;
                 if (compactSearch(item.keyword) === compactSearch(query)) score += 180;
                 if (compactSearch(item._chosung).includes(compactSearch(query))) score += 60; if ((item.aliases||[]).some(a => a.toLowerCase().includes(qLower))) score += 50;
+                if ((item.aliases||[]).some(a => compactSearch(a) === compactSearch(query))) score += 150; // 별칭과 정확히 같으면 (예: 생기부 → 학교생활기록부)
                 if ((item.tags||[]).some(t => t.toLowerCase().includes(qLower))) score += 40; if (item.simple.toLowerCase().includes(qLower)) score += 30;
                 if (item.description.toLowerCase().includes(qLower)) score += 15; if ((item.situations||[]).some(s => s.toLowerCase().includes(qLower))) score += 10;
                 if (compactSearch(item._searchText).includes(compactSearch(query))) score += 25;
-                if (searchLinks(query)?.terms.some(tid => canonicalTermId(tid) === canonicalTermId(item.id))) score += 400;
+                const linkIdx = (links?.terms || []).findIndex(tid => canonicalTermId(tid) === canonicalTermId(item.id));
+                if (linkIdx >= 0) score += 400 - Math.min(linkIdx, 8) * 30; // 일상어 연결은 앞에 적은 용어일수록 위로
                 if (score > 0 && item._baseId) score -= 40; // 변형 항목은 기본 용어보다 뒤에
                 return { item, score: score > 0 ? score : -1 };
             }).filter(res => res.score >= 0);
@@ -2722,7 +2733,7 @@ ${weeklyAgendaHTML()}
                 const pr = startCourseProgress(c); const pct = pr.total ? Math.round(pr.done / pr.total * 100) : 0;
                 const on = active && active.id === c.id;
                 return `<button type="button" onclick="chooseStartCourse('${c.id}')" aria-pressed="${!!on}" class="text-left p-3 sm:p-4 rounded-2xl border ${on ? 'border-blue-600 ring-2 ring-blue-500/20 bg-blue-50/60 dark:bg-blue-900/20' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-blue-400'} transition">
-                    <span class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white whitespace-nowrap"><i class="fa-solid ${c.icon} text-blue-600 dark:text-blue-400"></i>${c.label}</span>
+                    <span class="flex items-center gap-1.5 sm:gap-2 min-w-0 text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white"><i class="fa-solid ${c.icon} text-blue-600 dark:text-blue-400"></i>${c.label}</span>
                     <span class="block text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1">${c.who}</span>
                     <span class="mt-3 flex items-center gap-2"><span class="flex-1 h-1.5 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden"><span class="block h-full bg-blue-600" style="width:${pct}%"></span></span><span class="text-xs font-bold text-slate-600 dark:text-slate-300">${pr.done}/${pr.total}</span></span>
                 </button>`;
@@ -5220,6 +5231,30 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             const m = document.getElementById('setup-wizard-modal');
             if (m) m.classList.add('hidden');
         }
+        // 공용 팝업(SOS·학급 세팅·계산기·의견 보내기 등): 열리면 팝업 안으로 포커스, Tab은 팝업 안에서만 돌고, 닫히면 원래 자리로
+        (() => {
+            const m = document.getElementById('setup-wizard-modal'); if (!m) return;
+            let trigger = null;
+            const focusables = () => [...m.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')].filter(el => !el.disabled && el.offsetParent !== null);
+            new MutationObserver(() => {
+                const open = !m.classList.contains('hidden');
+                if (open && !trigger) {
+                    trigger = m.contains(document.activeElement) ? null : document.activeElement;
+                    (m.querySelector('button') || focusables()[0])?.focus({ preventScroll: true }); // 입력칸 대신 버튼에 두어 휴대폰 자판이 뜨지 않게
+                } else if (!open && trigger) {
+                    if (document.body.contains(trigger) && !isModalOpen()) { try { trigger.focus({ preventScroll: true }); } catch (_) {} }
+                    trigger = null;
+                }
+            }).observe(m, { attributes: true, attributeFilter: ['class'] });
+            document.addEventListener('keydown', e => {
+                if (e.key !== 'Tab' || m.classList.contains('hidden')) return;
+                const list = focusables(); if (!list.length) return;
+                const first = list[0], last = list[list.length - 1];
+                if (!m.contains(document.activeElement)) { e.preventDefault(); (e.shiftKey ? last : first).focus(); }
+                else if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+                else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+            });
+        })();
         function saveSetupWizard() {
             const schoolName = (document.getElementById('wiz-school')?.value || '').trim();
             const className = (document.getElementById('wiz-class')?.value || '').trim();
