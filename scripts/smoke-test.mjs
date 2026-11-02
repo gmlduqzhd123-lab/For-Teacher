@@ -112,7 +112,7 @@ const server = http.createServer((req, res) => {
   fs.createReadStream(file).pipe(res);
 });
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-// 프록시를 거쳐야 CDN(Tailwind 등)에 닿는 환경에서는 프록시를 쓰고, 이 정적 서버만 직접 연결
+// 프록시를 거쳐야 CDN(글꼴·아이콘)에 닿는 환경에서는 프록시를 쓰고, 이 정적 서버만 직접 연결
 const proxy = process.env.HTTPS_PROXY || process.env.https_proxy;
 const host = proxy ? 'smoke.test' : '127.0.0.1';
 const base = `http://${host}:${server.address().port}/`;

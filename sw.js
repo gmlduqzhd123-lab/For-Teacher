@@ -3,7 +3,7 @@
  * - CDN 파일(폰트, 아이콘): 저장본 우선 → 없으면 네트워크
  * 앱 파일 구성을 크게 바꾸면 아래 VERSION 숫자를 올려 주세요. (CORE에 없는 새 파일은 scripts/static-check.mjs가 알려 줍니다)
  */
-const VERSION = 'gb1000-v26';
+const VERSION = 'gb1000-v27';
 // 같은 주소(gmlduqzhd123-lab.github.io)의 다른 앱들과 저장소를 함께 쓰므로, 이 앱의 이전 캐시만 지운다.
 const CACHE_PREFIX = 'gb1000-v';
 const CORE = ['./', './index.html', './css/app.css', './css/tailwind.css', './js/data.js', './js/app.js', './terms.json', './data/legacy-map.json', './data/public-links.json', './data/content-meta.json', './data/year-tasks-extra.json', './manifest.webmanifest', './ys-install.js', './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'];
@@ -18,7 +18,8 @@ self.addEventListener('install', event => {
     const cache = await caches.open(VERSION);
     // Keep the previous active worker when any core file is unavailable.
     await Promise.all(CORE.map(u => cache.add(new Request(u, { cache: 'reload' }))));
-    await Promise.all(CDN.map(u => fetch(u, { mode: 'no-cors' }).then(r => cache.put(u, r)).catch(() => {})));
+    // 글꼴은 CORS로 요청되므로 열어 볼 수 없는(opaque) 응답을 저장하면 다음 방문부터 글꼴이 깨짐 → CORS로 받아 저장
+    await Promise.all(CDN.map(u => fetch(u, { mode: 'cors' }).then(r => r.ok ? cache.put(u, r) : null).catch(() => {})));
     await self.skipWaiting();
   })());
 });
@@ -56,11 +57,12 @@ self.addEventListener('fetch', event => {
 
   event.respondWith((async () => {
     const cache = await caches.open(VERSION);
-    const hit = await cache.match(req);
+    let hit = await cache.match(req);
+    if (hit && hit.type === 'opaque' && req.mode === 'cors') hit = null; // CORS 요청(글꼴 등)에는 opaque 저장본을 쓸 수 없음
     if (hit) return hit;
     try {
       const res = await fetch(req);
-      if (res && (res.ok || res.type === 'opaque')) cache.put(req, res.clone());
+      if (res && (res.ok || (res.type === 'opaque' && req.mode !== 'cors'))) cache.put(req, res.clone());
       return res;
     } catch (e) {
       return hit || Response.error();
