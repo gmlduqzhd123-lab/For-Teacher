@@ -1095,8 +1095,8 @@
             render() {
                 try {
                     if (this.current === 'tools-record' && pendingRecordDraft && !saveRecordDraftNow()) return;
-                     const navGroup = { start: 'quiz', situations: 'search', navigator: 'search', map: 'search', 'tools-board': 'year', 'tools-doc': 'year', career: 'year', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', card: 'quiz', 'tools-edutech': 'quiz' };
-                     const mobGroup = { home: 'home', search: 'search', navigator: 'search', map: 'search', situations: 'situations', 'tools-class': 'tools-class', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', 'tools-doc': 'tools-class', 'tools-board': 'tools-class', year: 'menu', career: 'menu', quiz: 'menu', card: 'menu', 'tools-edutech': 'menu', mybox: 'menu', start: 'menu' };
+                     const navGroup = { start: 'quiz', situations: 'search', navigator: 'search', map: 'search', 'tools-board': 'year', 'tools-doc': 'year', career: 'year', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', attendance: 'tools-class', card: 'quiz', 'tools-edutech': 'quiz' };
+                     const mobGroup = { home: 'home', search: 'search', navigator: 'search', map: 'search', situations: 'situations', 'tools-class': 'tools-class', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', attendance: 'tools-class', 'tools-doc': 'tools-class', 'tools-board': 'tools-class', year: 'menu', career: 'menu', quiz: 'menu', card: 'menu', 'tools-edutech': 'menu', mybox: 'menu', start: 'menu' };
                      const activeNav = navGroup[this.current] || this.current;
                      document.querySelectorAll('[data-primary-nav]').forEach(el => { const active = el.dataset.primaryNav === activeNav; el.classList.toggle('active', active); if (active) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current'); });
                     document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('bg-blue-50', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400'));
@@ -1107,7 +1107,7 @@
                     updateBookmarkBadge();
 
                     const viewContainer = document.getElementById('app-view'); if (!viewContainer) return;
-                    const pageTitles = { start:'역할별 시작 코스', home:'홈', search:'교직어 검색', situations:'상황 가이드', navigator:'교직 내비게이터', year:'교사의 1년', 'tools-doc':'문서 양식', 'tools-record':'생기부 문장 도우미', counsel:'상담 기록장', mybox:'나의 교직함' };
+                    const pageTitles = { start:'역할별 시작 코스', home:'홈', search:'교직어 검색', situations:'상황 가이드', navigator:'교직 내비게이터', year:'교사의 1년', 'tools-doc':'문서 양식', 'tools-record':'생기부 문장 도우미', counsel:'상담 기록장', attendance:'출결 증빙 체크', mybox:'나의 교직함' };
                     document.title = `${pageTitles[this.current] || '교직 도구'} | 교직백서 1000`;
                     const pageH1 = document.getElementById('page-h1'); if (pageH1) pageH1.textContent = `교직백서 1000 · ${pageTitles[this.current] || '교직 도구'}`; // 화면낭독기용 화면 제목
 
@@ -1129,6 +1129,7 @@
                         case 'timetable': renderTimetable(viewContainer); break;
                         case 'tools-record': renderToolsRecord(viewContainer); break;
                         case 'counsel': renderCounsel(viewContainer); break;
+                        case 'attendance': renderAttendance(viewContainer); break;
                         case 'start': renderStartCourses(viewContainer); break;
                         default: this.current = 'home'; renderHome(viewContainer); break;
                     }
@@ -2584,7 +2585,7 @@ ${weeklyAgendaHTML()}
             currentDetailId = null;
             // body는 원래 overflow-hidden 클래스이므로 'auto'로 덮어쓰지 않고 인라인 스타일만 제거
             document.body.style.overflow = ''; window.removeEventListener('keydown', handleModalKeyDown);
-            document.title = `${({start:'역할별 시작 코스',home:'홈',search:'교직어 검색',situations:'상황 가이드',navigator:'교직 내비게이터',year:'교사의 1년','tools-doc':'문서 양식','tools-record':'생기부 문장 도우미',counsel:'상담 기록장',mybox:'나의 교직함'})[router.current] || '교직 도구'} | 교직백서 1000`;
+            document.title = `${({start:'역할별 시작 코스',home:'홈',search:'교직어 검색',situations:'상황 가이드',navigator:'교직 내비게이터',year:'교사의 1년','tools-doc':'문서 양식','tools-record':'생기부 문장 도우미',counsel:'상담 기록장',attendance:'출결 증빙 체크',mybox:'나의 교직함'})[router.current] || '교직 도구'} | 교직백서 1000`;
             if(lastFocusedElement && document.body.contains(lastFocusedElement)) { try { lastFocusedElement.focus(); } catch(e) {} }
             lastFocusedElement = null;
             // 검색어(param)를 유지한 채 주소만 되돌림 → 닫을 때 검색 화면이 초기화되던 문제 해결
@@ -3278,6 +3279,8 @@ ${weeklyAgendaHTML()}
                     }
                 });
             });
+            const evid = Vault.isLocked() ? [] : attendancePending().filter(r => r.left <= 3);
+            if (evid.length) items.push({ type: 'evidence', title: `출결 증빙 ${evid.length}건 받기`, days: Math.min(...evid.map(r => r.left)), when: evid.some(r => r.left < 0) ? '마감 지남' : '3일 안 마감' });
             replyDeadlines().forEach((r, idx) => {
                 if (r.done) return;
                 const days = Math.round((parseYMD(r.date) - today) / 86400000);
@@ -3303,7 +3306,12 @@ ${weeklyAgendaHTML()}
             // 날짜가 정해진 일(이번 주·다음 주)과 날짜를 안 정한 이번 달 업무를 나눠 보여 줌
             const dated = items.filter(it => it.days < 30), undated = items.filter(it => it.days >= 30);
             const groupLabel = text => `<p class="pt-2 pb-0.5 text-[11px] font-bold text-slate-500 dark:text-slate-400">${text}</p>`;
-            const listHTML = list => list.map(it => it.type === 'reply' ? `
+            const listHTML = list => list.map(it => it.type === 'evidence' ? `
+                                <button type="button" onclick="router.navigate('attendance')" class="w-full flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-200/80 dark:border-rose-800/60 text-left">
+                                    <i class="fa-solid fa-file-circle-check text-rose-700 dark:text-rose-300 w-5 text-center"></i>
+                                    <span class="flex-1 min-w-0 truncate text-sm font-bold text-rose-900 dark:text-rose-100">${escapeHTML(it.title)}</span>
+                                    <span class="shrink-0 text-xs font-bold text-rose-700 dark:text-rose-300">${it.when}</span>
+                                </button>` : it.type === 'reply' ? `
                                 <div class="flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-amber-200/80 dark:border-amber-800/60">
                                     <input type="checkbox" id="wr-${it.idx}" onchange="toggleReplyDeadline(${it.idx})" class="w-5 h-5 shrink-0 accent-blue-600 cursor-pointer">
                                     <label for="wr-${it.idx}" class="flex-1 min-w-0 text-sm font-semibold text-slate-800 dark:text-slate-100 cursor-pointer truncate">📌 ${escapeHTML(it.title)}</label>
@@ -4021,11 +4029,11 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
         }
 
         // ====================================================
-        // 개인 기록 잠금 (보호 저장소): 상담 기록·상담 일정·생기부 초안을 비밀번호로 암호화해 IndexedDB에 저장
+        // 개인 기록 잠금 (보호 저장소): 상담 기록·상담 일정·생기부 초안·출결 증빙을 비밀번호로 암호화해 IndexedDB에 저장
         // docs/DATA_CONTRACT.md M01–M05: 암호화 사본을 다시 읽어 검증한 뒤에만 평문을 지우고, 단계를 저장해 중단돼도 이어서 진행
         // ====================================================
         var Vault = {
-            KEYS: ['counsel_records', 'counsel_schedule_opts', 'record_drafts'],
+            KEYS: ['counsel_records', 'counsel_schedule_opts', 'record_drafts', 'attendance_evidence'],
             DB_NAME: 'gb1000-vault', ITERATIONS: 250000, IDLE_MS: 15 * 60 * 1000,
             state: 'off', // off | locked | unlocked | unavailable
             stage: null, db: null, key: null, cache: {}, pending: Promise.resolve(), failed: false,
@@ -4063,7 +4071,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                             this.key = null; this.cache = {}; clearTimeout(this.idleTimer); this.releaseEditLock();
                             this.state = 'off'; this.stage = null;
                             setTimeout(() => this.open().then(fresh => { this.db = fresh; }).catch(() => { this.state = 'unavailable'; }), 300);
-                            if (['counsel', 'tools-record', 'mybox'].includes(router.current)) router.render();
+                            if (['counsel', 'tools-record', 'mybox', 'attendance'].includes(router.current)) router.render();
                         };
                         resolve(db);
                     };
@@ -4150,7 +4158,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                 this.key = null; this.cache = {}; this.state = 'locked'; clearTimeout(this.idleTimer);
                 this.releaseEditLock();
                 if (message) showToast(message, 'info');
-                if (['counsel', 'tools-record', 'mybox'].includes(router.current)) router.render();
+                if (['counsel', 'tools-record', 'mybox', 'attendance'].includes(router.current)) router.render();
             },
             // ---- 켜기 / 이전 (M01–M05) ----
             rawLocal(k) { const out = {}; [Storage.PREFIX, Storage.LEGACY].forEach(p => { const v = localStorage.getItem(p + k); if (v !== null) out[p + k] = v; }); return out; },
@@ -4301,7 +4309,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                             <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-lock text-indigo-500"></i> 개인 기록 잠금</h3>
                             <span class="text-xs font-bold px-2.5 py-1 rounded-lg ${st === 'unlocked' ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' : st === 'locked' ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${st === 'unlocked' ? '보호 중 · 열림' : st === 'locked' ? '보호 중 · 잠김' : st === 'unavailable' ? '이 브라우저에서 사용 불가' : '꺼짐'}</span>
                         </div>
-                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">상담 기록, 상담주간 일정(학생·학부모 이름), 생기부 초안을 비밀번호로 암호화해 저장합니다. 암호화 사본을 다시 읽어 확인한 다음에만 암호화되지 않은 원래 기록을 지웁니다. 잠긴 동안에는 두 도구를 열 때 비밀번호가 필요하고, 일반 백업에는 이 기록이 들어가지 않습니다(통합 암호화 백업에는 포함).</p>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">상담 기록, 상담주간 일정(학생·학부모 이름), 생기부 초안, 출결 증빙을 비밀번호로 암호화해 저장합니다. 암호화 사본을 다시 읽어 확인한 다음에만 암호화되지 않은 원래 기록을 지웁니다. 잠긴 동안에는 두 도구를 열 때 비밀번호가 필요하고, 일반 백업에는 이 기록이 들어가지 않습니다(통합 암호화 백업에는 포함).</p>
                         ${st === 'off' ? `
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <label class="text-xs font-semibold text-slate-500 dark:text-slate-400">새 비밀번호 (8자 이상)<input id="vault-new-pw" type="password" autocomplete="new-password" class="${field}"></label>
@@ -4979,6 +4987,96 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
 
         function getCounsel() { const l = Storage.get('counsel_records', []); return Array.isArray(l) ? l : []; }
         function saveCounsel(list) { return Storage.set('counsel_records', list); }
+        // ---------- 출결 증빙 체크 (학생별 결석 종류·기간 → 받아야 할 서류·마감, 받음 체크, 누락 목록) ----------
+        function getAttendance() { const v = Storage.get('attendance_evidence', []); return Array.isArray(v) ? v.filter(validAttendanceRecord) : []; }
+        function attendanceDue(r) { const d = parseYMD(r.to); d.setDate(d.getDate() + (ATT_KINDS[r.kind]?.days || 5)); return d; }
+        function attendancePending() {
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            return getAttendance().filter(r => !r.received).map(r => ({ ...r, due: attendanceDue(r), left: Math.round((attendanceDue(r) - today) / 86400000) })).sort((a, b) => a.due - b.due);
+        }
+        function renderAttendance(container) {
+            if (Vault.isLocked()) { container.innerHTML = vaultLockHTML('출결 증빙') + FOOTER_HTML; setTimeout(() => document.getElementById('vault-pw')?.focus(), 30); return; }
+            const all = getAttendance(); const pending = attendancePending();
+            const late = pending.filter(r => r.left < 0).length;
+            const names = parseNameList(Storage.get('class_names', ''));
+            const field = 'w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm outline-none mt-1';
+            const today = ymd(new Date());
+            const fmt = s => { const d = parseYMD(s); return `${d.getMonth() + 1}/${d.getDate()}`; };
+            const row = r => {
+                const due = attendanceDue(r); const left = Math.round((due - parseYMD(today)) / 86400000);
+                return `<li class="p-3 rounded-xl border ${r.received ? 'border-slate-200 dark:border-slate-700 opacity-70' : left < 0 ? 'border-rose-300 dark:border-rose-700' : 'border-slate-200 dark:border-slate-700'} bg-white dark:bg-slate-800 flex flex-wrap items-start gap-3">
+                    <input type="checkbox" ${r.received ? 'checked' : ''} data-id="${escapeHTML(r.id)}" onchange="toggleAttendanceReceived(this.dataset.id)" aria-label="${escapeHTML(r.student)} 서류 받음" class="w-5 h-5 mt-0.5 shrink-0 accent-emerald-600 cursor-pointer">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold text-slate-900 dark:text-white">${escapeHTML(r.student)} <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${escapeHTML(ATT_KINDS[r.kind].label)} · ${fmt(r.from)}${r.to !== r.from ? `~${fmt(r.to)}` : ''}</span></p>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5">${escapeHTML(ATT_KINDS[r.kind].docs)}</p>
+                    </div>
+                    <span class="shrink-0 text-xs font-bold ${r.received ? 'text-emerald-700 dark:text-emerald-300' : left < 0 ? 'text-rose-700 dark:text-rose-300' : 'text-slate-600 dark:text-slate-300'}">${r.received ? '받음' : left < 0 ? `${-left}일 지남` : left === 0 ? '오늘 마감' : `마감 D-${left}`}</span>
+                    <button type="button" data-id="${escapeHTML(r.id)}" onclick="deleteAttendance(this.dataset.id)" aria-label="삭제" class="shrink-0 text-slate-500 hover:text-rose-600"><i class="fa-solid fa-trash"></i></button>
+                </li>`;
+            };
+            const sorted = [...all].sort((a, b) => (a.received - b.received) || (attendanceDue(a) - attendanceDue(b)));
+            container.innerHTML = `
+                <div class="space-y-6 animate-fade-in">
+                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">출결 증빙 체크</h2><p class="text-sm text-slate-500 dark:text-slate-400">결석 종류를 고르면 받아야 할 서류와 마감을 알려 주고, 받았는지 체크해 학기말 누락을 막아요.</p></div>
+                    <div class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 text-xs text-amber-800 dark:text-amber-200 leading-relaxed">
+                        <b><i class="fa-solid fa-lock"></i> 개인정보 안내</b> — 학생 이름과 결석 기록은 서버로 보내지 않고 <b>이 기기에만</b> 저장돼요. ${Vault.state === 'unlocked' ? '<b>개인 기록 잠금</b>으로 암호화되어 있어요.' : `<button type="button" onclick="router.navigate('mybox', 'vault')" class="font-bold underline">나의 교직함 › 개인 기록 잠금</button>을 켜면 비밀번호로 암호화돼요.`} 서류 마감(결석 후 며칠 이내)은 일반적인 기준이며 <b>학교 학업성적관리규정</b>을 따르세요. 공식 출결 처리는 나이스에서 합니다.
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-3">
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white">결석 기록 추가</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <label class="text-xs font-bold text-slate-600 dark:text-slate-300">학생<input id="att-student" list="att-names" maxlength="30" placeholder="이름" class="${field}"><datalist id="att-names">${names.map(n => `<option value="${escapeHTML(n)}">`).join('')}</datalist></label>
+                            <label class="text-xs font-bold text-slate-600 dark:text-slate-300">종류<select id="att-kind" onchange="document.getElementById('att-docs').textContent = ATT_KINDS[this.value].docs" class="${field}">${Object.entries(ATT_KINDS).map(([k, v]) => `<option value="${k}">${v.label}</option>`).join('')}</select></label>
+                            <label class="text-xs font-bold text-slate-600 dark:text-slate-300">시작일<input id="att-from" type="date" value="${today}" class="${field}"></label>
+                            <label class="text-xs font-bold text-slate-600 dark:text-slate-300">종료일<input id="att-to" type="date" value="${today}" class="${field}"></label>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300"><b>받을 서류:</b> <span id="att-docs">${escapeHTML(ATT_KINDS.sick.docs)}</span></p>
+                        <div class="flex justify-end"><button type="button" onclick="addAttendance()" class="px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-bold">추가</button></div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-white">기록 ${all.length}건 · 서류 안 받음 <span class="${pending.length ? 'text-rose-700 dark:text-rose-300' : ''}">${pending.length}건</span>${late ? ` (마감 지남 ${late}건)` : ''}</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <button type="button" onclick="copyAttendanceMissing()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold">누락 목록 복사</button>
+                                <button type="button" onclick="clearReceivedAttendance()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold">받은 기록 정리</button>
+                            </div>
+                        </div>
+                        ${sorted.length ? `<ul class="space-y-2">${sorted.map(row).join('')}</ul>` : '<p class="text-sm text-slate-500 dark:text-slate-400 text-center py-6">아직 기록이 없어요. 결석한 학생이 생기면 위에서 추가하세요.</p>'}
+                    </div>
+                </div>
+            ` + FOOTER_HTML;
+        }
+        function addAttendance() {
+            const student = (document.getElementById('att-student')?.value || '').trim().slice(0, 30);
+            const kind = document.getElementById('att-kind')?.value; let from = document.getElementById('att-from')?.value, to = document.getElementById('att-to')?.value;
+            if (!student) { showToast('학생 이름을 넣어 주세요.', 'error'); return; }
+            if (!validBackupDate(from) || !validBackupDate(to)) { showToast('날짜를 골라 주세요.', 'error'); return; }
+            if (to < from) [from, to] = [to, from];
+            const list = getAttendance();
+            if (list.length >= 500) { showToast('기록이 500건으로 가득 찼어요. 받은 기록을 정리해 주세요.', 'error'); return; }
+            list.push({ id: `a${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`, student, kind, from, to, received: false });
+            if (Storage.set('attendance_evidence', list)) { showToast(`${student} 학생 기록을 추가했어요.`); router.render(); }
+        }
+        function toggleAttendanceReceived(id) {
+            const list = getAttendance(); const r = list.find(x => x.id === id); if (!r) return;
+            r.received = !r.received;
+            if (Storage.set('attendance_evidence', list)) router.render();
+        }
+        function deleteAttendance(id) {
+            if (!confirm('이 기록을 지울까요?')) return;
+            if (Storage.set('attendance_evidence', getAttendance().filter(x => x.id !== id))) router.render();
+        }
+        function clearReceivedAttendance() {
+            const list = getAttendance(); const n = list.filter(x => x.received).length;
+            if (!n) { showToast('정리할 받은 기록이 없어요.', 'info'); return; }
+            if (!confirm(`서류를 받은 기록 ${n}건을 지울까요?`)) return;
+            if (Storage.set('attendance_evidence', list.filter(x => !x.received))) router.render();
+        }
+        function copyAttendanceMissing() {
+            const pending = attendancePending();
+            if (!pending.length) { showToast('받지 않은 서류가 없어요.', 'success'); return; }
+            const fmt = s => { const d = parseYMD(s); return `${d.getMonth() + 1}/${d.getDate()}`; };
+            copyText(`[출결 증빙 미제출 ${pending.length}건]\n` + pending.map(r => `- ${r.student} · ${ATT_KINDS[r.kind].label} ${fmt(r.from)}${r.to !== r.from ? `~${fmt(r.to)}` : ''} · ${r.left < 0 ? `${-r.left}일 지남` : `마감 D-${r.left}`}`).join('\n'), '누락 목록을 복사했어요.');
+        }
         function counselStudents() { return [...new Set([...parseNameList(Storage.get('class_names', '')), ...getCounsel().map(r => r.student).filter(Boolean)])]; }
 
         function renderCounsel(container) {
@@ -5749,6 +5847,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             ['timetable', '시간표 · 종 알림', '주간 시간표 관리 및 수업 시작/종료 알림'],
             ['tools-record', '생기부 문장 도우미', '학생별 작성 · 나이스 바이트 · 금지어 점검 · 엑셀 저장'],
             ['counsel', '학부모 상담 기록장', '상담 기록 · 상담주간 시간표 자동 배정 · 암호화 백업'],
+            ['attendance', '출결 증빙 체크', '결석 종류별 서류 · 제출 마감 · 누락 목록'],
             ['start', '역할별 시작 코스', '신규·담임·전입·부장 맞춤 순서 안내'],
             ['year', '교사의 1년 타임라인', '월별 주요 학사·행정 업무 체크 및 달력(.ics) 내보내기'],
             ['career', '교직 커리어맵', '수석교사 · 장학사 · 교감/교장 성장 경로'],

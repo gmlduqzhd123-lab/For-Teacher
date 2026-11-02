@@ -117,7 +117,7 @@ const proxy = process.env.HTTPS_PROXY || process.env.https_proxy;
 const host = proxy ? 'smoke.test' : '127.0.0.1';
 const base = `http://${host}:${server.address().port}/`;
 
-const views = ['home', 'search', 'situations', 'navigator', 'map', 'year', 'career', 'quiz', 'card', 'mybox', 'start', 'tools-doc', 'tools-class', 'tools-board', 'tools-edutech', 'timetable', 'tools-record', 'counsel'];
+const views = ['home', 'search', 'situations', 'navigator', 'map', 'year', 'career', 'quiz', 'card', 'mybox', 'start', 'tools-doc', 'tools-class', 'tools-board', 'tools-edutech', 'timetable', 'tools-record', 'counsel', 'attendance'];
 const browser = await chromium.launch({
   ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}),
   ...(proxy ? { proxy: { server: proxy, bypass: host }, args: ['--ignore-certificate-errors', `--host-resolver-rules=MAP ${host} 127.0.0.1`] } : {}),

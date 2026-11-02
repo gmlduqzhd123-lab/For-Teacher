@@ -2,7 +2,7 @@
 
 ## Private records vault (R0b/R0c partial) — 2026-10-25
 
-- Opt-in **개인 기록 잠금** (나의 교직함). Protects `counsel_records`, `counsel_schedule_opts`, `record_drafts` only: AES-GCM with a PBKDF2-SHA256 (250,000) passphrase key, stored in IndexedDB `gb1000-vault` (`meta`, `items`, `snapshots`). Records carry `revision` and `updatedAt`.
+- Opt-in **개인 기록 잠금** (나의 교직함). Protects `counsel_records`, `counsel_schedule_opts`, `record_drafts`, `attendance_evidence` only: AES-GCM with a PBKDF2-SHA256 (250,000) passphrase key, stored in IndexedDB `gb1000-vault` (`meta`, `items`, `snapshots`). Records carry `revision` and `updatedAt`.
 - Migration follows M01–M05 for these keys: stages `detected → snapshotted → converted → verified → cleanupPending → complete` persisted in `meta`; an encrypted raw snapshot of both prefixes (malformed JSON included) is read back before any deletion; plaintext is removed from both prefixes only after the converted copy is decrypted and compared; removal is re-checked and an interrupted run resumes on next unlock. Plaintext that reappears later (e.g. an old tab) is added to the snapshot before cleanup.
 - One editing tab: Web Locks (`gb1000-vault-edit`) plus a BroadcastChannel handoff that saves and locks the other tab. Auto-lock after 15 minutes idle; reload starts locked. Locked counsel/record screens ask for the passphrase.
 - Plain general backup excludes protected keys while the vault is on; the full encrypted backup requires unlocking and includes them. Turning protection off writes decrypted values back, re-checks them, restores unconverted raw values from the snapshot, then deletes the database. Full reset deletes the vault.
