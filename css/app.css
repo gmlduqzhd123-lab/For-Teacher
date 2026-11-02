@@ -1,6 +1,4 @@
 /* 교직백서 1000 — 화면 스타일 (index.html에서 분리) */
-        @font-face { font-family: 'Maru Buri'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-Regular.woff2') format('woff2'); font-style: normal; font-weight: 400; font-display: swap; }
-        @font-face { font-family: 'Maru Buri'; src: url('https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-Bold.woff2') format('woff2'); font-style: normal; font-weight: 600 700; font-display: swap; }
         body, button, input, textarea, select { font-family: 'Maru Buri', 'Nanum Myeongjo', 'AppleMyungjo', serif; }
         body { word-break: keep-all; overflow-wrap: break-word; }
         button { word-break: keep-all; }
@@ -107,3 +105,16 @@
         /* 터치 기기에는 키보드 단축키 안내를 숨김 */
         @media (hover: none) and (pointer: coarse) { .kbd-hint { display: none !important; } }
         @media (max-width: 639.98px) { .tt-time::-webkit-calendar-picker-indicator { display: none; } .tt-time { padding-left: 2px !important; padding-right: 2px !important; } }
+        /* 글자 대비 보정 (접근성 기준 4.5:1 이상). 클래스 하나짜리 우선순위라 hover·dark: 변형은 그대로 적용됨 */
+        :where(html:not(.dark)) .text-slate-400 { color: #5b6779; }
+        :where(html:not(.dark)) .text-slate-500 { color: #4f5d72; }
+        :where(html:not(.dark)) .text-emerald-600 { color: #047857; }
+        :where(html:not(.dark)) .text-blue-500 { color: #2563eb; }
+        :where(html:not(.dark)) .text-rose-500, :where(html:not(.dark)) .text-rose-600 { color: #be123c; }
+        :where(html:not(.dark)) .text-amber-600 { color: #b45309; }
+        .bg-emerald-600 { background-color: #047857; }
+        .dark .dark\:text-slate-500 { color: #94a3b8; }
+        .dark .dark\:text-indigo-400 { color: #a5b4fc; }
+        .dark .dark\:text-rose-400, .dark .dark\:text-rose-500 { color: #fda4af; }
+        :where(.dark) .text-blue-500 { color: #60a5fa; }
+        :where(.dark) .text-rose-500 { color: #fda4af; }
