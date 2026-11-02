@@ -962,6 +962,43 @@
                         <p class="leading-relaxed opacity-90">${info.status === 'reviewed' ? '위 근거와 대조한 날짜 기준입니다. 이후 개정 여부는 근거 링크에서 확인하세요.' : '아직 공식 근거와 한 줄씩 대조하지 않은 내용입니다. 실제 처리 전 아래 근거 법령과 소속 교육청 지침을 확인하세요.'} ${office ? `${escapeHTML(office.name)} 기준 확인 권장.` : '시도교육청별로 다를 수 있습니다.'}</p>
                     </section>`;
         }
+        // 검수 우선 목록(data/content-meta.json reviewPriority): 많이 찾고 틀리면 곤란한 용어부터 공식 근거와 대조
+        function reviewQueue() {
+            return (CONTENT_META?.reviewPriority || []).map(entry => {
+                const id = Number(String(entry.id).split(':')[1]);
+                const item = DB.find(d => d.id === id && !d._generated); if (!item) return null;
+                applyTermEnrichment(item);
+                const sources = (entry.suggestedSourceIds || []).map(sid => (CONTENT_META.sources || []).find(src => src.id === sid)).filter(Boolean);
+                return { publicId: entry.id, item, info: reviewInfo(entry.id), sources };
+            }).filter(Boolean);
+        }
+        function reviewQueueHTML() {
+            const q = reviewQueue(); if (!q.length) return '';
+            const done = q.filter(x => x.info.status === 'reviewed').length;
+            return `
+                        <details class="rounded-xl border border-slate-200 dark:border-slate-700 p-3">
+                            <summary class="text-xs font-bold text-slate-700 dark:text-slate-200 cursor-pointer">검수 우선 ${q.length}개 (${done}개 완료) · 대조표 받기</summary>
+                            <p class="mt-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">자주 찾고 틀리면 곤란한 용어부터 공식 근거와 한 줄씩 대조해 주세요. 대조표에 '맞음/고칠 내용'을 적어 <b>틀린 내용 신고</b>로 보내 주시면 확인일과 함께 '대조 완료'로 기록됩니다.</p>
+                            <ul class="mt-2 space-y-1">${q.map(x => `<li class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs"><span aria-hidden="true">${x.info.status === 'reviewed' ? '✅' : '📝'}</span><button type="button" data-id="${x.item.id}" onclick="openDetail(Number(this.dataset.id))" class="font-semibold text-slate-800 dark:text-slate-100 hover:underline">${escapeHTML(x.item.keyword)}</button><span class="text-slate-500 dark:text-slate-400">${x.sources.map(src => `<a href="${escapeHTML(src.url)}" target="_blank" rel="noopener noreferrer" class="hover:underline">${escapeHTML(src.title)} ↗</a>`).join(' · ')}</span></li>`).join('')}</ul>
+                            <div class="mt-3 flex flex-wrap gap-2"><button type="button" onclick="exportReviewSheet()" class="px-3 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold"><i class="fa-solid fa-file-csv"></i> 대조표 엑셀(CSV)</button><button type="button" onclick="printReviewSheet()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold"><i class="fa-solid fa-print"></i> 대조표 인쇄</button></div>
+                        </details>`;
+        }
+        function reviewSheetRows() {
+            return reviewQueue().map((x, n) => ({ n: n + 1, keyword: x.item.keyword, category: x.item.category, desc: x.item.description, metrics: (x.item.metrics || []).join(' / '), sources: x.sources.map(src => src.title).join(', '), links: x.sources.map(src => src.url).join(' '), status: x.info.status === 'reviewed' ? `대조 완료 ${x.info.checkedAt}` : '검수 전' }));
+        }
+        function exportReviewSheet() {
+            const csvCell = v => { let t = String(v ?? ''); if (/^[=+\-@\t\r]/.test(t)) t = `'${t}`; return `"${t.replace(/"/g, '""')}"`; };
+            const head = ['번호', '용어', '분류', '지금 설명', '핵심 수치', '대조할 근거', '근거 링크', '현재 상태', '맞음/틀림', '고칠 내용', '확인일'];
+            const body = reviewSheetRows().map(r => [r.n, r.keyword, r.category, r.desc, r.metrics, r.sources, r.links, r.status, '', '', ''].map(csvCell).join(','));
+            downloadFile(`교직백서_검수대조표_${ymd(new Date())}.csv`, '\ufeff' + [head.map(csvCell).join(','), ...body].join('\r\n'), 'text/csv;charset=utf-8');
+            showToast('검수 대조표를 내려받았어요.');
+        }
+        function printReviewSheet() {
+            const rows = reviewSheetRows();
+            printHTML(`<h1>교직백서 1000 · 검수 대조표</h1><p style="font-size:10pt;margin:0 0 4mm">각 설명을 근거 법령·지침과 대조해 맞으면 ○, 틀리면 고칠 내용을 적어 주세요. (${ymd(new Date())})</p>
+                <table style="width:100%;border-collapse:collapse;font-size:9pt" border="1" cellpadding="4"><thead><tr><th>번호</th><th>용어</th><th>지금 설명</th><th>대조할 근거</th><th>맞음</th><th>고칠 내용</th></tr></thead>
+                <tbody>${rows.map(r => `<tr><td>${r.n}</td><td><b>${escapeHTML(r.keyword)}</b><br>${escapeHTML(r.category)}</td><td>${escapeHTML(r.desc)}${r.metrics ? `<br><i>${escapeHTML(r.metrics)}</i>` : ''}</td><td>${escapeHTML(r.sources)}</td><td style="width:12mm"></td><td style="width:45mm"></td></tr>`).join('')}</tbody></table>`);
+        }
         function reviewSummary() {
             const items = Object.keys(CONTENT_META?.items || {});
             const counts = { reviewed: 0, 'needs-update': 0, 'needs-review': 0 };
@@ -3594,6 +3631,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                         <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">용어·상황 가이드·업무 순서 ${r.total}개 중 공식 근거와 대조를 마친 항목은 <b>${r.reviewed}개(${pct}%)</b>입니다. 검수 전 항목은 실무 경험을 바탕으로 정리한 내용이라, 처리 전에 상세 화면의 근거 법령과 소속 교육청 지침을 꼭 확인해 주세요.</p>
                         <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden" aria-hidden="true"><div class="bg-emerald-500 h-full" style="width:${pct}%"></div></div>
                         <div class="flex flex-wrap gap-2 text-xs font-bold"><span class="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">✅ 대조 완료 ${r.reviewed}</span><span class="px-2.5 py-1 rounded-lg bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300">⚠️ 변경 확인 중 ${r['needs-update']}</span><span class="px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-300">📝 검수 전 ${r['needs-review']}</span></div>` : `<p class="text-xs text-slate-500 dark:text-slate-400">검수 기록을 불러오지 못했습니다. 인터넷에 연결된 상태에서 다시 열어 주세요.</p>`; })()}
+                        ${reviewQueueHTML()}
                     </div>
 
                     <div class="${card}">

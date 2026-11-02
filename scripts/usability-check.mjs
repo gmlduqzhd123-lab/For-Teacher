@@ -103,7 +103,13 @@ assert.deepEqual(links.courses.map(item => item.title), terms.courses.map(item =
 const metadata = JSON.parse(fs.readFileSync(new URL('../data/content-meta.json', import.meta.url), 'utf8'));
 assert.equal(metadata.metadataSchemaVersion, 1);
 assert.equal(metadata.contentVersion, `${terms.version}-${terms.updatedAt}`);
-assert.equal(Object.keys(metadata.items).length, terms.terms.length + terms.situations.length + terms.courses.length);
+const extraTermCount = JSON.parse(fs.readFileSync(new URL('../data/terms-extra.json', import.meta.url), 'utf8')).terms.length;
+assert.equal(Object.keys(metadata.items).length, terms.terms.length + extraTermCount + terms.situations.length + terms.courses.length);
+// 검수 우선 목록: 있는 항목만, 대조할 근거는 등록된 근거만
+for (const entry of metadata.reviewPriority || []) {
+  assert.ok(Object.hasOwn(metadata.items, entry.id), `reviewPriority: unknown item ${entry.id}`);
+  for (const id of entry.suggestedSourceIds || []) assert.ok(metadata.sources.some(src => src.id === id), `reviewPriority: unknown source ${id}`);
+}
 const sourceIds = new Set(metadata.sources.map(src => src.id));
 assert.equal(sourceIds.size, metadata.sources.length);
 for (const src of metadata.sources) assert.match(src.url, /^https:\/\/www\.law\.go\.kr\//);
