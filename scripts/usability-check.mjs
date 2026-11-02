@@ -173,4 +173,21 @@ for (const query of ['학생이 다쳤어요', '다침']) assert(search.rankTerm
   }
 }
 
-console.log('Usability storage, draft, backup, search, and public ID, search link checks passed.');
+
+// 복무 신청 도우미: 사용 시간·겹치는 수업·진단서 기준
+{
+  const parseYMD = s => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || '')); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : new Date(NaN); };
+  const toMin = hhmm => { const [h, m] = String(hhmm || '0:0').split(':').map(Number); return (h || 0) * 60 + (m || 0); };
+  const plan = new Function('parseYMD', 'toMin', `${between('const DUTY_TYPES', 'function dutyHelperHTML')}; return planDutyRequest;`)(parseYMD, toMin);
+  const tt = { periods: [{ start: '09:00', end: '09:40' }, { start: '13:20', end: '14:00' }], grid: { 2: ['국어', '수학'] } }; // 2026-11-04 = 수요일
+  const half = plan({ type: 'leave', date: '2026-11-04', allDay: false, start: '13:00', end: '17:00', timetable: tt });
+  assert.equal(half.kind, '반일 연가'); assert.deepEqual(half.classes, ['2교시(수학)']);
+  assert.match(half.message, /보결/);
+  const full = plan({ type: 'leave', date: '2026-11-04', allDay: true, timetable: tt });
+  assert.deepEqual(full.classes, ['1교시(국어)', '2교시(수학)']);
+  assert.equal(plan({ type: 'sick', date: '2026-11-04', allDay: true, sickDays: 5, timetable: tt }).needsDoctor, false); // 누계 6일 = 기준 이하
+  assert.equal(plan({ type: 'sick', date: '2026-11-04', allDay: false, start: '13:00', end: '14:00', sickDays: 6, timetable: tt }).needsDoctor, true); // 6일 1시간
+  assert.equal(plan({ type: 'trip', date: '2026-11-07', allDay: true, timetable: tt }).classes.length, 0); // 토요일
+  assert.equal(plan({ type: 'leave', date: '', timetable: tt }).valid, false);
+}
+console.log('Usability storage, draft, backup, search, and public ID, search link, duty helper checks passed.');

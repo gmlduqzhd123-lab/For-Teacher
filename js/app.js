@@ -2415,7 +2415,7 @@ ${weeklyAgendaHTML()}
                                     <span>${escapeHTML(tl.label)} →</span>
                                 </button>
                             `).join('')}
-                            ${['학적·출결', '복무·휴가', '현장체험학습'].includes(item.category) ? `<button type="button" onclick="const cat='${escapeHTML(item.category)}'; closeModal(true); openCalcModal(cat==='복무·휴가'?'sick':cat==='현장체험학습'?'trip':'att');" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5"><i class="fa-solid fa-calculator"></i><span>실무 일수·병가 계산기 열기 →</span></button>` : ''}
+                            ${['학적·출결', '복무·휴가', '현장체험학습'].includes(item.category) ? `<button type="button" onclick="const cat='${escapeHTML(item.category)}'; closeModal(true); openCalcModal(cat==='복무·휴가'?'duty':cat==='현장체험학습'?'trip':'att');" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5"><i class="fa-solid fa-calculator"></i><span>${item.category === '복무·휴가' ? '복무 신청 도우미 열기' : '실무 일수 계산기 열기'} →</span></button>` : ''}
                         </div>
                     </div>` : ''}
 
@@ -5403,14 +5403,14 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             const m = document.getElementById('setup-wizard-modal');
             const c = document.getElementById('setup-wizard-content');
             if (!m || !c) return;
-            currentCalcTab = ['att', 'sick', 'trip'].includes(tab) ? tab : 'att';
+            currentCalcTab = ['att', 'sick', 'trip', 'duty'].includes(tab) ? tab : 'att';
             const todayStr = ymd(new Date());
             c.innerHTML = `
                 <div class="space-y-4">
                     <div class="flex items-start justify-between gap-3">
                         <div>
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 text-xs font-extrabold mb-1.5">🧮 헷갈리는 일수·시간 1초 자동 계산</span>
-                            <h3 id="setup-wizard-title" class="text-xl font-black text-slate-900 dark:text-white">교무실 실무 미니 계산기 3종</h3>
+                            <h3 id="setup-wizard-title" class="text-xl font-black text-slate-900 dark:text-white">교무실 실무 계산기 · 복무 도우미</h3>
                         </div>
                         <button type="button" onclick="closeSetupWizard()" aria-label="닫기" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark"></i></button>
                     </div>
@@ -5418,6 +5418,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                         <button type="button" onclick="openCalcModal('att')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${currentCalcTab === 'att' ? 'bg-indigo-600 text-white shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">📅 수업일수 2/3 출석</button>
                         <button type="button" onclick="openCalcModal('sick')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${currentCalcTab === 'sick' ? 'bg-indigo-600 text-white shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">🏥 병가 6일(48시간) 누계</button>
                         <button type="button" onclick="openCalcModal('trip')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${currentCalcTab === 'trip' ? 'bg-indigo-600 text-white shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">🚌 체험학습 평일 일수</button>
+                        <button type="button" onclick="openCalcModal('duty')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${currentCalcTab === 'duty' ? 'bg-indigo-600 text-white shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">🗂️ 복무 신청 도우미</button>
                     </div>
                     ${currentCalcTab === 'att' ? `
                         <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-3">
@@ -5432,7 +5433,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                             </div>
                             <div id="calc-modal-result" class="p-3.5 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-xs space-y-1"></div>
                         </div>
-                    ` : currentCalcTab === 'sick' ? `
+                    ` : currentCalcTab === 'duty' ? dutyHelperHTML(todayStr) : currentCalcTab === 'sick' ? `
                         <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-3">
                             <p class="text-xs text-slate-500 dark:text-slate-400">연간 일반병가(지각·조퇴·외출 누계 포함, 8시간=1일)가 <b>6일(48시간)을 초과</b>하면 의료법상 진단서 첨부가 필수입니다.</p>
                             <div class="grid grid-cols-3 gap-2.5">
@@ -5464,6 +5465,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                     `}
                 </div>`;
             m.classList.remove('hidden');
+            c.querySelector(`[onclick="openCalcModal('${currentCalcTab}')"]`)?.scrollIntoView({ inline: 'center', block: 'nearest' }); // 옆으로 넘친 탭도 보이게
             refreshCalcModalResult();
         }
 
@@ -5476,6 +5478,8 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                     <p class="font-extrabold text-indigo-900 dark:text-indigo-200 text-sm">✅ 수료 최소 출석일수: <span class="underline">${res.requiredDays}일</span> 이상 (최대 결석 허용: ${res.maxAbsentDays}일)</p>
                     <p class="text-slate-700 dark:text-slate-300 font-semibold">${res.remainAllowance >= 0 ? `현재 결석 ${res.currentAbsent}일 반영 시 수료 마지노선까지 ${res.remainAllowance}일 여유가 있습니다.` : `⚠️ 수료 기준 출석일수보다 ${Math.abs(res.remainAllowance)}일 부족합니다(유급·미수료 주의).`}</p>
                 `;
+            } else if (currentCalcTab === 'duty') {
+                refreshDutyHelper(box);
             } else if (currentCalcTab === 'sick') {
                 const res = calcSickLeave6(document.getElementById('calc-sick-d')?.value, document.getElementById('calc-sick-h')?.value, document.getElementById('calc-sick-m')?.value);
                 box.innerHTML = `
@@ -5491,6 +5495,79 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             }
         }
 
+        // 복무 신청 도우미: 종류·날짜·시간 → 사용 시간, 겹치는 수업(시간표), 진단서 필요 여부, 나이스 입력 순서, 교감 보고 메시지
+        const DUTY_TYPES = { leave: { name: '연가', term: 3001 }, sick: { name: '병가', term: 1001 }, trip: { name: '출장', term: 3003 } };
+        function planDutyRequest({ type = 'leave', date = '', allDay = true, start = '09:00', end = '13:00', reason = '', sickDays = 0, sickHours = 0, timetable = null } = {}) {
+            const t = DUTY_TYPES[type] ? type : 'leave';
+            const d = parseYMD(date); const valid = !isNaN(d);
+            const s = allDay ? 8 * 60 + 40 : toMin(start), e = allDay ? 16 * 60 + 40 : toMin(end);
+            const minutes = allDay ? 480 : Math.max(0, e - s);
+            const hoursLabel = allDay ? '하루(8시간)' : `${Math.floor(minutes / 60)}시간${minutes % 60 ? ` ${minutes % 60}분` : ''}`;
+            const partOf = e >= 16 * 60 + 30 ? '조퇴' : s <= 9 * 60 ? '지각' : '외출'; // 시간 단위: 퇴근 무렵까지면 조퇴, 출근 무렵부터면 지각, 그 사이는 외출
+            const kind = t === 'trip' ? '출장' : allDay ? DUTY_TYPES[t].name : (t === 'leave' && minutes === 240 ? '반일 연가' : `${DUTY_TYPES[t].name}(${partOf})`);
+            const dayIdx = valid ? d.getDay() - 1 : -1;
+            const classes = [];
+            if (timetable && dayIdx >= 0 && dayIdx < 5) timetable.periods.forEach((p, i) => {
+                const subj = (timetable.grid[dayIdx] || [])[i];
+                if (subj && toMin(p.start) < e && toMin(p.end) > s) classes.push(`${i + 1}교시(${subj})`);
+            });
+            const usedMin = Math.max(0, Number(sickDays) || 0) * 480 + Math.max(0, Number(sickHours) || 0) * 60;
+            const afterMin = usedMin + (t === 'sick' ? minutes : 0);
+            const needsDoctor = t === 'sick' && afterMin > 6 * 480;
+            const evidence = t === 'sick' ? (needsDoctor ? `진단서 첨부 필요 — 이번 신청까지 올해 병가 누계가 ${Math.floor(afterMin / 480)}일 ${Math.round(afterMin % 480 / 60)}시간으로 6일을 넘어요.` : `진단서 없이 신청 가능 — 이번 신청까지 누계 ${Math.floor(afterMin / 480)}일 ${Math.round(afterMin % 480 / 60)}시간 (6일 이하). 학교 규정은 확인하세요.`)
+                : t === 'trip' ? '출장 근거 공문(연수·회의 안내 등)을 첨부하고, 다녀온 뒤 필요하면 결과 보고(복명)를 해요.' : '연가는 따로 증빙이 필요 없어요.';
+            const when = valid ? `${d.getMonth() + 1}/${d.getDate()}(${'일월화수목금토'[d.getDay()]})${allDay ? '' : ` ${start}~${end}`}` : '';
+            const message = `교감 선생님, ${when} ${kind}${reason ? `(${reason})` : ''} 신청하려고 합니다.${classes.length ? ` 해당 시간에 ${classes.join(', ')} 수업이 있어 보결 부탁드립니다.` : ''} 나이스로 바로 상신하겠습니다.`;
+            const steps = [
+                classes.length ? `교감 선생님께 먼저 알리고 보결 요청 — 겹치는 수업: ${classes.join(', ')}` : '교감 선생님께 먼저 알리기 (겹치는 수업이 없어도 미리 보고)',
+                `4세대 나이스 [나의메뉴 > 복무 > 개인근무상황신청]에서 '${kind}' 선택 → 기간 ${when || '(날짜)'} → 사유${t === 'trip' ? '·출장지·목적' : ''} 입력 → 상신`,
+                evidence
+            ];
+            if (t === 'leave' && !allDay) steps.push('시간 단위로 쓴 연가(지각·조퇴·외출)는 모아서 8시간이 되면 연가 1일로 빠져요.');
+            if (classes.length) steps.push('보결 수업 자료(차시·학습지·학생 특이사항)를 한 장으로 남겨 두기');
+            return { valid, kind, hoursLabel, minutes, classes, needsDoctor, steps, message, term: DUTY_TYPES[t].term };
+        }
+        function dutyHelperHTML(todayStr) {
+            const f = 'mt-1 w-full p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-100';
+            return `
+                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-3">
+                            <p class="text-xs text-slate-600 dark:text-slate-300">종류와 날짜를 넣으면 겹치는 수업(내 시간표), 진단서 필요 여부, 나이스 입력 순서, 교감 선생님께 보낼 메시지를 만들어요. 입력 내용은 저장하지 않아요.</p>
+                            <div class="grid grid-cols-2 gap-2.5">
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200">종류<select id="duty-type" onchange="refreshCalcModalResult()" class="${f}"><option value="leave">연가</option><option value="sick">병가</option><option value="trip">출장</option></select></label>
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200">날짜<input id="duty-date" type="date" value="${todayStr}" onchange="refreshCalcModalResult()" class="${f}"></label>
+                            </div>
+                            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-200"><input id="duty-allday" type="checkbox" checked onchange="refreshCalcModalResult()" class="w-4 h-4"> 하루 종일</label>
+                            <div id="duty-times" class="grid grid-cols-2 gap-2.5 hidden">
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200">시작<input id="duty-start" type="time" value="13:00" onchange="refreshCalcModalResult()" class="${f}"></label>
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200">끝<input id="duty-end" type="time" value="16:40" onchange="refreshCalcModalResult()" class="${f}"></label>
+                            </div>
+                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200">사유 (선택, 짧게)<input id="duty-reason" type="text" maxlength="30" placeholder="예: 병원 진료, 가족 행사" oninput="refreshCalcModalResult()" class="${f}"></label>
+                            <div id="duty-sick" class="grid grid-cols-2 gap-2.5 hidden">
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200">올해 쓴 병가 (일)<input id="duty-sick-d" type="number" min="0" max="60" value="0" oninput="refreshCalcModalResult()" class="${f}"></label>
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200">+ 시간<input id="duty-sick-h" type="number" min="0" max="200" value="0" oninput="refreshCalcModalResult()" class="${f}"></label>
+                            </div>
+                            <div id="calc-modal-result" class="p-3.5 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-xs space-y-2"></div>
+                        </div>`;
+        }
+        function refreshDutyHelper(box) {
+            const val = id => document.getElementById(id)?.value || '';
+            const type = val('duty-type') || 'leave', allDay = !!document.getElementById('duty-allday')?.checked;
+            document.getElementById('duty-times')?.classList.toggle('hidden', allDay);
+            document.getElementById('duty-sick')?.classList.toggle('hidden', type !== 'sick');
+            const r = planDutyRequest({ type, date: val('duty-date'), allDay, start: val('duty-start'), end: val('duty-end'), reason: val('duty-reason').trim(), sickDays: val('duty-sick-d'), sickHours: val('duty-sick-h'), timetable: getTimetable() });
+            if (!r.valid) { box.innerHTML = '<p class="font-bold text-slate-700 dark:text-slate-200">날짜를 골라 주세요.</p>'; return; }
+            if (!allDay && r.minutes <= 0) { box.innerHTML = '<p class="font-bold text-rose-700 dark:text-rose-300">끝 시각이 시작 시각보다 늦어야 해요.</p>'; return; }
+            box.innerHTML = `
+                    <p class="font-extrabold text-indigo-900 dark:text-indigo-200 text-sm">🗂️ ${escapeHTML(r.kind)} · ${escapeHTML(r.hoursLabel)}</p>
+                    ${r.needsDoctor ? '<p class="font-extrabold text-rose-700 dark:text-rose-300">⚠️ 진단서가 필요해요</p>' : ''}
+                    <ol class="list-decimal pl-4 space-y-1 text-slate-700 dark:text-slate-200">${r.steps.map(st => `<li>${escapeHTML(st)}</li>`).join('')}</ol>
+                    <div class="p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-indigo-100 dark:border-slate-700">
+                        <div class="flex items-center justify-between gap-2 mb-1"><span class="font-bold text-slate-500 dark:text-slate-400">교감 선생님께 보낼 메시지</span><button type="button" id="duty-copy" class="font-bold text-blue-700 dark:text-blue-300 hover:underline">복사</button></div>
+                        <p class="text-slate-800 dark:text-slate-100">${escapeHTML(r.message)}</p>
+                    </div>
+                    <button type="button" data-id="${r.term}" onclick="closeSetupWizard(); openDetail(Number(this.dataset.id))" class="font-bold text-blue-700 dark:text-blue-300 hover:underline">'${escapeHTML(DUTY_TYPES[type]?.name || '연가')}' 규정 자세히 보기 →</button>`;
+            document.getElementById('duty-copy').onclick = () => copyText(r.message, '메시지를 복사했어요. 메신저에 붙여 넣으세요.');
+        }
         function openGuideModal() {
             const m = document.getElementById('setup-wizard-modal');
             const c = document.getElementById('setup-wizard-content');
