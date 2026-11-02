@@ -2953,6 +2953,67 @@ ${weeklyAgendaHTML()}
             setStartCourseDone(courseId, key, !(startCourseState().done[courseId] || {})[key]);
             router.render();
         }
+        // 신규 교사 30일 코스: 발령일(settings.appointDate)부터 날짜에 맞춰 '오늘 할 것 1개'를 홈에 보여 줌
+        const NEWBIE_30 = [
+            { day: 1, t: 'term', id: 147, why: '신규 교사가 처음 마주치는 일의 큰 그림' },
+            { day: 1, t: 'view', view: 'mybox', param: null, label: '내 학교·학급 기본 정보 입력', why: '서식 자동 입력과 교육청 지침 바로가기의 출발점' },
+            { day: 2, t: 'term', id: 152, why: '교무실에서 서로 기대하는 기본 예절' },
+            { day: 3, t: 'term', id: 5, why: '출결·성적·복무를 처리하는 시스템' },
+            { day: 4, t: 'view', view: 'timetable', param: null, label: '우리 반 시간표 입력', why: '홈에 지금 몇 교시인지와 종 알림 표시' },
+            { day: 5, t: 'term', id: 6, why: '공문과 예산을 처리하는 시스템' },
+            { day: 7, t: 'term', id: 60, why: '모든 업무 처리의 기본 단위' },
+            { day: 8, t: 'term', id: 65, why: '공문 문장의 기본 형식' },
+            { day: 10, t: 'term', id: 3001, why: '개인 사정으로 쉬는 방법과 보결' },
+            { day: 11, t: 'situation', id: 'situation:05', why: '아파서 출근이 어려울 때 처리 순서' },
+            { day: 13, t: 'term', id: 3, why: '돈을 쓰기 전에 먼저 받는 결재' },
+            { day: 15, t: 'view', view: 'attendance', param: null, label: '출결 증빙 체크 써 보기', why: '결석 서류를 놓치지 않는 습관' },
+            { day: 17, t: 'term', id: 2001, why: '1년 내내 쌓아 가는 학생 기록' },
+            { day: 20, t: 'term', id: 31, why: '해마다 챙기는 복지 제도' },
+            { day: 22, t: 'term', id: 3005, why: '첫 급여명세서의 담임·보직 수당' },
+            { day: 25, t: 'term', id: 4, why: '사안이 생기면 처음 할 일' },
+            { day: 27, t: 'term', id: 3007, why: '교사가 꼭 지켜야 하는 신고 의무' },
+            { day: 30, t: 'term', id: 148, why: '물어볼 선배를 정식으로 두는 방법' }
+        ];
+        function newbiePlan(now = new Date()) {
+            const start = parseYMD(getSettings().appointDate || ''); if (isNaN(start)) return null;
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const dayNo = Math.floor((today - start) / 86400000) + 1;
+            const done = startCourseState().done.newbie30 || {};
+            const items = NEWBIE_30.map((it, idx) => ({ ...it, idx, key: startCourseItemKey(it), info: startCourseItemInfo(it) })).filter(x => x.info).map(x => ({ ...x, done: !!done[x.key] }));
+            const todayItem = dayNo >= 1 ? items.find(x => !x.done && x.day <= dayNo) || null : null;
+            const next = items.find(x => !x.done && x.day > dayNo) || null;
+            return { dayNo, items, todayItem, next, finished: items.every(x => x.done) };
+        }
+        function setAppointDate() {
+            const v = document.getElementById('newbie-date')?.value || '';
+            if (v && !validBackupDate(v)) { showToast('날짜를 골라 주세요.', 'error'); return; }
+            if (saveSetting('appointDate', v)) { showToast(v ? '30일 코스를 켰어요. 홈 이번 주 할 일에 오늘 할 것이 나와요.' : '30일 코스를 껐어요.'); router.render(); }
+        }
+        function openNewbieItem(idx) {
+            const it = NEWBIE_30[idx]; if (!it) return;
+            setStartCourseDone('newbie30', startCourseItemKey(it), true);
+            if (it.t === 'term') { router.render(); openDetail(it.id); }
+            else if (it.t === 'situation') router.navigate('situations', it.id);
+            else router.navigate(it.view, it.param);
+        }
+        function toggleNewbieItem(idx) {
+            const it = NEWBIE_30[idx]; if (!it) return; const key = startCourseItemKey(it);
+            setStartCourseDone('newbie30', key, !(startCourseState().done.newbie30 || {})[key]);
+            router.render();
+        }
+        function newbie30HTML() {
+            const date = getSettings().appointDate || ''; const plan = newbiePlan();
+            return `
+                    <section class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 space-y-3" aria-label="신규 교사 30일 코스">
+                        <div class="flex flex-wrap items-end justify-between gap-2">
+                            <div><h3 class="text-base font-bold text-slate-900 dark:text-white">📅 날짜에 맞춘 30일 코스</h3><p class="text-xs text-slate-600 dark:text-slate-300">첫 출근일을 넣으면 날짜에 맞춰 <b>오늘 할 것 1개</b>를 홈 '이번 주 할 일'에 띄워요. 마감 알림을 켜 두면 앱을 열 때 알려 줘요.</p></div>
+                            <div class="flex flex-wrap items-center gap-2"><label for="newbie-date" class="text-xs font-bold text-slate-600 dark:text-slate-300">첫 출근일</label><input id="newbie-date" type="date" value="${escapeHTML(date)}" class="px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-100"><button type="button" onclick="setAppointDate()" class="px-3 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-bold">${date ? '바꾸기' : '켜기'}</button>${date ? `<button type="button" onclick="document.getElementById('newbie-date').value=''; setAppointDate()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold">끄기</button>` : ''}</div>
+                        </div>
+                        ${plan ? `
+                        <p class="text-sm font-bold text-slate-800 dark:text-slate-100">${plan.dayNo < 1 ? `첫 출근까지 ${1 - plan.dayNo}일 남았어요.` : plan.finished ? '🎉 30일 코스를 모두 마쳤어요!' : plan.todayItem ? `${plan.dayNo}일째 · 오늘 할 것: <button type="button" onclick="openNewbieItem(${plan.todayItem.idx})" class="text-blue-700 dark:text-blue-300 underline">${escapeHTML(plan.todayItem.info.title)}</button>` : `${plan.dayNo}일째 · 오늘은 쉬어 가요${plan.next ? ` (다음: ${plan.next.day}일째 ${escapeHTML(plan.next.info.title)})` : ''}`}</p>
+                        <ol class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">${plan.items.map(x => `<li class="flex items-center gap-2 text-xs ${x.done ? 'text-slate-500 dark:text-slate-400' : x.day <= plan.dayNo ? 'text-slate-900 dark:text-white font-semibold' : 'text-slate-600 dark:text-slate-300'}"><input type="checkbox" ${x.done ? 'checked' : ''} onchange="toggleNewbieItem(${x.idx})" aria-label="${escapeHTML(x.info.title)} 완료" class="w-4 h-4 shrink-0 accent-emerald-600"><span class="w-12 shrink-0 font-bold">${x.day}일째</span><button type="button" onclick="openNewbieItem(${x.idx})" class="text-left hover:underline">${escapeHTML(x.info.title)}</button></li>`).join('')}</ol>` : ''}
+                    </section>`;
+        }
         function renderStartCourses(container) {
             const st = startCourseState();
             const active = START_COURSES.find(c => c.id === (router.param || st.active)) || null;
@@ -2989,6 +3050,7 @@ ${weeklyAgendaHTML()}
                             <button type="button" onclick="copyText(location.origin + location.pathname + '#view=start&param=${active.id}', '코스 주소를 복사했습니다. 동료에게 보내 보세요.')" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-link mr-1"></i>코스 링크 복사</button>
                         </div>
                         <ol class="space-y-2">${list}</ol>
+                        ${active.id === 'newbie' ? newbie30HTML() : ''}
                         <p class="text-xs text-slate-400 dark:text-slate-500">각 항목의 내용은 시도교육청·학교마다 다를 수 있으니 상세 화면의 근거와 학교 안내를 함께 확인하세요.</p>
                     </section>` : `<p class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 text-sm text-slate-500 dark:text-slate-400 text-center">위에서 코스를 하나 골라 주세요.</p>`}
                 </div>
@@ -3384,6 +3446,8 @@ ${weeklyAgendaHTML()}
                     }
                 });
             });
+            const nb = newbiePlan(now);
+            if (nb && nb.todayItem && nb.dayNo <= 45) items.push({ type: 'newbie', idx: nb.todayItem.idx, title: `신규 30일 · ${nb.todayItem.info.title}`, days: -900, when: `${nb.dayNo}일째` });
             const evid = Vault.isLocked() ? [] : attendancePending().filter(r => r.left <= 3);
             if (evid.length) items.push({ type: 'evidence', title: `출결 증빙 ${evid.length}건 받기`, days: Math.min(...evid.map(r => r.left)), when: evid.some(r => r.left < 0) ? '마감 지남' : '3일 안 마감' });
             replyDeadlines().forEach((r, idx) => {
@@ -3411,7 +3475,12 @@ ${weeklyAgendaHTML()}
             // 날짜가 정해진 일(이번 주·다음 주)과 날짜를 안 정한 이번 달 업무를 나눠 보여 줌
             const dated = items.filter(it => it.days < 30), undated = items.filter(it => it.days >= 30);
             const groupLabel = text => `<p class="pt-2 pb-0.5 text-[11px] font-bold text-slate-500 dark:text-slate-400">${text}</p>`;
-            const listHTML = list => list.map(it => it.type === 'evidence' ? `
+            const listHTML = list => list.map(it => it.type === 'newbie' ? `
+                                <button type="button" onclick="openNewbieItem(${it.idx})" class="w-full flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200/80 dark:border-blue-800/60 text-left">
+                                    <i class="fa-solid fa-seedling text-blue-700 dark:text-blue-300 w-5 text-center"></i>
+                                    <span class="flex-1 min-w-0 truncate text-sm font-bold text-blue-900 dark:text-blue-100">${escapeHTML(it.title)}</span>
+                                    <span class="shrink-0 text-xs font-bold text-blue-700 dark:text-blue-300">${it.when}</span>
+                                </button>` : it.type === 'evidence' ? `
                                 <button type="button" onclick="router.navigate('attendance')" class="w-full flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-200/80 dark:border-rose-800/60 text-left">
                                     <i class="fa-solid fa-file-circle-check text-rose-700 dark:text-rose-300 w-5 text-center"></i>
                                     <span class="flex-1 min-w-0 truncate text-sm font-bold text-rose-900 dark:text-rose-100">${escapeHTML(it.title)}</span>
@@ -3467,7 +3536,7 @@ ${weeklyAgendaHTML()}
             const due = weeklyAgenda().filter(it => it.days <= 3);
             saveSetting('lastAgendaNotice', day);
             if (!due.length) return;
-            const title = `마감이 다가온 일 ${due.length}개`;
+            const title = `오늘 챙길 일 ${due.length}개`;
             const body = due.slice(0, 3).map(it => `${it.title}(${it.when})`).join(', ');
             showToast(`🗓 ${title} · ${body}`, 'info');
             if ('Notification' in window && Notification.permission === 'granted') {
