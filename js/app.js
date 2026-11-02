@@ -1198,7 +1198,7 @@
                             <span class="editorial-eyebrow">THE TEACHER'S DESK</span>
                             <h2>필요한 근거는 빠르게,<br><em>오늘 할 일은 분명하게</em></h2>
                             <p>정확한 공문 용어를 몰라도 일상 대화어로 검색하고, 상황별 대본과 양식을 바로 여세요</p>
-                            <div class="flex flex-wrap gap-2 mt-5 text-sm"><button type="button" onclick="openSosModal()" class="px-3 py-2 rounded-lg bg-rose-600 text-white font-bold shadow-sm">🚨 긴급 상황 SOS</button><button type="button" onclick="router.navigate('navigator')" class="px-3 py-2 rounded-lg bg-white/90 text-slate-900 font-bold">처음 맡은 업무 알아보기</button><button type="button" onclick="router.navigate('tools-doc')" class="px-3 py-2 rounded-lg bg-white/90 text-slate-900 font-bold">양식 20종 바로 쓰기</button></div>
+                            <div class="flex flex-wrap gap-2 mt-5 text-sm"><button type="button" onclick="openSosModal()" class="px-3 py-2 rounded-lg bg-rose-600 text-white font-bold shadow-sm">🚨 긴급 상황 SOS</button><button type="button" onclick="router.navigate('navigator')" class="px-3 py-2 rounded-lg bg-white/90 text-slate-900 dark:bg-slate-800 dark:text-slate-100 dark:border dark:border-slate-600 font-bold">처음 맡은 업무 알아보기</button><button type="button" onclick="router.navigate('tools-doc')" class="px-3 py-2 rounded-lg bg-white/90 text-slate-900 dark:bg-slate-800 dark:text-slate-100 dark:border dark:border-slate-600 font-bold">양식 20종 바로 쓰기</button></div>
                         </div>
                         <div class="space-y-2">
                             <div class="editorial-search">
@@ -1358,7 +1358,7 @@ ${weeklyAgendaHTML()}
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                        <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">기안/알림장 생성기</h2><p class="text-sm text-slate-500 dark:text-slate-400">실전 양식 20종과 내 양식을 빈칸만 채워 완성하고 동료 선생님과 링크로 공유하세요.</p></div>
+                        <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">기안·알림장 생성기</h2><p class="text-sm text-slate-500 dark:text-slate-400">실전 양식 20종과 내 양식을 빈칸만 채워 완성하고 동료 선생님과 링크로 공유하세요.</p></div>
                         <div class="flex flex-wrap gap-2">
                             <button type="button" onclick="promptImportSharedTemplate()" class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold hover:bg-slate-200 transition"><i class="fa-solid fa-file-import mr-1"></i>공유받은 양식 코드 붙여넣기</button>
                             <button type="button" onclick="openSetupWizard()" class="px-3.5 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-xs font-bold"><i class="fa-solid fa-school mr-1"></i>학교·담임 자동입력 설정</button>
