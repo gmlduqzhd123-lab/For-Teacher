@@ -932,7 +932,7 @@
                     if (p) raw = p;
                 }
                 try { if (raw.includes('%')) raw = decodeURIComponent(raw); } catch (_) {}
-                const clean = raw.replace(/^.*#view=[^&]+&param=share:/, '').replace(/^share:/, '').trim();
+                const clean = raw.replace(/^.*#view=[^&]+&param=(share|bundle):/, '').replace(/^(share|bundle):/, '').trim();
                 const bin = atob(clean);
                 const bytes = new Uint8Array(bin.length);
                 for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
@@ -1966,6 +1966,13 @@ ${weeklyAgendaHTML()}
 
         function renderToolsBoard(container, initialParam = null) {
             let sharedNotice = '';
+            if (initialParam && String(initialParam).startsWith('bundle:')) {
+                const bundle = sanitizeBundle(decodeSharePayload(initialParam));
+                router.param = null;
+                try { history.replaceState(null, '', buildHash('tools-board', null)); } catch (_) {}
+                if (bundle) setTimeout(() => openBundlePreview(bundle), 0);
+                else showToast('공유 묶음을 읽지 못했어요. 링크가 잘리지 않았는지 확인해 주세요.', 'error');
+            }
             if (initialParam && String(initialParam).startsWith('share:')) {
                 const decoded = decodeSharePayload(initialParam);
                 const ownTasks = Storage.get('board_tasks', null);
@@ -1995,6 +2002,7 @@ ${weeklyAgendaHTML()}
                         <div class="flex flex-wrap gap-2 shrink-0">
                             <button onclick="copyBoardAsText()" class="px-3.5 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl hover:bg-slate-200 transition"><i class="fa-regular fa-copy mr-1"></i>메신저용 복사</button>
                             <button onclick="shareBoardTasks()" class="px-3.5 py-2.5 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 text-xs font-bold rounded-xl hover:bg-blue-100 transition"><i class="fa-solid fa-share-nodes mr-1"></i>동학년 링크 공유</button>
+                            <button type="button" onclick="openBundleBuilder()" class="px-3.5 py-2.5 bg-violet-50 dark:bg-violet-900/40 text-violet-800 dark:text-violet-200 text-xs font-bold rounded-xl"><i class="fa-solid fa-box-open mr-1"></i>묶음 공유</button>
                             <button onclick="promptImportSharedBoard()" class="px-3.5 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl hover:bg-slate-200 transition"><i class="fa-solid fa-file-import mr-1"></i>공유 코드 입력</button>
                             <button onclick="addBoardTask()" class="px-4 py-2.5 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow transition">+ 새 할 일 추가</button>
                         </div>
@@ -2035,10 +2043,107 @@ ${weeklyAgendaHTML()}
             const shareUrl = `${location.href.split('#')[0]}#view=tools-board&param=${encodeURIComponent('share:' + code)}`;
             copyText(shareUrl, `'${title}' 태스크 보드 공유 링크를 복사했습니다! 동학년 메신저에 공유하세요.`);
         }
+        // ---- 동학년 공유 묶음: 보드 + 양식 + 일정을 한 링크로 (서버 없이 링크 안에 담음) ----
+        function sanitizeBundle(b) {
+            if (!b || typeof b !== 'object' || b.type !== 'bundle') return null;
+            const str = (v, n) => typeof v === 'string' ? v.slice(0, n) : '';
+            const out = { name: str(b.name, 60) || '공유 묶음', board: null, tpls: [], builtin: [], dates: [] };
+            if (b.board && typeof b.board === 'object' && Array.isArray(b.board.items)) {
+                const items = b.board.items.filter(it => it && typeof it.title === 'string' && it.title.trim()).slice(0, 50).map(it => ({ title: it.title.slice(0, 120), done: !!it.done }));
+                if (items.length) out.board = { title: str(b.board.title, 60) || out.name, items };
+            }
+            if (Array.isArray(b.tpls)) out.tpls = b.tpls.filter(t => t && typeof t.title === 'string' && typeof t.content === 'string' && t.title.trim()).slice(0, 3).map(t => ({ title: t.title.slice(0, 60), content: t.content.slice(0, 5000) }));
+            if (Array.isArray(b.builtin)) out.builtin = [...new Set(b.builtin.filter(id => typeof id === 'string' && DOC_TEMPLATES.some(t => t.id === id)))].slice(0, 5);
+            if (Array.isArray(b.dates)) out.dates = b.dates.filter(d => d && typeof d.title === 'string' && d.title.trim() && validBackupDate(d.date)).slice(0, 5).map(d => ({ title: d.title.slice(0, 60), date: d.date }));
+            return out.board || out.tpls.length || out.builtin.length || out.dates.length ? out : null;
+        }
+        function openBundleBuilder() {
+            const m = document.getElementById('setup-wizard-modal'); const c = document.getElementById('setup-wizard-content'); if (!m || !c) return;
+            const tasks = Object.values(getBoardTasks()).filter(t => t && String(t.title || '').trim());
+            const boardTitle = String(Storage.get('board_title', '') || '').trim();
+            const customs = getCustomTemplates();
+            const f = 'mt-1 w-full p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-100';
+            c.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div><h3 id="setup-wizard-title" class="text-xl font-black text-slate-900 dark:text-white">동학년 공유 묶음 만들기</h3><p class="text-xs text-slate-600 dark:text-slate-300 mt-1">행사 하나에 필요한 보드·양식·일정을 링크 하나로 보내요. 내용은 링크 안에만 담기고 서버로 보내지 않아요. 학생 이름 같은 개인정보는 넣지 마세요.</p></div>
+                        <button type="button" onclick="closeSetupWizard()" aria-label="닫기" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-200">묶음 이름<input id="bd-name" maxlength="60" value="${escapeHTML(boardTitle || '')}" placeholder="예: 가을 체육대회 준비 세트" class="${f}"></label>
+                    <label class="flex items-center gap-2 text-sm font-bold text-slate-800 dark:text-slate-100 ${tasks.length ? '' : 'opacity-50'}"><input id="bd-board" type="checkbox" ${tasks.length ? 'checked' : 'disabled'} class="w-4 h-4"> 지금 태스크 보드${tasks.length ? ` (${escapeHTML(boardTitle || '태스크 보드')} · ${tasks.length}개)` : ' (할 일이 없어요)'}</label>
+                    <fieldset class="space-y-1.5"><legend class="text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">양식 (최대 3개, 내 양식은 내용까지 담김)</legend>
+                        <div class="max-h-40 overflow-y-auto space-y-1 p-2 rounded-xl border border-slate-200 dark:border-slate-700">${[...customs.map(t => ({ id: t.id, title: t.title, mine: true })), ...DOC_TEMPLATES.map(t => ({ id: t.id, title: t.title }))].map(t => `<label class="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-200"><input type="checkbox" class="bd-tpl w-4 h-4" value="${escapeHTML(t.id)}" data-mine="${t.mine ? 1 : 0}" onchange="if (document.querySelectorAll('.bd-tpl:checked').length > 3) { this.checked = false; showToast('양식은 3개까지 담을 수 있어요.', 'info'); }"> ${t.mine ? '<b>[내 양식]</b> ' : ''}${escapeHTML(t.title)}</label>`).join('')}</div>
+                    </fieldset>
+                    <fieldset class="space-y-2"><legend class="text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">일정 (선택, 최대 3개 — 받는 사람의 '이번 주 할 일'에 들어가요)</legend>
+                        ${[0, 1, 2].map(i => `<div class="grid grid-cols-[1fr_auto] gap-2"><input class="bd-date-title ${f} !mt-0" maxlength="60" placeholder="예: 체육대회 물품 신청 마감" aria-label="일정 ${i + 1} 이름"><input type="date" class="bd-date ${f} !mt-0" aria-label="일정 ${i + 1} 날짜"></div>`).join('')}
+                    </fieldset>
+                    <div class="flex justify-end"><button type="button" onclick="copyBundleLink()" class="px-4 py-2 rounded-xl bg-violet-700 text-white text-sm font-bold"><i class="fa-solid fa-link mr-1"></i>묶음 링크 복사</button></div>
+                </div>`;
+            m.classList.remove('hidden');
+        }
+        function copyBundleLink() {
+            const name = (document.getElementById('bd-name')?.value || '').trim();
+            const bundle = { type: 'bundle', v: 1, name: name || '동학년 공유 묶음' };
+            if (document.getElementById('bd-board')?.checked) bundle.board = { title: String(Storage.get('board_title', '') || '').trim() || bundle.name, items: Object.values(getBoardTasks()).filter(t => t && String(t.title || '').trim()).map(t => ({ title: t.title, done: !!t.done })) };
+            const picked = [...document.querySelectorAll('.bd-tpl:checked')];
+            const customs = getCustomTemplates();
+            bundle.tpls = picked.filter(x => x.dataset.mine === '1').map(x => customs.find(t => t.id === x.value)).filter(Boolean).map(t => ({ title: t.title, content: t.content }));
+            bundle.builtin = picked.filter(x => x.dataset.mine !== '1').map(x => x.value);
+            const titles = [...document.querySelectorAll('.bd-date-title')], dates = [...document.querySelectorAll('.bd-date')];
+            bundle.dates = titles.map((el, i) => ({ title: el.value.trim(), date: dates[i]?.value || '' })).filter(d => d.title && validBackupDate(d.date));
+            if (titles.some((el, i) => el.value.trim() && !validBackupDate(dates[i]?.value || ''))) { showToast('이름을 적은 일정은 날짜도 골라 주세요.', 'error'); return; }
+            if (!sanitizeBundle(bundle)) { showToast('담을 보드·양식·일정을 하나 이상 골라 주세요.', 'error'); return; }
+            const code = encodeSharePayload(bundle);
+            if (!code) { showToast('링크를 만들지 못했어요.', 'error'); return; }
+            const url = `${location.href.split('#')[0]}#view=tools-board&param=${encodeURIComponent('bundle:' + code)}`;
+            if (url.length > 12000) { showToast('묶음이 너무 커요. 내 양식을 줄이거나 빼 주세요.', 'error'); return; }
+            copyText(url, `'${bundle.name}' 묶음 링크를 복사했어요. 동학년 메신저에 붙여 넣으세요.`);
+            closeSetupWizard();
+        }
+        function openBundlePreview(bundle) {
+            const m = document.getElementById('setup-wizard-modal'); const c = document.getElementById('setup-wizard-content'); if (!m || !c) return;
+            const fmt = s => { const d = parseYMD(s); return `${d.getMonth() + 1}/${d.getDate()}`; };
+            c.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div><span class="text-xs font-bold px-2.5 py-1 rounded-full bg-violet-50 dark:bg-violet-900/40 text-violet-800 dark:text-violet-200">공유받은 묶음</span><h3 id="setup-wizard-title" class="text-xl font-black text-slate-900 dark:text-white mt-1.5">${escapeHTML(bundle.name)}</h3><p class="text-xs text-slate-600 dark:text-slate-300 mt-1">가져올 것만 골라 주세요. 미리 보기만 하고 닫아도 아무것도 바뀌지 않아요.</p></div>
+                        <button type="button" onclick="closeSetupWizard()" aria-label="닫기" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    ${bundle.board ? `<label class="block p-3 rounded-xl border border-slate-200 dark:border-slate-700"><span class="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white"><input id="bp-board" type="checkbox" checked class="w-4 h-4"> 태스크 보드 · ${escapeHTML(bundle.board.title)} (${bundle.board.items.length}개)</span><ul class="mt-1.5 pl-6 list-disc text-xs text-slate-600 dark:text-slate-300 max-h-28 overflow-y-auto">${bundle.board.items.map(it => `<li>${escapeHTML(it.title)}</li>`).join('')}</ul><span class="block mt-1 text-[11px] text-rose-700 dark:text-rose-300">가져오면 지금 내 보드를 바꿔요.</span></label>` : ''}
+                    ${bundle.tpls.length || bundle.builtin.length ? `<div class="p-3 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1"><p class="text-sm font-bold text-slate-900 dark:text-white">양식</p>${bundle.tpls.map((t, i) => `<label class="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-200"><input type="checkbox" class="bp-tpl w-4 h-4" value="${i}" checked> [내 양식으로 추가] ${escapeHTML(t.title)}</label>`).join('')}${bundle.builtin.map(id => `<p class="text-xs text-slate-700 dark:text-slate-200">· [기본 양식] ${escapeHTML(DOC_TEMPLATES.find(t => t.id === id)?.title || id)} — <button type="button" data-id="${escapeHTML(id)}" onclick="closeSetupWizard(); router.navigate('tools-doc', this.dataset.id)" class="font-bold text-blue-700 dark:text-blue-300 hover:underline">열기</button></p>`).join('')}</div>` : ''}
+                    ${bundle.dates.length ? `<div class="p-3 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1"><p class="text-sm font-bold text-slate-900 dark:text-white">일정 → 이번 주 할 일</p>${bundle.dates.map((d, i) => `<label class="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-200"><input type="checkbox" class="bp-date w-4 h-4" value="${i}" checked> ${escapeHTML(d.title)} · ${fmt(d.date)}</label>`).join('')}</div>` : ''}
+                    <div class="flex justify-end gap-2"><button type="button" onclick="closeSetupWizard()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-bold">닫기</button><button type="button" id="bp-import" class="px-4 py-2 rounded-xl bg-violet-700 text-white text-sm font-bold">고른 것 가져오기</button></div>
+                </div>`;
+            document.getElementById('bp-import').onclick = () => importBundle(bundle);
+            m.classList.remove('hidden');
+        }
+        function importBundle(bundle) {
+            const done = [];
+            if (bundle.board && document.getElementById('bp-board')?.checked) {
+                const t = {}; bundle.board.items.forEach((it, i) => { t['s_' + i] = it; });
+                if (Storage.set('board_title', bundle.board.title) && Storage.set('board_tasks', t)) done.push(`보드 ${bundle.board.items.length}개`);
+            }
+            const tplIdx = [...document.querySelectorAll('.bp-tpl:checked')].map(x => Number(x.value));
+            if (tplIdx.length) {
+                const list = getCustomTemplates(); let added = 0;
+                for (const i of tplIdx) { const t = bundle.tpls[i]; if (!t || list.length >= 50) continue; if (list.some(x => x.title === t.title && x.content === t.content)) continue; list.push({ id: 'c' + Date.now().toString(36) + i, title: t.title, content: t.content }); added++; }
+                if (added && Storage.set('custom_templates', list)) done.push(`내 양식 ${added}개`);
+            }
+            const dateIdx = [...document.querySelectorAll('.bp-date:checked')].map(x => Number(x.value));
+            if (dateIdx.length) {
+                const list = replyDeadlines(); let added = 0;
+                for (const i of dateIdx) { const d = bundle.dates[i]; if (!d || list.some(x => x.title === d.title && x.date === d.date)) continue; list.push({ title: d.title, date: d.date, done: false }); added++; }
+                if (added && Storage.set('reply_deadlines', list.slice(-30))) done.push(`일정 ${added}개`);
+            }
+            closeSetupWizard();
+            showToast(done.length ? `가져왔어요: ${done.join(', ')}` : '가져온 것이 없어요.', done.length ? 'success' : 'info');
+            router.render();
+        }
         function promptImportSharedBoard() {
             const raw = prompt('동료 선생님께 받은 태스크 보드 공유 링크나 코드를 붙여넣어 주세요:');
             if (!raw || !raw.trim()) return;
             const decoded = decodeSharePayload(raw.trim());
+            if (decoded && decoded.type === 'bundle') { router.navigate('tools-board', 'bundle:' + encodeSharePayload(decoded)); return; }
             if (!decoded || !decoded.title || !Array.isArray(decoded.items)) { showToast('유효한 태스크 보드 공유 코드가 아닙니다.', 'error'); return; }
             router.navigate('tools-board', 'share:' + encodeSharePayload({ type: 'board', title: decoded.title, items: decoded.items }));
         }
