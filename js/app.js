@@ -4757,6 +4757,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                         <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">생기부 문장 도우미</h2><p class="text-sm text-slate-500 dark:text-slate-400">우리 반 학생별로 문장을 조합·저장하고, 나이스 바이트와 기재 금지어를 점검한 뒤 엑셀(CSV)로 한 번에 내보내세요.</p></div>
                         <div class="flex flex-wrap gap-2">
                             <button type="button" onclick="exportRecordsCSV()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow"><i class="fa-solid fa-file-csv mr-1"></i>학급 전체 엑셀(CSV) 내보내기</button>
+                            <button type="button" onclick="openRecordAudit()" class="px-3.5 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200 text-xs font-bold"><i class="fa-solid fa-list-check mr-1"></i>반 전체 마감 점검</button>
                             <button type="button" onclick="openSetupWizard()" class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold"><i class="fa-solid fa-users mr-1"></i>학생 명단 편집</button>
                         </div>
                     </div>
@@ -4951,6 +4952,44 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             const cur = Storage.get('record_my_phrases', []);
             const merged = [...new Set([...cur, ...decoded.list.filter(x => typeof x === 'string' && x.trim()).map(x => x.trim().slice(0, 200))])].slice(-100);
             if (Storage.set('record_my_phrases', merged)) { showToast(`문장 ${merged.length - cur.length}개를 추가했습니다!`); router.render(); }
+        }
+        // 학기말 마감 점검: 학생 × 영역별 빈 칸·바이트 초과·금지어/주의 표현을 한 표로
+        function recordAuditRows() {
+            const drafts = getRecordDrafts();
+            return getRecordStudents().map(st => ({ student: st, cells: RECORD_AREAS.map(a => {
+                const text = drafts[recordDraftKey(a.id, st)] || ''; const bytes = neisBytes(text); const limit = getRecordLimit(a.id);
+                const hits = text.trim() ? checkRecord(text) : [];
+                const ban = hits.filter(h => h.rule.level === '금지').length, warn = hits.length - ban;
+                const status = !text.trim() ? 'empty' : bytes > limit ? 'over' : ban ? 'ban' : warn ? 'warn' : 'ok';
+                return { area: a.id, bytes, limit, ban, warn, status };
+            }) }));
+        }
+        function openRecordAudit() {
+            if (Vault.isLocked()) { showToast('개인 기록 잠금을 먼저 풀어 주세요.', 'error'); return; }
+            captureRecordDraft(); saveRecordDraftNow();
+            const rows = recordAuditRows();
+            const m = document.getElementById('setup-wizard-modal'); const c = document.getElementById('setup-wizard-content'); if (!m || !c) return;
+            const label = { empty: ['빈칸', 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'], over: ['바이트 초과', 'bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-200'], ban: ['금지어', 'bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-200'], warn: ['주의 표현', 'bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-200'], ok: ['통과', 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200'] };
+            const count = k => rows.reduce((n, r) => n + r.cells.filter(x => x.status === k).length, 0);
+            c.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div><h3 id="setup-wizard-title" class="text-xl font-black text-slate-900 dark:text-white">반 전체 생기부 마감 점검</h3>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 mt-1">학생 ${rows.length}명 · 통과 ${count('ok')} · 주의 ${count('warn')} · 금지어 ${count('ban')} · 바이트 초과 ${count('over')} · 빈칸 ${count('empty')}</p></div>
+                        <button type="button" onclick="closeSetupWizard()" aria-label="닫기" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    ${rows.length ? `<div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700"><table class="w-full text-xs min-w-[460px]">
+                        <thead class="bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300"><tr><th class="p-2 text-left">학생</th>${RECORD_AREAS.map(a => `<th class="p-2 text-left">${({ behavior: '행동특성', subject: '교과 세특', activity: '창체 특기사항' })[a.id] || escapeHTML(a.name)}</th>`).join('')}</tr></thead>
+                        <tbody>${rows.map(r => `<tr class="border-t border-slate-100 dark:border-slate-700"><td class="p-2 font-bold text-slate-800 dark:text-slate-100">${escapeHTML(r.student)}</td>${r.cells.map(x => `<td class="p-1.5"><button type="button" data-st="${escapeHTML(r.student)}" data-area="${x.area}" onclick="recordStudent = this.dataset.st; recordArea = this.dataset.area; closeSetupWizard(); router.render();" class="w-full text-left px-2 py-1 rounded-lg font-bold ${label[x.status][1]}" title="눌러서 이 칸 고치기">${label[x.status][0]}${x.status === 'over' ? ` ${x.bytes}/${x.limit}` : x.status === 'ban' ? ` ${x.ban}` : x.status === 'warn' ? ` ${x.warn}` : ''}</button></td>`).join('')}</tr>`).join('')}</tbody>
+                    </table></div>` : '<p class="text-sm text-slate-600 dark:text-slate-300">학생 명단이 없어요. 학생 명단을 먼저 넣어 주세요.</p>'}
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">칸을 누르면 그 학생의 그 영역으로 이동해요. 금지어·주의는 단순 패턴 점검이므로 최종 판단은 당해 연도 기재요령을 따르세요.</p>
+                    <div class="flex justify-end gap-2"><button type="button" onclick="printRecordAudit()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold"><i class="fa-solid fa-print"></i> 점검표 인쇄</button></div>
+                </div>`;
+            m.classList.remove('hidden');
+        }
+        function printRecordAudit() {
+            const rows = recordAuditRows(); const name = { empty: '빈칸', over: '초과', ban: '금지어', warn: '주의', ok: '○' };
+            printHTML(`<h1>생기부 마감 점검표</h1><p style="font-size:10pt;margin:0 0 4mm">${escapeHTML(getSettings().className || '')} · ${ymd(new Date())}</p><table style="width:100%;border-collapse:collapse;font-size:10pt" border="1" cellpadding="4"><thead><tr><th>학생</th>${RECORD_AREAS.map(a => `<th>${escapeHTML(a.name)}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr><td>${escapeHTML(r.student)}</td>${r.cells.map(x => `<td style="text-align:center">${name[x.status]}${x.status === 'over' ? ` (${x.bytes}/${x.limit})` : ''}</td>`).join('')}</tr>`).join('')}</tbody></table>`);
         }
         function exportRecordsCSV() {
             captureRecordDraft(); saveRecordDraftNow();
