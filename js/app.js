@@ -1031,6 +1031,7 @@
                     const viewContainer = document.getElementById('app-view'); if (!viewContainer) return;
                     const pageTitles = { start:'역할별 시작 코스', home:'홈', search:'교직어 검색', situations:'상황 가이드', navigator:'교직 내비게이터', year:'교사의 1년', 'tools-doc':'문서 양식', 'tools-record':'생기부 문장 도우미', counsel:'상담 기록장', mybox:'나의 교직함' };
                     document.title = `${pageTitles[this.current] || '교직 도구'} | 교직백서 1000`;
+                    const pageH1 = document.getElementById('page-h1'); if (pageH1) pageH1.textContent = `교직백서 1000 · ${pageTitles[this.current] || '교직 도구'}`; // 화면낭독기용 화면 제목
 
                     switch(this.current) {
                         case 'home': renderHome(viewContainer); break;
@@ -1208,7 +1209,7 @@
                             </div>
                             <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 px-1">
                                 <span class="flex flex-wrap items-center gap-x-3 gap-y-1">
-                                    <button type="button" onclick="openCommandPalette()" class="text-left hover:underline"><i class="fa-solid fa-bolt text-amber-600 mr-1"></i><b>빠른 이동</b> <kbd class="kbd-hint px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[11px]">Ctrl+K</kbd></button>
+                                    <button type="button" onclick="openCommandPalette()" class="text-left hover:underline"><i class="fa-solid fa-bolt text-amber-600 mr-1"></i><b>빠른 이동</b> <kbd class="kbd-hint px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-mono text-[11px]">Ctrl+K</kbd></button>
                                     <button type="button" onclick="openCalcModal()" class="font-bold hover:underline"><i class="fa-solid fa-calculator text-indigo-600 dark:text-indigo-400 mr-1"></i>출석·병가 계산기</button>
                                 </span>
                                 <button type="button" onclick="startVoiceSearch('home-search-input')" class="font-bold text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-microphone mr-1"></i>음성 검색</button>
@@ -1560,7 +1561,7 @@ ${weeklyAgendaHTML()}
                                 <button onclick="addTimer(-60)" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold">-1분</button>
                                 <button onclick="addTimer(60)" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold">+1분</button>
                                 <button onclick="startTimer()" class="px-6 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold shadow"><i class="fa-solid fa-play"></i> 시작</button>
-                                <button onclick="pauseTimer()" class="px-6 py-2 bg-amber-500 text-white rounded-xl text-sm font-bold shadow"><i class="fa-solid fa-pause"></i> 정지</button>
+                                <button onclick="pauseTimer()" class="px-6 py-2 bg-amber-700 text-white rounded-xl text-sm font-bold shadow"><i class="fa-solid fa-pause"></i> 정지</button>
                                 <button onclick="resetTimer()" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold"><i class="fa-solid fa-rotate-right"></i> 리셋</button>
                             </div>
                             <p class="text-[11px] text-slate-400 mt-4">끝나면 알림음이 울려요 (기기 소리를 켜 두세요)</p>
@@ -1579,7 +1580,7 @@ ${weeklyAgendaHTML()}
                                 <span class="flex items-center gap-2"><span class="pick-remain text-slate-400"></span><button onclick="resetPicked()" class="text-blue-600 dark:text-blue-400 font-bold hover:underline">뽑기 기록 초기화</button></span>
                             </div>
                             <div class="flex-1 bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-900/50 rounded-2xl flex flex-col items-center justify-center p-4 min-h-[110px]">
-                                <p class="text-xs text-rose-400 dark:text-rose-500 font-bold mb-1">발표자는?</p>
+                                <p class="text-xs text-rose-700 dark:text-rose-300 font-bold mb-1">발표자는?</p>
                                 <p id="random-name" class="text-3xl font-extrabold text-rose-600 dark:text-rose-400 text-center break-all">?</p>
                             </div>
                         </div>
@@ -2031,7 +2032,7 @@ ${weeklyAgendaHTML()}
                         <div class="flex items-center gap-1.5 sm:gap-2">
                             <button type="button" onclick="printTermCheatSheet('search')" class="whitespace-nowrap shrink-0 px-2.5 sm:px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-bold hover:bg-slate-200 transition" title="현재 목록을 A4 1장 요약표로 인쇄"><i class="fa-solid fa-print mr-1"></i>요약표 인쇄</button>
                             <button onclick="const c=curatedTerms(); openDetail(c[Math.floor(Math.random()*c.length)].id)" class="whitespace-nowrap shrink-0 px-2.5 sm:px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg font-bold transition"><i class="fa-solid fa-dice"></i> 랜덤</button>
-                            <select id="sort-select" onchange="handleSearch()" class="whitespace-nowrap shrink-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg px-2 sm:px-2.5 py-1 focus:outline-none"><option value="accuracy">관련도순</option><option value="name">가나다순</option></select>
+                            <select id="sort-select" aria-label="검색 결과 정렬" onchange="handleSearch()" class="whitespace-nowrap shrink-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg px-2 sm:px-2.5 py-1 focus:outline-none"><option value="accuracy">관련도순</option><option value="name">가나다순</option></select>
                         </div>
                     </div>
                     <div id="search-smart-answer" class="hidden"></div>
@@ -3029,7 +3030,7 @@ ${weeklyAgendaHTML()}
                             <button onclick="const c=curatedTerms(); setMapCenter(c[Math.floor(Math.random()*c.length)].id)" class="px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs rounded-xl font-bold transition">랜덤 중심</button>
                         </div>
                         <div onclick="openDetail(${centerItem.id})" class="mb-12 p-6 rounded-3xl bg-blue-600 text-white shadow-xl cursor-pointer hover:scale-105 transition max-w-xs mx-auto z-10">
-                            <span class="text-[10px] font-bold uppercase block mb-1 opacity-80">${centerItem.category}</span>
+                            <span class="text-[10px] font-bold uppercase block mb-1">${escapeHTML(centerItem.category)}</span>
                             <h3 class="text-xl font-bold">${escapeHTML(centerItem.keyword)}</h3>
                         </div>
                         <div class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase mb-4">연결된 연관 개념 (클릭하여 이동)</div>
@@ -3162,9 +3163,10 @@ ${weeklyAgendaHTML()}
             const items = weeklyAgenda().slice(0, 6);
             const reminder = !!getSettings().weeklyReminder;
             const tone = it => it.days < 0 ? 'text-rose-600 dark:text-rose-400' : it.days <= 6 ? 'text-blue-700 dark:text-blue-300' : 'text-slate-500 dark:text-slate-400';
-            return `
-                            <div class="space-y-1.5" id="weekly-agenda">
-                                ${items.length ? items.map(it => it.type === 'task' ? `
+            // 날짜가 정해진 일(이번 주·다음 주)과 날짜를 안 정한 이번 달 업무를 나눠 보여 줌
+            const dated = items.filter(it => it.days < 30), undated = items.filter(it => it.days >= 30);
+            const groupLabel = text => `<p class="pt-2 pb-0.5 text-[11px] font-bold text-slate-500 dark:text-slate-400">${text}</p>`;
+            const listHTML = list => list.map(it => it.type === 'task' ? `
                                 <div class="flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
                                     <input type="checkbox" id="wa-${it.m}-${it.idx}" onchange="toggleAgendaTask(${it.m}, ${it.idx})" class="w-5 h-5 shrink-0 accent-blue-600 cursor-pointer">
                                     <label for="wa-${it.m}-${it.idx}" class="flex-1 min-w-0 text-sm font-semibold text-slate-800 dark:text-slate-100 cursor-pointer truncate">${escapeHTML(it.title)}</label>
@@ -3179,7 +3181,10 @@ ${weeklyAgendaHTML()}
                                     <i class="fa-regular fa-calendar text-indigo-600 dark:text-indigo-300 w-5 text-center"></i>
                                     <span class="flex-1 text-sm font-bold text-indigo-900 dark:text-indigo-100">${escapeHTML(it.title)}</span>
                                     <span class="shrink-0 text-xs font-bold text-indigo-700 dark:text-indigo-300">${it.when}</span>
-                                </button>`).join('') : `<p class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 text-sm text-slate-500 dark:text-slate-400">이번 주에 남은 연간 업무가 없어요. 교사의 1년에서 업무별 날짜를 정하면 마감이 다가올 때 여기에 먼저 보여요.</p>`}
+                                </button>`).join('');
+            return `
+                            <div class="space-y-1.5" id="weekly-agenda">
+                                ${items.length ? `${dated.length ? listHTML(dated) : (undated.length ? `<p class="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 text-xs text-slate-500 dark:text-slate-400">이번 주로 날짜가 정해진 일은 없어요.</p>` : '')}${undated.length ? groupLabel('날짜를 정하지 않은 업무') + listHTML(undated) : ''}` : `<p class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 text-sm text-slate-500 dark:text-slate-400">이번 주에 남은 연간 업무가 없어요. 교사의 1년에서 업무별 날짜를 정하면 마감이 다가올 때 여기에 먼저 보여요.</p>`}
                             </div>
                             <div class="flex flex-wrap items-center justify-between gap-2 mt-2">
                                 <p class="editorial-note !mt-0">업무 날짜는 교사의 1년 › 내 달력에 넣기에서 바꿀 수 있어요.</p>
@@ -4337,7 +4342,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                         </div>
                         <div class="overflow-x-auto -mx-1 px-1">
                             <table class="w-full text-sm sm:min-w-[520px] md:min-w-[640px] border-separate" style="border-spacing:2px">
-                                <thead><tr class="text-xs text-slate-500 dark:text-slate-400"><th class="w-5 sm:w-10 whitespace-nowrap text-[11px] sm:text-xs">교시</th><th class="w-[52px] sm:w-48 whitespace-nowrap">시간</th>${TT_DAYS.map((d, di) => `<th class="${di === todayIdx ? 'text-blue-600 dark:text-blue-400' : ''}">${d}${di === todayIdx ? '<span class="hidden sm:inline"> (오늘)</span>' : ''}</th>`).join('')}<th class="w-8"></th></tr></thead>
+                                <thead><tr class="text-xs text-slate-500 dark:text-slate-400"><th class="w-5 sm:w-10 whitespace-nowrap text-[11px] sm:text-xs">교시</th><th class="w-[52px] sm:w-48 whitespace-nowrap">시간</th>${TT_DAYS.map((d, di) => `<th class="${di === todayIdx ? 'text-blue-600 dark:text-blue-400' : ''}">${d}${di === todayIdx ? '<span class="hidden sm:inline"> (오늘)</span>' : ''}</th>`).join('')}<th class="w-8"><span class="sr-only">삭제</span></th></tr></thead>
                                 <tbody>${tt.periods.map((p, i) => `
                                     <tr>
                                         <td class="text-center font-bold text-slate-700 dark:text-slate-200">${i + 1}</td>

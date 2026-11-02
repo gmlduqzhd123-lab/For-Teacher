@@ -31,7 +31,21 @@
     <link rel="stylesheet" href="css/tailwind.css">
     <!-- 폰트 & 아이콘 -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="preload" href="https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- 마루부리 글꼴(약 560KB): 데이터 절약 모드이거나 느린 연결(2G·3G)이면 받지 않고 기기 기본 명조체를 씀 -->
+    <script>
+        (function () {
+            var c = navigator.connection;
+            if (c && (c.saveData || /^(slow-2g|2g|3g)$/.test(c.effectiveType || ''))) return;
+            var base = 'https://cdn.jsdelivr.net/gh/fonts-archive/MaruBuri/MaruBuri-';
+            var link = document.createElement('link');
+            link.rel = 'preload'; link.as = 'font'; link.type = 'font/woff2'; link.crossOrigin = 'anonymous'; link.href = base + 'Regular.woff2';
+            document.head.appendChild(link);
+            var style = document.createElement('style');
+            style.textContent = "@font-face { font-family: 'Maru Buri'; src: url('" + base + "Regular.woff2') format('woff2'); font-style: normal; font-weight: 400; font-display: swap; }"
+                + "@font-face { font-family: 'Maru Buri'; src: url('" + base + "Bold.woff2') format('woff2'); font-style: normal; font-weight: 600 700; font-display: swap; }";
+            document.head.appendChild(style);
+        })();
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/app.css">
 </head>
@@ -41,6 +55,7 @@
 
     <!-- 콘텐츠 중심 상단 메뉴 -->
     <header class="editorial-header">
+        <h1 id="page-h1" class="sr-only">교직백서 1000</h1>
         <div class="editorial-header-inner">
             <button type="button" class="editorial-brand" onclick="router.navigate('home')" aria-label="교직백서 1000 홈">교직백서 <span>1000</span></button>
             <nav class="editorial-primary-nav" aria-label="주 메뉴">
