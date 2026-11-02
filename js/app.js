@@ -220,7 +220,7 @@
             { words: ['출석인정결석'], terms: [80], situations: [], courses: [] },
             { words: ['애가 다쳤어요', '피가 나요', '응급처치', '병원 치료비', '공제회 청구', '보건실'], terms: [10, 50, 1002], situations: [1], courses: [] },
             { words: ['아파서 못가요', '출근 못해요', '몸살', '병가 내기', '진단서 기준', '조퇴할래요', '병원 다녀올게요'], terms: [1001, 82, 5], situations: [5], courses: [] },
-            { words: ['내일 쉬고 싶어요', '연차 쓰기', '휴가 신청', '나이스 복무', '반차', '지참'], terms: [5, 35, 82, 1001], situations: [5], courses: [] },
+            { words: ['내일 쉬고 싶어요', '연차 쓰기', '휴가 신청', '나이스 복무', '반차', '지참'], terms: [3001, 5, 82, 1001, 35], situations: [5], courses: [] },
             { words: ['부모님 전화', '엄마가 화났어요', '학부모 항의', '악성 민원', '폭언', '교권 침해', '밤에 전화'], terms: [97, 2003, 99], situations: [2, 8], courses: [9] },
             { words: ['아이들이 싸웠어요', '다툼', '괴롭힘', '단톡방 욕설', '사이버폭력', '학폭 신고'], terms: [4, 2005], situations: [3], courses: [5] },
             { words: ['애가 안 왔어요', '연락두절', '무단결석', '미등교', '결석계 서류', '아파서 결석'], terms: [80, 5], situations: [6], courses: [] },
@@ -234,21 +234,21 @@
             { words: ['상담주간 준비', '학부모 상담 신청', '학부모 총회'], terms: [100, 101, 40], situations: [], courses: [7] },
             { words: ['월급 명세서', '수당 신청', '출산 수당', '결혼 수당', '복지포인트', '호봉 언제 올라요'], terms: [30, 31, 32, 33, 34, 35], situations: [], courses: [] },
             { words: ['이사 가요', '다른 학교 가고 싶어요', '전보 내신', '만기 언제예요', '타시도 교류'], terms: [1, 11, 12, 13, 14, 20], situations: [], courses: [4] },
-            { words: ['육아휴직', '육아휴직 복직', '휴직 신청', '복직 신청', '휴직 끝나가요'], terms: [16], situations: [12], courses: [] },
+            { words: ['육아휴직', '육아휴직 복직', '휴직 신청', '복직 신청', '휴직 끝나가요'], terms: [3002, 16], situations: [12], courses: [] },
             { words: ['급식 알레르기', '우유 급식', '배탈 났어요'], terms: [135, 49, 44], situations: [11], courses: [] },
             { words: ['통합학급', '특수학급 아이', '개별화교육', 'IEP'], terms: [109, 52, 110], situations: [13], courses: [] },
             { words: ['기초학력 부진', '한글 못 읽어요', '진단검사', '두드림'], terms: [103, 106, 104], situations: [], courses: [8] },
             { words: ['공개수업 준비', '수업 지도안', '동료장학'], terms: [102], situations: [], courses: [] },
             { words: ['교실 고장났어요', '에어컨 고장', '문 고장', '수리 요청'], terms: [42, 43, 57], situations: [], courses: [] },
             { words: ['개인정보 파일', '명단 암호', '정보공개 청구'], terms: [58, 59], situations: [14], courses: [] },
-            // 따로 용어가 없는 말은 가장 가까운 용어로 안내
-            { words: ['연가', '연차'], terms: [35, 5], situations: [5], courses: [] },
-            { words: ['출장', '출장 신청', '여비'], terms: [5, 6], situations: [], courses: [] },
-            { words: ['초과근무', '시간외근무', '야근 수당'], terms: [5, 30], situations: [], courses: [] },
-            { words: ['담임수당', '교직수당', '보직수당'], terms: [33, 30, 32], situations: [], courses: [] },
-            { words: ['성과급', '성과상여금'], terms: [22, 23], situations: [], courses: [] },
-            { words: ['아동학대 신고', '아동학대'], terms: [99, 97, 150], situations: [], courses: [] },
-            { words: ['보결', '보강 수업', '결강'], terms: [8, 28], situations: [], courses: [] }
+            // 복무·수당 등 자주 찾는 말 (3001~ 용어는 data/terms-extra.json)
+            { words: ['연가', '연차'], terms: [3001, 35, 5], situations: [5], courses: [] },
+            { words: ['출장', '출장 신청', '여비'], terms: [3003, 5], situations: [], courses: [] },
+            { words: ['초과근무', '시간외근무', '야근 수당'], terms: [3004, 5], situations: [], courses: [] },
+            { words: ['담임수당', '교직수당', '보직수당'], terms: [3005], situations: [], courses: [] },
+            { words: ['성과급', '성과상여금'], terms: [3006, 22, 23], situations: [], courses: [] },
+            { words: ['아동학대 신고', '아동학대'], terms: [3007, 99, 150], situations: [], courses: [] },
+            { words: ['보결', '보강 수업', '결강'], terms: [3008, 8, 28], situations: [], courses: [] }
         ];
         const QUICK_CONVERSATIONAL_CHIPS = [
             { label: '🩹 학생이 다쳤어요', query: '학생이 다쳤어요' },
@@ -838,6 +838,7 @@
             DATA_META.curated = terms.length; DATA_META.variants = useVariants;
         }
 
+        let EXTRA_TERMS_UPDATED = '';
         async function loadData() {
             try {
                 const mapResponse = await fetch('data/legacy-map.json', { cache: 'no-cache' });
@@ -847,16 +848,31 @@
                 const linkResponse = await fetch('data/public-links.json', { cache: 'no-cache' });
                 if (linkResponse.ok) PUBLIC_LINKS = await linkResponse.json();
             } catch (_) { /* Existing numeric links remain usable offline. */ }
+            // 덧붙이는 용어(data/terms-extra.json, 번호 3001~): 기준 용어(terms.json)는 즐겨찾기 번호 보존을 위해 고정
+            let extraTerms = [];
+            try {
+                const extraRes = await fetch('data/terms-extra.json', { cache: 'no-cache' });
+                if (!extraRes.ok) throw new Error('extra terms unavailable');
+                const extra = await extraRes.json();
+                if (typeof extra?.updatedAt === 'string') EXTRA_TERMS_UPDATED = extra.updatedAt;
+                extraTerms = (Array.isArray(extra?.terms) ? extra.terms : []).filter(t => t && Number.isInteger(t.id) && t.id >= 3001 && t.keyword && t.description && t.simple);
+                extraTerms.forEach(t => { if (t.enrich && typeof t.enrich === 'object' && !TERM_ENRICH_MAP[t.id]) TERM_ENRICH_MAP[t.id] = t.enrich; });
+                extraTerms = extraTerms.map(({ enrich, ...t }) => t);
+            } catch (_) { /* 기준 용어만 표시 */ }
+            const withExtra = data => {
+                const ids = new Set(data.terms.map(t => t.id)), kws = new Set(data.terms.map(t => t.keyword));
+                return { ...data, terms: [...data.terms, ...extraTerms.filter(t => !ids.has(t.id) && !kws.has(t.keyword))] };
+            };
             try {
                 const res = await fetch('terms.json', { cache: 'no-cache' });
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const json = await res.json();
                 if (!json || !Array.isArray(json.terms) || json.terms.length === 0) throw new Error('terms 항목이 없습니다');
-                buildData(json);
+                buildData(withExtra(json));
                 DATA_META.source = 'terms.json';
             } catch (e) {
                 console.warn('[교직백서] terms.json을 불러오지 못해 내장 데이터를 사용합니다:', e && e.message);
-                buildData(DEFAULT_DATA);
+                buildData(withExtra(DEFAULT_DATA));
                 DATA_META.source = '내장 데이터';
             }
             try {
@@ -919,7 +935,8 @@
             const sources = (record?.sourceIds || []).map(id => (CONTENT_META.sources || []).find(src => src.id === id)).filter(Boolean);
             let status = record?.reviewStatus || 'needs-review';
             if (!REVIEW_STATUS[status] || (status === 'reviewed' && !(record.checkedAt && sources.length))) status = 'needs-review';
-            return { status, checkedAt: status === 'needs-review' ? null : (record?.checkedAt || null), scope: record?.scope || null, sources, dataDate: DATA_META.updatedAt || '' };
+            const extraTerm = /^term:3\d{3}$/.test(String(publicId)) && EXTRA_TERMS_UPDATED; // 덧붙인 용어는 자기 기준일
+            return { status, checkedAt: status === 'needs-review' ? null : (record?.checkedAt || null), scope: record?.scope || null, sources, dataDate: extraTerm || DATA_META.updatedAt || '' };
         }
         function reviewLabel(publicId) {
             const info = reviewInfo(publicId); const st = REVIEW_STATUS[info.status];

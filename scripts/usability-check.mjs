@@ -148,11 +148,20 @@ for (const query of ['학생이 다쳤어요', '다침']) assert(search.rankTerm
 {
   const SEARCH_LINKS = new Function(`${between('const SEARCH_LINKS =', 'const QUICK_CONVERSATIONAL_CHIPS')}; return SEARCH_LINKS;`)();
   const terms = JSON.parse(fs.readFileSync(new URL('../terms.json', import.meta.url), 'utf8'));
-  const termIds = new Set((terms.terms || terms).map(t => t.id));
+  const extraTerms = JSON.parse(fs.readFileSync(new URL('../data/terms-extra.json', import.meta.url), 'utf8')).terms;
+  const termIds = new Set([...(terms.terms || terms), ...extraTerms].map(t => t.id));
+  // 덧붙인 용어: 3001 이상·중복 없음·필수 항목, 기준 용어와 이름이 겹치지 않음
+  const baseKeywords = new Set((terms.terms || terms).map(t => t.keyword));
+  assert.equal(new Set(extraTerms.map(t => t.id)).size, extraTerms.length, 'terms-extra 번호 중복');
+  for (const t of extraTerms) {
+    assert(Number.isInteger(t.id) && t.id >= 3001, `terms-extra 번호는 3001 이상: ${t.id}`);
+    assert(t.keyword && t.simple && t.description && t.category, `terms-extra 필수 항목 누락: ${t.id}`);
+    assert(!baseKeywords.has(t.keyword), `terms-extra 용어 이름이 기준 용어와 겹침: ${t.keyword}`);
+  }
   const links = JSON.parse(fs.readFileSync(new URL('../data/public-links.json', import.meta.url), 'utf8'));
   const sitCount = links.situations.length, courseCount = links.courses.length;
   for (const link of SEARCH_LINKS) {
-    for (const id of link.terms) assert(termIds.has(id), `검색 연결 '${link.words[0]}'의 용어 번호 ${id}가 terms.json에 없음`);
+    for (const id of link.terms) assert(termIds.has(id), `검색 연결 '${link.words[0]}'의 용어 번호 ${id}가 terms.json·terms-extra.json에 없음`);
     for (const n of link.situations) assert(n >= 1 && n <= sitCount, `검색 연결 '${link.words[0]}'의 상황 번호 ${n}`);
     for (const n of link.courses) assert(n >= 1 && n <= courseCount, `검색 연결 '${link.words[0]}'의 코스 번호 ${n}`);
   }
