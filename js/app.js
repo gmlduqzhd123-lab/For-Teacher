@@ -903,6 +903,22 @@
             const code = (typeof getSettings === 'function' ? getSettings().office : '') || '';
             return EDUCATION_OFFICES.find(o => o.code === code || o.name === code) || null;
         }
+        // 우리 교육청 지침 찾기: 문서 주소가 교육청마다 달라 홈페이지 + 그 사이트 안 검색 링크로 안내
+        const OFFICE_GUIDE_QUERIES = {
+            '복무·휴가': '교원 복무 지침', '인사·발령': '교원 인사관리 기준', '승진·전직': '승진 평정 가산점', '급여·수당·연금': '보수 업무 지침 수당',
+            '학교폭력': '학교폭력 사안처리 가이드북', '교육활동보호': '교육활동 보호 매뉴얼', '학적·출결': '학업성적관리 출결', '평가': '학업성적관리 시행지침',
+            '현장체험학습': '현장체험학습 운영 매뉴얼', '보건·안전': '학교 안전 매뉴얼', '급식': '학교급식 위생 관리', '늘봄·방과후': '늘봄학교 운영 계획',
+            '특수교육': '특수교육 운영 계획', '기초학력': '기초학력 지원 계획', '학교회계·예산': '학교회계 예산 편성 지침', '교육과정': '교육과정 편성 운영 지침',
+            '학생생활': '학생생활지도 매뉴얼', '학부모': '학부모 상담 민원 대응', '상담': '학생 상담 Wee', '연구·연수': '교원 연수 계획', '체육': '학교체육 운영 계획',
+            'AI·에듀테크': '디지털 교육 운영', '시설·물품': '학교 시설 관리', '학교조직·행정': '학교 업무 매뉴얼'
+        };
+        function officeGuideHTML(query, withHome = true) {
+            const office = currentOffice();
+            if (!office) return `<p class="text-[11px] text-slate-500 dark:text-slate-400"><i class="fa-solid fa-location-dot mr-1"></i>교육청마다 세부 기준이 달라요. <button type="button" onclick="if (isModalOpen()) closeModal(); router.navigate('mybox')" class="font-bold text-blue-700 dark:text-blue-300 hover:underline">나의 교직함에서 소속 교육청</button>을 고르면 우리 교육청 자료를 바로 찾아 드려요.</p>`;
+            const host = new URL(office.url).hostname.replace(/^www\./, '');
+            const search = `https://www.google.com/search?q=${encodeURIComponent(`site:${host} ${query}`)}`;
+            return `<div class="flex flex-wrap items-center gap-2 text-xs"><span class="font-bold text-slate-600 dark:text-slate-300"><i class="fa-solid fa-location-dot mr-1 text-blue-600 dark:text-blue-400"></i>${escapeHTML(office.name)}</span><a href="${escapeHTML(search)}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-bold hover:underline">'${escapeHTML(query)}' 찾기 ↗</a>${withHome ? `<a href="${escapeHTML(office.url)}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold hover:underline">홈페이지 ↗</a>` : ''}</div>`;
+        }
         function encodeSharePayload(obj) {
             try { return btoa( Array.from(new TextEncoder().encode(JSON.stringify(obj)), b => String.fromCharCode(b)).join('') ); }
             catch (_) { return ''; }
@@ -2465,6 +2481,10 @@ ${weeklyAgendaHTML()}
                         </div>
                         <a href="${escapeHTML(lawUrl)}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline shrink-0 text-center">국가법령정보센터 원문 ↗</a>
                     </div>` : ''}
+                    <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700 space-y-1.5">
+                        <span class="text-[11px] font-extrabold text-slate-500 dark:text-slate-400 block">우리 교육청 기준 확인</span>
+                        ${officeGuideHTML(OFFICE_GUIDE_QUERIES[item.category] || `${item.keyword} 지침`, false)}
+                    </div>
 
                     ${item.situations && item.situations.length > 0 ? `<div><span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase block mb-2">🏫 언제 쓰나요?</span><div class="space-y-2">${item.situations.map(sit => `<div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-500 dark:text-blue-400 text-xs"></i> <span class="font-medium text-slate-800 dark:text-slate-200">${escapeHTML(sit)}</span></div>`).join('')}</div></div>` : ''}
                     ${item.related && item.related.length > 0 ? `<div><span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase block mb-2">🔗 관련 교직어</span><div class="flex flex-wrap gap-2">${item.related.map(rel => { const found = DB.find(d => d.keyword === rel); return found ? `<button onclick="openDetail(${found.id})" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 rounded-xl text-xs font-semibold hover:text-blue-600 dark:hover:text-blue-400 text-slate-800 dark:text-slate-200 transition">${escapeHTML(rel)}</button>` : ''; }).join('')}</div></div>` : ''}
@@ -2579,6 +2599,7 @@ ${weeklyAgendaHTML()}
                         <span class="text-xs font-bold px-3 py-1 bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-lg mb-3 inline-block">${escapeHTML(sit.category)}</span>
                         <h3 class="text-base sm:text-lg font-bold tracking-tight mb-2 text-slate-900 dark:text-white">${escapeHTML(sit.title)}</h3>
                         <p class="text-[11px] text-amber-700 dark:text-amber-300 mb-2">${reviewLabel(sit.publicId)}</p>
+                        <div class="mb-3">${officeGuideHTML(OFFICE_GUIDE_QUERIES[sit.category] || sit.title.replace(/요$/, ''))}</div>
                         ${sit.summary ? `<p class="text-xs text-slate-500 dark:text-slate-400 mb-4">${escapeHTML(sit.summary)}</p>` : ''}
                         ${sit.firstCheck.length ? `<div class="flex flex-wrap items-center gap-1.5 mb-3"><span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mr-1">먼저 확인</span>${chips(sit.firstCheck, 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300')}</div>` : ''}
                         ${sit.script ? `
