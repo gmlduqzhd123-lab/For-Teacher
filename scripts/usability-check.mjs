@@ -103,7 +103,13 @@ assert.deepEqual(links.courses.map(item => item.title), terms.courses.map(item =
 const metadata = JSON.parse(fs.readFileSync(new URL('../data/content-meta.json', import.meta.url), 'utf8'));
 assert.equal(metadata.metadataSchemaVersion, 1);
 assert.equal(metadata.contentVersion, `${terms.version}-${terms.updatedAt}`);
-assert.equal(Object.keys(metadata.items).length, terms.terms.length + terms.situations.length + terms.courses.length);
+const extraTermCount = JSON.parse(fs.readFileSync(new URL('../data/terms-extra.json', import.meta.url), 'utf8')).terms.length;
+assert.equal(Object.keys(metadata.items).length, terms.terms.length + extraTermCount + terms.situations.length + terms.courses.length);
+// 검수 우선 목록: 있는 항목만, 대조할 근거는 등록된 근거만
+for (const entry of metadata.reviewPriority || []) {
+  assert.ok(Object.hasOwn(metadata.items, entry.id), `reviewPriority: unknown item ${entry.id}`);
+  for (const id of entry.suggestedSourceIds || []) assert.ok(metadata.sources.some(src => src.id === id), `reviewPriority: unknown source ${id}`);
+}
 const sourceIds = new Set(metadata.sources.map(src => src.id));
 assert.equal(sourceIds.size, metadata.sources.length);
 for (const src of metadata.sources) assert.match(src.url, /^https:\/\/www\.law\.go\.kr\//);
@@ -148,14 +154,40 @@ for (const query of ['학생이 다쳤어요', '다침']) assert(search.rankTerm
 {
   const SEARCH_LINKS = new Function(`${between('const SEARCH_LINKS =', 'const QUICK_CONVERSATIONAL_CHIPS')}; return SEARCH_LINKS;`)();
   const terms = JSON.parse(fs.readFileSync(new URL('../terms.json', import.meta.url), 'utf8'));
-  const termIds = new Set((terms.terms || terms).map(t => t.id));
+  const extraTerms = JSON.parse(fs.readFileSync(new URL('../data/terms-extra.json', import.meta.url), 'utf8')).terms;
+  const termIds = new Set([...(terms.terms || terms), ...extraTerms].map(t => t.id));
+  // 덧붙인 용어: 3001 이상·중복 없음·필수 항목, 기준 용어와 이름이 겹치지 않음
+  const baseKeywords = new Set((terms.terms || terms).map(t => t.keyword));
+  assert.equal(new Set(extraTerms.map(t => t.id)).size, extraTerms.length, 'terms-extra 번호 중복');
+  for (const t of extraTerms) {
+    assert(Number.isInteger(t.id) && t.id >= 3001, `terms-extra 번호는 3001 이상: ${t.id}`);
+    assert(t.keyword && t.simple && t.description && t.category, `terms-extra 필수 항목 누락: ${t.id}`);
+    assert(!baseKeywords.has(t.keyword), `terms-extra 용어 이름이 기준 용어와 겹침: ${t.keyword}`);
+  }
   const links = JSON.parse(fs.readFileSync(new URL('../data/public-links.json', import.meta.url), 'utf8'));
   const sitCount = links.situations.length, courseCount = links.courses.length;
   for (const link of SEARCH_LINKS) {
-    for (const id of link.terms) assert(termIds.has(id), `검색 연결 '${link.words[0]}'의 용어 번호 ${id}가 terms.json에 없음`);
+    for (const id of link.terms) assert(termIds.has(id), `검색 연결 '${link.words[0]}'의 용어 번호 ${id}가 terms.json·terms-extra.json에 없음`);
     for (const n of link.situations) assert(n >= 1 && n <= sitCount, `검색 연결 '${link.words[0]}'의 상황 번호 ${n}`);
     for (const n of link.courses) assert(n >= 1 && n <= courseCount, `검색 연결 '${link.words[0]}'의 코스 번호 ${n}`);
   }
 }
 
-console.log('Usability storage, draft, backup, search, and public ID, search link checks passed.');
+
+// 복무 신청 도우미: 사용 시간·겹치는 수업·진단서 기준
+{
+  const parseYMD = s => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || '')); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : new Date(NaN); };
+  const toMin = hhmm => { const [h, m] = String(hhmm || '0:0').split(':').map(Number); return (h || 0) * 60 + (m || 0); };
+  const plan = new Function('parseYMD', 'toMin', `${between('const DUTY_TYPES', 'function dutyHelperHTML')}; return planDutyRequest;`)(parseYMD, toMin);
+  const tt = { periods: [{ start: '09:00', end: '09:40' }, { start: '13:20', end: '14:00' }], grid: { 2: ['국어', '수학'] } }; // 2026-11-04 = 수요일
+  const half = plan({ type: 'leave', date: '2026-11-04', allDay: false, start: '13:00', end: '17:00', timetable: tt });
+  assert.equal(half.kind, '반일 연가'); assert.deepEqual(half.classes, ['2교시(수학)']);
+  assert.match(half.message, /보결/);
+  const full = plan({ type: 'leave', date: '2026-11-04', allDay: true, timetable: tt });
+  assert.deepEqual(full.classes, ['1교시(국어)', '2교시(수학)']);
+  assert.equal(plan({ type: 'sick', date: '2026-11-04', allDay: true, sickDays: 5, timetable: tt }).needsDoctor, false); // 누계 6일 = 기준 이하
+  assert.equal(plan({ type: 'sick', date: '2026-11-04', allDay: false, start: '13:00', end: '14:00', sickDays: 6, timetable: tt }).needsDoctor, true); // 6일 1시간
+  assert.equal(plan({ type: 'trip', date: '2026-11-07', allDay: true, timetable: tt }).classes.length, 0); // 토요일
+  assert.equal(plan({ type: 'leave', date: '', timetable: tt }).valid, false);
+}
+console.log('Usability storage, draft, backup, search, and public ID, search link, duty helper checks passed.');

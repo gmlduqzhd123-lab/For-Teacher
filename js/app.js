@@ -220,7 +220,7 @@
             { words: ['출석인정결석'], terms: [80], situations: [], courses: [] },
             { words: ['애가 다쳤어요', '피가 나요', '응급처치', '병원 치료비', '공제회 청구', '보건실'], terms: [10, 50, 1002], situations: [1], courses: [] },
             { words: ['아파서 못가요', '출근 못해요', '몸살', '병가 내기', '진단서 기준', '조퇴할래요', '병원 다녀올게요'], terms: [1001, 82, 5], situations: [5], courses: [] },
-            { words: ['내일 쉬고 싶어요', '연차 쓰기', '휴가 신청', '나이스 복무', '반차', '지참'], terms: [5, 35, 82, 1001], situations: [5], courses: [] },
+            { words: ['내일 쉬고 싶어요', '연차 쓰기', '휴가 신청', '나이스 복무', '반차', '지참'], terms: [3001, 5, 82, 1001, 35], situations: [5], courses: [] },
             { words: ['부모님 전화', '엄마가 화났어요', '학부모 항의', '악성 민원', '폭언', '교권 침해', '밤에 전화'], terms: [97, 2003, 99], situations: [2, 8], courses: [9] },
             { words: ['아이들이 싸웠어요', '다툼', '괴롭힘', '단톡방 욕설', '사이버폭력', '학폭 신고'], terms: [4, 2005], situations: [3], courses: [5] },
             { words: ['애가 안 왔어요', '연락두절', '무단결석', '미등교', '결석계 서류', '아파서 결석'], terms: [80, 5], situations: [6], courses: [] },
@@ -234,21 +234,21 @@
             { words: ['상담주간 준비', '학부모 상담 신청', '학부모 총회'], terms: [100, 101, 40], situations: [], courses: [7] },
             { words: ['월급 명세서', '수당 신청', '출산 수당', '결혼 수당', '복지포인트', '호봉 언제 올라요'], terms: [30, 31, 32, 33, 34, 35], situations: [], courses: [] },
             { words: ['이사 가요', '다른 학교 가고 싶어요', '전보 내신', '만기 언제예요', '타시도 교류'], terms: [1, 11, 12, 13, 14, 20], situations: [], courses: [4] },
-            { words: ['육아휴직', '육아휴직 복직', '휴직 신청', '복직 신청', '휴직 끝나가요'], terms: [16], situations: [12], courses: [] },
+            { words: ['육아휴직', '육아휴직 복직', '휴직 신청', '복직 신청', '휴직 끝나가요'], terms: [3002, 16], situations: [12], courses: [] },
             { words: ['급식 알레르기', '우유 급식', '배탈 났어요'], terms: [135, 49, 44], situations: [11], courses: [] },
             { words: ['통합학급', '특수학급 아이', '개별화교육', 'IEP'], terms: [109, 52, 110], situations: [13], courses: [] },
             { words: ['기초학력 부진', '한글 못 읽어요', '진단검사', '두드림'], terms: [103, 106, 104], situations: [], courses: [8] },
             { words: ['공개수업 준비', '수업 지도안', '동료장학'], terms: [102], situations: [], courses: [] },
             { words: ['교실 고장났어요', '에어컨 고장', '문 고장', '수리 요청'], terms: [42, 43, 57], situations: [], courses: [] },
             { words: ['개인정보 파일', '명단 암호', '정보공개 청구'], terms: [58, 59], situations: [14], courses: [] },
-            // 따로 용어가 없는 말은 가장 가까운 용어로 안내
-            { words: ['연가', '연차'], terms: [35, 5], situations: [5], courses: [] },
-            { words: ['출장', '출장 신청', '여비'], terms: [5, 6], situations: [], courses: [] },
-            { words: ['초과근무', '시간외근무', '야근 수당'], terms: [5, 30], situations: [], courses: [] },
-            { words: ['담임수당', '교직수당', '보직수당'], terms: [33, 30, 32], situations: [], courses: [] },
-            { words: ['성과급', '성과상여금'], terms: [22, 23], situations: [], courses: [] },
-            { words: ['아동학대 신고', '아동학대'], terms: [99, 97, 150], situations: [], courses: [] },
-            { words: ['보결', '보강 수업', '결강'], terms: [8, 28], situations: [], courses: [] }
+            // 복무·수당 등 자주 찾는 말 (3001~ 용어는 data/terms-extra.json)
+            { words: ['연가', '연차'], terms: [3001, 35, 5], situations: [5], courses: [] },
+            { words: ['출장', '출장 신청', '여비'], terms: [3003, 5], situations: [], courses: [] },
+            { words: ['초과근무', '시간외근무', '야근 수당'], terms: [3004, 5], situations: [], courses: [] },
+            { words: ['담임수당', '교직수당', '보직수당'], terms: [3005], situations: [], courses: [] },
+            { words: ['성과급', '성과상여금'], terms: [3006, 22, 23], situations: [], courses: [] },
+            { words: ['아동학대 신고', '아동학대'], terms: [3007, 99, 150], situations: [], courses: [] },
+            { words: ['보결', '보강 수업', '결강'], terms: [3008, 8, 28], situations: [], courses: [] }
         ];
         const QUICK_CONVERSATIONAL_CHIPS = [
             { label: '🩹 학생이 다쳤어요', query: '학생이 다쳤어요' },
@@ -838,6 +838,7 @@
             DATA_META.curated = terms.length; DATA_META.variants = useVariants;
         }
 
+        let EXTRA_TERMS_UPDATED = '';
         async function loadData() {
             try {
                 const mapResponse = await fetch('data/legacy-map.json', { cache: 'no-cache' });
@@ -847,16 +848,31 @@
                 const linkResponse = await fetch('data/public-links.json', { cache: 'no-cache' });
                 if (linkResponse.ok) PUBLIC_LINKS = await linkResponse.json();
             } catch (_) { /* Existing numeric links remain usable offline. */ }
+            // 덧붙이는 용어(data/terms-extra.json, 번호 3001~): 기준 용어(terms.json)는 즐겨찾기 번호 보존을 위해 고정
+            let extraTerms = [];
+            try {
+                const extraRes = await fetch('data/terms-extra.json', { cache: 'no-cache' });
+                if (!extraRes.ok) throw new Error('extra terms unavailable');
+                const extra = await extraRes.json();
+                if (typeof extra?.updatedAt === 'string') EXTRA_TERMS_UPDATED = extra.updatedAt;
+                extraTerms = (Array.isArray(extra?.terms) ? extra.terms : []).filter(t => t && Number.isInteger(t.id) && t.id >= 3001 && t.keyword && t.description && t.simple);
+                extraTerms.forEach(t => { if (t.enrich && typeof t.enrich === 'object' && !TERM_ENRICH_MAP[t.id]) TERM_ENRICH_MAP[t.id] = t.enrich; });
+                extraTerms = extraTerms.map(({ enrich, ...t }) => t);
+            } catch (_) { /* 기준 용어만 표시 */ }
+            const withExtra = data => {
+                const ids = new Set(data.terms.map(t => t.id)), kws = new Set(data.terms.map(t => t.keyword));
+                return { ...data, terms: [...data.terms, ...extraTerms.filter(t => !ids.has(t.id) && !kws.has(t.keyword))] };
+            };
             try {
                 const res = await fetch('terms.json', { cache: 'no-cache' });
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const json = await res.json();
                 if (!json || !Array.isArray(json.terms) || json.terms.length === 0) throw new Error('terms 항목이 없습니다');
-                buildData(json);
+                buildData(withExtra(json));
                 DATA_META.source = 'terms.json';
             } catch (e) {
                 console.warn('[교직백서] terms.json을 불러오지 못해 내장 데이터를 사용합니다:', e && e.message);
-                buildData(DEFAULT_DATA);
+                buildData(withExtra(DEFAULT_DATA));
                 DATA_META.source = '내장 데이터';
             }
             try {
@@ -887,6 +903,22 @@
             const code = (typeof getSettings === 'function' ? getSettings().office : '') || '';
             return EDUCATION_OFFICES.find(o => o.code === code || o.name === code) || null;
         }
+        // 우리 교육청 지침 찾기: 문서 주소가 교육청마다 달라 홈페이지 + 그 사이트 안 검색 링크로 안내
+        const OFFICE_GUIDE_QUERIES = {
+            '복무·휴가': '교원 복무 지침', '인사·발령': '교원 인사관리 기준', '승진·전직': '승진 평정 가산점', '급여·수당·연금': '보수 업무 지침 수당',
+            '학교폭력': '학교폭력 사안처리 가이드북', '교육활동보호': '교육활동 보호 매뉴얼', '학적·출결': '학업성적관리 출결', '평가': '학업성적관리 시행지침',
+            '현장체험학습': '현장체험학습 운영 매뉴얼', '보건·안전': '학교 안전 매뉴얼', '급식': '학교급식 위생 관리', '늘봄·방과후': '늘봄학교 운영 계획',
+            '특수교육': '특수교육 운영 계획', '기초학력': '기초학력 지원 계획', '학교회계·예산': '학교회계 예산 편성 지침', '교육과정': '교육과정 편성 운영 지침',
+            '학생생활': '학생생활지도 매뉴얼', '학부모': '학부모 상담 민원 대응', '상담': '학생 상담 Wee', '연구·연수': '교원 연수 계획', '체육': '학교체육 운영 계획',
+            'AI·에듀테크': '디지털 교육 운영', '시설·물품': '학교 시설 관리', '학교조직·행정': '학교 업무 매뉴얼'
+        };
+        function officeGuideHTML(query, withHome = true) {
+            const office = currentOffice();
+            if (!office) return `<p class="text-[11px] text-slate-500 dark:text-slate-400"><i class="fa-solid fa-location-dot mr-1"></i>교육청마다 세부 기준이 달라요. <button type="button" onclick="if (isModalOpen()) closeModal(); router.navigate('mybox')" class="font-bold text-blue-700 dark:text-blue-300 hover:underline">나의 교직함에서 소속 교육청</button>을 고르면 우리 교육청 자료를 바로 찾아 드려요.</p>`;
+            const host = new URL(office.url).hostname.replace(/^www\./, '');
+            const search = `https://www.google.com/search?q=${encodeURIComponent(`site:${host} ${query}`)}`;
+            return `<div class="flex flex-wrap items-center gap-2 text-xs"><span class="font-bold text-slate-600 dark:text-slate-300"><i class="fa-solid fa-location-dot mr-1 text-blue-600 dark:text-blue-400"></i>${escapeHTML(office.name)}</span><a href="${escapeHTML(search)}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-bold hover:underline">'${escapeHTML(query)}' 찾기 ↗</a>${withHome ? `<a href="${escapeHTML(office.url)}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold hover:underline">홈페이지 ↗</a>` : ''}</div>`;
+        }
         function encodeSharePayload(obj) {
             try { return btoa( Array.from(new TextEncoder().encode(JSON.stringify(obj)), b => String.fromCharCode(b)).join('') ); }
             catch (_) { return ''; }
@@ -900,7 +932,7 @@
                     if (p) raw = p;
                 }
                 try { if (raw.includes('%')) raw = decodeURIComponent(raw); } catch (_) {}
-                const clean = raw.replace(/^.*#view=[^&]+&param=share:/, '').replace(/^share:/, '').trim();
+                const clean = raw.replace(/^.*#view=[^&]+&param=(share|bundle):/, '').replace(/^(share|bundle):/, '').trim();
                 const bin = atob(clean);
                 const bytes = new Uint8Array(bin.length);
                 for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
@@ -919,7 +951,8 @@
             const sources = (record?.sourceIds || []).map(id => (CONTENT_META.sources || []).find(src => src.id === id)).filter(Boolean);
             let status = record?.reviewStatus || 'needs-review';
             if (!REVIEW_STATUS[status] || (status === 'reviewed' && !(record.checkedAt && sources.length))) status = 'needs-review';
-            return { status, checkedAt: status === 'needs-review' ? null : (record?.checkedAt || null), scope: record?.scope || null, sources, dataDate: DATA_META.updatedAt || '' };
+            const extraTerm = /^term:3\d{3}$/.test(String(publicId)) && EXTRA_TERMS_UPDATED; // 덧붙인 용어는 자기 기준일
+            return { status, checkedAt: status === 'needs-review' ? null : (record?.checkedAt || null), scope: record?.scope || null, sources, dataDate: extraTerm || DATA_META.updatedAt || '' };
         }
         function reviewLabel(publicId) {
             const info = reviewInfo(publicId); const st = REVIEW_STATUS[info.status];
@@ -944,6 +977,43 @@
                         ${info.sources.length ? `<div class="flex flex-wrap items-center gap-1.5"><span class="font-bold">대조한 근거</span>${info.sources.map(src => `<a href="${escapeHTML(src.url)}" target="_blank" rel="noopener noreferrer" class="px-2 py-0.5 rounded-md bg-white/80 dark:bg-slate-800 border border-current/20 font-semibold hover:underline">${escapeHTML(src.title)} ↗</a>`).join('')}</div>` : ''}
                         <p class="leading-relaxed opacity-90">${info.status === 'reviewed' ? '위 근거와 대조한 날짜 기준입니다. 이후 개정 여부는 근거 링크에서 확인하세요.' : '아직 공식 근거와 한 줄씩 대조하지 않은 내용입니다. 실제 처리 전 아래 근거 법령과 소속 교육청 지침을 확인하세요.'} ${office ? `${escapeHTML(office.name)} 기준 확인 권장.` : '시도교육청별로 다를 수 있습니다.'}</p>
                     </section>`;
+        }
+        // 검수 우선 목록(data/content-meta.json reviewPriority): 많이 찾고 틀리면 곤란한 용어부터 공식 근거와 대조
+        function reviewQueue() {
+            return (CONTENT_META?.reviewPriority || []).map(entry => {
+                const id = Number(String(entry.id).split(':')[1]);
+                const item = DB.find(d => d.id === id && !d._generated); if (!item) return null;
+                applyTermEnrichment(item);
+                const sources = (entry.suggestedSourceIds || []).map(sid => (CONTENT_META.sources || []).find(src => src.id === sid)).filter(Boolean);
+                return { publicId: entry.id, item, info: reviewInfo(entry.id), sources };
+            }).filter(Boolean);
+        }
+        function reviewQueueHTML() {
+            const q = reviewQueue(); if (!q.length) return '';
+            const done = q.filter(x => x.info.status === 'reviewed').length;
+            return `
+                        <details class="rounded-xl border border-slate-200 dark:border-slate-700 p-3">
+                            <summary class="text-xs font-bold text-slate-700 dark:text-slate-200 cursor-pointer">검수 우선 ${q.length}개 (${done}개 완료) · 대조표 받기</summary>
+                            <p class="mt-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">자주 찾고 틀리면 곤란한 용어부터 공식 근거와 한 줄씩 대조해 주세요. 대조표에 '맞음/고칠 내용'을 적어 <b>틀린 내용 신고</b>로 보내 주시면 확인일과 함께 '대조 완료'로 기록됩니다.</p>
+                            <ul class="mt-2 space-y-1">${q.map(x => `<li class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs"><span aria-hidden="true">${x.info.status === 'reviewed' ? '✅' : '📝'}</span><button type="button" data-id="${x.item.id}" onclick="openDetail(Number(this.dataset.id))" class="font-semibold text-slate-800 dark:text-slate-100 hover:underline">${escapeHTML(x.item.keyword)}</button><span class="text-slate-500 dark:text-slate-400">${x.sources.map(src => `<a href="${escapeHTML(src.url)}" target="_blank" rel="noopener noreferrer" class="hover:underline">${escapeHTML(src.title)} ↗</a>`).join(' · ')}</span></li>`).join('')}</ul>
+                            <div class="mt-3 flex flex-wrap gap-2"><button type="button" onclick="exportReviewSheet()" class="px-3 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold"><i class="fa-solid fa-file-csv"></i> 대조표 엑셀(CSV)</button><button type="button" onclick="printReviewSheet()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold"><i class="fa-solid fa-print"></i> 대조표 인쇄</button></div>
+                        </details>`;
+        }
+        function reviewSheetRows() {
+            return reviewQueue().map((x, n) => ({ n: n + 1, keyword: x.item.keyword, category: x.item.category, desc: x.item.description, metrics: (x.item.metrics || []).join(' / '), sources: x.sources.map(src => src.title).join(', '), links: x.sources.map(src => src.url).join(' '), status: x.info.status === 'reviewed' ? `대조 완료 ${x.info.checkedAt}` : '검수 전' }));
+        }
+        function exportReviewSheet() {
+            const csvCell = v => { let t = String(v ?? ''); if (/^[=+\-@\t\r]/.test(t)) t = `'${t}`; return `"${t.replace(/"/g, '""')}"`; };
+            const head = ['번호', '용어', '분류', '지금 설명', '핵심 수치', '대조할 근거', '근거 링크', '현재 상태', '맞음/틀림', '고칠 내용', '확인일'];
+            const body = reviewSheetRows().map(r => [r.n, r.keyword, r.category, r.desc, r.metrics, r.sources, r.links, r.status, '', '', ''].map(csvCell).join(','));
+            downloadFile(`교직백서_검수대조표_${ymd(new Date())}.csv`, '\ufeff' + [head.map(csvCell).join(','), ...body].join('\r\n'), 'text/csv;charset=utf-8');
+            showToast('검수 대조표를 내려받았어요.');
+        }
+        function printReviewSheet() {
+            const rows = reviewSheetRows();
+            printHTML(`<h1>교직백서 1000 · 검수 대조표</h1><p style="font-size:10pt;margin:0 0 4mm">각 설명을 근거 법령·지침과 대조해 맞으면 ○, 틀리면 고칠 내용을 적어 주세요. (${ymd(new Date())})</p>
+                <table style="width:100%;border-collapse:collapse;font-size:9pt" border="1" cellpadding="4"><thead><tr><th>번호</th><th>용어</th><th>지금 설명</th><th>대조할 근거</th><th>맞음</th><th>고칠 내용</th></tr></thead>
+                <tbody>${rows.map(r => `<tr><td>${r.n}</td><td><b>${escapeHTML(r.keyword)}</b><br>${escapeHTML(r.category)}</td><td>${escapeHTML(r.desc)}${r.metrics ? `<br><i>${escapeHTML(r.metrics)}</i>` : ''}</td><td>${escapeHTML(r.sources)}</td><td style="width:12mm"></td><td style="width:45mm"></td></tr>`).join('')}</tbody></table>`);
         }
         function reviewSummary() {
             const items = Object.keys(CONTENT_META?.items || {});
@@ -1025,8 +1095,8 @@
             render() {
                 try {
                     if (this.current === 'tools-record' && pendingRecordDraft && !saveRecordDraftNow()) return;
-                     const navGroup = { start: 'quiz', situations: 'search', navigator: 'search', map: 'search', 'tools-board': 'year', 'tools-doc': 'year', career: 'year', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', card: 'quiz', 'tools-edutech': 'quiz' };
-                     const mobGroup = { home: 'home', search: 'search', navigator: 'search', map: 'search', situations: 'situations', 'tools-class': 'tools-class', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', 'tools-doc': 'tools-class', 'tools-board': 'tools-class', year: 'menu', career: 'menu', quiz: 'menu', card: 'menu', 'tools-edutech': 'menu', mybox: 'menu', start: 'menu' };
+                     const navGroup = { start: 'quiz', situations: 'search', navigator: 'search', map: 'search', 'tools-board': 'year', 'tools-doc': 'year', career: 'year', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', attendance: 'tools-class', card: 'quiz', 'tools-edutech': 'quiz' };
+                     const mobGroup = { home: 'home', search: 'search', navigator: 'search', map: 'search', situations: 'situations', 'tools-class': 'tools-class', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', attendance: 'tools-class', 'tools-doc': 'tools-class', 'tools-board': 'tools-class', year: 'menu', career: 'menu', quiz: 'menu', card: 'menu', 'tools-edutech': 'menu', mybox: 'menu', start: 'menu' };
                      const activeNav = navGroup[this.current] || this.current;
                      document.querySelectorAll('[data-primary-nav]').forEach(el => { const active = el.dataset.primaryNav === activeNav; el.classList.toggle('active', active); if (active) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current'); });
                     document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('bg-blue-50', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400'));
@@ -1037,7 +1107,7 @@
                     updateBookmarkBadge();
 
                     const viewContainer = document.getElementById('app-view'); if (!viewContainer) return;
-                    const pageTitles = { start:'역할별 시작 코스', home:'홈', search:'교직어 검색', situations:'상황 가이드', navigator:'교직 내비게이터', year:'교사의 1년', 'tools-doc':'문서 양식', 'tools-record':'생기부 문장 도우미', counsel:'상담 기록장', mybox:'나의 교직함' };
+                    const pageTitles = { start:'역할별 시작 코스', home:'홈', search:'교직어 검색', situations:'상황 가이드', navigator:'교직 내비게이터', year:'교사의 1년', 'tools-doc':'문서 양식', 'tools-record':'생기부 문장 도우미', counsel:'상담 기록장', attendance:'출결 증빙 체크', mybox:'나의 교직함' };
                     document.title = `${pageTitles[this.current] || '교직 도구'} | 교직백서 1000`;
                     const pageH1 = document.getElementById('page-h1'); if (pageH1) pageH1.textContent = `교직백서 1000 · ${pageTitles[this.current] || '교직 도구'}`; // 화면낭독기용 화면 제목
 
@@ -1059,6 +1129,7 @@
                         case 'timetable': renderTimetable(viewContainer); break;
                         case 'tools-record': renderToolsRecord(viewContainer); break;
                         case 'counsel': renderCounsel(viewContainer); break;
+                        case 'attendance': renderAttendance(viewContainer); break;
                         case 'start': renderStartCourses(viewContainer); break;
                         default: this.current = 'home'; renderHome(viewContainer); break;
                     }
@@ -1415,6 +1486,12 @@ ${weeklyAgendaHTML()}
                             </div>
                             <textarea id="doc-output" oninput="updateDocCounter()" class="w-full h-72 p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-200 focus:outline-none resize-y" placeholder="템플릿을 선택하고 빈칸을 채우세요."></textarea>
                             <p id="doc-counter" class="mt-2 text-xs text-slate-500 dark:text-slate-400 text-right">0자</p>
+                            <p id="doc-sms-info" class="hidden mt-1 text-xs text-slate-600 dark:text-slate-300 text-right"></p>
+                            <div class="mt-3 flex flex-wrap items-center justify-end gap-2 text-xs">
+                                <label for="doc-reply-date" class="font-bold text-slate-600 dark:text-slate-300">📌 회신·제출 마감</label>
+                                <input id="doc-reply-date" type="date" class="px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100">
+                                <button type="button" onclick="addReplyDeadline()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold">이번 주 할 일에 넣기</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1499,10 +1576,50 @@ ${weeklyAgendaHTML()}
             document.getElementById('doc-output').value = docOutputStyle === 'short' ? buildShortDocSummary(currentDocTemplate, fullText, values) : fullText;
             updateDocCounter();
         }
+        // 문자 길이: 한글 등 2바이트, 영문·숫자·기호 1바이트 (단문 SMS 90바이트, 장문 LMS 2,000바이트)
+        function smsBytes(text) { let n = 0; for (const ch of String(text || '')) n += ch.charCodeAt(0) > 127 ? 2 : 1; return n; }
+        function smsLengthLabel(bytes) { return bytes <= 90 ? '단문(90바이트) 안 ✓' : bytes <= 2000 ? '장문(LMS 2,000바이트) 안 ✓ · 단문보다 길어요' : '2,000바이트 초과 — 나눠 보내기'; }
+        function fitSmsBytes(text, limit = 90) {
+            let out = ''; for (const ch of String(text || '')) { if (smsBytes(out + ch) > limit) break; out += ch; }
+            return out;
+        }
+        function makeDocSmsShort() {
+            const el = document.getElementById('doc-output'); if (!el || !el.value.trim()) return;
+            const lines = el.value.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+            const head = lines[0] || ''; const key = lines.find((l, i) => i > 0 && /^•/.test(l)) || lines[1] || '';
+            let text = `${head} ${key.replace(/^•\s*/, '')}`.trim();
+            if (smsBytes(text) > 90) text = fitSmsBytes(text, 86).trim() + '…';
+            el.value = text; updateDocCounter();
+            showToast('단문(90바이트)에 맞게 줄였어요. 자세한 내용은 하이클래스·가정통신문으로 안내하세요.');
+        }
+        function replyDeadlines() { const v = Storage.get('reply_deadlines', []); return Array.isArray(v) ? v.filter(r => r && typeof r.title === 'string' && parseYMD(r.date) && !isNaN(parseYMD(r.date))) : []; }
+        function addReplyDeadline() {
+            const date = document.getElementById('doc-reply-date')?.value || '';
+            if (isNaN(parseYMD(date))) { showToast('회신·제출 마감 날짜를 골라 주세요.', 'error'); return; }
+            const title = String(currentDocTemplate?.title || '가정통신문 회신').slice(0, 52) + ' 회신';
+            const today = ymd(new Date());
+            // 끝난 지 30일 넘은 항목은 정리, 최대 30개
+            const list = replyDeadlines().filter(r => !(r.done && r.date < today) && Math.round((new Date() - parseYMD(r.date)) / 86400000) <= 30);
+            if (list.some(r => r.title === title && r.date === date)) { showToast('이미 넣어 둔 마감이에요.', 'info'); return; }
+            list.push({ title, date, done: false });
+            if (Storage.set('reply_deadlines', list.slice(-30))) showToast("'이번 주 할 일'에 회신 마감을 넣었어요.");
+        }
+        function toggleReplyDeadline(idx) {
+            const list = replyDeadlines(); if (!list[idx]) return;
+            list[idx].done = true;
+            if (Storage.set('reply_deadlines', list)) showToast('회신 마감을 완료로 표시했어요.', 'success');
+            if (router.current === 'home') router.render();
+        }
         function updateDocCounter() {
             const el = document.getElementById('doc-output'); const out = document.getElementById('doc-counter'); if (!el || !out) return;
             const t = el.value; const noSpace = t.replace(/\s/g, '').length;
             const left = (t.match(/\[[^\]]+\]/g) || []).length;
+            const sms = document.getElementById('doc-sms-info');
+            if (sms) {
+                const bytes = smsBytes(t);
+                sms.classList.toggle('hidden', docOutputStyle !== 'short' || !t.trim());
+                sms.innerHTML = `📱 문자 기준 ${bytes.toLocaleString()}바이트 · ${smsLengthLabel(bytes)}${bytes > 90 ? ' <button type="button" onclick="makeDocSmsShort()" class="ml-1 font-bold text-blue-700 dark:text-blue-300 hover:underline">단문으로 줄이기</button>' : ''}`;
+            }
             out.innerHTML = `${t.length.toLocaleString()}자 (공백 제외 ${noSpace.toLocaleString()}자) · 나이스 기준 ${neisBytes(t).toLocaleString()}바이트${left ? ` · <span class="text-rose-500 font-bold whitespace-nowrap inline-block">채우지 않은 빈칸 ${left}개</span>` : ''}`;
         }
         function copyDocText() { const el = document.getElementById('doc-output'); if (el && el.value) copyText(el.value); else showToast('먼저 템플릿을 선택해 주세요.', 'error'); }
@@ -1849,6 +1966,13 @@ ${weeklyAgendaHTML()}
 
         function renderToolsBoard(container, initialParam = null) {
             let sharedNotice = '';
+            if (initialParam && String(initialParam).startsWith('bundle:')) {
+                const bundle = sanitizeBundle(decodeSharePayload(initialParam));
+                router.param = null;
+                try { history.replaceState(null, '', buildHash('tools-board', null)); } catch (_) {}
+                if (bundle) setTimeout(() => openBundlePreview(bundle), 0);
+                else showToast('공유 묶음을 읽지 못했어요. 링크가 잘리지 않았는지 확인해 주세요.', 'error');
+            }
             if (initialParam && String(initialParam).startsWith('share:')) {
                 const decoded = decodeSharePayload(initialParam);
                 const ownTasks = Storage.get('board_tasks', null);
@@ -1878,6 +2002,7 @@ ${weeklyAgendaHTML()}
                         <div class="flex flex-wrap gap-2 shrink-0">
                             <button onclick="copyBoardAsText()" class="px-3.5 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl hover:bg-slate-200 transition"><i class="fa-regular fa-copy mr-1"></i>메신저용 복사</button>
                             <button onclick="shareBoardTasks()" class="px-3.5 py-2.5 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 text-xs font-bold rounded-xl hover:bg-blue-100 transition"><i class="fa-solid fa-share-nodes mr-1"></i>동학년 링크 공유</button>
+                            <button type="button" onclick="openBundleBuilder()" class="px-3.5 py-2.5 bg-violet-50 dark:bg-violet-900/40 text-violet-800 dark:text-violet-200 text-xs font-bold rounded-xl"><i class="fa-solid fa-box-open mr-1"></i>묶음 공유</button>
                             <button onclick="promptImportSharedBoard()" class="px-3.5 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl hover:bg-slate-200 transition"><i class="fa-solid fa-file-import mr-1"></i>공유 코드 입력</button>
                             <button onclick="addBoardTask()" class="px-4 py-2.5 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow transition">+ 새 할 일 추가</button>
                         </div>
@@ -1918,10 +2043,107 @@ ${weeklyAgendaHTML()}
             const shareUrl = `${location.href.split('#')[0]}#view=tools-board&param=${encodeURIComponent('share:' + code)}`;
             copyText(shareUrl, `'${title}' 태스크 보드 공유 링크를 복사했습니다! 동학년 메신저에 공유하세요.`);
         }
+        // ---- 동학년 공유 묶음: 보드 + 양식 + 일정을 한 링크로 (서버 없이 링크 안에 담음) ----
+        function sanitizeBundle(b) {
+            if (!b || typeof b !== 'object' || b.type !== 'bundle') return null;
+            const str = (v, n) => typeof v === 'string' ? v.slice(0, n) : '';
+            const out = { name: str(b.name, 60) || '공유 묶음', board: null, tpls: [], builtin: [], dates: [] };
+            if (b.board && typeof b.board === 'object' && Array.isArray(b.board.items)) {
+                const items = b.board.items.filter(it => it && typeof it.title === 'string' && it.title.trim()).slice(0, 50).map(it => ({ title: it.title.slice(0, 120), done: !!it.done }));
+                if (items.length) out.board = { title: str(b.board.title, 60) || out.name, items };
+            }
+            if (Array.isArray(b.tpls)) out.tpls = b.tpls.filter(t => t && typeof t.title === 'string' && typeof t.content === 'string' && t.title.trim()).slice(0, 3).map(t => ({ title: t.title.slice(0, 60), content: t.content.slice(0, 5000) }));
+            if (Array.isArray(b.builtin)) out.builtin = [...new Set(b.builtin.filter(id => typeof id === 'string' && DOC_TEMPLATES.some(t => t.id === id)))].slice(0, 5);
+            if (Array.isArray(b.dates)) out.dates = b.dates.filter(d => d && typeof d.title === 'string' && d.title.trim() && validBackupDate(d.date)).slice(0, 5).map(d => ({ title: d.title.slice(0, 60), date: d.date }));
+            return out.board || out.tpls.length || out.builtin.length || out.dates.length ? out : null;
+        }
+        function openBundleBuilder() {
+            const m = document.getElementById('setup-wizard-modal'); const c = document.getElementById('setup-wizard-content'); if (!m || !c) return;
+            const tasks = Object.values(getBoardTasks()).filter(t => t && String(t.title || '').trim());
+            const boardTitle = String(Storage.get('board_title', '') || '').trim();
+            const customs = getCustomTemplates();
+            const f = 'mt-1 w-full p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-100';
+            c.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div><h3 id="setup-wizard-title" class="text-xl font-black text-slate-900 dark:text-white">동학년 공유 묶음 만들기</h3><p class="text-xs text-slate-600 dark:text-slate-300 mt-1">행사 하나에 필요한 보드·양식·일정을 링크 하나로 보내요. 내용은 링크 안에만 담기고 서버로 보내지 않아요. 학생 이름 같은 개인정보는 넣지 마세요.</p></div>
+                        <button type="button" onclick="closeSetupWizard()" aria-label="닫기" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-200">묶음 이름<input id="bd-name" maxlength="60" value="${escapeHTML(boardTitle || '')}" placeholder="예: 가을 체육대회 준비 세트" class="${f}"></label>
+                    <label class="flex items-center gap-2 text-sm font-bold text-slate-800 dark:text-slate-100 ${tasks.length ? '' : 'opacity-50'}"><input id="bd-board" type="checkbox" ${tasks.length ? 'checked' : 'disabled'} class="w-4 h-4"> 지금 태스크 보드${tasks.length ? ` (${escapeHTML(boardTitle || '태스크 보드')} · ${tasks.length}개)` : ' (할 일이 없어요)'}</label>
+                    <fieldset class="space-y-1.5"><legend class="text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">양식 (최대 3개, 내 양식은 내용까지 담김)</legend>
+                        <div class="max-h-40 overflow-y-auto space-y-1 p-2 rounded-xl border border-slate-200 dark:border-slate-700">${[...customs.map(t => ({ id: t.id, title: t.title, mine: true })), ...DOC_TEMPLATES.map(t => ({ id: t.id, title: t.title }))].map(t => `<label class="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-200"><input type="checkbox" class="bd-tpl w-4 h-4" value="${escapeHTML(t.id)}" data-mine="${t.mine ? 1 : 0}" onchange="if (document.querySelectorAll('.bd-tpl:checked').length > 3) { this.checked = false; showToast('양식은 3개까지 담을 수 있어요.', 'info'); }"> ${t.mine ? '<b>[내 양식]</b> ' : ''}${escapeHTML(t.title)}</label>`).join('')}</div>
+                    </fieldset>
+                    <fieldset class="space-y-2"><legend class="text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">일정 (선택, 최대 3개 — 받는 사람의 '이번 주 할 일'에 들어가요)</legend>
+                        ${[0, 1, 2].map(i => `<div class="grid grid-cols-[1fr_auto] gap-2"><input class="bd-date-title ${f} !mt-0" maxlength="60" placeholder="예: 체육대회 물품 신청 마감" aria-label="일정 ${i + 1} 이름"><input type="date" class="bd-date ${f} !mt-0" aria-label="일정 ${i + 1} 날짜"></div>`).join('')}
+                    </fieldset>
+                    <div class="flex justify-end"><button type="button" onclick="copyBundleLink()" class="px-4 py-2 rounded-xl bg-violet-700 text-white text-sm font-bold"><i class="fa-solid fa-link mr-1"></i>묶음 링크 복사</button></div>
+                </div>`;
+            m.classList.remove('hidden');
+        }
+        function copyBundleLink() {
+            const name = (document.getElementById('bd-name')?.value || '').trim();
+            const bundle = { type: 'bundle', v: 1, name: name || '동학년 공유 묶음' };
+            if (document.getElementById('bd-board')?.checked) bundle.board = { title: String(Storage.get('board_title', '') || '').trim() || bundle.name, items: Object.values(getBoardTasks()).filter(t => t && String(t.title || '').trim()).map(t => ({ title: t.title, done: !!t.done })) };
+            const picked = [...document.querySelectorAll('.bd-tpl:checked')];
+            const customs = getCustomTemplates();
+            bundle.tpls = picked.filter(x => x.dataset.mine === '1').map(x => customs.find(t => t.id === x.value)).filter(Boolean).map(t => ({ title: t.title, content: t.content }));
+            bundle.builtin = picked.filter(x => x.dataset.mine !== '1').map(x => x.value);
+            const titles = [...document.querySelectorAll('.bd-date-title')], dates = [...document.querySelectorAll('.bd-date')];
+            bundle.dates = titles.map((el, i) => ({ title: el.value.trim(), date: dates[i]?.value || '' })).filter(d => d.title && validBackupDate(d.date));
+            if (titles.some((el, i) => el.value.trim() && !validBackupDate(dates[i]?.value || ''))) { showToast('이름을 적은 일정은 날짜도 골라 주세요.', 'error'); return; }
+            if (!sanitizeBundle(bundle)) { showToast('담을 보드·양식·일정을 하나 이상 골라 주세요.', 'error'); return; }
+            const code = encodeSharePayload(bundle);
+            if (!code) { showToast('링크를 만들지 못했어요.', 'error'); return; }
+            const url = `${location.href.split('#')[0]}#view=tools-board&param=${encodeURIComponent('bundle:' + code)}`;
+            if (url.length > 12000) { showToast('묶음이 너무 커요. 내 양식을 줄이거나 빼 주세요.', 'error'); return; }
+            copyText(url, `'${bundle.name}' 묶음 링크를 복사했어요. 동학년 메신저에 붙여 넣으세요.`);
+            closeSetupWizard();
+        }
+        function openBundlePreview(bundle) {
+            const m = document.getElementById('setup-wizard-modal'); const c = document.getElementById('setup-wizard-content'); if (!m || !c) return;
+            const fmt = s => { const d = parseYMD(s); return `${d.getMonth() + 1}/${d.getDate()}`; };
+            c.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div><span class="text-xs font-bold px-2.5 py-1 rounded-full bg-violet-50 dark:bg-violet-900/40 text-violet-800 dark:text-violet-200">공유받은 묶음</span><h3 id="setup-wizard-title" class="text-xl font-black text-slate-900 dark:text-white mt-1.5">${escapeHTML(bundle.name)}</h3><p class="text-xs text-slate-600 dark:text-slate-300 mt-1">가져올 것만 골라 주세요. 미리 보기만 하고 닫아도 아무것도 바뀌지 않아요.</p></div>
+                        <button type="button" onclick="closeSetupWizard()" aria-label="닫기" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    ${bundle.board ? `<label class="block p-3 rounded-xl border border-slate-200 dark:border-slate-700"><span class="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white"><input id="bp-board" type="checkbox" checked class="w-4 h-4"> 태스크 보드 · ${escapeHTML(bundle.board.title)} (${bundle.board.items.length}개)</span><ul class="mt-1.5 pl-6 list-disc text-xs text-slate-600 dark:text-slate-300 max-h-28 overflow-y-auto">${bundle.board.items.map(it => `<li>${escapeHTML(it.title)}</li>`).join('')}</ul><span class="block mt-1 text-[11px] text-rose-700 dark:text-rose-300">가져오면 지금 내 보드를 바꿔요.</span></label>` : ''}
+                    ${bundle.tpls.length || bundle.builtin.length ? `<div class="p-3 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1"><p class="text-sm font-bold text-slate-900 dark:text-white">양식</p>${bundle.tpls.map((t, i) => `<label class="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-200"><input type="checkbox" class="bp-tpl w-4 h-4" value="${i}" checked> [내 양식으로 추가] ${escapeHTML(t.title)}</label>`).join('')}${bundle.builtin.map(id => `<p class="text-xs text-slate-700 dark:text-slate-200">· [기본 양식] ${escapeHTML(DOC_TEMPLATES.find(t => t.id === id)?.title || id)} — <button type="button" data-id="${escapeHTML(id)}" onclick="closeSetupWizard(); router.navigate('tools-doc', this.dataset.id)" class="font-bold text-blue-700 dark:text-blue-300 hover:underline">열기</button></p>`).join('')}</div>` : ''}
+                    ${bundle.dates.length ? `<div class="p-3 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1"><p class="text-sm font-bold text-slate-900 dark:text-white">일정 → 이번 주 할 일</p>${bundle.dates.map((d, i) => `<label class="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-200"><input type="checkbox" class="bp-date w-4 h-4" value="${i}" checked> ${escapeHTML(d.title)} · ${fmt(d.date)}</label>`).join('')}</div>` : ''}
+                    <div class="flex justify-end gap-2"><button type="button" onclick="closeSetupWizard()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-bold">닫기</button><button type="button" id="bp-import" class="px-4 py-2 rounded-xl bg-violet-700 text-white text-sm font-bold">고른 것 가져오기</button></div>
+                </div>`;
+            document.getElementById('bp-import').onclick = () => importBundle(bundle);
+            m.classList.remove('hidden');
+        }
+        function importBundle(bundle) {
+            const done = [];
+            if (bundle.board && document.getElementById('bp-board')?.checked) {
+                const t = {}; bundle.board.items.forEach((it, i) => { t['s_' + i] = it; });
+                if (Storage.set('board_title', bundle.board.title) && Storage.set('board_tasks', t)) done.push(`보드 ${bundle.board.items.length}개`);
+            }
+            const tplIdx = [...document.querySelectorAll('.bp-tpl:checked')].map(x => Number(x.value));
+            if (tplIdx.length) {
+                const list = getCustomTemplates(); let added = 0;
+                for (const i of tplIdx) { const t = bundle.tpls[i]; if (!t || list.length >= 50) continue; if (list.some(x => x.title === t.title && x.content === t.content)) continue; list.push({ id: 'c' + Date.now().toString(36) + i, title: t.title, content: t.content }); added++; }
+                if (added && Storage.set('custom_templates', list)) done.push(`내 양식 ${added}개`);
+            }
+            const dateIdx = [...document.querySelectorAll('.bp-date:checked')].map(x => Number(x.value));
+            if (dateIdx.length) {
+                const list = replyDeadlines(); let added = 0;
+                for (const i of dateIdx) { const d = bundle.dates[i]; if (!d || list.some(x => x.title === d.title && x.date === d.date)) continue; list.push({ title: d.title, date: d.date, done: false }); added++; }
+                if (added && Storage.set('reply_deadlines', list.slice(-30))) done.push(`일정 ${added}개`);
+            }
+            closeSetupWizard();
+            showToast(done.length ? `가져왔어요: ${done.join(', ')}` : '가져온 것이 없어요.', done.length ? 'success' : 'info');
+            router.render();
+        }
         function promptImportSharedBoard() {
             const raw = prompt('동료 선생님께 받은 태스크 보드 공유 링크나 코드를 붙여넣어 주세요:');
             if (!raw || !raw.trim()) return;
             const decoded = decodeSharePayload(raw.trim());
+            if (decoded && decoded.type === 'bundle') { router.navigate('tools-board', 'bundle:' + encodeSharePayload(decoded)); return; }
             if (!decoded || !decoded.title || !Array.isArray(decoded.items)) { showToast('유효한 태스크 보드 공유 코드가 아닙니다.', 'error'); return; }
             router.navigate('tools-board', 'share:' + encodeSharePayload({ type: 'board', title: decoded.title, items: decoded.items }));
         }
@@ -2292,7 +2514,7 @@ ${weeklyAgendaHTML()}
 
                     ${item.tip ? `
                     <div class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 text-amber-900 dark:text-amber-200">
-                        <h4 class="font-extrabold text-xs mb-1.5 flex items-center gap-1.5 text-amber-800 dark:text-amber-300"><i class="fa-solid fa-lightbulb"></i> 엽쌤의 실무 팁</h4>
+                        <h3 class="font-extrabold text-xs mb-1.5 flex items-center gap-1.5 text-amber-800 dark:text-amber-300"><i class="fa-solid fa-lightbulb"></i> 엽쌤의 실무 팁</h3>
                         <p class="font-medium leading-relaxed text-xs sm:text-sm">${escapeHTML(item.tip)}</p>
                     </div>` : ''}
 
@@ -2345,7 +2567,7 @@ ${weeklyAgendaHTML()}
                                     <span>${escapeHTML(tl.label)} →</span>
                                 </button>
                             `).join('')}
-                            ${['학적·출결', '복무·휴가', '현장체험학습'].includes(item.category) ? `<button type="button" onclick="const cat='${escapeHTML(item.category)}'; closeModal(true); openCalcModal(cat==='복무·휴가'?'sick':cat==='현장체험학습'?'trip':'att');" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5"><i class="fa-solid fa-calculator"></i><span>실무 일수·병가 계산기 열기 →</span></button>` : ''}
+                            ${['학적·출결', '복무·휴가', '현장체험학습'].includes(item.category) ? `<button type="button" onclick="const cat='${escapeHTML(item.category)}'; closeModal(true); openCalcModal(cat==='복무·휴가'?'duty':cat==='현장체험학습'?'trip':'att');" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5"><i class="fa-solid fa-calculator"></i><span>${item.category === '복무·휴가' ? '복무 신청 도우미 열기' : '실무 일수 계산기 열기'} →</span></button>` : ''}
                         </div>
                     </div>` : ''}
 
@@ -2411,6 +2633,10 @@ ${weeklyAgendaHTML()}
                         </div>
                         <a href="${escapeHTML(lawUrl)}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline shrink-0 text-center">국가법령정보센터 원문 ↗</a>
                     </div>` : ''}
+                    <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700 space-y-1.5">
+                        <span class="text-[11px] font-extrabold text-slate-500 dark:text-slate-400 block">우리 교육청 기준 확인</span>
+                        ${officeGuideHTML(OFFICE_GUIDE_QUERIES[item.category] || `${item.keyword} 지침`, false)}
+                    </div>
 
                     ${item.situations && item.situations.length > 0 ? `<div><span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase block mb-2">🏫 언제 쓰나요?</span><div class="space-y-2">${item.situations.map(sit => `<div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center gap-2"><i class="fa-solid fa-circle-check text-blue-500 dark:text-blue-400 text-xs"></i> <span class="font-medium text-slate-800 dark:text-slate-200">${escapeHTML(sit)}</span></div>`).join('')}</div></div>` : ''}
                     ${item.related && item.related.length > 0 ? `<div><span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase block mb-2">🔗 관련 교직어</span><div class="flex flex-wrap gap-2">${item.related.map(rel => { const found = DB.find(d => d.keyword === rel); return found ? `<button onclick="openDetail(${found.id})" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 rounded-xl text-xs font-semibold hover:text-blue-600 dark:hover:text-blue-400 text-slate-800 dark:text-slate-200 transition">${escapeHTML(rel)}</button>` : ''; }).join('')}</div></div>` : ''}
@@ -2464,7 +2690,7 @@ ${weeklyAgendaHTML()}
             currentDetailId = null;
             // body는 원래 overflow-hidden 클래스이므로 'auto'로 덮어쓰지 않고 인라인 스타일만 제거
             document.body.style.overflow = ''; window.removeEventListener('keydown', handleModalKeyDown);
-            document.title = `${({start:'역할별 시작 코스',home:'홈',search:'교직어 검색',situations:'상황 가이드',navigator:'교직 내비게이터',year:'교사의 1년','tools-doc':'문서 양식','tools-record':'생기부 문장 도우미',counsel:'상담 기록장',mybox:'나의 교직함'})[router.current] || '교직 도구'} | 교직백서 1000`;
+            document.title = `${({start:'역할별 시작 코스',home:'홈',search:'교직어 검색',situations:'상황 가이드',navigator:'교직 내비게이터',year:'교사의 1년','tools-doc':'문서 양식','tools-record':'생기부 문장 도우미',counsel:'상담 기록장',attendance:'출결 증빙 체크',mybox:'나의 교직함'})[router.current] || '교직 도구'} | 교직백서 1000`;
             if(lastFocusedElement && document.body.contains(lastFocusedElement)) { try { lastFocusedElement.focus(); } catch(e) {} }
             lastFocusedElement = null;
             // 검색어(param)를 유지한 채 주소만 되돌림 → 닫을 때 검색 화면이 초기화되던 문제 해결
@@ -2525,6 +2751,7 @@ ${weeklyAgendaHTML()}
                         <span class="text-xs font-bold px-3 py-1 bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-lg mb-3 inline-block">${escapeHTML(sit.category)}</span>
                         <h3 class="text-base sm:text-lg font-bold tracking-tight mb-2 text-slate-900 dark:text-white">${escapeHTML(sit.title)}</h3>
                         <p class="text-[11px] text-amber-700 dark:text-amber-300 mb-2">${reviewLabel(sit.publicId)}</p>
+                        <div class="mb-3">${officeGuideHTML(OFFICE_GUIDE_QUERIES[sit.category] || sit.title.replace(/요$/, ''))}</div>
                         ${sit.summary ? `<p class="text-xs text-slate-500 dark:text-slate-400 mb-4">${escapeHTML(sit.summary)}</p>` : ''}
                         ${sit.firstCheck.length ? `<div class="flex flex-wrap items-center gap-1.5 mb-3"><span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mr-1">먼저 확인</span>${chips(sit.firstCheck, 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300')}</div>` : ''}
                         ${sit.script ? `
@@ -2726,6 +2953,67 @@ ${weeklyAgendaHTML()}
             setStartCourseDone(courseId, key, !(startCourseState().done[courseId] || {})[key]);
             router.render();
         }
+        // 신규 교사 30일 코스: 발령일(settings.appointDate)부터 날짜에 맞춰 '오늘 할 것 1개'를 홈에 보여 줌
+        const NEWBIE_30 = [
+            { day: 1, t: 'term', id: 147, why: '신규 교사가 처음 마주치는 일의 큰 그림' },
+            { day: 1, t: 'view', view: 'mybox', param: null, label: '내 학교·학급 기본 정보 입력', why: '서식 자동 입력과 교육청 지침 바로가기의 출발점' },
+            { day: 2, t: 'term', id: 152, why: '교무실에서 서로 기대하는 기본 예절' },
+            { day: 3, t: 'term', id: 5, why: '출결·성적·복무를 처리하는 시스템' },
+            { day: 4, t: 'view', view: 'timetable', param: null, label: '우리 반 시간표 입력', why: '홈에 지금 몇 교시인지와 종 알림 표시' },
+            { day: 5, t: 'term', id: 6, why: '공문과 예산을 처리하는 시스템' },
+            { day: 7, t: 'term', id: 60, why: '모든 업무 처리의 기본 단위' },
+            { day: 8, t: 'term', id: 65, why: '공문 문장의 기본 형식' },
+            { day: 10, t: 'term', id: 3001, why: '개인 사정으로 쉬는 방법과 보결' },
+            { day: 11, t: 'situation', id: 'situation:05', why: '아파서 출근이 어려울 때 처리 순서' },
+            { day: 13, t: 'term', id: 3, why: '돈을 쓰기 전에 먼저 받는 결재' },
+            { day: 15, t: 'view', view: 'attendance', param: null, label: '출결 증빙 체크 써 보기', why: '결석 서류를 놓치지 않는 습관' },
+            { day: 17, t: 'term', id: 2001, why: '1년 내내 쌓아 가는 학생 기록' },
+            { day: 20, t: 'term', id: 31, why: '해마다 챙기는 복지 제도' },
+            { day: 22, t: 'term', id: 3005, why: '첫 급여명세서의 담임·보직 수당' },
+            { day: 25, t: 'term', id: 4, why: '사안이 생기면 처음 할 일' },
+            { day: 27, t: 'term', id: 3007, why: '교사가 꼭 지켜야 하는 신고 의무' },
+            { day: 30, t: 'term', id: 148, why: '물어볼 선배를 정식으로 두는 방법' }
+        ];
+        function newbiePlan(now = new Date()) {
+            const start = parseYMD(getSettings().appointDate || ''); if (isNaN(start)) return null;
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const dayNo = Math.floor((today - start) / 86400000) + 1;
+            const done = startCourseState().done.newbie30 || {};
+            const items = NEWBIE_30.map((it, idx) => ({ ...it, idx, key: startCourseItemKey(it), info: startCourseItemInfo(it) })).filter(x => x.info).map(x => ({ ...x, done: !!done[x.key] }));
+            const todayItem = dayNo >= 1 ? items.find(x => !x.done && x.day <= dayNo) || null : null;
+            const next = items.find(x => !x.done && x.day > dayNo) || null;
+            return { dayNo, items, todayItem, next, finished: items.every(x => x.done) };
+        }
+        function setAppointDate() {
+            const v = document.getElementById('newbie-date')?.value || '';
+            if (v && !validBackupDate(v)) { showToast('날짜를 골라 주세요.', 'error'); return; }
+            if (saveSetting('appointDate', v)) { showToast(v ? '30일 코스를 켰어요. 홈 이번 주 할 일에 오늘 할 것이 나와요.' : '30일 코스를 껐어요.'); router.render(); }
+        }
+        function openNewbieItem(idx) {
+            const it = NEWBIE_30[idx]; if (!it) return;
+            setStartCourseDone('newbie30', startCourseItemKey(it), true);
+            if (it.t === 'term') { router.render(); openDetail(it.id); }
+            else if (it.t === 'situation') router.navigate('situations', it.id);
+            else router.navigate(it.view, it.param);
+        }
+        function toggleNewbieItem(idx) {
+            const it = NEWBIE_30[idx]; if (!it) return; const key = startCourseItemKey(it);
+            setStartCourseDone('newbie30', key, !(startCourseState().done.newbie30 || {})[key]);
+            router.render();
+        }
+        function newbie30HTML() {
+            const date = getSettings().appointDate || ''; const plan = newbiePlan();
+            return `
+                    <section class="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 space-y-3" aria-label="신규 교사 30일 코스">
+                        <div class="flex flex-wrap items-end justify-between gap-2">
+                            <div><h3 class="text-base font-bold text-slate-900 dark:text-white">📅 날짜에 맞춘 30일 코스</h3><p class="text-xs text-slate-600 dark:text-slate-300">첫 출근일을 넣으면 날짜에 맞춰 <b>오늘 할 것 1개</b>를 홈 '이번 주 할 일'에 띄워요. 마감 알림을 켜 두면 앱을 열 때 알려 줘요.</p></div>
+                            <div class="flex flex-wrap items-center gap-2"><label for="newbie-date" class="text-xs font-bold text-slate-600 dark:text-slate-300">첫 출근일</label><input id="newbie-date" type="date" value="${escapeHTML(date)}" class="px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-100"><button type="button" onclick="setAppointDate()" class="px-3 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-bold">${date ? '바꾸기' : '켜기'}</button>${date ? `<button type="button" onclick="document.getElementById('newbie-date').value=''; setAppointDate()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold">끄기</button>` : ''}</div>
+                        </div>
+                        ${plan ? `
+                        <p class="text-sm font-bold text-slate-800 dark:text-slate-100">${plan.dayNo < 1 ? `첫 출근까지 ${1 - plan.dayNo}일 남았어요.` : plan.finished ? '🎉 30일 코스를 모두 마쳤어요!' : plan.todayItem ? `${plan.dayNo}일째 · 오늘 할 것: <button type="button" onclick="openNewbieItem(${plan.todayItem.idx})" class="text-blue-700 dark:text-blue-300 underline">${escapeHTML(plan.todayItem.info.title)}</button>` : `${plan.dayNo}일째 · 오늘은 쉬어 가요${plan.next ? ` (다음: ${plan.next.day}일째 ${escapeHTML(plan.next.info.title)})` : ''}`}</p>
+                        <ol class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">${plan.items.map(x => `<li class="flex items-center gap-2 text-xs ${x.done ? 'text-slate-500 dark:text-slate-400' : x.day <= plan.dayNo ? 'text-slate-900 dark:text-white font-semibold' : 'text-slate-600 dark:text-slate-300'}"><input type="checkbox" ${x.done ? 'checked' : ''} onchange="toggleNewbieItem(${x.idx})" aria-label="${escapeHTML(x.info.title)} 완료" class="w-4 h-4 shrink-0 accent-emerald-600"><span class="w-12 shrink-0 font-bold">${x.day}일째</span><button type="button" onclick="openNewbieItem(${x.idx})" class="text-left hover:underline">${escapeHTML(x.info.title)}</button></li>`).join('')}</ol>` : ''}
+                    </section>`;
+        }
         function renderStartCourses(container) {
             const st = startCourseState();
             const active = START_COURSES.find(c => c.id === (router.param || st.active)) || null;
@@ -2762,6 +3050,7 @@ ${weeklyAgendaHTML()}
                             <button type="button" onclick="copyText(location.origin + location.pathname + '#view=start&param=${active.id}', '코스 주소를 복사했습니다. 동료에게 보내 보세요.')" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200"><i class="fa-solid fa-link mr-1"></i>코스 링크 복사</button>
                         </div>
                         <ol class="space-y-2">${list}</ol>
+                        ${active.id === 'newbie' ? newbie30HTML() : ''}
                         <p class="text-xs text-slate-400 dark:text-slate-500">각 항목의 내용은 시도교육청·학교마다 다를 수 있으니 상세 화면의 근거와 학교 안내를 함께 확인하세요.</p>
                     </section>` : `<p class="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 text-sm text-slate-500 dark:text-slate-400 text-center">위에서 코스를 하나 골라 주세요.</p>`}
                 </div>
@@ -3157,6 +3446,15 @@ ${weeklyAgendaHTML()}
                     }
                 });
             });
+            const nb = newbiePlan(now);
+            if (nb && nb.todayItem && nb.dayNo <= 45) items.push({ type: 'newbie', idx: nb.todayItem.idx, title: `신규 30일 · ${nb.todayItem.info.title}`, days: -900, when: `${nb.dayNo}일째` });
+            const evid = Vault.isLocked() ? [] : attendancePending().filter(r => r.left <= 3);
+            if (evid.length) items.push({ type: 'evidence', title: `출결 증빙 ${evid.length}건 받기`, days: Math.min(...evid.map(r => r.left)), when: evid.some(r => r.left < 0) ? '마감 지남' : '3일 안 마감' });
+            replyDeadlines().forEach((r, idx) => {
+                if (r.done) return;
+                const days = Math.round((parseYMD(r.date) - today) / 86400000);
+                if (days >= -14 && days <= 13) items.push({ type: 'reply', idx, title: r.title, days, when: days < 0 ? `${-days}일 지남` : days === 0 ? '오늘 마감' : `마감 D-${days}` });
+            });
             const cal = schoolCalendar();
             SCHOOL_EVENTS.forEach(ev => {
                 const date = parseYMD(cal[ev.key] || ''); if (isNaN(date)) return;
@@ -3177,7 +3475,22 @@ ${weeklyAgendaHTML()}
             // 날짜가 정해진 일(이번 주·다음 주)과 날짜를 안 정한 이번 달 업무를 나눠 보여 줌
             const dated = items.filter(it => it.days < 30), undated = items.filter(it => it.days >= 30);
             const groupLabel = text => `<p class="pt-2 pb-0.5 text-[11px] font-bold text-slate-500 dark:text-slate-400">${text}</p>`;
-            const listHTML = list => list.map(it => it.type === 'task' ? `
+            const listHTML = list => list.map(it => it.type === 'newbie' ? `
+                                <button type="button" onclick="openNewbieItem(${it.idx})" class="w-full flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200/80 dark:border-blue-800/60 text-left">
+                                    <i class="fa-solid fa-seedling text-blue-700 dark:text-blue-300 w-5 text-center"></i>
+                                    <span class="flex-1 min-w-0 truncate text-sm font-bold text-blue-900 dark:text-blue-100">${escapeHTML(it.title)}</span>
+                                    <span class="shrink-0 text-xs font-bold text-blue-700 dark:text-blue-300">${it.when}</span>
+                                </button>` : it.type === 'evidence' ? `
+                                <button type="button" onclick="router.navigate('attendance')" class="w-full flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-200/80 dark:border-rose-800/60 text-left">
+                                    <i class="fa-solid fa-file-circle-check text-rose-700 dark:text-rose-300 w-5 text-center"></i>
+                                    <span class="flex-1 min-w-0 truncate text-sm font-bold text-rose-900 dark:text-rose-100">${escapeHTML(it.title)}</span>
+                                    <span class="shrink-0 text-xs font-bold text-rose-700 dark:text-rose-300">${it.when}</span>
+                                </button>` : it.type === 'reply' ? `
+                                <div class="flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-amber-200/80 dark:border-amber-800/60">
+                                    <input type="checkbox" id="wr-${it.idx}" onchange="toggleReplyDeadline(${it.idx})" class="w-5 h-5 shrink-0 accent-blue-600 cursor-pointer">
+                                    <label for="wr-${it.idx}" class="flex-1 min-w-0 text-sm font-semibold text-slate-800 dark:text-slate-100 cursor-pointer truncate">📌 ${escapeHTML(it.title)}</label>
+                                    <span class="shrink-0 text-xs font-bold ${tone(it)}">${it.when}</span>
+                                </div>` : it.type === 'task' ? `
                                 <div class="flex items-center gap-3 min-h-[44px] px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
                                     <input type="checkbox" id="wa-${it.m}-${it.idx}" onchange="toggleAgendaTask(${it.m}, ${it.idx})" class="w-5 h-5 shrink-0 accent-blue-600 cursor-pointer">
                                     <label for="wa-${it.m}-${it.idx}" class="flex-1 min-w-0 text-sm font-semibold text-slate-800 dark:text-slate-100 cursor-pointer truncate">${escapeHTML(it.title)}</label>
@@ -3223,7 +3536,7 @@ ${weeklyAgendaHTML()}
             const due = weeklyAgenda().filter(it => it.days <= 3);
             saveSetting('lastAgendaNotice', day);
             if (!due.length) return;
-            const title = `마감이 다가온 일 ${due.length}개`;
+            const title = `오늘 챙길 일 ${due.length}개`;
             const body = due.slice(0, 3).map(it => `${it.title}(${it.when})`).join(', ');
             showToast(`🗓 ${title} · ${body}`, 'info');
             if ('Notification' in window && Notification.permission === 'granted') {
@@ -3577,6 +3890,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                         <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">용어·상황 가이드·업무 순서 ${r.total}개 중 공식 근거와 대조를 마친 항목은 <b>${r.reviewed}개(${pct}%)</b>입니다. 검수 전 항목은 실무 경험을 바탕으로 정리한 내용이라, 처리 전에 상세 화면의 근거 법령과 소속 교육청 지침을 꼭 확인해 주세요.</p>
                         <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden" aria-hidden="true"><div class="bg-emerald-500 h-full" style="width:${pct}%"></div></div>
                         <div class="flex flex-wrap gap-2 text-xs font-bold"><span class="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">✅ 대조 완료 ${r.reviewed}</span><span class="px-2.5 py-1 rounded-lg bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300">⚠️ 변경 확인 중 ${r['needs-update']}</span><span class="px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-300">📝 검수 전 ${r['needs-review']}</span></div>` : `<p class="text-xs text-slate-500 dark:text-slate-400">검수 기록을 불러오지 못했습니다. 인터넷에 연결된 상태에서 다시 열어 주세요.</p>`; })()}
+                        ${reviewQueueHTML()}
                     </div>
 
                     <div class="${card}">
@@ -3622,6 +3936,8 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                                 <input id="full-backup-pw" type="password" autocomplete="new-password" placeholder="백업 비밀번호 (8자 이상)" class="w-full sm:w-64 min-w-0 px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 text-xs text-slate-800 dark:text-slate-200 outline-none">
                                 <button type="button" onclick="exportFullEncryptedBackup()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-sm transition"><i class="fa-solid fa-lock mr-1"></i>통합 암호화 백업 받기</button>
                                 <label class="px-4 py-2 bg-white dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-200 font-bold rounded-xl text-xs cursor-pointer hover:bg-emerald-100 transition shadow-sm"><i class="fa-solid fa-unlock mr-1"></i>통합 백업 복원하기<input type="file" accept=".json,application/json" onchange="importFullEncryptedBackup(event)" class="hidden"></label>
+                                <button type="button" onclick="openQrSend()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-200 font-bold rounded-xl text-xs shadow-sm"><i class="fa-solid fa-qrcode mr-1"></i>QR로 보내기</button>
+                                <button type="button" onclick="openQrReceive()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-200 font-bold rounded-xl text-xs shadow-sm"><i class="fa-solid fa-camera mr-1"></i>QR로 받기</button>
                             </div>
                         </div>
 
@@ -3695,7 +4011,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             year_task_dates:'object', board_title:'string', board_tasks:'object', custom_templates:'array', settings:'object',
             class_names:'string', seat_opts:'object', seat_result:'object', pick_norepeat:'boolean', timetable:'object',
             record_drafts:'object', record_limits:'object', record_my_phrases:'array', counsel_schedule_opts:'object',
-            theme_mode:'string', ics_year:'number', situation_runs:'object', start_courses:'object'
+            theme_mode:'string', ics_year:'number', situation_runs:'object', start_courses:'object', reply_deadlines:'array', attendance_evidence:'array'
         };
         for (let month = 1; month <= 12; month++) BACKUP_TYPES[`checklist_${month}`] = 'object';
         const BACKUP_MAX_BYTES = 20 * 1024 * 1024;
@@ -3704,6 +4020,18 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             const [year, month, day] = value.split('-').map(Number);
             const date = new Date(Date.UTC(year, month - 1, day));
             return date.getUTCFullYear() === year && date.getUTCMonth() + 1 === month && date.getUTCDate() === day;
+        }
+        // 출결 증빙 (학생 이름·결석 종류·기간·서류 받음 여부) — 개인 기록 잠금 대상
+        const ATT_KINDS = {
+            sick: { label: '질병 결석', docs: '보호자 의견서 또는 진료확인서·처방전 (3일 이상이면 진료확인서·진단서)', days: 5 },
+            approved: { label: '출석 인정 결석', docs: '사유 증빙 (경조사 확인서·감염병 진단서·대회 공문 등)', days: 5 },
+            trip: { label: '교외체험학습', docs: '사전 신청서 + 다녀온 뒤 체험학습 보고서', days: 7 },
+            unexcused: { label: '미인정 결석', docs: '보호자 확인·연락 기록 (안전 확인 절차)', days: 1 },
+            partial: { label: '지각·조퇴·결과', docs: '사유에 따라 보호자 확인서 또는 진료확인서', days: 5 }
+        };
+        function validAttendanceRecord(r) {
+            return !!r && typeof r === 'object' && !Array.isArray(r) && typeof r.id === 'string' && r.id.length <= 40 && typeof r.student === 'string' && r.student.length <= 30
+                && Object.prototype.hasOwnProperty.call(ATT_KINDS, r.kind) && validBackupDate(r.from) && validBackupDate(r.to) && r.from <= r.to && typeof r.received === 'boolean';
         }
         function validBackupValue(key, value) {
             const type = Array.isArray(value) ? 'array' : value === null ? 'null' : typeof value;
@@ -3725,6 +4053,8 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             if (key === 'counsel_schedule_opts' && (value.from && !validBackupDate(value.from) || value.to && !validBackupDate(value.to))) return false;
             if (key === 'record_drafts' && !Object.values(value).every(text => typeof text === 'string')) return false;
             if (key === 'record_my_phrases' && !value.every(text => typeof text === 'string')) return false;
+            if (key === 'reply_deadlines' && !(value.length <= 30 && value.every(r => r && typeof r === 'object' && !Array.isArray(r) && typeof r.title === 'string' && r.title.length <= 60 && validBackupDate(r.date) && typeof r.done === 'boolean'))) return false;
+            if (key === 'attendance_evidence' && !(value.length <= 500 && value.every(validAttendanceRecord))) return false;
             return true;
         }
         function validateBackup(data) {
@@ -3806,21 +4136,20 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             r.readAsText(f);
         }
 
-        async function exportFullEncryptedBackup() {
-            const pwEl = document.getElementById('full-backup-pw');
-            const pw = pwEl ? pwEl.value : '';
-            if (pw.length < 8) { showToast('비밀번호를 8자 이상 입력해 주세요.', 'error'); return; }
-            if (!cryptoReady()) return;
-            if (Vault.isLocked()) { showToast('개인 기록 잠금을 먼저 풀어야 상담 기록까지 백업할 수 있어요.', 'error'); router.navigate('counsel'); return; }
+        // 통합 암호화 백업 본문 만들기 (파일 저장·QR 전송 공용). compress: 지원 브라우저에서 deflate로 줄여 QR 장수를 줄임
+        async function buildFullEncryptedBackup(pw, { compress = false } = {}) {
+            if (pw.length < 8) { showToast('비밀번호를 8자 이상 입력해 주세요.', 'error'); return null; }
+            if (!cryptoReady()) return null;
+            if (Vault.isLocked()) { showToast('개인 기록 잠금을 먼저 풀어야 상담 기록까지 백업할 수 있어요.', 'error'); router.navigate('counsel'); return null; }
             const general = {};
             Storage.error = null;
             const keys = Storage.ownKeys().filter(key => !BACKUP_EXCLUDE.includes(key));
-            if (Storage.error) { showToast('저장소 목록을 읽지 못해 백업을 중지했습니다.', 'error'); return; }
+            if (Storage.error) { showToast('저장소 목록을 읽지 못해 백업을 중지했습니다.', 'error'); return null; }
             for (const k of keys) {
                 if (Object.prototype.hasOwnProperty.call(BACKUP_TYPES, k)) {
                     Storage.error = null;
                     const val = Storage.get(k, null);
-                    if (Storage.error) { showToast('읽을 수 없는 자료가 있어 백업을 중지했습니다.', 'error'); return; }
+                    if (Storage.error) { showToast('읽을 수 없는 자료가 있어 백업을 중지했습니다.', 'error'); return null; }
                     if (val !== null && val !== undefined) general[k] = val;
                 }
             }
@@ -3831,33 +4160,162 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                 validateBackup(general);
                 const iterations = 250000; const salt = crypto.getRandomValues(new Uint8Array(16)); const iv = crypto.getRandomValues(new Uint8Array(12));
                 const key = await deriveKey(pw, salt, iterations);
-                const plain = new TextEncoder().encode(JSON.stringify({ general, counsel, exportedAt: new Date().toISOString() }));
+                let plain = new TextEncoder().encode(JSON.stringify({ general, counsel, exportedAt: new Date().toISOString() }));
+                const z = compress && typeof CompressionStream === 'function' ? 'deflate-raw' : null;
+                if (z) plain = new Uint8Array(await new Response(new Blob([plain]).stream().pipeThrough(new CompressionStream(z))).arrayBuffer());
                 const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plain);
-                saveSetting('lastBackupAt', today);
-                downloadFile(`교직백서_통합암호화백업_${today}.json`, JSON.stringify({ app: 'gyojik-baekseo-1000', type: 'full-encrypted', v: 1, kdf: 'PBKDF2-SHA256', iterations, salt: bufToB64(salt), iv: bufToB64(iv), data: bufToB64(ct) }), 'application/json');
-                showToast('모든 데이터와 상담 기록을 통합 암호화 백업했습니다!', 'success');
-                if (router.current === 'mybox') router.render();
-            } catch (err) { showToast(err.message || '통합 암호화 백업 중 오류가 발생했습니다.', 'error'); }
+                return { today, text: JSON.stringify({ app: 'gyojik-baekseo-1000', type: 'full-encrypted', v: 1, kdf: 'PBKDF2-SHA256', iterations, salt: bufToB64(salt), iv: bufToB64(iv), ...(z ? { z } : {}), data: bufToB64(ct) }) };
+            } catch (err) { showToast(err.message || '통합 암호화 백업 중 오류가 발생했습니다.', 'error'); return null; }
+        }
+        async function exportFullEncryptedBackup() {
+            const r = await buildFullEncryptedBackup(document.getElementById('full-backup-pw')?.value || '');
+            if (!r) return;
+            saveSetting('lastBackupAt', r.today);
+            downloadFile(`교직백서_통합암호화백업_${r.today}.json`, r.text, 'application/json');
+            showToast('모든 데이터와 상담 기록을 통합 암호화 백업했습니다!', 'success');
+            if (router.current === 'mybox') router.render();
         }
 
+        // ---- QR로 옮기기: 통합 암호화 백업을 QR 여러 장으로 보여 주고, 다른 기기 카메라로 모아 복원 (서버 거치지 않음) ----
+        // 라이브러리는 이 기능을 쓸 때만 고정 버전 + 무결성 검사로 불러옴
+        const QR_LIBS = {
+            gen: { url: 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js', integrity: 'sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k', global: 'qrcode' },
+            read: { url: 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js', integrity: 'sha384-b5Ya4Bq3qCyz39m2ISh+4DxjAIljdeFwK/BsXLuj9gugaNwAcj/ia15fxNZL9Nlx', global: 'jsQR' }
+        };
+        const qrLibPromises = {};
+        function loadQrLib(name) {
+            const lib = QR_LIBS[name];
+            if (window[lib.global]) return Promise.resolve(window[lib.global]);
+            if (!qrLibPromises[name]) qrLibPromises[name] = new Promise((resolve, reject) => {
+                const el = document.createElement('script'); el.src = lib.url; el.integrity = lib.integrity; el.crossOrigin = 'anonymous';
+                el.onload = () => window[lib.global] ? resolve(window[lib.global]) : reject(new Error('load'));
+                el.onerror = () => { delete qrLibPromises[name]; el.remove(); reject(new Error('load')); };
+                document.head.appendChild(el);
+            });
+            return qrLibPromises[name];
+        }
+        const QR_CHUNK = 450, QR_MAX_FRAMES = 120;
+        let qrSendTimer = null, qrRecv = null;
+        function qrFrameSvg(text) {
+            const q = window.qrcode(0, 'L'); q.addData(text, 'Byte'); q.make();
+            return q.createSvgTag({ cellSize: 4, margin: 4, scalable: true }).replace('<svg ', '<svg class="w-full h-auto bg-white" role="img" aria-label="백업 QR 코드" ');
+        }
+        function stopQrTransfer() {
+            clearInterval(qrSendTimer); qrSendTimer = null;
+            if (qrRecv) { qrRecv.stopped = true; qrRecv.stream?.getTracks().forEach(t => t.stop()); qrRecv = null; }
+        }
+        async function openQrSend() {
+            const r = await buildFullEncryptedBackup(document.getElementById('full-backup-pw')?.value || '', { compress: true }); if (!r) return;
+            try { await loadQrLib('gen'); } catch (_) { showToast('QR 도구를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.', 'error'); return; }
+            const id = Math.random().toString(36).slice(2, 6), n = Math.ceil(r.text.length / QR_CHUNK);
+            if (n > QR_MAX_FRAMES) { showToast(`백업이 커서 QR ${n}장이 필요해요. 파일로 옮겨 주세요(통합 암호화 백업).`, 'error'); return; }
+            const frames = Array.from({ length: n }, (_, i) => `GB1|${id}|${i + 1}|${n}|${r.text.slice(i * QR_CHUNK, (i + 1) * QR_CHUNK)}`);
+            const m = document.getElementById('setup-wizard-modal'); const c = document.getElementById('setup-wizard-content'); if (!m || !c) return;
+            stopQrTransfer();
+            c.innerHTML = `
+                <div class="space-y-3">
+                    <div class="flex items-start justify-between gap-3">
+                        <div><h3 id="setup-wizard-title" class="text-xl font-black text-slate-900 dark:text-white">QR로 보내기</h3><p class="text-xs text-slate-600 dark:text-slate-300 mt-1">받을 기기에서 <b>나의 교직함 › QR로 받기</b>를 열고 이 화면을 비추세요. QR ${n}장이 차례로 바뀌며, 순서와 상관없이 모이면 복원돼요. 받을 때 <b>같은 비밀번호</b>를 넣어야 해요.</p></div>
+                        <button type="button" onclick="closeSetupWizard()" aria-label="닫기" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div id="qr-send-box" class="mx-auto w-full max-w-[360px] rounded-xl overflow-hidden border border-slate-200"></div>
+                    <div class="flex items-center justify-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-200"><button type="button" id="qr-prev" aria-label="이전 장" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700">‹</button><span id="qr-count" aria-live="polite">1 / ${n}</span><button type="button" id="qr-next" aria-label="다음 장" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700">›</button><button type="button" id="qr-play" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700">일시정지</button></div>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 text-center">QR 안의 자료는 비밀번호로 암호화되어 있어요. 화면 밝기를 높이면 더 잘 읽혀요.</p>
+                </div>`;
+            let i = 0, playing = true;
+            const show = () => { const box = document.getElementById('qr-send-box'); if (!box || m.classList.contains('hidden')) { stopQrTransfer(); return; } box.innerHTML = qrFrameSvg(frames[i]); document.getElementById('qr-count').textContent = `${i + 1} / ${n}`; };
+            document.getElementById('qr-prev').onclick = () => { i = (i - 1 + n) % n; show(); };
+            document.getElementById('qr-next').onclick = () => { i = (i + 1) % n; show(); };
+            document.getElementById('qr-play').onclick = e => { playing = !playing; e.target.textContent = playing ? '일시정지' : '자동 넘김'; };
+            m.classList.remove('hidden'); show();
+            if (n > 1) qrSendTimer = setInterval(() => { if (m.classList.contains('hidden')) { stopQrTransfer(); return; } if (playing) { i = (i + 1) % n; show(); } }, 1300);
+        }
+        async function openQrReceive() {
+            if (!navigator.mediaDevices?.getUserMedia) { showToast('이 브라우저에서는 카메라를 쓸 수 없어요.', 'error'); return; }
+            const m = document.getElementById('setup-wizard-modal'); const c = document.getElementById('setup-wizard-content'); if (!m || !c) return;
+            stopQrTransfer();
+            const pw0 = document.getElementById('full-backup-pw')?.value || '';
+            c.innerHTML = `
+                <div class="space-y-3">
+                    <div class="flex items-start justify-between gap-3">
+                        <div><h3 id="setup-wizard-title" class="text-xl font-black text-slate-900 dark:text-white">QR로 받기</h3><p class="text-xs text-slate-600 dark:text-slate-300 mt-1">보내는 기기의 QR 화면을 카메라에 비추세요. 장이 모두 모이면 비밀번호로 풀어 복원해요.</p></div>
+                        <button type="button" onclick="closeSetupWizard()" aria-label="닫기" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-200">백업 비밀번호<input id="qr-recv-pw" type="password" autocomplete="current-password" value="${escapeHTML(pw0)}" class="mt-1 w-full p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-100"></label>
+                    <video id="qr-video" class="w-full max-h-[45vh] rounded-xl bg-black object-cover" playsinline muted></video>
+                    <p id="qr-recv-status" class="text-sm font-bold text-slate-800 dark:text-slate-100 text-center" aria-live="polite">카메라를 켜는 중…</p>
+                    <div id="qr-recv-bar" class="flex flex-wrap gap-0.5 justify-center"></div>
+                </div>`;
+            m.classList.remove('hidden');
+            const state = qrRecv = { parts: new Map(), id: '', n: 0, stopped: false, stream: null };
+            const status = t => { const el = document.getElementById('qr-recv-status'); if (el) el.textContent = t; };
+            try { state.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false }); }
+            catch (_) { status('카메라를 켜지 못했어요. 브라우저의 카메라 권한을 허용해 주세요.'); qrRecv = null; return; }
+            if (state.stopped) { state.stream.getTracks().forEach(t => t.stop()); return; }
+            const video = document.getElementById('qr-video'); video.srcObject = state.stream; await video.play().catch(() => {});
+            let detector = null;
+            try { if ('BarcodeDetector' in window && (await BarcodeDetector.getSupportedFormats()).includes('qr_code')) detector = new BarcodeDetector({ formats: ['qr_code'] }); } catch (_) {}
+            if (!detector) { try { await loadQrLib('read'); } catch (_) { status('QR 읽기 도구를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.'); stopQrTransfer(); return; } }
+            const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            status('QR을 비춰 주세요');
+            const accept = text => {
+                const mt = /^GB1\|([a-z0-9]{1,8})\|(\d{1,3})\|(\d{1,3})\|([\s\S]*)$/.exec(text || ''); if (!mt) return;
+                const [, id, iStr, nStr, part] = mt; const i = Number(iStr), n = Number(nStr);
+                if (!n || n > QR_MAX_FRAMES || i < 1 || i > n) return;
+                if (state.id !== id) { state.id = id; state.n = n; state.parts.clear(); }
+                state.parts.set(i, part);
+                const bar = document.getElementById('qr-recv-bar');
+                if (bar) bar.innerHTML = Array.from({ length: n }, (_, k) => `<span class="w-2.5 h-2.5 rounded-sm ${state.parts.has(k + 1) ? 'bg-emerald-600' : 'bg-slate-300 dark:bg-slate-600'}"></span>`).join('');
+                status(`받은 장 ${state.parts.size} / ${n}`);
+            };
+            const tick = async () => {
+                if (state.stopped || m.classList.contains('hidden')) { stopQrTransfer(); return; }
+                if (video.readyState >= 2 && video.videoWidth) {
+                    try {
+                        if (detector) (await detector.detect(video)).forEach(code => accept(code.rawValue));
+                        else {
+                            const scale = Math.min(1, 720 / Math.max(video.videoWidth, video.videoHeight));
+                            canvas.width = Math.round(video.videoWidth * scale); canvas.height = Math.round(video.videoHeight * scale);
+                            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                            const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                            const code = window.jsQR(img.data, img.width, img.height, { inversionAttempts: 'dontInvert' });
+                            if (code) accept(code.data);
+                        }
+                    } catch (_) {}
+                }
+                if (state.n && state.parts.size === state.n) {
+                    const text = Array.from({ length: state.n }, (_, k) => state.parts.get(k + 1)).join('');
+                    stopQrTransfer(); status('모두 받았어요. 복원하는 중…');
+                    const ok = await restoreFullEncryptedBackupText(text, document.getElementById('qr-recv-pw')?.value || '');
+                    if (!ok) status('복원하지 못했어요. 비밀번호를 확인하고 다시 받아 주세요.');
+                    return;
+                }
+                setTimeout(tick, 150);
+            };
+            tick();
+        }
         async function importFullEncryptedBackup(e) {
             const f = e.target.files[0]; e.target.value = ''; if (!f) return;
-            const pw = document.getElementById('full-backup-pw')?.value || '';
-            if (!pw) { showToast('백업할 때 설정한 비밀번호를 먼저 입력해 주세요.', 'error'); return; }
-            if (!cryptoReady()) return;
+            await restoreFullEncryptedBackupText(await f.text(), document.getElementById('full-backup-pw')?.value || '');
+        }
+        async function restoreFullEncryptedBackupText(text, pw) {
+            if (!pw) { showToast('백업할 때 설정한 비밀번호를 먼저 입력해 주세요.', 'error'); return false; }
+            if (!cryptoReady()) return false;
             try {
-                const env = JSON.parse(await f.text());
-                if (!env || env.type !== 'full-encrypted') { showToast('통합 암호화 백업 파일이 아닙니다.', 'error'); return; }
+                const env = JSON.parse(text);
+                if (!env || env.type !== 'full-encrypted') { showToast('통합 암호화 백업 파일이 아닙니다.', 'error'); return false; }
+                if (env.z && (env.z !== 'deflate-raw' || typeof DecompressionStream !== 'function')) { showToast('이 브라우저에서는 압축된 백업을 열 수 없어요. 최신 브라우저로 시도해 주세요.', 'error'); return false; }
                 let plain;
                 try {
                     const key = await deriveKey(pw, b64ToBuf(env.salt), env.iterations || 250000);
                     plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64ToBuf(env.iv) }, key, b64ToBuf(env.data));
-                } catch (_) { showToast('비밀번호가 틀렸거나 파일이 손상되었습니다.', 'error'); return; }
+                } catch (_) { showToast('비밀번호가 틀렸거나 파일이 손상되었습니다.', 'error'); return false; }
+                if (env.z) plain = await new Response(new Blob([plain]).stream().pipeThrough(new DecompressionStream(env.z))).arrayBuffer();
                 const payload = JSON.parse(new TextDecoder().decode(plain));
                 if (Vault.isLocked()) { showToast('개인 기록 잠금을 먼저 풀고 다시 가져와 주세요.', 'error'); return; }
                 const generalEntries = payload.general && Object.keys(payload.general).length ? validateBackup(payload.general) : [];
                 const counselList = Array.isArray(payload.counsel) ? payload.counsel : [];
-                if (!confirm(`일반 자료 ${generalEntries.length}종류와 상담 기록 ${counselList.length}건을 복원할까요?`)) return;
+                if (!confirm(`일반 자료 ${generalEntries.length}종류와 상담 기록 ${counselList.length}건을 복원할까요?`)) return false;
                 const failed = [];
                 for (const [k, v] of generalEntries) if (!Storage.set(k, v)) failed.push(k);
                 if (counselList.length) {
@@ -3871,15 +4329,16 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                 }
                 showToast('통합 백업을 복원했습니다. 화면을 새로고침합니다.');
                 setTimeout(() => window.location.reload(), 900);
-            } catch (err) { showToast(err.message || '백업 파일을 읽지 못했습니다.', 'error'); }
+                return true;
+            } catch (err) { showToast(err.message || '백업 파일을 읽지 못했습니다.', 'error'); return false; }
         }
 
         // ====================================================
-        // 개인 기록 잠금 (보호 저장소): 상담 기록·상담 일정·생기부 초안을 비밀번호로 암호화해 IndexedDB에 저장
+        // 개인 기록 잠금 (보호 저장소): 상담 기록·상담 일정·생기부 초안·출결 증빙을 비밀번호로 암호화해 IndexedDB에 저장
         // docs/DATA_CONTRACT.md M01–M05: 암호화 사본을 다시 읽어 검증한 뒤에만 평문을 지우고, 단계를 저장해 중단돼도 이어서 진행
         // ====================================================
         var Vault = {
-            KEYS: ['counsel_records', 'counsel_schedule_opts', 'record_drafts'],
+            KEYS: ['counsel_records', 'counsel_schedule_opts', 'record_drafts', 'attendance_evidence'],
             DB_NAME: 'gb1000-vault', ITERATIONS: 250000, IDLE_MS: 15 * 60 * 1000,
             state: 'off', // off | locked | unlocked | unavailable
             stage: null, db: null, key: null, cache: {}, pending: Promise.resolve(), failed: false,
@@ -3917,7 +4376,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                             this.key = null; this.cache = {}; clearTimeout(this.idleTimer); this.releaseEditLock();
                             this.state = 'off'; this.stage = null;
                             setTimeout(() => this.open().then(fresh => { this.db = fresh; }).catch(() => { this.state = 'unavailable'; }), 300);
-                            if (['counsel', 'tools-record', 'mybox'].includes(router.current)) router.render();
+                            if (['counsel', 'tools-record', 'mybox', 'attendance'].includes(router.current)) router.render();
                         };
                         resolve(db);
                     };
@@ -4004,7 +4463,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                 this.key = null; this.cache = {}; this.state = 'locked'; clearTimeout(this.idleTimer);
                 this.releaseEditLock();
                 if (message) showToast(message, 'info');
-                if (['counsel', 'tools-record', 'mybox'].includes(router.current)) router.render();
+                if (['counsel', 'tools-record', 'mybox', 'attendance'].includes(router.current)) router.render();
             },
             // ---- 켜기 / 이전 (M01–M05) ----
             rawLocal(k) { const out = {}; [Storage.PREFIX, Storage.LEGACY].forEach(p => { const v = localStorage.getItem(p + k); if (v !== null) out[p + k] = v; }); return out; },
@@ -4155,7 +4614,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                             <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-lock text-indigo-500"></i> 개인 기록 잠금</h3>
                             <span class="text-xs font-bold px-2.5 py-1 rounded-lg ${st === 'unlocked' ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' : st === 'locked' ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">${st === 'unlocked' ? '보호 중 · 열림' : st === 'locked' ? '보호 중 · 잠김' : st === 'unavailable' ? '이 브라우저에서 사용 불가' : '꺼짐'}</span>
                         </div>
-                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">상담 기록, 상담주간 일정(학생·학부모 이름), 생기부 초안을 비밀번호로 암호화해 저장합니다. 암호화 사본을 다시 읽어 확인한 다음에만 암호화되지 않은 원래 기록을 지웁니다. 잠긴 동안에는 두 도구를 열 때 비밀번호가 필요하고, 일반 백업에는 이 기록이 들어가지 않습니다(통합 암호화 백업에는 포함).</p>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">상담 기록, 상담주간 일정(학생·학부모 이름), 생기부 초안, 출결 증빙을 비밀번호로 암호화해 저장합니다. 암호화 사본을 다시 읽어 확인한 다음에만 암호화되지 않은 원래 기록을 지웁니다. 잠긴 동안에는 두 도구를 열 때 비밀번호가 필요하고, 일반 백업에는 이 기록이 들어가지 않습니다(통합 암호화 백업에는 포함).</p>
                         ${st === 'off' ? `
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <label class="text-xs font-semibold text-slate-500 dark:text-slate-400">새 비밀번호 (8자 이상)<input id="vault-new-pw" type="password" autocomplete="new-password" class="${field}"></label>
@@ -4603,6 +5062,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                         <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">생기부 문장 도우미</h2><p class="text-sm text-slate-500 dark:text-slate-400">우리 반 학생별로 문장을 조합·저장하고, 나이스 바이트와 기재 금지어를 점검한 뒤 엑셀(CSV)로 한 번에 내보내세요.</p></div>
                         <div class="flex flex-wrap gap-2">
                             <button type="button" onclick="exportRecordsCSV()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow"><i class="fa-solid fa-file-csv mr-1"></i>학급 전체 엑셀(CSV) 내보내기</button>
+                            <button type="button" onclick="openRecordAudit()" class="px-3.5 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200 text-xs font-bold"><i class="fa-solid fa-list-check mr-1"></i>반 전체 마감 점검</button>
                             <button type="button" onclick="openSetupWizard()" class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold"><i class="fa-solid fa-users mr-1"></i>학생 명단 편집</button>
                         </div>
                     </div>
@@ -4798,6 +5258,44 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             const merged = [...new Set([...cur, ...decoded.list.filter(x => typeof x === 'string' && x.trim()).map(x => x.trim().slice(0, 200))])].slice(-100);
             if (Storage.set('record_my_phrases', merged)) { showToast(`문장 ${merged.length - cur.length}개를 추가했습니다!`); router.render(); }
         }
+        // 학기말 마감 점검: 학생 × 영역별 빈 칸·바이트 초과·금지어/주의 표현을 한 표로
+        function recordAuditRows() {
+            const drafts = getRecordDrafts();
+            return getRecordStudents().map(st => ({ student: st, cells: RECORD_AREAS.map(a => {
+                const text = drafts[recordDraftKey(a.id, st)] || ''; const bytes = neisBytes(text); const limit = getRecordLimit(a.id);
+                const hits = text.trim() ? checkRecord(text) : [];
+                const ban = hits.filter(h => h.rule.level === '금지').length, warn = hits.length - ban;
+                const status = !text.trim() ? 'empty' : bytes > limit ? 'over' : ban ? 'ban' : warn ? 'warn' : 'ok';
+                return { area: a.id, bytes, limit, ban, warn, status };
+            }) }));
+        }
+        function openRecordAudit() {
+            if (Vault.isLocked()) { showToast('개인 기록 잠금을 먼저 풀어 주세요.', 'error'); return; }
+            captureRecordDraft(); saveRecordDraftNow();
+            const rows = recordAuditRows();
+            const m = document.getElementById('setup-wizard-modal'); const c = document.getElementById('setup-wizard-content'); if (!m || !c) return;
+            const label = { empty: ['빈칸', 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'], over: ['바이트 초과', 'bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-200'], ban: ['금지어', 'bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-200'], warn: ['주의 표현', 'bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-200'], ok: ['통과', 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200'] };
+            const count = k => rows.reduce((n, r) => n + r.cells.filter(x => x.status === k).length, 0);
+            c.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div><h3 id="setup-wizard-title" class="text-xl font-black text-slate-900 dark:text-white">반 전체 생기부 마감 점검</h3>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 mt-1">학생 ${rows.length}명 · 통과 ${count('ok')} · 주의 ${count('warn')} · 금지어 ${count('ban')} · 바이트 초과 ${count('over')} · 빈칸 ${count('empty')}</p></div>
+                        <button type="button" onclick="closeSetupWizard()" aria-label="닫기" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    ${rows.length ? `<div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700"><table class="w-full text-xs min-w-[460px]">
+                        <thead class="bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300"><tr><th class="p-2 text-left">학생</th>${RECORD_AREAS.map(a => `<th class="p-2 text-left">${({ behavior: '행동특성', subject: '교과 세특', activity: '창체 특기사항' })[a.id] || escapeHTML(a.name)}</th>`).join('')}</tr></thead>
+                        <tbody>${rows.map(r => `<tr class="border-t border-slate-100 dark:border-slate-700"><td class="p-2 font-bold text-slate-800 dark:text-slate-100">${escapeHTML(r.student)}</td>${r.cells.map(x => `<td class="p-1.5"><button type="button" data-st="${escapeHTML(r.student)}" data-area="${x.area}" onclick="recordStudent = this.dataset.st; recordArea = this.dataset.area; closeSetupWizard(); router.render();" class="w-full text-left px-2 py-1 rounded-lg font-bold ${label[x.status][1]}" title="눌러서 이 칸 고치기">${label[x.status][0]}${x.status === 'over' ? ` ${x.bytes}/${x.limit}` : x.status === 'ban' ? ` ${x.ban}` : x.status === 'warn' ? ` ${x.warn}` : ''}</button></td>`).join('')}</tr>`).join('')}</tbody>
+                    </table></div>` : '<p class="text-sm text-slate-600 dark:text-slate-300">학생 명단이 없어요. 학생 명단을 먼저 넣어 주세요.</p>'}
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">칸을 누르면 그 학생의 그 영역으로 이동해요. 금지어·주의는 단순 패턴 점검이므로 최종 판단은 당해 연도 기재요령을 따르세요.</p>
+                    <div class="flex justify-end gap-2"><button type="button" onclick="printRecordAudit()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold"><i class="fa-solid fa-print"></i> 점검표 인쇄</button></div>
+                </div>`;
+            m.classList.remove('hidden');
+        }
+        function printRecordAudit() {
+            const rows = recordAuditRows(); const name = { empty: '빈칸', over: '초과', ban: '금지어', warn: '주의', ok: '○' };
+            printHTML(`<h1>생기부 마감 점검표</h1><p style="font-size:10pt;margin:0 0 4mm">${escapeHTML(getSettings().className || '')} · ${ymd(new Date())}</p><table style="width:100%;border-collapse:collapse;font-size:10pt" border="1" cellpadding="4"><thead><tr><th>학생</th>${RECORD_AREAS.map(a => `<th>${escapeHTML(a.name)}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr><td>${escapeHTML(r.student)}</td>${r.cells.map(x => `<td style="text-align:center">${name[x.status]}${x.status === 'over' ? ` (${x.bytes}/${x.limit})` : ''}</td>`).join('')}</tr>`).join('')}</tbody></table>`);
+        }
         function exportRecordsCSV() {
             captureRecordDraft(); saveRecordDraftNow();
             const drafts = getRecordDrafts();
@@ -4833,6 +5331,96 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
 
         function getCounsel() { const l = Storage.get('counsel_records', []); return Array.isArray(l) ? l : []; }
         function saveCounsel(list) { return Storage.set('counsel_records', list); }
+        // ---------- 출결 증빙 체크 (학생별 결석 종류·기간 → 받아야 할 서류·마감, 받음 체크, 누락 목록) ----------
+        function getAttendance() { const v = Storage.get('attendance_evidence', []); return Array.isArray(v) ? v.filter(validAttendanceRecord) : []; }
+        function attendanceDue(r) { const d = parseYMD(r.to); d.setDate(d.getDate() + (ATT_KINDS[r.kind]?.days || 5)); return d; }
+        function attendancePending() {
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            return getAttendance().filter(r => !r.received).map(r => ({ ...r, due: attendanceDue(r), left: Math.round((attendanceDue(r) - today) / 86400000) })).sort((a, b) => a.due - b.due);
+        }
+        function renderAttendance(container) {
+            if (Vault.isLocked()) { container.innerHTML = vaultLockHTML('출결 증빙') + FOOTER_HTML; setTimeout(() => document.getElementById('vault-pw')?.focus(), 30); return; }
+            const all = getAttendance(); const pending = attendancePending();
+            const late = pending.filter(r => r.left < 0).length;
+            const names = parseNameList(Storage.get('class_names', ''));
+            const field = 'w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm outline-none mt-1';
+            const today = ymd(new Date());
+            const fmt = s => { const d = parseYMD(s); return `${d.getMonth() + 1}/${d.getDate()}`; };
+            const row = r => {
+                const due = attendanceDue(r); const left = Math.round((due - parseYMD(today)) / 86400000);
+                return `<li class="p-3 rounded-xl border ${r.received ? 'border-slate-200 dark:border-slate-700 opacity-70' : left < 0 ? 'border-rose-300 dark:border-rose-700' : 'border-slate-200 dark:border-slate-700'} bg-white dark:bg-slate-800 flex flex-wrap items-start gap-3">
+                    <input type="checkbox" ${r.received ? 'checked' : ''} data-id="${escapeHTML(r.id)}" onchange="toggleAttendanceReceived(this.dataset.id)" aria-label="${escapeHTML(r.student)} 서류 받음" class="w-5 h-5 mt-0.5 shrink-0 accent-emerald-600 cursor-pointer">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold text-slate-900 dark:text-white">${escapeHTML(r.student)} <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">${escapeHTML(ATT_KINDS[r.kind].label)} · ${fmt(r.from)}${r.to !== r.from ? `~${fmt(r.to)}` : ''}</span></p>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5">${escapeHTML(ATT_KINDS[r.kind].docs)}</p>
+                    </div>
+                    <span class="shrink-0 text-xs font-bold ${r.received ? 'text-emerald-700 dark:text-emerald-300' : left < 0 ? 'text-rose-700 dark:text-rose-300' : 'text-slate-600 dark:text-slate-300'}">${r.received ? '받음' : left < 0 ? `${-left}일 지남` : left === 0 ? '오늘 마감' : `마감 D-${left}`}</span>
+                    <button type="button" data-id="${escapeHTML(r.id)}" onclick="deleteAttendance(this.dataset.id)" aria-label="삭제" class="shrink-0 text-slate-500 hover:text-rose-600"><i class="fa-solid fa-trash"></i></button>
+                </li>`;
+            };
+            const sorted = [...all].sort((a, b) => (a.received - b.received) || (attendanceDue(a) - attendanceDue(b)));
+            container.innerHTML = `
+                <div class="space-y-6 animate-fade-in">
+                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">출결 증빙 체크</h2><p class="text-sm text-slate-500 dark:text-slate-400">결석 종류를 고르면 받아야 할 서류와 마감을 알려 주고, 받았는지 체크해 학기말 누락을 막아요.</p></div>
+                    <div class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 text-xs text-amber-800 dark:text-amber-200 leading-relaxed">
+                        <b><i class="fa-solid fa-lock"></i> 개인정보 안내</b> — 학생 이름과 결석 기록은 서버로 보내지 않고 <b>이 기기에만</b> 저장돼요. ${Vault.state === 'unlocked' ? '<b>개인 기록 잠금</b>으로 암호화되어 있어요.' : `<button type="button" onclick="router.navigate('mybox', 'vault')" class="font-bold underline">나의 교직함 › 개인 기록 잠금</button>을 켜면 비밀번호로 암호화돼요.`} 서류 마감(결석 후 며칠 이내)은 일반적인 기준이며 <b>학교 학업성적관리규정</b>을 따르세요. 공식 출결 처리는 나이스에서 합니다.
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-3">
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white">결석 기록 추가</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <label class="text-xs font-bold text-slate-600 dark:text-slate-300">학생<input id="att-student" list="att-names" maxlength="30" placeholder="이름" class="${field}"><datalist id="att-names">${names.map(n => `<option value="${escapeHTML(n)}">`).join('')}</datalist></label>
+                            <label class="text-xs font-bold text-slate-600 dark:text-slate-300">종류<select id="att-kind" onchange="document.getElementById('att-docs').textContent = ATT_KINDS[this.value].docs" class="${field}">${Object.entries(ATT_KINDS).map(([k, v]) => `<option value="${k}">${v.label}</option>`).join('')}</select></label>
+                            <label class="text-xs font-bold text-slate-600 dark:text-slate-300">시작일<input id="att-from" type="date" value="${today}" class="${field}"></label>
+                            <label class="text-xs font-bold text-slate-600 dark:text-slate-300">종료일<input id="att-to" type="date" value="${today}" class="${field}"></label>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300"><b>받을 서류:</b> <span id="att-docs">${escapeHTML(ATT_KINDS.sick.docs)}</span></p>
+                        <div class="flex justify-end"><button type="button" onclick="addAttendance()" class="px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-bold">추가</button></div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-white">기록 ${all.length}건 · 서류 안 받음 <span class="${pending.length ? 'text-rose-700 dark:text-rose-300' : ''}">${pending.length}건</span>${late ? ` (마감 지남 ${late}건)` : ''}</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <button type="button" onclick="copyAttendanceMissing()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold">누락 목록 복사</button>
+                                <button type="button" onclick="clearReceivedAttendance()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold">받은 기록 정리</button>
+                            </div>
+                        </div>
+                        ${sorted.length ? `<ul class="space-y-2">${sorted.map(row).join('')}</ul>` : '<p class="text-sm text-slate-500 dark:text-slate-400 text-center py-6">아직 기록이 없어요. 결석한 학생이 생기면 위에서 추가하세요.</p>'}
+                    </div>
+                </div>
+            ` + FOOTER_HTML;
+        }
+        function addAttendance() {
+            const student = (document.getElementById('att-student')?.value || '').trim().slice(0, 30);
+            const kind = document.getElementById('att-kind')?.value; let from = document.getElementById('att-from')?.value, to = document.getElementById('att-to')?.value;
+            if (!student) { showToast('학생 이름을 넣어 주세요.', 'error'); return; }
+            if (!validBackupDate(from) || !validBackupDate(to)) { showToast('날짜를 골라 주세요.', 'error'); return; }
+            if (to < from) [from, to] = [to, from];
+            const list = getAttendance();
+            if (list.length >= 500) { showToast('기록이 500건으로 가득 찼어요. 받은 기록을 정리해 주세요.', 'error'); return; }
+            list.push({ id: `a${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`, student, kind, from, to, received: false });
+            if (Storage.set('attendance_evidence', list)) { showToast(`${student} 학생 기록을 추가했어요.`); router.render(); }
+        }
+        function toggleAttendanceReceived(id) {
+            const list = getAttendance(); const r = list.find(x => x.id === id); if (!r) return;
+            r.received = !r.received;
+            if (Storage.set('attendance_evidence', list)) router.render();
+        }
+        function deleteAttendance(id) {
+            if (!confirm('이 기록을 지울까요?')) return;
+            if (Storage.set('attendance_evidence', getAttendance().filter(x => x.id !== id))) router.render();
+        }
+        function clearReceivedAttendance() {
+            const list = getAttendance(); const n = list.filter(x => x.received).length;
+            if (!n) { showToast('정리할 받은 기록이 없어요.', 'info'); return; }
+            if (!confirm(`서류를 받은 기록 ${n}건을 지울까요?`)) return;
+            if (Storage.set('attendance_evidence', list.filter(x => !x.received))) router.render();
+        }
+        function copyAttendanceMissing() {
+            const pending = attendancePending();
+            if (!pending.length) { showToast('받지 않은 서류가 없어요.', 'success'); return; }
+            const fmt = s => { const d = parseYMD(s); return `${d.getMonth() + 1}/${d.getDate()}`; };
+            copyText(`[출결 증빙 미제출 ${pending.length}건]\n` + pending.map(r => `- ${r.student} · ${ATT_KINDS[r.kind].label} ${fmt(r.from)}${r.to !== r.from ? `~${fmt(r.to)}` : ''} · ${r.left < 0 ? `${-r.left}일 지남` : `마감 D-${r.left}`}`).join('\n'), '누락 목록을 복사했어요.');
+        }
         function counselStudents() { return [...new Set([...parseNameList(Storage.get('class_names', '')), ...getCounsel().map(r => r.student).filter(Boolean)])]; }
 
         function renderCounsel(container) {
@@ -5230,6 +5818,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
         function closeSetupWizard() {
             const m = document.getElementById('setup-wizard-modal');
             if (m) m.classList.add('hidden');
+            if (typeof stopQrTransfer === 'function') stopQrTransfer(); // QR 보내기·받기 중이면 카메라·타이머 정리
         }
         // 공용 팝업(SOS·학급 세팅·계산기·의견 보내기 등): 열리면 팝업 안으로 포커스, Tab은 팝업 안에서만 돌고, 닫히면 원래 자리로
         (() => {
@@ -5327,14 +5916,14 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             const m = document.getElementById('setup-wizard-modal');
             const c = document.getElementById('setup-wizard-content');
             if (!m || !c) return;
-            currentCalcTab = ['att', 'sick', 'trip'].includes(tab) ? tab : 'att';
+            currentCalcTab = ['att', 'sick', 'trip', 'duty'].includes(tab) ? tab : 'att';
             const todayStr = ymd(new Date());
             c.innerHTML = `
                 <div class="space-y-4">
                     <div class="flex items-start justify-between gap-3">
                         <div>
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 text-xs font-extrabold mb-1.5">🧮 헷갈리는 일수·시간 1초 자동 계산</span>
-                            <h3 id="setup-wizard-title" class="text-xl font-black text-slate-900 dark:text-white">교무실 실무 미니 계산기 3종</h3>
+                            <h3 id="setup-wizard-title" class="text-xl font-black text-slate-900 dark:text-white">교무실 실무 계산기 · 복무 도우미</h3>
                         </div>
                         <button type="button" onclick="closeSetupWizard()" aria-label="닫기" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark"></i></button>
                     </div>
@@ -5342,6 +5931,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                         <button type="button" onclick="openCalcModal('att')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${currentCalcTab === 'att' ? 'bg-indigo-600 text-white shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">📅 수업일수 2/3 출석</button>
                         <button type="button" onclick="openCalcModal('sick')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${currentCalcTab === 'sick' ? 'bg-indigo-600 text-white shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">🏥 병가 6일(48시간) 누계</button>
                         <button type="button" onclick="openCalcModal('trip')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${currentCalcTab === 'trip' ? 'bg-indigo-600 text-white shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">🚌 체험학습 평일 일수</button>
+                        <button type="button" onclick="openCalcModal('duty')" class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${currentCalcTab === 'duty' ? 'bg-indigo-600 text-white shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}">🗂️ 복무 신청 도우미</button>
                     </div>
                     ${currentCalcTab === 'att' ? `
                         <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-3">
@@ -5356,7 +5946,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                             </div>
                             <div id="calc-modal-result" class="p-3.5 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-xs space-y-1"></div>
                         </div>
-                    ` : currentCalcTab === 'sick' ? `
+                    ` : currentCalcTab === 'duty' ? dutyHelperHTML(todayStr) : currentCalcTab === 'sick' ? `
                         <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-3">
                             <p class="text-xs text-slate-500 dark:text-slate-400">연간 일반병가(지각·조퇴·외출 누계 포함, 8시간=1일)가 <b>6일(48시간)을 초과</b>하면 의료법상 진단서 첨부가 필수입니다.</p>
                             <div class="grid grid-cols-3 gap-2.5">
@@ -5388,6 +5978,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                     `}
                 </div>`;
             m.classList.remove('hidden');
+            c.querySelector(`[onclick="openCalcModal('${currentCalcTab}')"]`)?.scrollIntoView({ inline: 'center', block: 'nearest' }); // 옆으로 넘친 탭도 보이게
             refreshCalcModalResult();
         }
 
@@ -5400,6 +5991,8 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                     <p class="font-extrabold text-indigo-900 dark:text-indigo-200 text-sm">✅ 수료 최소 출석일수: <span class="underline">${res.requiredDays}일</span> 이상 (최대 결석 허용: ${res.maxAbsentDays}일)</p>
                     <p class="text-slate-700 dark:text-slate-300 font-semibold">${res.remainAllowance >= 0 ? `현재 결석 ${res.currentAbsent}일 반영 시 수료 마지노선까지 ${res.remainAllowance}일 여유가 있습니다.` : `⚠️ 수료 기준 출석일수보다 ${Math.abs(res.remainAllowance)}일 부족합니다(유급·미수료 주의).`}</p>
                 `;
+            } else if (currentCalcTab === 'duty') {
+                refreshDutyHelper(box);
             } else if (currentCalcTab === 'sick') {
                 const res = calcSickLeave6(document.getElementById('calc-sick-d')?.value, document.getElementById('calc-sick-h')?.value, document.getElementById('calc-sick-m')?.value);
                 box.innerHTML = `
@@ -5415,6 +6008,79 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             }
         }
 
+        // 복무 신청 도우미: 종류·날짜·시간 → 사용 시간, 겹치는 수업(시간표), 진단서 필요 여부, 나이스 입력 순서, 교감 보고 메시지
+        const DUTY_TYPES = { leave: { name: '연가', term: 3001 }, sick: { name: '병가', term: 1001 }, trip: { name: '출장', term: 3003 } };
+        function planDutyRequest({ type = 'leave', date = '', allDay = true, start = '09:00', end = '13:00', reason = '', sickDays = 0, sickHours = 0, timetable = null } = {}) {
+            const t = DUTY_TYPES[type] ? type : 'leave';
+            const d = parseYMD(date); const valid = !isNaN(d);
+            const s = allDay ? 8 * 60 + 40 : toMin(start), e = allDay ? 16 * 60 + 40 : toMin(end);
+            const minutes = allDay ? 480 : Math.max(0, e - s);
+            const hoursLabel = allDay ? '하루(8시간)' : `${Math.floor(minutes / 60)}시간${minutes % 60 ? ` ${minutes % 60}분` : ''}`;
+            const partOf = e >= 16 * 60 + 30 ? '조퇴' : s <= 9 * 60 ? '지각' : '외출'; // 시간 단위: 퇴근 무렵까지면 조퇴, 출근 무렵부터면 지각, 그 사이는 외출
+            const kind = t === 'trip' ? '출장' : allDay ? DUTY_TYPES[t].name : (t === 'leave' && minutes === 240 ? '반일 연가' : `${DUTY_TYPES[t].name}(${partOf})`);
+            const dayIdx = valid ? d.getDay() - 1 : -1;
+            const classes = [];
+            if (timetable && dayIdx >= 0 && dayIdx < 5) timetable.periods.forEach((p, i) => {
+                const subj = (timetable.grid[dayIdx] || [])[i];
+                if (subj && toMin(p.start) < e && toMin(p.end) > s) classes.push(`${i + 1}교시(${subj})`);
+            });
+            const usedMin = Math.max(0, Number(sickDays) || 0) * 480 + Math.max(0, Number(sickHours) || 0) * 60;
+            const afterMin = usedMin + (t === 'sick' ? minutes : 0);
+            const needsDoctor = t === 'sick' && afterMin > 6 * 480;
+            const evidence = t === 'sick' ? (needsDoctor ? `진단서 첨부 필요 — 이번 신청까지 올해 병가 누계가 ${Math.floor(afterMin / 480)}일 ${Math.round(afterMin % 480 / 60)}시간으로 6일을 넘어요.` : `진단서 없이 신청 가능 — 이번 신청까지 누계 ${Math.floor(afterMin / 480)}일 ${Math.round(afterMin % 480 / 60)}시간 (6일 이하). 학교 규정은 확인하세요.`)
+                : t === 'trip' ? '출장 근거 공문(연수·회의 안내 등)을 첨부하고, 다녀온 뒤 필요하면 결과 보고(복명)를 해요.' : '연가는 따로 증빙이 필요 없어요.';
+            const when = valid ? `${d.getMonth() + 1}/${d.getDate()}(${'일월화수목금토'[d.getDay()]})${allDay ? '' : ` ${start}~${end}`}` : '';
+            const message = `교감 선생님, ${when} ${kind}${reason ? `(${reason})` : ''} 신청하려고 합니다.${classes.length ? ` 해당 시간에 ${classes.join(', ')} 수업이 있어 보결 부탁드립니다.` : ''} 나이스로 바로 상신하겠습니다.`;
+            const steps = [
+                classes.length ? `교감 선생님께 먼저 알리고 보결 요청 — 겹치는 수업: ${classes.join(', ')}` : '교감 선생님께 먼저 알리기 (겹치는 수업이 없어도 미리 보고)',
+                `4세대 나이스 [나의메뉴 > 복무 > 개인근무상황신청]에서 '${kind}' 선택 → 기간 ${when || '(날짜)'} → 사유${t === 'trip' ? '·출장지·목적' : ''} 입력 → 상신`,
+                evidence
+            ];
+            if (t === 'leave' && !allDay) steps.push('시간 단위로 쓴 연가(지각·조퇴·외출)는 모아서 8시간이 되면 연가 1일로 빠져요.');
+            if (classes.length) steps.push('보결 수업 자료(차시·학습지·학생 특이사항)를 한 장으로 남겨 두기');
+            return { valid, kind, hoursLabel, minutes, classes, needsDoctor, steps, message, term: DUTY_TYPES[t].term };
+        }
+        function dutyHelperHTML(todayStr) {
+            const f = 'mt-1 w-full p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-100';
+            return `
+                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 space-y-3">
+                            <p class="text-xs text-slate-600 dark:text-slate-300">종류와 날짜를 넣으면 겹치는 수업(내 시간표), 진단서 필요 여부, 나이스 입력 순서, 교감 선생님께 보낼 메시지를 만들어요. 입력 내용은 저장하지 않아요.</p>
+                            <div class="grid grid-cols-2 gap-2.5">
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200">종류<select id="duty-type" onchange="refreshCalcModalResult()" class="${f}"><option value="leave">연가</option><option value="sick">병가</option><option value="trip">출장</option></select></label>
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200">날짜<input id="duty-date" type="date" value="${todayStr}" onchange="refreshCalcModalResult()" class="${f}"></label>
+                            </div>
+                            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-200"><input id="duty-allday" type="checkbox" checked onchange="refreshCalcModalResult()" class="w-4 h-4"> 하루 종일</label>
+                            <div id="duty-times" class="grid grid-cols-2 gap-2.5 hidden">
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200">시작<input id="duty-start" type="time" value="13:00" onchange="refreshCalcModalResult()" class="${f}"></label>
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200">끝<input id="duty-end" type="time" value="16:40" onchange="refreshCalcModalResult()" class="${f}"></label>
+                            </div>
+                            <label class="text-xs font-bold text-slate-700 dark:text-slate-200">사유 (선택, 짧게)<input id="duty-reason" type="text" maxlength="30" placeholder="예: 병원 진료, 가족 행사" oninput="refreshCalcModalResult()" class="${f}"></label>
+                            <div id="duty-sick" class="grid grid-cols-2 gap-2.5 hidden">
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200">올해 쓴 병가 (일)<input id="duty-sick-d" type="number" min="0" max="60" value="0" oninput="refreshCalcModalResult()" class="${f}"></label>
+                                <label class="text-xs font-bold text-slate-700 dark:text-slate-200">+ 시간<input id="duty-sick-h" type="number" min="0" max="200" value="0" oninput="refreshCalcModalResult()" class="${f}"></label>
+                            </div>
+                            <div id="calc-modal-result" class="p-3.5 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-xs space-y-2"></div>
+                        </div>`;
+        }
+        function refreshDutyHelper(box) {
+            const val = id => document.getElementById(id)?.value || '';
+            const type = val('duty-type') || 'leave', allDay = !!document.getElementById('duty-allday')?.checked;
+            document.getElementById('duty-times')?.classList.toggle('hidden', allDay);
+            document.getElementById('duty-sick')?.classList.toggle('hidden', type !== 'sick');
+            const r = planDutyRequest({ type, date: val('duty-date'), allDay, start: val('duty-start'), end: val('duty-end'), reason: val('duty-reason').trim(), sickDays: val('duty-sick-d'), sickHours: val('duty-sick-h'), timetable: getTimetable() });
+            if (!r.valid) { box.innerHTML = '<p class="font-bold text-slate-700 dark:text-slate-200">날짜를 골라 주세요.</p>'; return; }
+            if (!allDay && r.minutes <= 0) { box.innerHTML = '<p class="font-bold text-rose-700 dark:text-rose-300">끝 시각이 시작 시각보다 늦어야 해요.</p>'; return; }
+            box.innerHTML = `
+                    <p class="font-extrabold text-indigo-900 dark:text-indigo-200 text-sm">🗂️ ${escapeHTML(r.kind)} · ${escapeHTML(r.hoursLabel)}</p>
+                    ${r.needsDoctor ? '<p class="font-extrabold text-rose-700 dark:text-rose-300">⚠️ 진단서가 필요해요</p>' : ''}
+                    <ol class="list-decimal pl-4 space-y-1 text-slate-700 dark:text-slate-200">${r.steps.map(st => `<li>${escapeHTML(st)}</li>`).join('')}</ol>
+                    <div class="p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-indigo-100 dark:border-slate-700">
+                        <div class="flex items-center justify-between gap-2 mb-1"><span class="font-bold text-slate-500 dark:text-slate-400">교감 선생님께 보낼 메시지</span><button type="button" id="duty-copy" class="font-bold text-blue-700 dark:text-blue-300 hover:underline">복사</button></div>
+                        <p class="text-slate-800 dark:text-slate-100">${escapeHTML(r.message)}</p>
+                    </div>
+                    <button type="button" data-id="${r.term}" onclick="closeSetupWizard(); openDetail(Number(this.dataset.id))" class="font-bold text-blue-700 dark:text-blue-300 hover:underline">'${escapeHTML(DUTY_TYPES[type]?.name || '연가')}' 규정 자세히 보기 →</button>`;
+            document.getElementById('duty-copy').onclick = () => copyText(r.message, '메시지를 복사했어요. 메신저에 붙여 넣으세요.');
+        }
         function openGuideModal() {
             const m = document.getElementById('setup-wizard-modal');
             const c = document.getElementById('setup-wizard-content');
@@ -5526,6 +6192,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             ['timetable', '시간표 · 종 알림', '주간 시간표 관리 및 수업 시작/종료 알림'],
             ['tools-record', '생기부 문장 도우미', '학생별 작성 · 나이스 바이트 · 금지어 점검 · 엑셀 저장'],
             ['counsel', '학부모 상담 기록장', '상담 기록 · 상담주간 시간표 자동 배정 · 암호화 백업'],
+            ['attendance', '출결 증빙 체크', '결석 종류별 서류 · 제출 마감 · 누락 목록'],
             ['start', '역할별 시작 코스', '신규·담임·전입·부장 맞춤 순서 안내'],
             ['year', '교사의 1년 타임라인', '월별 주요 학사·행정 업무 체크 및 달력(.ics) 내보내기'],
             ['career', '교직 커리어맵', '수석교사 · 장학사 · 교감/교장 성장 경로'],

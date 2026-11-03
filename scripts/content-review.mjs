@@ -3,6 +3,7 @@
 //
 //   node scripts/content-review.mjs status
 //   node scripts/content-review.mjs sources
+//   node scripts/content-review.mjs queue          (검수 우선 20개와 대조할 근거)
 //   node scripts/content-review.mjs show term:4
 //   node scripts/content-review.mjs mark term:4 --source law-school-violence [--source ...] [--date 2026-10-25] [--scope 전국 공통]
 //   node scripts/content-review.mjs flag term:4      (지침 변경 확인 필요로 표시)
@@ -35,6 +36,15 @@ switch (cmd) {
     const counts = {};
     for (const record of Object.values(meta.items)) counts[record.reviewStatus] = (counts[record.reviewStatus] || 0) + 1;
     console.log(`전체 ${Object.keys(meta.items).length}개`, counts);
+    break;
+  }
+  case 'queue': {
+    for (const entry of meta.reviewPriority || []) {
+      const record = meta.items[entry.id] || {};
+      const mark = record.reviewStatus === 'reviewed' ? `✅ ${record.checkedAt}` : '📝 검수 전';
+      const srcs = (entry.suggestedSourceIds || []).map(id => meta.sources.find(src => src.id === id)?.title || id).join(', ');
+      console.log(`${entry.id.padEnd(11)} ${mark.padEnd(14)} 근거: ${srcs}`);
+    }
     break;
   }
   case 'sources':

@@ -177,6 +177,18 @@
       "title": "연구대회 관리에 관한 훈령",
       "kind": "교육부훈령",
       "url": "https://www.law.go.kr/admRulSc.do?menuId=5&query=%EC%97%B0%EA%B5%AC%EB%8C%80%ED%9A%8C%20%EA%B4%80%EB%A6%AC%EC%97%90%20%EA%B4%80%ED%95%9C%20%ED%9B%88%EB%A0%B9"
+    },
+    {
+      "id": "law-child-abuse",
+      "title": "아동학대범죄의 처벌 등에 관한 특례법",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/lsSc.do?menuId=1&query=%EC%95%84%EB%8F%99%ED%95%99%EB%8C%80%EB%B2%94%EC%A3%84%EC%9D%98%20%EC%B2%98%EB%B2%8C%20%EB%93%B1%EC%97%90%20%EA%B4%80%ED%95%9C%20%ED%8A%B9%EB%A1%80%EB%B2%95"
+    },
+    {
+      "id": "reg-travel",
+      "title": "공무원 여비 규정",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/lsSc.do?menuId=1&query=%EA%B3%B5%EB%AC%B4%EC%9B%90%20%EC%97%AC%EB%B9%84%20%EA%B7%9C%EC%A0%95"
     }
   ],
   "items": {
@@ -1295,6 +1307,181 @@
       "checkedAt": null,
       "scope": null,
       "sourceIds": []
+    },
+    "term:3001": {
+      "reviewStatus": "needs-review",
+      "checkedAt": null,
+      "scope": null,
+      "sourceIds": []
+    },
+    "term:3002": {
+      "reviewStatus": "needs-review",
+      "checkedAt": null,
+      "scope": null,
+      "sourceIds": []
+    },
+    "term:3003": {
+      "reviewStatus": "needs-review",
+      "checkedAt": null,
+      "scope": null,
+      "sourceIds": []
+    },
+    "term:3004": {
+      "reviewStatus": "needs-review",
+      "checkedAt": null,
+      "scope": null,
+      "sourceIds": []
+    },
+    "term:3005": {
+      "reviewStatus": "needs-review",
+      "checkedAt": null,
+      "scope": null,
+      "sourceIds": []
+    },
+    "term:3006": {
+      "reviewStatus": "needs-review",
+      "checkedAt": null,
+      "scope": null,
+      "sourceIds": []
+    },
+    "term:3007": {
+      "reviewStatus": "needs-review",
+      "checkedAt": null,
+      "scope": null,
+      "sourceIds": []
+    },
+    "term:3008": {
+      "reviewStatus": "needs-review",
+      "checkedAt": null,
+      "scope": null,
+      "sourceIds": []
     }
-  }
+  },
+  "reviewPriority": [
+    {
+      "id": "term:1001",
+      "suggestedSourceIds": [
+        "reg-service"
+      ]
+    },
+    {
+      "id": "term:3001",
+      "suggestedSourceIds": [
+        "reg-service"
+      ]
+    },
+    {
+      "id": "term:80",
+      "suggestedSourceIds": [
+        "rule-student-record",
+        "law-elem-sec-edu-decree"
+      ]
+    },
+    {
+      "id": "term:78",
+      "suggestedSourceIds": [
+        "rule-student-record"
+      ]
+    },
+    {
+      "id": "term:79",
+      "suggestedSourceIds": [
+        "rule-student-record",
+        "law-elem-sec-edu"
+      ]
+    },
+    {
+      "id": "term:4",
+      "suggestedSourceIds": [
+        "law-school-violence"
+      ]
+    },
+    {
+      "id": "term:2004",
+      "suggestedSourceIds": [
+        "law-school-violence"
+      ]
+    },
+    {
+      "id": "term:2005",
+      "suggestedSourceIds": [
+        "law-school-violence"
+      ]
+    },
+    {
+      "id": "term:2001",
+      "suggestedSourceIds": [
+        "rule-student-record",
+        "law-elem-sec-edu"
+      ]
+    },
+    {
+      "id": "term:120",
+      "suggestedSourceIds": [
+        "law-school-safety",
+        "law-elem-sec-edu"
+      ]
+    },
+    {
+      "id": "term:3",
+      "suggestedSourceIds": [
+        "law-local-contract"
+      ]
+    },
+    {
+      "id": "term:3007",
+      "suggestedSourceIds": [
+        "law-child-abuse"
+      ]
+    },
+    {
+      "id": "term:97",
+      "suggestedSourceIds": [
+        "law-teacher-status"
+      ]
+    },
+    {
+      "id": "term:2003",
+      "suggestedSourceIds": [
+        "law-teacher-status"
+      ]
+    },
+    {
+      "id": "term:3002",
+      "suggestedSourceIds": [
+        "law-edu-officials"
+      ]
+    },
+    {
+      "id": "term:16",
+      "suggestedSourceIds": [
+        "law-edu-officials"
+      ]
+    },
+    {
+      "id": "term:3005",
+      "suggestedSourceIds": [
+        "reg-allowance"
+      ]
+    },
+    {
+      "id": "term:3004",
+      "suggestedSourceIds": [
+        "reg-allowance"
+      ]
+    },
+    {
+      "id": "term:89",
+      "suggestedSourceIds": [
+        "law-elem-sec-edu-decree"
+      ]
+    },
+    {
+      "id": "term:10",
+      "suggestedSourceIds": [
+        "law-school-safety"
+      ]
+    }
+  ],
+  "reviewPriorityNote": "많이 찾고 틀리면 곤란한 용어 20개. 앱의 나의 교직함 › 내용 검수 현황에서 대조표를 내려받아 확인한 뒤, node scripts/content-review.mjs mark 로 기록합니다."
 }
