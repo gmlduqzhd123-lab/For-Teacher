@@ -2514,7 +2514,7 @@ ${weeklyAgendaHTML()}
 
                     ${item.tip ? `
                     <div class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/40 text-amber-900 dark:text-amber-200">
-                        <h4 class="font-extrabold text-xs mb-1.5 flex items-center gap-1.5 text-amber-800 dark:text-amber-300"><i class="fa-solid fa-lightbulb"></i> 엽쌤의 실무 팁</h4>
+                        <h3 class="font-extrabold text-xs mb-1.5 flex items-center gap-1.5 text-amber-800 dark:text-amber-300"><i class="fa-solid fa-lightbulb"></i> 엽쌤의 실무 팁</h3>
                         <p class="font-medium leading-relaxed text-xs sm:text-sm">${escapeHTML(item.tip)}</p>
                     </div>` : ''}
 
@@ -3936,6 +3936,8 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                                 <input id="full-backup-pw" type="password" autocomplete="new-password" placeholder="백업 비밀번호 (8자 이상)" class="w-full sm:w-64 min-w-0 px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 text-xs text-slate-800 dark:text-slate-200 outline-none">
                                 <button type="button" onclick="exportFullEncryptedBackup()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-sm transition"><i class="fa-solid fa-lock mr-1"></i>통합 암호화 백업 받기</button>
                                 <label class="px-4 py-2 bg-white dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-200 font-bold rounded-xl text-xs cursor-pointer hover:bg-emerald-100 transition shadow-sm"><i class="fa-solid fa-unlock mr-1"></i>통합 백업 복원하기<input type="file" accept=".json,application/json" onchange="importFullEncryptedBackup(event)" class="hidden"></label>
+                                <button type="button" onclick="openQrSend()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-200 font-bold rounded-xl text-xs shadow-sm"><i class="fa-solid fa-qrcode mr-1"></i>QR로 보내기</button>
+                                <button type="button" onclick="openQrReceive()" class="px-4 py-2 bg-white dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-200 font-bold rounded-xl text-xs shadow-sm"><i class="fa-solid fa-camera mr-1"></i>QR로 받기</button>
                             </div>
                         </div>
 
@@ -4134,21 +4136,20 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             r.readAsText(f);
         }
 
-        async function exportFullEncryptedBackup() {
-            const pwEl = document.getElementById('full-backup-pw');
-            const pw = pwEl ? pwEl.value : '';
-            if (pw.length < 8) { showToast('비밀번호를 8자 이상 입력해 주세요.', 'error'); return; }
-            if (!cryptoReady()) return;
-            if (Vault.isLocked()) { showToast('개인 기록 잠금을 먼저 풀어야 상담 기록까지 백업할 수 있어요.', 'error'); router.navigate('counsel'); return; }
+        // 통합 암호화 백업 본문 만들기 (파일 저장·QR 전송 공용). compress: 지원 브라우저에서 deflate로 줄여 QR 장수를 줄임
+        async function buildFullEncryptedBackup(pw, { compress = false } = {}) {
+            if (pw.length < 8) { showToast('비밀번호를 8자 이상 입력해 주세요.', 'error'); return null; }
+            if (!cryptoReady()) return null;
+            if (Vault.isLocked()) { showToast('개인 기록 잠금을 먼저 풀어야 상담 기록까지 백업할 수 있어요.', 'error'); router.navigate('counsel'); return null; }
             const general = {};
             Storage.error = null;
             const keys = Storage.ownKeys().filter(key => !BACKUP_EXCLUDE.includes(key));
-            if (Storage.error) { showToast('저장소 목록을 읽지 못해 백업을 중지했습니다.', 'error'); return; }
+            if (Storage.error) { showToast('저장소 목록을 읽지 못해 백업을 중지했습니다.', 'error'); return null; }
             for (const k of keys) {
                 if (Object.prototype.hasOwnProperty.call(BACKUP_TYPES, k)) {
                     Storage.error = null;
                     const val = Storage.get(k, null);
-                    if (Storage.error) { showToast('읽을 수 없는 자료가 있어 백업을 중지했습니다.', 'error'); return; }
+                    if (Storage.error) { showToast('읽을 수 없는 자료가 있어 백업을 중지했습니다.', 'error'); return null; }
                     if (val !== null && val !== undefined) general[k] = val;
                 }
             }
@@ -4159,33 +4160,162 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                 validateBackup(general);
                 const iterations = 250000; const salt = crypto.getRandomValues(new Uint8Array(16)); const iv = crypto.getRandomValues(new Uint8Array(12));
                 const key = await deriveKey(pw, salt, iterations);
-                const plain = new TextEncoder().encode(JSON.stringify({ general, counsel, exportedAt: new Date().toISOString() }));
+                let plain = new TextEncoder().encode(JSON.stringify({ general, counsel, exportedAt: new Date().toISOString() }));
+                const z = compress && typeof CompressionStream === 'function' ? 'deflate-raw' : null;
+                if (z) plain = new Uint8Array(await new Response(new Blob([plain]).stream().pipeThrough(new CompressionStream(z))).arrayBuffer());
                 const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plain);
-                saveSetting('lastBackupAt', today);
-                downloadFile(`교직백서_통합암호화백업_${today}.json`, JSON.stringify({ app: 'gyojik-baekseo-1000', type: 'full-encrypted', v: 1, kdf: 'PBKDF2-SHA256', iterations, salt: bufToB64(salt), iv: bufToB64(iv), data: bufToB64(ct) }), 'application/json');
-                showToast('모든 데이터와 상담 기록을 통합 암호화 백업했습니다!', 'success');
-                if (router.current === 'mybox') router.render();
-            } catch (err) { showToast(err.message || '통합 암호화 백업 중 오류가 발생했습니다.', 'error'); }
+                return { today, text: JSON.stringify({ app: 'gyojik-baekseo-1000', type: 'full-encrypted', v: 1, kdf: 'PBKDF2-SHA256', iterations, salt: bufToB64(salt), iv: bufToB64(iv), ...(z ? { z } : {}), data: bufToB64(ct) }) };
+            } catch (err) { showToast(err.message || '통합 암호화 백업 중 오류가 발생했습니다.', 'error'); return null; }
+        }
+        async function exportFullEncryptedBackup() {
+            const r = await buildFullEncryptedBackup(document.getElementById('full-backup-pw')?.value || '');
+            if (!r) return;
+            saveSetting('lastBackupAt', r.today);
+            downloadFile(`교직백서_통합암호화백업_${r.today}.json`, r.text, 'application/json');
+            showToast('모든 데이터와 상담 기록을 통합 암호화 백업했습니다!', 'success');
+            if (router.current === 'mybox') router.render();
         }
 
+        // ---- QR로 옮기기: 통합 암호화 백업을 QR 여러 장으로 보여 주고, 다른 기기 카메라로 모아 복원 (서버 거치지 않음) ----
+        // 라이브러리는 이 기능을 쓸 때만 고정 버전 + 무결성 검사로 불러옴
+        const QR_LIBS = {
+            gen: { url: 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js', integrity: 'sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k', global: 'qrcode' },
+            read: { url: 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js', integrity: 'sha384-b5Ya4Bq3qCyz39m2ISh+4DxjAIljdeFwK/BsXLuj9gugaNwAcj/ia15fxNZL9Nlx', global: 'jsQR' }
+        };
+        const qrLibPromises = {};
+        function loadQrLib(name) {
+            const lib = QR_LIBS[name];
+            if (window[lib.global]) return Promise.resolve(window[lib.global]);
+            if (!qrLibPromises[name]) qrLibPromises[name] = new Promise((resolve, reject) => {
+                const el = document.createElement('script'); el.src = lib.url; el.integrity = lib.integrity; el.crossOrigin = 'anonymous';
+                el.onload = () => window[lib.global] ? resolve(window[lib.global]) : reject(new Error('load'));
+                el.onerror = () => { delete qrLibPromises[name]; el.remove(); reject(new Error('load')); };
+                document.head.appendChild(el);
+            });
+            return qrLibPromises[name];
+        }
+        const QR_CHUNK = 450, QR_MAX_FRAMES = 120;
+        let qrSendTimer = null, qrRecv = null;
+        function qrFrameSvg(text) {
+            const q = window.qrcode(0, 'L'); q.addData(text, 'Byte'); q.make();
+            return q.createSvgTag({ cellSize: 4, margin: 4, scalable: true }).replace('<svg ', '<svg class="w-full h-auto bg-white" role="img" aria-label="백업 QR 코드" ');
+        }
+        function stopQrTransfer() {
+            clearInterval(qrSendTimer); qrSendTimer = null;
+            if (qrRecv) { qrRecv.stopped = true; qrRecv.stream?.getTracks().forEach(t => t.stop()); qrRecv = null; }
+        }
+        async function openQrSend() {
+            const r = await buildFullEncryptedBackup(document.getElementById('full-backup-pw')?.value || '', { compress: true }); if (!r) return;
+            try { await loadQrLib('gen'); } catch (_) { showToast('QR 도구를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.', 'error'); return; }
+            const id = Math.random().toString(36).slice(2, 6), n = Math.ceil(r.text.length / QR_CHUNK);
+            if (n > QR_MAX_FRAMES) { showToast(`백업이 커서 QR ${n}장이 필요해요. 파일로 옮겨 주세요(통합 암호화 백업).`, 'error'); return; }
+            const frames = Array.from({ length: n }, (_, i) => `GB1|${id}|${i + 1}|${n}|${r.text.slice(i * QR_CHUNK, (i + 1) * QR_CHUNK)}`);
+            const m = document.getElementById('setup-wizard-modal'); const c = document.getElementById('setup-wizard-content'); if (!m || !c) return;
+            stopQrTransfer();
+            c.innerHTML = `
+                <div class="space-y-3">
+                    <div class="flex items-start justify-between gap-3">
+                        <div><h3 id="setup-wizard-title" class="text-xl font-black text-slate-900 dark:text-white">QR로 보내기</h3><p class="text-xs text-slate-600 dark:text-slate-300 mt-1">받을 기기에서 <b>나의 교직함 › QR로 받기</b>를 열고 이 화면을 비추세요. QR ${n}장이 차례로 바뀌며, 순서와 상관없이 모이면 복원돼요. 받을 때 <b>같은 비밀번호</b>를 넣어야 해요.</p></div>
+                        <button type="button" onclick="closeSetupWizard()" aria-label="닫기" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div id="qr-send-box" class="mx-auto w-full max-w-[360px] rounded-xl overflow-hidden border border-slate-200"></div>
+                    <div class="flex items-center justify-center gap-3 text-sm font-bold text-slate-700 dark:text-slate-200"><button type="button" id="qr-prev" aria-label="이전 장" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700">‹</button><span id="qr-count" aria-live="polite">1 / ${n}</span><button type="button" id="qr-next" aria-label="다음 장" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700">›</button><button type="button" id="qr-play" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700">일시정지</button></div>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 text-center">QR 안의 자료는 비밀번호로 암호화되어 있어요. 화면 밝기를 높이면 더 잘 읽혀요.</p>
+                </div>`;
+            let i = 0, playing = true;
+            const show = () => { const box = document.getElementById('qr-send-box'); if (!box || m.classList.contains('hidden')) { stopQrTransfer(); return; } box.innerHTML = qrFrameSvg(frames[i]); document.getElementById('qr-count').textContent = `${i + 1} / ${n}`; };
+            document.getElementById('qr-prev').onclick = () => { i = (i - 1 + n) % n; show(); };
+            document.getElementById('qr-next').onclick = () => { i = (i + 1) % n; show(); };
+            document.getElementById('qr-play').onclick = e => { playing = !playing; e.target.textContent = playing ? '일시정지' : '자동 넘김'; };
+            m.classList.remove('hidden'); show();
+            if (n > 1) qrSendTimer = setInterval(() => { if (m.classList.contains('hidden')) { stopQrTransfer(); return; } if (playing) { i = (i + 1) % n; show(); } }, 1300);
+        }
+        async function openQrReceive() {
+            if (!navigator.mediaDevices?.getUserMedia) { showToast('이 브라우저에서는 카메라를 쓸 수 없어요.', 'error'); return; }
+            const m = document.getElementById('setup-wizard-modal'); const c = document.getElementById('setup-wizard-content'); if (!m || !c) return;
+            stopQrTransfer();
+            const pw0 = document.getElementById('full-backup-pw')?.value || '';
+            c.innerHTML = `
+                <div class="space-y-3">
+                    <div class="flex items-start justify-between gap-3">
+                        <div><h3 id="setup-wizard-title" class="text-xl font-black text-slate-900 dark:text-white">QR로 받기</h3><p class="text-xs text-slate-600 dark:text-slate-300 mt-1">보내는 기기의 QR 화면을 카메라에 비추세요. 장이 모두 모이면 비밀번호로 풀어 복원해요.</p></div>
+                        <button type="button" onclick="closeSetupWizard()" aria-label="닫기" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 flex items-center justify-center shrink-0"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-200">백업 비밀번호<input id="qr-recv-pw" type="password" autocomplete="current-password" value="${escapeHTML(pw0)}" class="mt-1 w-full p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-800 dark:text-slate-100"></label>
+                    <video id="qr-video" class="w-full max-h-[45vh] rounded-xl bg-black object-cover" playsinline muted></video>
+                    <p id="qr-recv-status" class="text-sm font-bold text-slate-800 dark:text-slate-100 text-center" aria-live="polite">카메라를 켜는 중…</p>
+                    <div id="qr-recv-bar" class="flex flex-wrap gap-0.5 justify-center"></div>
+                </div>`;
+            m.classList.remove('hidden');
+            const state = qrRecv = { parts: new Map(), id: '', n: 0, stopped: false, stream: null };
+            const status = t => { const el = document.getElementById('qr-recv-status'); if (el) el.textContent = t; };
+            try { state.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false }); }
+            catch (_) { status('카메라를 켜지 못했어요. 브라우저의 카메라 권한을 허용해 주세요.'); qrRecv = null; return; }
+            if (state.stopped) { state.stream.getTracks().forEach(t => t.stop()); return; }
+            const video = document.getElementById('qr-video'); video.srcObject = state.stream; await video.play().catch(() => {});
+            let detector = null;
+            try { if ('BarcodeDetector' in window && (await BarcodeDetector.getSupportedFormats()).includes('qr_code')) detector = new BarcodeDetector({ formats: ['qr_code'] }); } catch (_) {}
+            if (!detector) { try { await loadQrLib('read'); } catch (_) { status('QR 읽기 도구를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.'); stopQrTransfer(); return; } }
+            const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            status('QR을 비춰 주세요');
+            const accept = text => {
+                const mt = /^GB1\|([a-z0-9]{1,8})\|(\d{1,3})\|(\d{1,3})\|([\s\S]*)$/.exec(text || ''); if (!mt) return;
+                const [, id, iStr, nStr, part] = mt; const i = Number(iStr), n = Number(nStr);
+                if (!n || n > QR_MAX_FRAMES || i < 1 || i > n) return;
+                if (state.id !== id) { state.id = id; state.n = n; state.parts.clear(); }
+                state.parts.set(i, part);
+                const bar = document.getElementById('qr-recv-bar');
+                if (bar) bar.innerHTML = Array.from({ length: n }, (_, k) => `<span class="w-2.5 h-2.5 rounded-sm ${state.parts.has(k + 1) ? 'bg-emerald-600' : 'bg-slate-300 dark:bg-slate-600'}"></span>`).join('');
+                status(`받은 장 ${state.parts.size} / ${n}`);
+            };
+            const tick = async () => {
+                if (state.stopped || m.classList.contains('hidden')) { stopQrTransfer(); return; }
+                if (video.readyState >= 2 && video.videoWidth) {
+                    try {
+                        if (detector) (await detector.detect(video)).forEach(code => accept(code.rawValue));
+                        else {
+                            const scale = Math.min(1, 720 / Math.max(video.videoWidth, video.videoHeight));
+                            canvas.width = Math.round(video.videoWidth * scale); canvas.height = Math.round(video.videoHeight * scale);
+                            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                            const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                            const code = window.jsQR(img.data, img.width, img.height, { inversionAttempts: 'dontInvert' });
+                            if (code) accept(code.data);
+                        }
+                    } catch (_) {}
+                }
+                if (state.n && state.parts.size === state.n) {
+                    const text = Array.from({ length: state.n }, (_, k) => state.parts.get(k + 1)).join('');
+                    stopQrTransfer(); status('모두 받았어요. 복원하는 중…');
+                    const ok = await restoreFullEncryptedBackupText(text, document.getElementById('qr-recv-pw')?.value || '');
+                    if (!ok) status('복원하지 못했어요. 비밀번호를 확인하고 다시 받아 주세요.');
+                    return;
+                }
+                setTimeout(tick, 150);
+            };
+            tick();
+        }
         async function importFullEncryptedBackup(e) {
             const f = e.target.files[0]; e.target.value = ''; if (!f) return;
-            const pw = document.getElementById('full-backup-pw')?.value || '';
-            if (!pw) { showToast('백업할 때 설정한 비밀번호를 먼저 입력해 주세요.', 'error'); return; }
-            if (!cryptoReady()) return;
+            await restoreFullEncryptedBackupText(await f.text(), document.getElementById('full-backup-pw')?.value || '');
+        }
+        async function restoreFullEncryptedBackupText(text, pw) {
+            if (!pw) { showToast('백업할 때 설정한 비밀번호를 먼저 입력해 주세요.', 'error'); return false; }
+            if (!cryptoReady()) return false;
             try {
-                const env = JSON.parse(await f.text());
-                if (!env || env.type !== 'full-encrypted') { showToast('통합 암호화 백업 파일이 아닙니다.', 'error'); return; }
+                const env = JSON.parse(text);
+                if (!env || env.type !== 'full-encrypted') { showToast('통합 암호화 백업 파일이 아닙니다.', 'error'); return false; }
+                if (env.z && (env.z !== 'deflate-raw' || typeof DecompressionStream !== 'function')) { showToast('이 브라우저에서는 압축된 백업을 열 수 없어요. 최신 브라우저로 시도해 주세요.', 'error'); return false; }
                 let plain;
                 try {
                     const key = await deriveKey(pw, b64ToBuf(env.salt), env.iterations || 250000);
                     plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64ToBuf(env.iv) }, key, b64ToBuf(env.data));
-                } catch (_) { showToast('비밀번호가 틀렸거나 파일이 손상되었습니다.', 'error'); return; }
+                } catch (_) { showToast('비밀번호가 틀렸거나 파일이 손상되었습니다.', 'error'); return false; }
+                if (env.z) plain = await new Response(new Blob([plain]).stream().pipeThrough(new DecompressionStream(env.z))).arrayBuffer();
                 const payload = JSON.parse(new TextDecoder().decode(plain));
                 if (Vault.isLocked()) { showToast('개인 기록 잠금을 먼저 풀고 다시 가져와 주세요.', 'error'); return; }
                 const generalEntries = payload.general && Object.keys(payload.general).length ? validateBackup(payload.general) : [];
                 const counselList = Array.isArray(payload.counsel) ? payload.counsel : [];
-                if (!confirm(`일반 자료 ${generalEntries.length}종류와 상담 기록 ${counselList.length}건을 복원할까요?`)) return;
+                if (!confirm(`일반 자료 ${generalEntries.length}종류와 상담 기록 ${counselList.length}건을 복원할까요?`)) return false;
                 const failed = [];
                 for (const [k, v] of generalEntries) if (!Storage.set(k, v)) failed.push(k);
                 if (counselList.length) {
@@ -4199,7 +4329,8 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                 }
                 showToast('통합 백업을 복원했습니다. 화면을 새로고침합니다.');
                 setTimeout(() => window.location.reload(), 900);
-            } catch (err) { showToast(err.message || '백업 파일을 읽지 못했습니다.', 'error'); }
+                return true;
+            } catch (err) { showToast(err.message || '백업 파일을 읽지 못했습니다.', 'error'); return false; }
         }
 
         // ====================================================
@@ -5687,6 +5818,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
         function closeSetupWizard() {
             const m = document.getElementById('setup-wizard-modal');
             if (m) m.classList.add('hidden');
+            if (typeof stopQrTransfer === 'function') stopQrTransfer(); // QR 보내기·받기 중이면 카메라·타이머 정리
         }
         // 공용 팝업(SOS·학급 세팅·계산기·의견 보내기 등): 열리면 팝업 안으로 포커스, Tab은 팝업 안에서만 돌고, 닫히면 원래 자리로
         (() => {
