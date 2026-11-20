@@ -1,6 +1,6 @@
 {
   "metadataSchemaVersion": 1,
-  "contentVersion": "2-2026-11-20",
+  "contentVersion": "3-2026-11-20",
   "generatedAt": "2026-10-19T03:39:37.617Z",
   "reviewPolicy": "reviewStatus 'reviewed'는 sourceIds(공식 근거)와 checkedAt(확인일)이 모두 있을 때만 사용합니다. 편집은 scripts/content-review.mjs로 합니다.",
   "sources": [
@@ -357,20 +357,270 @@
       "title": "보건복지부 아동학대 신고 안내(112)",
       "kind": "보건복지부 자료",
       "url": "https://www.mohw.go.kr/menu.es?mid=a10711050100"
+    },
+    {
+      "id": "review-regional",
+      "title": "경기도교육청 2026학년도 교육공무원 인사관리세부기준(유치원·초등)",
+      "kind": "교육청 자료",
+      "url": "https://www.goe.go.kr/resource/goe/na/bbs_2675/2025/08/7dd6a698-4d2c-4468-9936-78eca2fc53be.pdf"
+    },
+    {
+      "id": "review-edu",
+      "title": "교육공무원법 제2·9조 및 별표 1",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=290751"
+    },
+    {
+      "id": "review-neis",
+      "title": "초·중등교육법 제30조의4(교육정보시스템)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1032275667"
+    },
+    {
+      "id": "review-keris",
+      "title": "한국교육학술정보원 교육재정서비스부 업무 안내",
+      "kind": "공공기관 자료",
+      "url": "https://www.keris.or.kr/main/ad/emp/selectEmpMisSrchList.do?mi=1152&srchDeptCd=1231255"
+    },
+    {
+      "id": "review-role",
+      "title": "초·중등교육법 제19·20·21조(교직원 임무와 자격)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?efYd=20261120&lsiSeq=286065"
+    },
+    {
+      "id": "review-research",
+      "title": "연구대회 관리에 관한 훈령 제1·2조",
+      "kind": "교육부훈령",
+      "url": "https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000281146&chrClsCd=010201"
+    },
+    {
+      "id": "review-appoint",
+      "title": "교육공무원임용령(인사교류·전보)",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/lsInfoP.do?efYd=20261120&lsiSeq=291891"
+    },
+    {
+      "id": "review-dispatch",
+      "title": "교육공무원임용령 제7조의3(파견근무)",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?lsJoLnkSeq=1002280325"
+    },
+    {
+      "id": "review-early",
+      "title": "국가공무원 명예퇴직수당 등 지급 규정 제3조",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?ancYnChk=0&chrClsCd=010202&efYd=20261002&lsiSeq=290347"
+    },
+    {
+      "id": "review-retirement",
+      "title": "교육공무원법 제47조(정년)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1020705895"
+    },
+    {
+      "id": "review-resign",
+      "title": "공무원 비위사건 처리규정 제5·6조",
+      "kind": "대통령훈령",
+      "url": "https://www.law.go.kr/LSW/admRulLsInfoP.do?admRulSeq=2200000108983&chrClsCd=010202"
+    },
+    {
+      "id": "review-promotion",
+      "title": "교육공무원 승진규정(근무성적평정·다면평가 및 명부)",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/lsInfoP.do?efYd=20260616&lsiSeq=287009"
+    },
+    {
+      "id": "review-merit",
+      "title": "모범공무원 규정",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?ancYnChk=0&chrClsCd=010202&efYd=20260303&lsiSeq=283717"
+    },
+    {
+      "id": "review-principal",
+      "title": "교육공무원법 제29조의3(공모에 따른 교장 임용)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1032085737"
+    },
+    {
+      "id": "review-fixed",
+      "title": "교육공무원법 제32조(기간제교원)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1029068097"
+    },
+    {
+      "id": "review-lecturer",
+      "title": "초·중등교육법 시행령 제42조(산학겸임교사 등)",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/LSW/lsLawLinkInfo.do?chrClsCd=010202&lsJoLnkSeq=900321621"
+    },
+    {
+      "id": "review-seniority",
+      "title": "공무원수당 등에 관한 규정 제7조(정근수당)",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1035268841"
+    },
+    {
+      "id": "review-welfare",
+      "title": "공무원 후생복지에 관한 규정 제10조(복지점수)",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1008754399"
+    },
+    {
+      "id": "review-paystep",
+      "title": "공무원보수규정 제13조(정기승급)",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1027304115"
+    },
+    {
+      "id": "review-allowances",
+      "title": "공무원수당 등에 관한 규정 제10조·제18조의3·제18조의5",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/lsInfoP.do?joNo=001500&lsId=002303"
+    },
+    {
+      "id": "review-pension",
+      "title": "공무원연금법(재직기간·급여·비용 부담)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?ancYnChk=0&chrClsCd=010202&efYd=20261002&lsiSeq=290745"
+    },
+    {
+      "id": "review-injury",
+      "title": "공무원 재해보상법 제8조(급여)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1032178939"
+    },
+    {
+      "id": "review-council",
+      "title": "초·중등교육법 제31·32조(학교운영위원회)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?efYd=20261120&lsiSeq=286065"
+    },
+    {
+      "id": "review-parents",
+      "title": "서울특별시교육청 학교 학부모회 설치·운영 및 학부모교육 지원 등에 관한 조례",
+      "kind": "조례",
+      "url": "https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2069191"
+    },
+    {
+      "id": "review-local",
+      "title": "지방공무원법 제2조(공무원의 구분)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?ancYnChk=0&chrClsCd=010202&efYd=20261002&lsiSeq=290731"
+    },
+    {
+      "id": "review-office",
+      "title": "경기도교육청 교육행정실 업무 분장 안내",
+      "kind": "교육청 자료",
+      "url": "https://www.goe.go.kr/resource/old/BBSMSTR_000000030111/BBS_202204070143446140.pdf"
+    },
+    {
+      "id": "review-cook",
+      "title": "경기도교육청 2025 학교급식 기본방향",
+      "kind": "교육청 자료",
+      "url": "https://www.goe.go.kr/resource/old/BBSMSTR_000000030174/BBS_202503261120138131.pdf"
+    },
+    {
+      "id": "review-care",
+      "title": "경기도교육청 구인구직 교육공무직 채용 사례",
+      "kind": "교육청 자료",
+      "url": "https://www.goe.go.kr/recruit/ad/func/pb/hnfpPbancInfoView.do?mi=10502&pbancSn=65062"
+    },
+    {
+      "id": "review-sport",
+      "title": "학교체육 진흥법 제2·13조(스포츠강사)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1020395613"
+    },
+    {
+      "id": "review-library",
+      "title": "학교도서관진흥법 제2·12조",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/lsInfoP.do?ancYnChk=0&lsId=010584"
+    },
+    {
+      "id": "review-nutrition",
+      "title": "학교급식법 시행령 제8조(영양교사의 직무)",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1018640031"
+    },
+    {
+      "id": "review-health",
+      "title": "학교보건법 시행령 제23조(보건교사의 직무)",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1017987489"
+    },
+    {
+      "id": "review-counsel",
+      "title": "초·중등교육법 제19조의2·제21조(전문상담교사)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?efYd=20261120&lsiSeq=286065"
+    },
+    {
+      "id": "review-iep",
+      "title": "장애인 등에 대한 특수교육법 제22조(개별화교육)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1029706213"
+    },
+    {
+      "id": "review-budget",
+      "title": "서울특별시교육청 공립학교회계 규칙",
+      "kind": "교육규칙",
+      "url": "https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq=2170907"
+    },
+    {
+      "id": "review-contract",
+      "title": "지방자치단체를 당사자로 하는 계약에 관한 법률 제9·17·18조",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/법령/지방자치단체를당사자로하는계약에관한법률"
+    },
+    {
+      "id": "review-facilities",
+      "title": "교육시설 등의 안전 및 유지관리 등에 관한 법률",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1031285013"
+    },
+    {
+      "id": "review-disclose",
+      "title": "공공기관의 정보공개에 관한 법률 제9·11·14조",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=224549"
+    },
+    {
+      "id": "review-privacy",
+      "title": "개인정보 보호법(수집·제공·파기 및 안전조치)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/법령/개인정보보호법"
+    },
+    {
+      "id": "review-document",
+      "title": "행정업무의 운영 및 혁신에 관한 규정(문서 처리)",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?ancYnChk=0&efYd=20261002&lsiSeq=290525"
+    },
+    {
+      "id": "review-template",
+      "title": "행정업무의 운영 및 혁신에 관한 규정 시행규칙",
+      "kind": "행정안전부령",
+      "url": "https://www.law.go.kr/lsInfoP.do?efYd=20230628&lsiSeq=252189"
     }
   ],
   "items": {
     "term:1": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 경기도 유치원·초등 기준을 사례로 설명. 실제 신청은 소속 교육청의 해당 인사 공고 적용",
+      "sourceIds": [
+        "review-regional"
+      ]
     },
     "term:2": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "교육공무원법 적용 교육전문직원",
+      "sourceIds": [
+        "review-edu"
+      ]
     },
     "term:3": {
       "reviewStatus": "reviewed",
@@ -390,34 +640,47 @@
       ]
     },
     "term:5": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "초·중등학교 교육정보시스템",
+      "sourceIds": [
+        "review-neis",
+        "law-student-record"
+      ]
     },
     "term:6": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "K-에듀파인 학교회계 기능",
+      "sourceIds": [
+        "review-keris",
+        "seoul-school-account"
+      ]
     },
     "term:7": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "초·중등교육법 적용 학교",
+      "sourceIds": [
+        "review-role"
+      ]
     },
     "term:8": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "초·중등교육법 적용 학교",
+      "sourceIds": [
+        "review-role"
+      ]
     },
     "term:9": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026년 교육부훈령 적용 연구대회",
+      "sourceIds": [
+        "review-research",
+        "review-promotion"
+      ]
     },
     "term:10": {
       "reviewStatus": "reviewed",
@@ -431,34 +694,45 @@
       ]
     },
     "term:11": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 경기도 유치원·초등 기준을 사례로 설명. 실제 신청은 소속 교육청의 해당 인사 공고 적용",
+      "sourceIds": [
+        "review-regional"
+      ]
     },
     "term:12": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 경기도 유치원·초등 기준을 사례로 설명. 실제 신청은 소속 교육청의 해당 인사 공고 적용",
+      "sourceIds": [
+        "review-regional"
+      ]
     },
     "term:13": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "교육공무원 인사. 세부 기준은 소속 교육청 확인",
+      "sourceIds": [
+        "review-appoint",
+        "review-regional"
+      ]
     },
     "term:14": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 경기도 유치원·초등 기준을 사례로 설명. 실제 신청은 소속 교육청의 해당 인사 공고 적용",
+      "sourceIds": [
+        "review-regional"
+      ]
     },
     "term:15": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "교육공무원임용령 적용 파견",
+      "sourceIds": [
+        "review-dispatch"
+      ]
     },
     "term:16": {
       "reviewStatus": "reviewed",
@@ -469,304 +743,408 @@
       ]
     },
     "term:17": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "국가공무원 명예퇴직수당 규정의 지급 대상",
+      "sourceIds": [
+        "review-early"
+      ]
     },
     "term:18": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "초·중등 교육공무원. 대학 교원은 별도 기준",
+      "sourceIds": [
+        "review-retirement"
+      ]
     },
     "term:19": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "공무원 비위사건 처리규정 적용 공무원",
+      "sourceIds": [
+        "review-resign"
+      ]
     },
     "term:20": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 경기도 유치원·초등 기준을 사례로 설명. 실제 신청은 소속 교육청의 해당 인사 공고 적용",
+      "sourceIds": [
+        "review-regional"
+      ]
     },
     "term:21": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "교육공무원 승진규정의 적용 대상",
+      "sourceIds": [
+        "review-promotion"
+      ]
     },
     "term:22": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "교육공무원 승진규정의 적용 대상",
+      "sourceIds": [
+        "review-promotion"
+      ]
     },
     "term:23": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "교육공무원 승진규정의 적용 대상",
+      "sourceIds": [
+        "review-promotion"
+      ]
     },
     "term:24": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "모범공무원 규정 적용 공무원",
+      "sourceIds": [
+        "review-merit"
+      ]
     },
     "term:25": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "교육공무원법 적용 학교의 교장 공모",
+      "sourceIds": [
+        "review-principal"
+      ]
     },
     "term:26": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "교육공무원법 적용 교육전문직원",
+      "sourceIds": [
+        "review-edu"
+      ]
     },
     "term:27": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "교육공무원법 적용 교육전문직원",
+      "sourceIds": [
+        "review-edu"
+      ]
     },
     "term:28": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "교육공무원법 적용 기간제교원",
+      "sourceIds": [
+        "review-fixed"
+      ]
     },
     "term:29": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "초·중등교육법 및 시행령 제42조 적용 학교",
+      "sourceIds": [
+        "review-lecturer",
+        "review-role"
+      ]
     },
     "term:30": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "공무원수당 규정 적용 공무원",
+      "sourceIds": [
+        "review-seniority"
+      ]
     },
     "term:31": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "맞춤형 복지 운영의 일반 기준. 학교별 운영 세부는 소속 기관 확인",
+      "sourceIds": [
+        "review-welfare"
+      ]
     },
     "term:32": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "공무원보수규정 호봉제 적용 공무원",
+      "sourceIds": [
+        "review-paystep"
+      ]
     },
     "term:33": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "공무원수당 규정 적용 공무원",
+      "sourceIds": [
+        "review-allowances"
+      ]
     },
     "term:34": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "공무원수당 규정 적용 공무원",
+      "sourceIds": [
+        "review-allowances"
+      ]
     },
     "term:35": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "공무원수당 규정 적용 공무원",
+      "sourceIds": [
+        "review-allowances"
+      ]
     },
     "term:36": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "공무원연금법 적용 공무원",
+      "sourceIds": [
+        "review-pension"
+      ]
     },
     "term:37": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "공무원연금법 적용 공무원",
+      "sourceIds": [
+        "review-pension"
+      ]
     },
     "term:38": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "공무원 재해보상법 적용 대상",
+      "sourceIds": [
+        "review-injury",
+        "service-sick"
+      ]
     },
     "term:39": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "초·중등교육법 적용 학교",
+      "sourceIds": [
+        "review-council"
+      ]
     },
     "term:40": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "서울 조례를 사례로 설명. 지역별 조례 및 학교 회칙 적용",
+      "sourceIds": [
+        "review-parents"
+      ]
     },
     "term:41": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "지방공무원법 적용 공무원",
+      "sourceIds": [
+        "review-local"
+      ]
     },
     "term:42": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도 업무분장 예시. 담당자와 권한은 학교별 규정 확인",
+      "sourceIds": [
+        "review-office"
+      ]
     },
     "term:43": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도 업무분장 예시. 담당자와 권한은 학교별 규정 확인",
+      "sourceIds": [
+        "review-office"
+      ]
     },
     "term:44": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도 학교급식 인력 구분 예시. 직무는 해당 교육청과 학교 기준 확인",
+      "sourceIds": [
+        "review-cook"
+      ]
     },
     "term:45": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도 초등학교 공고의 직무 예시. 소속 기관 기준 적용",
+      "sourceIds": [
+        "review-care"
+      ]
     },
     "term:46": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "초·중등교육법 및 시행령 제42조 적용 학교",
+      "sourceIds": [
+        "review-lecturer",
+        "review-lecturer"
+      ]
     },
     "term:47": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "초등학교 스포츠강사",
+      "sourceIds": [
+        "review-sport"
+      ]
     },
     "term:48": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "학교도서관의 사서교사",
+      "sourceIds": [
+        "review-library"
+      ]
     },
     "term:49": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "학교급식법 적용 영양교사",
+      "sourceIds": [
+        "review-nutrition"
+      ]
     },
     "term:50": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "학교보건법 적용 학교",
+      "sourceIds": [
+        "review-health"
+      ]
     },
     "term:51": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "초·중등학교 전문상담교사의 배치와 자격",
+      "sourceIds": [
+        "review-counsel"
+      ]
     },
     "term:52": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "특수교육법 적용 학교",
+      "sourceIds": [
+        "review-iep"
+      ]
     },
     "term:53": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "서울 공립학교의 운영 사례. 관할 교육청 규칙과 학교 일정 적용",
+      "sourceIds": [
+        "review-budget"
+      ]
     },
     "term:54": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "서울 공립학교의 운영 사례. 관할 교육청 규칙과 학교 일정 적용",
+      "sourceIds": [
+        "review-budget",
+        "review-council"
+      ]
     },
     "term:55": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "지방계약법 적용 기관",
+      "sourceIds": [
+        "review-contract"
+      ]
     },
     "term:56": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "지방계약법 적용 기관",
+      "sourceIds": [
+        "review-contract"
+      ]
     },
     "term:57": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "교육시설법 적용 시설",
+      "sourceIds": [
+        "review-facilities"
+      ]
     },
     "term:58": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "정보공개법 적용 기관",
+      "sourceIds": [
+        "review-disclose"
+      ]
     },
     "term:59": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "개인정보 보호법 적용 학교 업무",
+      "sourceIds": [
+        "review-privacy"
+      ]
     },
     "term:60": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "행정업무 규정의 문서 처리 기준. 메뉴와 결재선은 소속 기관 지침 확인",
+      "sourceIds": [
+        "review-document"
+      ]
     },
     "term:61": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "행정업무 규정의 문서 처리 기준. 메뉴와 결재선은 소속 기관 지침 확인",
+      "sourceIds": [
+        "review-document"
+      ]
     },
     "term:62": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "행정업무 규정의 문서 처리 기준. 메뉴와 결재선은 소속 기관 지침 확인",
+      "sourceIds": [
+        "review-document"
+      ]
     },
     "term:63": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "행정업무 규정의 문서 처리 기준. 메뉴와 결재선은 소속 기관 지침 확인",
+      "sourceIds": [
+        "review-document"
+      ]
     },
     "term:64": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "행정업무 규정의 문서 처리 기준. 메뉴와 결재선은 소속 기관 지침 확인",
+      "sourceIds": [
+        "review-document"
+      ]
     },
     "term:65": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "행정업무 규정 적용 문서. 사업별 별도 서식 확인",
+      "sourceIds": [
+        "review-template"
+      ]
     },
     "term:66": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "행정업무 규정 적용 문서. 사업별 별도 서식 확인",
+      "sourceIds": [
+        "review-template"
+      ]
     },
     "term:67": {
       "reviewStatus": "needs-review",

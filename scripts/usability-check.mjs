@@ -113,7 +113,7 @@ for (const entry of metadata.reviewPriority || []) {
 }
 const sourceIds = new Set(metadata.sources.map(src => src.id));
 assert.equal(sourceIds.size, metadata.sources.length);
-for (const src of metadata.sources) assert.match(src.url, /^https:\/\/(www\.law\.go\.kr|www\.moe\.go\.kr|gogo\.sen\.go\.kr|www\.mohw\.go\.kr)\//);
+for (const src of metadata.sources) assert.match(src.url, /^https:\/\/(www\.law\.go\.kr|www\.moe\.go\.kr|gogo\.sen\.go\.kr|www\.mohw\.go\.kr|www\.goe\.go\.kr|www\.keris\.or\.kr)\//);
 for (const item of Object.values(metadata.items)) {
   assert.ok(['needs-review', 'reviewed', 'needs-update'].includes(item.reviewStatus));
   for (const id of item.sourceIds) assert.ok(sourceIds.has(id), `unknown source ${id}`);

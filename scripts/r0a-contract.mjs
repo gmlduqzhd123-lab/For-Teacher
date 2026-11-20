@@ -136,7 +136,7 @@ function verify(map, fixture) {
   delete current._설명;
   const embedded = JSON.parse(text('js/data.js').match(/^\s*const DEFAULT_DATA = (\{.*\});\s*$/m)?.[1] || 'null');
   assert.deepEqual(current, embedded, 'published and embedded content differ');
-  const frozenStructure = ({ updatedAt, terms, ...data }) => ({
+  const frozenStructure = ({ updatedAt, version, terms, ...data }) => ({
     ...data,
     terms: terms.map(({ simple, description, tip, ...identity }) => identity),
   });
