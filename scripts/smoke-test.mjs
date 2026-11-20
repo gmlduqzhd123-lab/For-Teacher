@@ -140,7 +140,7 @@ for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 
   }
   await page.evaluate(() => openDetail(1)); await page.waitForTimeout(150);
   // Both base and supplemental terms must display their own verified sources.
-  for (const id of [78, 3007]) {
+  for (const id of [39, 71, 78, 135, 150, 3003, 3007]) {
     const rendered = await page.evaluate(termId => {
       openDetail(termId);
       const panel = document.querySelector('#modal-content [aria-label="내용 확인 정보"]');
@@ -148,6 +148,36 @@ for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 
     }, id);
     if (!rendered) failures.push(`${viewport.width}px term:${id}: verified content panel or source link missing`);
   }
+  const contentReviewWorks = await page.evaluate(() => {
+    const checkedPanel = selector => {
+      const details = document.querySelector(selector);
+      if (!details) return false;
+      details.querySelector('summary').click();
+      const panel = details.querySelector('[aria-label="내용 확인 정보"]');
+      return details.open && panel?.textContent.includes('공식 근거와 대조 완료') && !!panel.querySelector('a[href^="https://"]');
+    };
+    router.navigate('situations', 'situation:01');
+    const situation = checkedPanel('[id="situation-situation:01"] details');
+    router.navigate('navigator', 'workflow:01');
+    const workflow = checkedPanel('[id="course-workflow:01"] details');
+    return situation && workflow;
+  });
+  if (!contentReviewWorks) failures.push(`${viewport.width}px: reviewed situation or workflow source missing`);
+  const savedSituationWorks = await page.evaluate(() => {
+    const id = 'situation:01';
+    const saved = '2026-10-19T09:00:00.000Z';
+    Storage.set('situation_runs', { [id]: { startedAt: saved, checks: { s0: saved } } });
+    openSituationRun(id);
+    const modal = document.querySelector('#setup-wizard-content');
+    const legacyCheckSeparated = !modal.querySelector('input:checked') && modal.textContent.includes('가이드 절차가 개정되었습니다');
+    const firstStep = modal.querySelector('input[data-step-key^="s:"]');
+    if (!firstStep) return false;
+    const key = firstStep.dataset.stepKey;
+    firstStep.click();
+    const checks = Storage.get('situation_runs', {})[id].checks;
+    return legacyCheckSeparated && checks.s0 === saved && typeof checks[key] === 'string' && modal.querySelectorAll('input:checked').length === 1;
+  });
+  if (!savedSituationWorks) failures.push(`${viewport.width}px: situation checklist attached a saved check to the wrong step`);
   await page.close();
 }
 await browser.close(); server.close();
@@ -156,4 +186,4 @@ if (failures.length) {
   if (process.env.GITHUB_ACTIONS) failures.slice(0, 20).forEach(f => console.log(`::error title=smoke-test::${f.replace(/\n/g, ' ')}`)); // Actions 화면·API에 오류 내용 표시
   process.exit(1);
 }
-console.log(`Smoke test passed: ${views.length} screens × 3 viewport sizes, term detail.`);
+console.log(`Smoke test passed: ${views.length} screens × 3 viewport sizes, review panels, saved situation checklist.`);

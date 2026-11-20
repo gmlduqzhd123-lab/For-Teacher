@@ -839,6 +839,7 @@
         }
 
         let EXTRA_TERMS_UPDATED = '';
+        let EXTRA_TERMS_VERSION = null;
         async function loadData() {
             try {
                 const mapResponse = await fetch('data/legacy-map.json', { cache: 'no-cache' });
@@ -855,6 +856,7 @@
                 if (!extraRes.ok) throw new Error('extra terms unavailable');
                 const extra = await extraRes.json();
                 if (typeof extra?.updatedAt === 'string') EXTRA_TERMS_UPDATED = extra.updatedAt;
+                if (Number.isInteger(extra?.version)) EXTRA_TERMS_VERSION = extra.version;
                 extraTerms = (Array.isArray(extra?.terms) ? extra.terms : []).filter(t => t && Number.isInteger(t.id) && t.id >= 3001 && t.keyword && t.description && t.simple);
                 extraTerms.forEach(t => { if (t.enrich && typeof t.enrich === 'object' && !TERM_ENRICH_MAP[t.id]) TERM_ENRICH_MAP[t.id] = t.enrich; });
                 extraTerms = extraTerms.map(({ enrich, ...t }) => t);
@@ -951,7 +953,8 @@
             const sources = (record?.sourceIds || []).map(id => (CONTENT_META.sources || []).find(src => src.id === id)).filter(Boolean);
             let status = record?.reviewStatus || 'needs-review';
             const extraTerm = /^term:3\d{3}$/.test(String(publicId));
-            const matchingExtraData = !extraTerm || (EXTRA_TERMS_UPDATED && EXTRA_TERMS_UPDATED === CONTENT_META?.extraTermsUpdatedAt);
+            const matchingExtraData = !extraTerm || (EXTRA_TERMS_UPDATED === CONTENT_META?.extraTermsUpdatedAt &&
+                EXTRA_TERMS_VERSION === (CONTENT_META?.extraTermsVersion ?? 1));
             if (!REVIEW_STATUS[status] || (status === 'reviewed' && !(record.checkedAt && sources.length && matchingExtraData))) status = 'needs-review';
             return { status, checkedAt: status === 'needs-review' ? null : (record?.checkedAt || null), scope: record?.scope || null, sources, dataDate: (extraTerm && EXTRA_TERMS_UPDATED) || DATA_META.updatedAt || '' };
         }
@@ -960,6 +963,12 @@
             const office = currentOffice();
             const when = info.checkedAt ? `최종 확인 ${info.checkedAt}` : (info.dataDate ? `내용 기준일 ${info.dataDate}` : '확인일 없음');
             return `${st.icon} ${st.label} · ${when} · ${office ? `${office.name} 지침 대조 권장` : '시도교육청별 지침 확인 권장'}`;
+        }
+        function reviewDetailsHTML(publicId) {
+            return `<details class="mb-3 text-xs">
+                <summary class="font-bold cursor-pointer text-slate-600 dark:text-slate-300">${escapeHTML(reviewLabel(publicId))}</summary>
+                <div class="mt-2">${reviewPanelHTML(publicId)}</div>
+            </details>`;
         }
         function reviewPanelHTML(publicId) {
             const info = reviewInfo(publicId); const st = REVIEW_STATUS[info.status];
@@ -2752,7 +2761,7 @@ ${weeklyAgendaHTML()}
                     <div>
                         <span class="text-xs font-bold px-3 py-1 bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-lg mb-3 inline-block">${escapeHTML(sit.category)}</span>
                         <h3 class="text-base sm:text-lg font-bold tracking-tight mb-2 text-slate-900 dark:text-white">${escapeHTML(sit.title)}</h3>
-                        <p class="text-[11px] text-amber-700 dark:text-amber-300 mb-2">${reviewLabel(sit.publicId)}</p>
+                        ${reviewDetailsHTML(sit.publicId)}
                         <div class="mb-3">${officeGuideHTML(OFFICE_GUIDE_QUERIES[sit.category] || sit.title.replace(/요$/, ''))}</div>
                         ${sit.summary ? `<p class="text-xs text-slate-500 dark:text-slate-400 mb-4">${escapeHTML(sit.summary)}</p>` : ''}
                         ${sit.firstCheck.length ? `<div class="flex flex-wrap items-center gap-1.5 mb-3"><span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mr-1">먼저 확인</span>${chips(sit.firstCheck, 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300')}</div>` : ''}
@@ -2783,8 +2792,8 @@ ${weeklyAgendaHTML()}
         function situationRuns() { const r = Storage.get('situation_runs', {}); return r && typeof r === 'object' && !Array.isArray(r) ? r : {}; }
         function situationRunItems(sit) {
             return [
-                ...sit.firstCheck.map((text, i) => ({ key: `f${i}`, group: '먼저 확인', text })),
-                ...sit.steps.map((text, i) => ({ key: `s${i}`, group: '처리 단계', text, n: i + 1 }))
+                ...sit.firstCheck.map(text => ({ key: `f:${text}`, group: '먼저 확인', text })),
+                ...sit.steps.map((text, i) => ({ key: `s:${text}`, group: '처리 단계', text, n: i + 1 }))
             ];
         }
         function situationProgress(sit) {
@@ -2802,11 +2811,12 @@ ${weeklyAgendaHTML()}
             const run = runs[publicId];
             const items = situationRunItems(sit);
             const done = items.filter(it => run.checks[it.key]).length;
+            const legacyChecks = Object.keys(run.checks).some(key => /^[fs]\d+$/.test(key));
             const pct = Math.round(done / items.length * 100);
             const act = SITUATION_ACTION_MAP[sit.id] || {};
             const row = it => `
                         <label class="flex items-start gap-3 min-h-[48px] p-3 rounded-xl border cursor-pointer ${run.checks[it.key] ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800/50' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}">
-                            <input type="checkbox" ${run.checks[it.key] ? 'checked' : ''} onchange="toggleSituationStep('${escapeHTML(publicId)}', '${it.key}')" class="w-5 h-5 mt-0.5 shrink-0 accent-emerald-600">
+                            <input type="checkbox" ${run.checks[it.key] ? 'checked' : ''} data-step-key="${escapeHTML(it.key)}" onchange="toggleSituationStep('${escapeHTML(publicId)}', this.dataset.stepKey)" class="w-5 h-5 mt-0.5 shrink-0 accent-emerald-600">
                             <span class="flex-1 text-sm ${run.checks[it.key] ? 'text-slate-500 dark:text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100 font-semibold'}">${it.n ? `<b class="mr-1">${it.n}.</b>` : ''}${escapeHTML(it.text)}</span>
                             ${run.checks[it.key] ? `<span class="shrink-0 text-xs font-bold text-emerald-700 dark:text-emerald-300">${hhmm(run.checks[it.key])}</span>` : ''}
                         </label>`;
@@ -2820,6 +2830,7 @@ ${weeklyAgendaHTML()}
                         </div>
                         <button type="button" onclick="closeSetupWizard(); if (router.current === 'situations') updateSituationsGrid(document.getElementById('situation-search-input')?.value.trim() || '')" class="shrink-0 p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700" aria-label="닫기"><i class="fa-solid fa-xmark"></i></button>
                     </div>
+                    ${legacyChecks ? `<p class="text-xs text-slate-600 dark:text-slate-300">가이드 절차가 개정되었습니다. 새 체크 항목을 확인해 주세요.</p>` : ''}
                     <div class="flex items-center gap-3"><div class="flex-1 h-2 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden" aria-hidden="true"><div class="h-full bg-emerald-500" style="width:${pct}%"></div></div><span class="text-sm font-extrabold text-emerald-700 dark:text-emerald-300">${done}/${items.length}</span></div>
                     ${sit.firstCheck.length ? `<div class="space-y-2"><h4 class="text-xs font-extrabold text-emerald-700 dark:text-emerald-300">먼저 확인</h4>${items.filter(it => it.group === '먼저 확인').map(row).join('')}</div>` : ''}
                     <div class="space-y-2"><h4 class="text-xs font-extrabold text-blue-700 dark:text-blue-300">처리 단계</h4>${items.filter(it => it.group === '처리 단계').map(row).join('')}</div>
@@ -3298,7 +3309,7 @@ ${weeklyAgendaHTML()}
                                 <div>
                                     <span class="text-xs font-bold px-3 py-1 bg-emerald-50 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-lg mb-3 inline-block">${escapeHTML(course.category)}</span>
                                     <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">${escapeHTML(course.title)}</h3>
-                                    <p class="text-[11px] text-amber-700 dark:text-amber-300">${reviewLabel(course.publicId)}</p>
+                                    ${reviewDetailsHTML(course.publicId)}
                                     <div class="space-y-3 relative pl-4 border-l-2 border-emerald-500/30 my-4">
                                         ${course.steps.map((st, i) => `<div><span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block mb-0.5">STEP ${i+1}</span><p class="font-bold text-sm text-slate-800 dark:text-slate-200">${escapeHTML(st)}</p></div>`).join('')}
                                     </div>

@@ -136,9 +136,11 @@ function verify(map, fixture) {
   delete current._설명;
   const embedded = JSON.parse(text('js/data.js').match(/^\s*const DEFAULT_DATA = (\{.*\});\s*$/m)?.[1] || 'null');
   assert.deepEqual(current, embedded, 'published and embedded content differ');
-  const frozenStructure = ({ updatedAt, version, terms, ...data }) => ({
+  const frozenStructure = ({ updatedAt, version, terms, situations, courses, ...data }) => ({
     ...data,
     terms: terms.map(({ simple, description, tip, ...identity }) => identity),
+    situations: situations.map(({ summary, firstCheck, steps, caution, script, ...identity }) => identity),
+    courses: courses.map(({ steps, ...identity }) => identity),
   });
   assert.deepEqual(frozenStructure(current), frozenStructure(baselineData), 'frozen IDs, search terms, or task positions changed');
   assert.equal(current.situations.length, 15);

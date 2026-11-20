@@ -1,6 +1,6 @@
 {
   "metadataSchemaVersion": 1,
-  "contentVersion": "4-2026-11-20",
+  "contentVersion": "5-2026-11-20",
   "generatedAt": "2026-10-19T03:39:37.617Z",
   "reviewPolicy": "reviewStatus 'reviewed'는 sourceIds(공식 근거)와 checkedAt(확인일)이 모두 있을 때만 사용합니다. 편집은 scripts/content-review.mjs로 합니다.",
   "sources": [
@@ -614,7 +614,7 @@
       "id": "review-curriculum-service",
       "title": "학교생활기록부 종합지원포털 창의적 체험활동 봉사활동 안내",
       "kind": "교육부 자료",
-      "url": "https://star.moe.go.kr/web/contents/m30103.do?id=85735&schM=view"
+      "url": "https://star.moe.go.kr/web/contents/m30103.do?id=121466&schM=view"
     },
     {
       "id": "review-assessment-2026",
@@ -675,6 +675,282 @@
       "title": "교원지위법 제22조 (교원보호공제사업)",
       "kind": "법률",
       "url": "https://www.law.go.kr/LSW/lsSideInfoP.do?docCls=jo&joBrNo=00&joNo=0022&lsiSeq=283357&urlMode=lsScJoRltInfoR"
+    },
+    {
+      "id": "review-family-contact",
+      "title": "경기도교육청 학교 민원 처리 매뉴얼",
+      "kind": "교육청 자료",
+      "url": "https://www.goe.go.kr/resource/old/BBSMSTR_000000000107/BBS_202503200849287481.pdf"
+    },
+    {
+      "id": "review-open-class",
+      "title": "경기도교육청 초등 공개수업 운영 사례",
+      "kind": "교육청 자료",
+      "url": "https://www.goe.go.kr/goe/na/ntt/selectNttInfo.do?nttSn=2376455"
+    },
+    {
+      "id": "review-academic-support",
+      "title": "기초학력 보장법 제2·7·8조",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/lsInfoP.do?efYd=20261029&lsiSeq=285645"
+    },
+    {
+      "id": "review-gyeonggi-academic-support",
+      "title": "경기도교육청 2026 기초학력 보장 지원 계획",
+      "kind": "교육청 자료",
+      "url": "https://www.goe.go.kr/resource/goe/na/bbs_2675/2026/01/195d3e8c-b762-4d29-9cf1-d170076171da.pdf"
+    },
+    {
+      "id": "review-special-education",
+      "title": "장애인 등에 대한 특수교육법 제15·17·21·22·25조",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/법령/장애인등에대한특수교육법"
+    },
+    {
+      "id": "review-teacher-training",
+      "title": "교원 등의 연수에 관한 규정 제2·6조",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/법령/교원등의연수에관한규정"
+    },
+    {
+      "id": "review-teacher-qualification-training",
+      "title": "교(원)장·교(원)감·수석교사·정교사 자격연수 표준교육과정",
+      "kind": "교육부고시",
+      "url": "https://www.law.go.kr/admRulLsInfoP.do?admRulSeq=2100000279810"
+    },
+    {
+      "id": "review-professional-community",
+      "title": "경기도교육청 전문적 학습공동체 운영 자료",
+      "kind": "교육청 자료",
+      "url": "https://www.goe.go.kr/resource/old/BBSMSTR_000000030136/BBS_202502121043099300.pdf"
+    },
+    {
+      "id": "review-practice-research",
+      "title": "연구대회 관리에 관한 훈령 제2·3조 (교육부훈령 제566호)",
+      "kind": "교육부훈령",
+      "url": "https://www.law.go.kr/LSW/flDownload.do?flSeq=166257599"
+    },
+    {
+      "id": "review-demonstration-school",
+      "title": "연구학교에 관한 규칙 제3·4조",
+      "kind": "교육부령",
+      "url": "https://www.law.go.kr/lsInfoP.do?lsiSeq=265051"
+    },
+    {
+      "id": "review-field-2026",
+      "title": "경기도교육청 2026 현장체험학습 운영 길라잡이",
+      "kind": "교육청 자료",
+      "url": "https://www.goe.go.kr/goe/na/ntt/selectNttInfo.do?mi=10961&nttSn=2377591"
+    },
+    {
+      "id": "review-school-sports-2026",
+      "title": "경기도교육청 2026 학교체육 업무매뉴얼",
+      "kind": "교육청 자료",
+      "url": "https://www.goe.go.kr/goe/na/ntt/selectNttInfo.do?mi=7&nttSn=2340436"
+    },
+    {
+      "id": "review-student-athlete",
+      "title": "학교체육 진흥법 제2·11조",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/lsInfoP.do?lsId=011527"
+    },
+    {
+      "id": "review-youth-sports",
+      "title": "대한체육회 제55회 전국소년체육대회 참가요강",
+      "kind": "대한체육회 자료",
+      "url": "https://www.sports.or.kr/sports/bbs/BMSR00017/view.do?bbsId=BMSR00017&boardId=72048&menuNo=200023"
+    },
+    {
+      "id": "review-health-education",
+      "title": "학교보건법 제9조의2 (보건교육 등)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1015894545"
+    },
+    {
+      "id": "review-cpr",
+      "title": "질병관리청 2025년 한국 심폐소생술 가이드라인",
+      "kind": "질병관리청 자료",
+      "url": "https://www.kdca.go.kr/kdca/2857/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGa2RjYSUyRjQ5JTJGMzA5OTA4JTJGYXJ0Y2xWaWV3LmRvJTNGcGFzc3dvcmQlM0QlMjZyZ3NCZ25kZVN0ciUzRCUyNmZpbmRPcG53cmQlM0QlMjZmaW5kV29yZCUzRCUyNnJnc0VuZGRlU3RyJTNEJTI2ZmluZFR5cGUlM0QlMjZmaW5kQ2xTZXElM0QlMjZwYWdlJTNEMSUyNg%3D%3D"
+    },
+    {
+      "id": "review-fire-drill",
+      "title": "공공기관의 소방안전관리에 관한 규정 제14조",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/법령/공공기관의소방안전관리에관한규정"
+    },
+    {
+      "id": "review-weather-safety",
+      "title": "경기도교육청 학교안전 재난 유형별 행동 매뉴얼",
+      "kind": "교육청 자료",
+      "url": "https://www.goe.go.kr/goe/cm/cntnts/cntntsView.do?cntntsId=1696&mi=10929"
+    },
+    {
+      "id": "review-infection",
+      "title": "학교보건법 시행령 제22조 (등교 등의 중지)",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/LSW/lsSideInfoP.do?docCls=jo&joBrNo=00&joNo=0022&lsiSeq=284905&urlMode=lsScJoRltInfoR"
+    },
+    {
+      "id": "review-infection-management",
+      "title": "학교 감염병 예방 위기대응 매뉴얼",
+      "kind": "교육청 자료",
+      "url": "https://www.goe.go.kr/resource/goe/na/bbs_2675/2025/09/33fc09db-47c7-4b13-a254-f0ebf8c4c1d7.pdf"
+    },
+    {
+      "id": "review-meal-hygiene",
+      "title": "학교급식법 시행규칙 별표 4 (학교급식의 위생·안전관리기준)",
+      "kind": "교육부령",
+      "url": "https://www.law.go.kr/LSW/lbook/lbFileDownload.do?flExt=pdf&lbookConflSeq=79944&lbookSeq=85874"
+    },
+    {
+      "id": "review-meal-gyeonggi",
+      "title": "경기도교육청 2026 학교급식 기본방향",
+      "kind": "교육청 자료",
+      "url": "https://www.goe.go.kr/resource/goe/na/bbs_2675/2026/02/29bad70f-478d-472d-aeca-ed9a951a77a4.pdf"
+    },
+    {
+      "id": "review-meal-law",
+      "title": "학교급식법 제11·12·16조",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?ancYnChk=0&chrClsCd=010202&efYd=20260820&lsiSeq=283421"
+    },
+    {
+      "id": "review-care-2026",
+      "title": "교육부 2026 초등돌봄교육(늘봄학교) 운영 길라잡이",
+      "kind": "교육부 자료",
+      "url": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=72782&boardSeq=105180&lev=0&m=030215"
+    },
+    {
+      "id": "review-care-policy-2026",
+      "title": "교육부 2026 온동네 초등돌봄·교육 추진 방안",
+      "kind": "교육부 자료",
+      "url": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=294&boardSeq=105261&lev=0&m=020402"
+    },
+    {
+      "id": "review-digital-selection",
+      "title": "교육부 학습지원 소프트웨어 선정 기준 안내",
+      "kind": "교육부 자료",
+      "url": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=294&boardSeq=105007&lev=0&m=020402"
+    },
+    {
+      "id": "review-metaverse",
+      "title": "한국교육학술정보원 메타버스의 교육적 활용 가이드북",
+      "kind": "공공기관 자료",
+      "url": "https://www.keris.or.kr/main/ad/pblcte/selectPblcteETCInfo.do?mi=1142&pblcteSeq=13657"
+    },
+    {
+      "id": "review-generative-ai",
+      "title": "한국교육학술정보원 생성형 AI 활용 교수학습 운영 가이드",
+      "kind": "공공기관 자료",
+      "url": "https://www.keris.or.kr/main/ad/pblcte/selectPblcteETCInfo.do?mi=1142&pblcteSeq=13792"
+    },
+    {
+      "id": "review-device-management",
+      "title": "경기도교육청 2026 학생생활규정 운영 매뉴얼",
+      "kind": "교육청 자료",
+      "url": "https://www.goe.go.kr/resource/goe/na/bbs_2675/2026/03/4ed4f354-61af-4772-b077-97644c4e5e85.pdf"
+    },
+    {
+      "id": "review-school-sports-day",
+      "title": "충북 관기초등학교 어울림 운동회 운영 안내",
+      "kind": "학교 자료",
+      "url": "https://school.cbe.go.kr/kwangi-e/M010303/view/5830692"
+    },
+    {
+      "id": "review-automation",
+      "title": "경기도교육청 학교 행정업무 자동화 서식 보급 안내",
+      "kind": "교육청 자료",
+      "url": "https://www.goe.go.kr/goe/na/ntt/selectNttInfo.do?mi=10151&nttSn=1045617"
+    },
+    {
+      "id": "review-new-teacher",
+      "title": "경기도교육청 2026 고양 신규교사 역량강화 직무연수 안내",
+      "kind": "교육청 자료",
+      "url": "https://www.goe.go.kr/goe/na/ntt/selectNttInfo.do?nttSn=2354008"
+    },
+    {
+      "id": "review-class-cover",
+      "title": "충청북도교육청 초등 저경력교사 업무도움자료",
+      "kind": "교육청 자료",
+      "url": "https://www.cbe.go.kr/upload/dept-05/na/bbs_1386/2024/04/A5DA1BD6-FEFA-3C48-EAC7-374FED1ED1F0.pdf"
+    },
+    {
+      "id": "review-guidance-2026",
+      "title": "교육부고시 제2026-3호 교원의 학생생활지도에 관한 고시",
+      "kind": "교육부고시",
+      "url": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=141&boardSeq=105376&lev=0&m=040401"
+    },
+    {
+      "id": "review-individual-support",
+      "title": "초·중등교육법 제20조의4 (개별학생교육지원)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1033327257"
+    },
+    {
+      "id": "review-individual-decree",
+      "title": "초·중등교육법 시행령 제40조의4 (개별학생교육지원 적용 기준 및 방법)",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&lspttninfSeq=198837"
+    },
+    {
+      "id": "review-emergency",
+      "title": "응급의료에 관한 법률 제5조 (응급환자 신고 및 협조 의무)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=286763"
+    },
+    {
+      "id": "review-principal-role",
+      "title": "초·중등교육법 제20조 (교직원의 임무)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/LSW/lsSideInfoP.do?docCls=jo&joBrNo=00&joNo=0020&lsiSeq=283903&urlMode=lsScJoRltInfoR"
+    },
+    {
+      "id": "review-violence-committee",
+      "title": "학교폭력예방법 제12조 (학교폭력대책심의위원회의 설치·기능)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1030841661"
+    },
+    {
+      "id": "review-official-travel",
+      "title": "공무원 여비 규정 제18조 (근무지 내 국내 출장)",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/LSW/lsSideInfoP.do?docCls=jo&joBrNo=00&joNo=0018&lsiSeq=287535&urlMode=lsScJoRltInfoR"
+    },
+    {
+      "id": "review-performance-bonus",
+      "title": "공무원수당 등에 관한 규정 제7조의2 (성과상여금)",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?ancYnChk=&chrClsCd=010202&lsJoLnkSeq=1021905419"
+    },
+    {
+      "id": "review-performance-local",
+      "title": "서울특별시동부교육지원청 2026 교육공무원·기간제교사 성과상여금 안내",
+      "kind": "교육청 자료",
+      "url": "https://dbedu.sen.go.kr/CMS/school/school04/school0402/school040201/1354500_2852.html"
+    },
+    {
+      "id": "review-qualifications",
+      "title": "초·중등교육법 별표 2 (교사 자격 기준)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/flDownload.do?bylClsCd=110201&flSeq=39131534&gubun="
+    },
+    {
+      "id": "review-qualification-procedure",
+      "title": "교원자격검정령 시행규칙 제9조 (무시험검정 신청)",
+      "kind": "교육부령",
+      "url": "https://www.law.go.kr/LSW/lsSideInfoP.do?docCls=jo&joBrNo=00&joNo=0009&lsiSeq=285245&urlMode=lsScJoRltInfoR"
+    },
+    {
+      "id": "review-anaphylaxis",
+      "title": "질병관리청 국가건강정보포털 아나필락시스 응급대처 안내",
+      "kind": "질병관리청 자료",
+      "url": "https://health.kdca.go.kr/healthinfo/biz/health/gnrlzHealthInfo/gnrlzHealthInfo/gnrlzHealthInfoView.do?cntnts_sn=6684"
+    },
+    {
+      "id": "review-infection-definition",
+      "title": "감염병예방법 제2조 (정의)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1024110819"
     }
   ],
   "items": {
@@ -1504,124 +1780,174 @@
       ]
     },
     "term:100": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도교육청 학교 민원 대응 사례 (소속 학교 기준 확인)",
+      "sourceIds": [
+        "review-family-contact",
+        "law-privacy"
+      ]
     },
     "term:101": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도교육청 학교 민원 대응 사례 (소속 학교 기준 확인)",
+      "sourceIds": [
+        "review-family-contact",
+        "law-privacy"
+      ]
     },
     "term:102": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "초등학교 수업 나눔 사례 (일정·참여 대상은 학교별 확인)",
+      "sourceIds": [
+        "review-open-class",
+        "law-privacy"
+      ]
     },
     "term:103": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 사업명과 지원 절차는 지역·학교별 확인",
+      "sourceIds": [
+        "review-academic-support"
+      ]
     },
     "term:104": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도교육청 사례 (다른 지역은 소속 교육청 확인)",
+      "sourceIds": [
+        "review-gyeonggi-academic-support",
+        "review-academic-support"
+      ]
     },
     "term:105": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 사업명과 지원 절차는 지역·학교별 확인",
+      "sourceIds": [
+        "review-academic-support"
+      ]
     },
     "term:106": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 사업명과 지원 절차는 지역·학교별 확인",
+      "sourceIds": [
+        "review-academic-support"
+      ]
     },
     "term:107": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도교육청 사례 (다른 지역은 소속 교육청 확인)",
+      "sourceIds": [
+        "review-gyeonggi-academic-support",
+        "review-academic-support"
+      ]
     },
     "term:108": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 지역별 신청·지원 절차 확인",
+      "sourceIds": [
+        "review-special-education"
+      ]
     },
     "term:109": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 지역별 신청·지원 절차 확인",
+      "sourceIds": [
+        "review-special-education"
+      ]
     },
     "term:110": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 지역별 신청·지원 절차 확인",
+      "sourceIds": [
+        "review-special-education",
+        "review-iep"
+      ]
     },
     "term:111": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 지역별 신청·지원 절차 확인",
+      "sourceIds": [
+        "review-special-education"
+      ]
     },
     "term:112": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 연수 과정별 선정·이수 공고 적용",
+      "sourceIds": [
+        "review-teacher-training"
+      ]
     },
     "term:113": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 연수 과정별 선정·이수 공고 적용",
+      "sourceIds": [
+        "review-teacher-training",
+        "review-teacher-qualification-training"
+      ]
     },
     "term:114": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 연수 과정별 선정·이수 공고 적용",
+      "sourceIds": [
+        "review-teacher-training"
+      ]
     },
     "term:115": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "교육청 운영 사례 (일정·운영 방식은 학교별 확인)",
+      "sourceIds": [
+        "review-professional-community"
+      ]
     },
     "term:116": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026년 6월 25일 이후 시행, 인정 대회와 운영 공고 확인",
+      "sourceIds": [
+        "review-practice-research",
+        "law-privacy"
+      ]
     },
     "term:117": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 지정·운영은 교육청별 공고 확인",
+      "sourceIds": [
+        "review-demonstration-school"
+      ]
     },
     "term:118": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "초등학교 행사 운영 사례 (실시 시기·방식은 학교별)",
+      "sourceIds": [
+        "review-school-sports-day",
+        "review-school-sports-2026"
+      ]
     },
     "term:119": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도교육청 2026 안내 (소속 시도교육청 지침 우선 확인)",
+      "sourceIds": [
+        "review-field-2026",
+        "law-school-council"
+      ]
     },
     "term:120": {
       "reviewStatus": "reviewed",
@@ -1635,196 +1961,287 @@
       ]
     },
     "term:121": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도교육청 2026 안내 (소속 시도교육청 지침 우선 확인)",
+      "sourceIds": [
+        "review-field-2026"
+      ]
     },
     "term:122": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도교육청 2026 안내 (소속 시도교육청 지침 우선 확인)",
+      "sourceIds": [
+        "review-school-sports-2026"
+      ]
     },
     "term:123": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 참가 제한은 법령이 정한 경기대회 등",
+      "sourceIds": [
+        "review-student-athlete",
+        "review-school-sports-2026"
+      ]
     },
     "term:124": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026년 대회 요강 (다른 회차는 해당 연도 요강 확인)",
+      "sourceIds": [
+        "review-youth-sports"
+      ]
     },
     "term:125": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 교육 대상별 내용·실시 기준 확인",
+      "sourceIds": [
+        "review-health-education"
+      ]
     },
     "term:126": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "일반인 기본소생술, 연령별 적용 및 119 안내 우선",
+      "sourceIds": [
+        "review-cpr",
+        "review-health-education"
+      ]
     },
     "term:127": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "일반인 기본소생술, 연령별 적용 및 119 안내 우선",
+      "sourceIds": [
+        "review-cpr",
+        "review-health-education"
+      ]
     },
     "term:128": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "규정 적용 대상 학교, 시행 시점·예외 확인",
+      "sourceIds": [
+        "review-fire-drill"
+      ]
     },
     "term:129": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도교육청 안내 (소속 시도교육청 지침 적용)",
+      "sourceIds": [
+        "review-weather-safety"
+      ]
     },
     "term:130": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도교육청 안내 (소속 시도교육청 지침 적용)",
+      "sourceIds": [
+        "review-weather-safety"
+      ]
     },
     "term:131": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 감염병별 방역·출결 지침 확인",
+      "sourceIds": [
+        "review-infection",
+        "review-infection-management",
+        "rule-attendance",
+        "review-infection-definition"
+      ]
     },
     "term:132": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 학교급식, 교육청 운영 기준 함께 적용",
+      "sourceIds": [
+        "review-meal-hygiene",
+        "review-meal-gyeonggi"
+      ]
     },
     "term:133": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 학교급식, 교육청 운영 기준 함께 적용",
+      "sourceIds": [
+        "review-meal-hygiene",
+        "review-meal-gyeonggi"
+      ]
     },
     "term:134": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 학교급식, 시행일 기준 적용",
+      "sourceIds": [
+        "review-meal-law",
+        "review-meal-gyeonggi"
+      ]
     },
     "term:135": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 학교급식, 시행일 기준 적용",
+      "sourceIds": [
+        "review-meal-law",
+        "review-meal-gyeonggi"
+      ]
     },
     "term:136": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 경기도 사례 (지역별 지원 범위 확인)",
+      "sourceIds": [
+        "review-meal-gyeonggi",
+        "review-meal-law"
+      ]
     },
     "term:137": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도, 소속 학교 운영 계획 확인",
+      "sourceIds": [
+        "review-care-2026",
+        "review-care-policy-2026"
+      ]
     },
     "term:138": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도, 소속 학교 운영 계획 확인",
+      "sourceIds": [
+        "review-care-2026",
+        "review-care-policy-2026"
+      ]
     },
     "term:139": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026년 전국 정책, 프로그램 운영은 지역·학교별 확인",
+      "sourceIds": [
+        "review-care-policy-2026",
+        "review-care-2026"
+      ]
     },
     "term:140": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "초·중등학교에서 교육자료로 선정하는 학습지원 소프트웨어",
+      "sourceIds": [
+        "review-digital-selection"
+      ]
     },
     "term:141": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 초등 전 학년 (2022 개정 교육과정)",
+      "sourceIds": [
+        "review-curriculum-2022"
+      ]
     },
     "term:142": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 초등 전 학년 (2022 개정 교육과정)",
+      "sourceIds": [
+        "review-curriculum-2022"
+      ]
     },
     "term:143": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "초·중등 교육 활용 안내, 서비스별 조건 확인",
+      "sourceIds": [
+        "review-metaverse",
+        "review-digital-selection"
+      ]
     },
     "term:144": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "초·중등 교수학습 가이드, 학교별 서비스 선정 절차 적용",
+      "sourceIds": [
+        "review-generative-ai",
+        "review-digital-selection",
+        "law-privacy"
+      ]
     },
     "term:145": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도교육청 적용 사례, 학교 보안·결재 기준 확인",
+      "sourceIds": [
+        "review-automation",
+        "law-privacy"
+      ]
     },
     "term:146": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도교육청 사례, 초·중등교육법 및 소속 학교 규칙 확인",
+      "sourceIds": [
+        "review-device-management"
+      ]
     },
     "term:147": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도 고양 초등 신규교사 멘토링 사례",
+      "sourceIds": [
+        "review-new-teacher",
+        "review-class-cover"
+      ]
     },
     "term:148": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도 고양 초등 신규교사 멘토링 사례",
+      "sourceIds": [
+        "review-new-teacher",
+        "law-privacy"
+      ]
     },
     "term:149": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도 고양 초등 신규교사 멘토링 사례",
+      "sourceIds": [
+        "review-new-teacher",
+        "review-guidance-2026"
+      ]
     },
     "term:150": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 초·중등학교, 상위 법령 및 학칙 함께 적용",
+      "sourceIds": [
+        "review-guidance-2026",
+        "review-individual-support",
+        "review-individual-decree"
+      ]
     },
     "term:151": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "충청북도 초등 예시 (세부 운영은 소속 교육청·학교 기준)",
+      "sourceIds": [
+        "review-class-cover",
+        "review-new-teacher",
+        "law-privacy"
+      ]
     },
     "term:152": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통",
+      "sourceIds": [
+        "review-principal-role",
+        "review-document",
+        "law-privacy"
+      ]
     },
     "term:1001": {
       "reviewStatus": "reviewed",
@@ -1836,22 +2253,34 @@
       ]
     },
     "term:1002": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 긴급 시 119",
+      "sourceIds": [
+        "review-emergency",
+        "review-cpr",
+        "review-health-education",
+        "safety-notice"
+      ]
     },
     "term:1003": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통",
+      "sourceIds": [
+        "review-principal-role",
+        "review-principal",
+        "law-edu-officials"
+      ]
     },
     "term:1004": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "초·중등학교에서 교육자료로 선정하는 학습지원 소프트웨어",
+      "sourceIds": [
+        "review-digital-selection",
+        "law-privacy"
+      ]
     },
     "term:2001": {
       "reviewStatus": "reviewed",
@@ -1864,10 +2293,14 @@
       ]
     },
     "term:2002": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 관할 교육지원청 및 법령상 예외 확인",
+      "sourceIds": [
+        "review-violence-committee",
+        "school-violence-guide-2026",
+        "law-school-self"
+      ]
     },
     "term:2003": {
       "reviewStatus": "reviewed",
@@ -1896,154 +2329,256 @@
       ]
     },
     "situation:01": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 학교안전 및 응급 대응, 학교별 보고 절차 적용",
+      "sourceIds": [
+        "review-emergency",
+        "review-cpr",
+        "safety-notice"
+      ]
     },
     "situation:02": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도교육청 학교 민원 대응 사례, 소속 학교 안내 적용",
+      "sourceIds": [
+        "review-family-contact",
+        "review-principal-role",
+        "law-teacher-status",
+        "law-privacy"
+      ]
     },
     "situation:03": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 학교폭력 대응, 소속 교육청 사안 처리 절차 적용",
+      "sourceIds": [
+        "school-violence-guide-2026",
+        "law-school-self",
+        "decree-school-separation",
+        "review-violence-measures"
+      ]
     },
     "situation:04": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "공립학교 회계, 서울 사례 및 소속 지역의 규칙과 결재 기준 적용",
+      "sourceIds": [
+        "review-budget",
+        "review-keris",
+        "review-contract"
+      ]
     },
     "situation:05": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "국공립 교원 복무 기준, 학교별 신청과 결강 절차 적용",
+      "sourceIds": [
+        "service-sick",
+        "rule-teacher-leave",
+        "review-class-cover"
+      ]
     },
     "situation:06": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 초등 의무교육 출결, 해당 학교 비상 대응 절차 적용",
+      "sourceIds": [
+        "decree-absence",
+        "rule-attendance",
+        "child-abuse-report"
+      ]
     },
     "situation:07": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 초·중등 학교생활지도, 시행령과 학칙 적용",
+      "sourceIds": [
+        "review-individual-support",
+        "review-individual-decree",
+        "review-guidance-2026"
+      ]
     },
     "situation:08": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 교육활동 보호, 관할 교육지원청 절차 적용",
+      "sourceIds": [
+        "law-teacher-status",
+        "review-teacher-protection"
+      ]
     },
     "situation:09": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도·서울 교육청 사례, 소속 지역·활동 유형 기준 적용",
+      "sourceIds": [
+        "review-field-2026",
+        "seoul-field-guide",
+        "law-school-council",
+        "safety-duty"
+      ]
     },
     "situation:10": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 학교보건과 출결, 감염병별 기준 적용",
+      "sourceIds": [
+        "review-infection",
+        "review-infection-management",
+        "rule-attendance",
+        "law-privacy"
+      ]
     },
     "situation:11": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 급식 표시 기준과 학생별 학교 응급 계획 적용",
+      "sourceIds": [
+        "review-meal-law",
+        "review-meal-gyeonggi",
+        "review-emergency",
+        "review-anaphylaxis"
+      ]
     },
     "situation:12": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "국공립 교육공무원, 임용권자별 복직 안내 적용",
+      "sourceIds": [
+        "law-return-to-duty",
+        "reg-edu-appointment"
+      ]
     },
     "situation:13": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "특수교육대상자를 배치받은 일반학교, 학교별 지원계획 적용",
+      "sourceIds": [
+        "review-special-education",
+        "review-iep",
+        "law-privacy"
+      ]
     },
     "situation:14": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 외부 요청 목적과 기관별 보호조치 확인",
+      "sourceIds": [
+        "review-privacy",
+        "law-privacy"
+      ]
     },
     "situation:15": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 초등학교 학생부 기재요령",
+      "sourceIds": [
+        "rule-student-record",
+        "student-record-guide-2026",
+        "rule-attendance"
+      ]
     },
     "workflow:01": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도·서울 교육청 사례, 소속 지역·활동 유형 기준 적용",
+      "sourceIds": [
+        "review-field-2026",
+        "seoul-field-guide",
+        "law-school-council",
+        "review-budget"
+      ]
     },
     "workflow:02": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 운동부 운영, 교육청 지침과 참가 대회별 요강 적용",
+      "sourceIds": [
+        "review-student-athlete",
+        "review-school-sports-2026"
+      ]
     },
     "workflow:03": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "초·중등학교에서 교육자료로 선정하는 학습지원 소프트웨어",
+      "sourceIds": [
+        "review-digital-selection",
+        "law-privacy",
+        "review-device-management"
+      ]
     },
     "workflow:04": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도 2026 인사 기준 예시, 소속 교육청 연도별 공고 적용",
+      "sourceIds": [
+        "review-regional",
+        "review-appoint"
+      ]
     },
     "workflow:05": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 학교폭력 대응, 소속 교육청 절차 적용",
+      "sourceIds": [
+        "school-violence-guide-2026",
+        "law-school-self",
+        "decree-school-separation",
+        "review-violence-committee"
+      ]
     },
     "workflow:06": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "공립학교 회계, 서울 사례와 소속 지역 규칙 적용",
+      "sourceIds": [
+        "review-budget",
+        "review-keris",
+        "review-contract"
+      ]
     },
     "workflow:07": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "경기도 운영 사례, 학교 상담주간과 지역 민원 기준 적용",
+      "sourceIds": [
+        "review-family-contact",
+        "review-new-teacher",
+        "law-privacy"
+      ]
     },
     "workflow:08": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 기초학력 보장법, 교육청과 학교별 지원계획 적용",
+      "sourceIds": [
+        "review-academic-support",
+        "review-gyeonggi-academic-support",
+        "law-privacy"
+      ]
     },
     "workflow:09": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 교육활동 보호, 관할 교육지원청 절차 적용",
+      "sourceIds": [
+        "law-teacher-status",
+        "review-teacher-protection"
+      ]
     },
     "workflow:10": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "초등 정교사 1급 자격, 취득 경로와 지역별 공고 적용",
+      "sourceIds": [
+        "review-teacher-training",
+        "review-teacher-qualification-training",
+        "review-qualifications",
+        "review-qualification-procedure"
+      ]
     },
     "term:3001": {
       "reviewStatus": "reviewed",
@@ -2065,10 +2600,13 @@
       ]
     },
     "term:3003": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026년 7월 개정 기준, 공무원 여비, 소속 기관 지침 확인",
+      "sourceIds": [
+        "review-official-travel",
+        "reg-travel"
+      ]
     },
     "term:3004": {
       "reviewStatus": "reviewed",
@@ -2087,10 +2625,13 @@
       ]
     },
     "term:3006": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "지급 적용 대상과 해당 연도 소속 기관 지침 확인",
+      "sourceIds": [
+        "review-performance-bonus",
+        "review-performance-local"
+      ]
     },
     "term:3007": {
       "reviewStatus": "reviewed",
@@ -2103,10 +2644,12 @@
       ]
     },
     "term:3008": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "충청북도 초등 예시 (세부 운영은 소속 교육청·학교 기준)",
+      "sourceIds": [
+        "review-class-cover"
+      ]
     }
   },
   "reviewPriority": [
@@ -2252,5 +2795,6 @@
     }
   ],
   "reviewPriorityNote": "많이 찾고 틀리면 곤란한 용어 20개. 앱의 나의 교직함 › 내용 검수 현황에서 대조표를 내려받아 확인한 뒤, node scripts/content-review.mjs mark 로 기록합니다.",
-  "extraTermsUpdatedAt": "2026-11-20"
+  "extraTermsUpdatedAt": "2026-11-20",
+  "extraTermsVersion": 2
 }

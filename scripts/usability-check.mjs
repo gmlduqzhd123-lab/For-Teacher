@@ -105,6 +105,7 @@ assert.equal(metadata.metadataSchemaVersion, 1);
 assert.equal(metadata.contentVersion, `${terms.version}-${terms.updatedAt}`);
 const extraTerms = JSON.parse(fs.readFileSync(new URL('../data/terms-extra.json', import.meta.url), 'utf8'));
 assert.equal(metadata.extraTermsUpdatedAt, extraTerms.updatedAt);
+assert.equal(metadata.extraTermsVersion, extraTerms.version);
 assert.equal(Object.keys(metadata.items).length, terms.terms.length + extraTerms.terms.length + terms.situations.length + terms.courses.length);
 // 검수 우선 목록: 있는 항목만, 대조할 근거는 등록된 근거만
 for (const entry of metadata.reviewPriority || []) {
@@ -113,7 +114,7 @@ for (const entry of metadata.reviewPriority || []) {
 }
 const sourceIds = new Set(metadata.sources.map(src => src.id));
 assert.equal(sourceIds.size, metadata.sources.length);
-for (const src of metadata.sources) assert.match(src.url, /^https:\/\/(www\.law\.go\.kr|www\.moe\.go\.kr|gogo\.sen\.go\.kr|www\.mohw\.go\.kr|www\.goe\.go\.kr|www\.keris\.or\.kr|star\.moe\.go\.kr)\//);
+for (const src of metadata.sources) assert.match(src.url, /^https:\/\/(www\.law\.go\.kr|www\.moe\.go\.kr|gogo\.sen\.go\.kr|www\.mohw\.go\.kr|www\.goe\.go\.kr|www\.keris\.or\.kr|star\.moe\.go\.kr|www\.sports\.or\.kr|www\.kdca\.go\.kr|health\.kdca\.go\.kr|school\.cbe\.go\.kr|www\.cbe\.go\.kr|dbedu\.sen\.go\.kr)\//);
 for (const item of Object.values(metadata.items)) {
   assert.ok(['needs-review', 'reviewed', 'needs-update'].includes(item.reviewStatus));
   for (const id of item.sourceIds) assert.ok(sourceIds.has(id), `unknown source ${id}`);
