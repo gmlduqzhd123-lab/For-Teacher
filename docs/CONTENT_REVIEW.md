@@ -12,7 +12,7 @@
 
 1. 상세 화면 내용을 공식 근거(법령·훈령·고시, 교육청 지침)와 한 줄씩 대조합니다.
 2. 근거 목록 확인: `node scripts/content-review.mjs sources`
-   목록에 없는 근거는 `data/content-meta.json`의 `sources`에 `id`, `title`, `kind`, `url`(law.go.kr 주소)로 먼저 추가합니다.
+   목록에 없는 근거는 `data/content-meta.json`의 `sources`에 `id`, `title`, `kind`, `url`(법령정보센터나 문서를 발행한 기관의 공식 주소)로 먼저 추가합니다.
 3. 대조 완료 기록:
    `node scripts/content-review.mjs mark term:4 --source law-school-violence --date 2026-10-25 --scope "전국 공통"`
 4. 개정 등으로 다시 봐야 하면 `flag`, 기록을 지우려면 `reset`.

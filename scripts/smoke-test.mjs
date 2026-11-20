@@ -139,6 +139,15 @@ for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 
     if (overflow > 1) failures.push(`${viewport.width}px ${view}: content is ${overflow}px wider than the screen`);
   }
   await page.evaluate(() => openDetail(1)); await page.waitForTimeout(150);
+  // Both base and supplemental terms must display their own verified sources.
+  for (const id of [78, 3007]) {
+    const rendered = await page.evaluate(termId => {
+      openDetail(termId);
+      const panel = document.querySelector('#modal-content [aria-label="내용 확인 정보"]');
+      return panel?.textContent.includes('공식 근거와 대조 완료') && !!panel.querySelector('a[href^="https://"]');
+    }, id);
+    if (!rendered) failures.push(`${viewport.width}px term:${id}: verified content panel or source link missing`);
+  }
   await page.close();
 }
 await browser.close(); server.close();

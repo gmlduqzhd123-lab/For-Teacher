@@ -134,7 +134,13 @@ function verify(map, fixture) {
   assert.deepEqual(map, legacyMap(baselineData), 'frozen map differs from baseline');
   const current = json('terms.json');
   delete current._설명;
-  assert.equal(sha256(JSON.stringify(current)), sha256(JSON.stringify(baselineData)), 'terms.json content differs from embedded baseline data');
+  const embedded = JSON.parse(text('js/data.js').match(/^\s*const DEFAULT_DATA = (\{.*\});\s*$/m)?.[1] || 'null');
+  assert.deepEqual(current, embedded, 'published and embedded content differ');
+  const frozenStructure = ({ updatedAt, terms, ...data }) => ({
+    ...data,
+    terms: terms.map(({ simple, description, tip, ...identity }) => identity),
+  });
+  assert.deepEqual(frozenStructure(current), frozenStructure(baselineData), 'frozen IDs, search terms, or task positions changed');
   assert.equal(current.situations.length, 15);
   assert.equal(current.courses.length, 10);
   const storage = json('data/storage-map.json');
@@ -173,7 +179,7 @@ function verify(map, fixture) {
   assert.equal(decoded.records.length, 1);
   assert.equal(fixture.backups.legacyFlat.record_drafts.behavior, '합성 초안');
   console.log(`PASS: ${ids.length} legacy IDs -> ${targets.size} original terms; ${map.generatedCount} generated; ${Object.keys(map.yearTaskMap).length} year tasks`);
-  console.log(`PASS: embedded/terms.json alignment; ${Object.keys(storage.keys).length} storage keys; synthetic dual-prefix, corrupt, board, draft and backup fixtures`);
+  console.log(`PASS: frozen content structure and embedded/terms.json alignment; ${Object.keys(storage.keys).length} storage keys; synthetic dual-prefix, corrupt, board, draft and backup fixtures`);
   console.log('PARTIAL Q01/Q02: contract fixtures checked; runtime migration, URL navigation and interruption recovery not yet implemented');
 }
 

@@ -143,7 +143,7 @@
             { id: 't6', title: '학부모 상담주간 안내 및 신청서', content: '학부모님 안녕하십니까. [학교명] [학년반] 담임교사 [담임]입니다.\n새 학기 아이들의 학교 적응과 성장을 함께 나누기 위해 아래와 같이 학부모 상담주간을 운영합니다.\n\n1. 상담 기간: [상담기간]\n2. 상담 가능 시간: [상담시간] (1인당 약 15~20분)\n3. 상담 방법: 대면 상담 또는 전화 상담 중 선택\n4. 신청 방법: [신청방법]으로 희망 일시 1·2순위를 회신해 주세요.\n\n항상 따뜻한 관심과 협조에 감사드립니다.' },
             { id: 't7', title: '교외체험학습 신청·보고서 안내', content: '학부모님 안녕하십니까. 가족 동반 교외체험학습 출석인정 절차를 안내해 드립니다.\n\n1. 신청서 제출: 체험학습 시작 [신청기한]일 전까지 담임교사에게 제출 후 학교장 사전 승인 확인\n2. 결과보고서 제출: 체험학습 종료 후 [보고기한]일 이내에 보고서 및 증빙자료 제출\n3. 연간 인정 일수: 본교 학칙 기준 연간 [인정일수]일 이내\n\n※ 사전 승인 없이 실시하거나 기한 내 보고서를 제출하지 않을 경우 미인정 결석으로 처리되오니 유의해 주시기 바랍니다.' },
             { id: 't8', title: '감염병(독감·수두 등) 등교중지 및 출석인정 안내', content: '[학생이름] 학부모님 안녕하십니까. [학년반] 담임교사 [담임]입니다.\n학교 내 감염병 확산 예방을 위해 법정 감염병([감염병명]) 진단 시 전염 기간 동안 등교중지(출석인정 결석)가 적용됩니다.\n\n- 등교중지 기간: 의사 소견서상 격리 권고 기간\n- 등교 시 제출 서류: 진료확인서, 의사소견서, 진단서 중 1부 ([감염병명] 및 격리기간 명시)\n\n학생이 충분히 쉬고 건강하게 쾌유하기를 바랍니다.' },
-            { id: 't9', title: '미등교·결석 학생 보호자 확인 및 결석계 안내', content: '[학생이름] 학부모님 안녕하십니까. [학교명] [학년반] 담임교사 [담임]입니다.\n오늘([오늘]) [학생이름] 학생이 등교 시각까지 등교하지 않아 안전 확인차 연락드립니다. 현재 학생의 소재와 건강 상태를 회신해 주시기 바랍니다.\n\n아울러 질병 등으로 인한 결석 시 등교 후 5일 이내에 결석계와 증빙서류(진료확인서·처방전 등)를 보내주시면 출석처리 절차를 도와드리겠습니다.' },
+            { id: 't9', title: '미등교·결석 학생 보호자 확인 및 결석계 안내', content: '[학생이름] 학부모님 안녕하십니까. [학교명] [학년반] 담임교사 [담임]입니다.\n오늘([오늘]) [학생이름] 학생이 등교 시각까지 등교하지 않아 안전 확인차 연락드립니다. 현재 학생의 소재와 건강 상태를 회신해 주시기 바랍니다.\n\n질병으로 결석한 경우, 결석한 날부터 5일 이내에 결석 신고서와 해당 증빙서류를 제출해 주세요. 필요한 서류는 결석 기간과 사유에 따라 다르므로 학교 안내를 확인해 주세요.' },
             { id: 't10', title: '식품 알레르기 및 건강 상태 사전 조사 안내', content: '학부모님 안녕하십니까. 안전한 학교 급식 및 요리·체험 활동을 위해 학생별 식품 알레르기 및 특이 건강 상태를 조사합니다.\n\n- 조사 항목: 알레르기 유발 식품 번호, 증상 정도, 에피펜 소지 여부, 체육 활동 시 유의사항\n- 회신 기한: [회신기한]까지\n\n변동 사항이 생기면 언제든 담임교사([담임])에게 알려주시기 바랍니다.' },
             { id: 't11', title: '민원 면담 사전 예약 및 소통 창구 안내', content: '학부모님 안녕하십니까. [학교명] [학년반] 담임교사 [담임]입니다.\n학생들의 수업권 보호와 깊이 있는 상담을 위해 교사 면담 및 유선 상담은 사전 예약제로 운영되고 있습니다.\n\n- 연락 가능 시간: 평일 [연락가능시간] (수업 시간 중에는 통화가 어렵습니다)\n- 방문 면담 신청: 방문 전 하이톡/학교 대표번호로 일시 사전 협의\n\n학생 지도에 최선을 다하겠습니다. 감사합니다.' },
             { id: 't12', title: '학급 교육활동 물품 구입 품의서', content: '1. 관련: [학교명] 교육과정 운영 계획\n2. [학년/반] 원활한 수업 및 학급 운영을 위하여 다음과 같이 교육활동 물품을 구입하고자 합니다.\n 가. 품목 및 수량: [품목명] 외 [수량]종 (붙임 내역서 참조)\n 나. 소요예산: 금 [예산액]원\n 다. 예산과목: [예산과목]\n 라. 구입방법: 학교장터(S2B) 또는 신용카드 구입\n붙임  물품 구입 내역서 1부.  끝.' },
@@ -348,7 +348,7 @@
                 item.tip = playbook.tip;
             }
             item.metrics = enrich.metrics || playbook.metrics || [];
-            item.systemPath = enrich.systemPath || playbook.systemPath || '';
+            item.systemPath = enrich.systemPath ?? playbook.systemPath ?? '';
             item.steps = enrich.steps || playbook.steps || [];
             item.docs = enrich.docs || playbook.docs || [];
             item.vsGroup = vsGroup;
@@ -694,9 +694,9 @@
                 steps: [
                     '등교 시각까지 연락 없이 결석한 경우 1교시 직후 보호자에게 전화·문자로 학생 소재와 건강 상태 확인',
                     '보호자와도 연락이 닿지 않거나 학대·안전 우려가 있으면 즉시 교감·학적담당에게 보고',
-                    '질병·경조사 등 사유 확인 시 등교 후 5일 이내 결석계 및 증빙서류(진료확인서·약봉투 등) 제출 안내'
+                    '질병 결석은 결석한 날부터 5일 이내에 신고서와 해당 증빙을 제출하도록 안내하고, 경조사 등은 사유별 기준 확인'
                 ],
-                script: '학부모님 안녕하십니까. 오늘 등교 시각까지 학생이 등교하지 않아 안전 확인차 연락드립니다. 현재 학생의 소재와 건강 상태를 회신해 주시기 바랍니다. 질병 결석의 경우 등교 후 5일 이내에 결석계와 진료확인서(처방전·약봉투)를 보내주시면 됩니다.',
+                script: '학부모님 안녕하십니까. 오늘 등교 시각까지 학생이 등교하지 않아 안전 확인차 연락드립니다. 현재 학생의 소재와 건강 상태를 회신해 주시기 바랍니다. 질병으로 결석한 경우 결석한 날부터 5일 이내에 결석 신고서와 해당 증빙을 제출해 주세요.',
                 termId: 80,
                 situationId: 'situation:06',
                 docId: 't9'
@@ -950,9 +950,10 @@
             const record = CONTENT_META?.items?.[publicId] || null;
             const sources = (record?.sourceIds || []).map(id => (CONTENT_META.sources || []).find(src => src.id === id)).filter(Boolean);
             let status = record?.reviewStatus || 'needs-review';
-            if (!REVIEW_STATUS[status] || (status === 'reviewed' && !(record.checkedAt && sources.length))) status = 'needs-review';
-            const extraTerm = /^term:3\d{3}$/.test(String(publicId)) && EXTRA_TERMS_UPDATED; // 덧붙인 용어는 자기 기준일
-            return { status, checkedAt: status === 'needs-review' ? null : (record?.checkedAt || null), scope: record?.scope || null, sources, dataDate: extraTerm || DATA_META.updatedAt || '' };
+            const extraTerm = /^term:3\d{3}$/.test(String(publicId));
+            const matchingExtraData = !extraTerm || (EXTRA_TERMS_UPDATED && EXTRA_TERMS_UPDATED === CONTENT_META?.extraTermsUpdatedAt);
+            if (!REVIEW_STATUS[status] || (status === 'reviewed' && !(record.checkedAt && sources.length && matchingExtraData))) status = 'needs-review';
+            return { status, checkedAt: status === 'needs-review' ? null : (record?.checkedAt || null), scope: record?.scope || null, sources, dataDate: (extraTerm && EXTRA_TERMS_UPDATED) || DATA_META.updatedAt || '' };
         }
         function reviewLabel(publicId) {
             const info = reviewInfo(publicId); const st = REVIEW_STATUS[info.status];
@@ -984,8 +985,9 @@
                 const id = Number(String(entry.id).split(':')[1]);
                 const item = DB.find(d => d.id === id && !d._generated); if (!item) return null;
                 applyTermEnrichment(item);
-                const sources = (entry.suggestedSourceIds || []).map(sid => (CONTENT_META.sources || []).find(src => src.id === sid)).filter(Boolean);
-                return { publicId: entry.id, item, info: reviewInfo(entry.id), sources };
+                const info = reviewInfo(entry.id);
+                const sources = info.status === 'reviewed' ? info.sources : (entry.suggestedSourceIds || []).map(sid => (CONTENT_META.sources || []).find(src => src.id === sid)).filter(Boolean);
+                return { publicId: entry.id, item, info, sources };
             }).filter(Boolean);
         }
         function reviewQueueHTML() {
@@ -994,7 +996,7 @@
             return `
                         <details class="rounded-xl border border-slate-200 dark:border-slate-700 p-3">
                             <summary class="text-xs font-bold text-slate-700 dark:text-slate-200 cursor-pointer">검수 우선 ${q.length}개 (${done}개 완료) · 대조표 받기</summary>
-                            <p class="mt-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">자주 찾고 틀리면 곤란한 용어부터 공식 근거와 한 줄씩 대조해 주세요. 대조표에 '맞음/고칠 내용'을 적어 <b>틀린 내용 신고</b>로 보내 주시면 확인일과 함께 '대조 완료'로 기록됩니다.</p>
+                            <p class="mt-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">용어를 열어 확인일, 적용 범위와 대조한 근거를 볼 수 있어요. 수정이 필요한 내용은 &lsquo;틀린 내용 신고&rsquo;로 알려 주세요.</p>
                             <ul class="mt-2 space-y-1">${q.map(x => `<li class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs"><span aria-hidden="true">${x.info.status === 'reviewed' ? '✅' : '📝'}</span><button type="button" data-id="${x.item.id}" onclick="openDetail(Number(this.dataset.id))" class="font-semibold text-slate-800 dark:text-slate-100 hover:underline">${escapeHTML(x.item.keyword)}</button><span class="text-slate-500 dark:text-slate-400">${x.sources.map(src => `<a href="${escapeHTML(src.url)}" target="_blank" rel="noopener noreferrer" class="hover:underline">${escapeHTML(src.title)} ↗</a>`).join(' · ')}</span></li>`).join('')}</ul>
                             <div class="mt-3 flex flex-wrap gap-2"><button type="button" onclick="exportReviewSheet()" class="px-3 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold"><i class="fa-solid fa-file-csv"></i> 대조표 엑셀(CSV)</button><button type="button" onclick="printReviewSheet()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold"><i class="fa-solid fa-print"></i> 대조표 인쇄</button></div>
                         </details>`;
@@ -4023,7 +4025,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
         }
         // 출결 증빙 (학생 이름·결석 종류·기간·서류 받음 여부) — 개인 기록 잠금 대상
         const ATT_KINDS = {
-            sick: { label: '질병 결석', docs: '보호자 의견서 또는 진료확인서·처방전 (3일 이상이면 진료확인서·진단서)', days: 5 },
+            sick: { label: '질병 결석', docs: '결석 신고서와 의사 진단서·의견서 등. 상습적이지 않은 2일 이내 결석은 보호자 의견서·처방전·담임 확인서 등 가능', days: 5 },
             approved: { label: '출석 인정 결석', docs: '사유 증빙 (경조사 확인서·감염병 진단서·대회 공문 등)', days: 5 },
             trip: { label: '교외체험학습', docs: '사전 신청서 + 다녀온 뒤 체험학습 보고서', days: 7 },
             unexcused: { label: '미인정 결석', docs: '보호자 확인·연락 기록 (안전 확인 절차)', days: 1 },
@@ -5333,7 +5335,11 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
         function saveCounsel(list) { return Storage.set('counsel_records', list); }
         // ---------- 출결 증빙 체크 (학생별 결석 종류·기간 → 받아야 할 서류·마감, 받음 체크, 누락 목록) ----------
         function getAttendance() { const v = Storage.get('attendance_evidence', []); return Array.isArray(v) ? v.filter(validAttendanceRecord) : []; }
-        function attendanceDue(r) { const d = parseYMD(r.to); d.setDate(d.getDate() + (ATT_KINDS[r.kind]?.days || 5)); return d; }
+        function attendanceDue(r) {
+            const date = parseYMD(r.kind === 'sick' ? r.from : r.to);
+            date.setDate(date.getDate() + (ATT_KINDS[r.kind]?.days || 5));
+            return date;
+        }
         function attendancePending() {
             const today = new Date(); today.setHours(0, 0, 0, 0);
             return getAttendance().filter(r => !r.received).map(r => ({ ...r, due: attendanceDue(r), left: Math.round((attendanceDue(r) - today) / 86400000) })).sort((a, b) => a.due - b.due);
