@@ -45,7 +45,7 @@ function createCdpChromium() {
         await new Promise(r => setTimeout(r, 100));
       }
       return {
-        async newPage({ viewport } = {}) {
+        async newPage({ viewport, hasTouch } = {}) {
           const targets = await fetch(`http://127.0.0.1:${port}/json`).then(r => r.json());
           const target = targets.find(t => t.type === 'page') || (await fetch(`http://127.0.0.1:${port}/json/new`, { method: 'PUT' }).then(r => r.json()));
           const ws = new WebSocket(target.webSocketDebuggerUrl);
@@ -69,6 +69,7 @@ function createCdpChromium() {
           await send('Page.enable');
           await send('Runtime.enable');
           if (viewport) await send('Emulation.setDeviceMetricsOverride', { width: viewport.width, height: viewport.height, deviceScaleFactor: 1, mobile: viewport.width < 768 });
+          if (hasTouch) await send('Emulation.setTouchEmulationEnabled', { enabled: true });
           return {
             on(evt, fn) { if (listeners[evt]) listeners[evt].push(fn); },
             url() { return currentUrl; },
@@ -124,7 +125,8 @@ const browser = await chromium.launch({
 });
 const failures = [];
 for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 }, { width: 320, height: 640 }]) {
-  const page = await browser.newPage({ viewport });
+  const mobile = viewport.width < 768;
+  const page = await browser.newPage({ viewport, isMobile: mobile, hasTouch: mobile });
   page.on('pageerror', err => failures.push(`${viewport.width}px ${page.url()}: ${err.message}`));
   page.on('dialog', d => d.dismiss());
   await page.goto(base, { waitUntil: 'load' });
@@ -178,6 +180,76 @@ for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 
     return legacyCheckSeparated && checks.s0 === saved && typeof checks[key] === 'string' && modal.querySelectorAll('input:checked').length === 1;
   });
   if (!savedSituationWorks) failures.push(`${viewport.width}px: situation checklist attached a saved check to the wrong step`);
+  if (mobile) {
+    const mobileIssues = await page.evaluate(async useDark => {
+      const issues = [];
+      const app = document.getElementById('app-view');
+      const oldTheme = Storage.get('theme_mode', 'light');
+      Storage.set('situation_runs', {});
+      if (useDark) setThemeMode('dark', true);
+      const firstScreen = node => {
+        const bounds = node?.getBoundingClientRect();
+        const appBounds = app.getBoundingClientRect();
+        const bottom = document.querySelector('.editorial-bottom-nav').getBoundingClientRect().top;
+        return bounds && bounds.height >= 40 && bounds.top >= appBounds.top - 1 && bounds.bottom <= Math.min(appBounds.bottom, bottom) &&
+          bounds.left >= appBounds.left && bounds.right <= appBounds.right;
+      };
+      router.navigate('home');
+      const input = document.getElementById('home-search-input');
+      if (!firstScreen(input.form) || !firstScreen(input) || !firstScreen(document.getElementById('home-sos'))) issues.push('home search and SOS must fit the first screen');
+      input.value = '학생이 다쳤어요';
+      input.form.requestSubmit();
+      const firstResult = () => document.querySelector('#search-featured-result article');
+      const initialResult = firstResult();
+      if (initialResult?.dataset.resultKind !== 'situation' || !firstScreen(initialResult.querySelector('button'))) {
+        issues.push('student injury should open with a visible situation action');
+      } else {
+        initialResult.querySelector('button').click();
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        const injury = document.getElementById('situation-situation:01');
+        const action = injury?.querySelector('[data-situation-start]');
+        if (!injury?.querySelector('.situation-first') || !firstScreen(action)) issues.push('injury checks and action must be easy to reach');
+        action?.click();
+        const modal = document.getElementById('setup-wizard-content');
+        if (document.getElementById('setup-wizard-modal').classList.contains('hidden') || !modal.querySelector('[data-step-key^="s:"]')) {
+          issues.push('injury action should open the checklist');
+        } else {
+          modal.querySelector('[data-step-key^="s:"]').click();
+          closeSetupWizard();
+          router.navigate('home');
+          const resume = document.getElementById('home-resume-situation');
+          if (resume?.dataset.publicId !== 'situation:01' || resume.previousElementSibling !== document.getElementById('home-search-input').form || !firstScreen(resume)) {
+            issues.push('unfinished checklist should appear immediately below home search');
+          }
+        }
+      }
+      router.navigate('search', '물건 살 때');
+      const purchasing = firstResult();
+      const purchaseButtons = [...(purchasing?.querySelectorAll('button') || [])];
+      if (purchasing?.dataset.resultKind !== 'workflow' || !purchasing.textContent.includes('물품 구입 한 번에 끝내기') || purchaseButtons.length !== 2 || !firstScreen(purchaseButtons[0])) {
+        issues.push('purchase search should show the workflow and its form');
+      } else {
+        purchaseButtons[0].click();
+        if (router.current !== 'navigator' || router.param !== 'workflow:06') issues.push('purchase workflow did not open');
+        router.navigate('search', '물건 살 때');
+        firstResult().querySelectorAll('button')[1].click();
+        if (document.getElementById('doc-template-select')?.value !== 't12') issues.push('purchase form did not open');
+      }
+      router.navigate('search', '연가');
+      const leave = firstResult();
+      if (leave?.dataset.resultKind !== 'term' || leave.querySelector('h3')?.textContent !== '연가') issues.push('exact term search should prioritize the definition');
+      else {
+        leave.querySelector('button').click();
+        if (document.querySelector('#modal-title')?.textContent.trim() !== '연가') issues.push('leave definition did not open');
+        closeModal(false);
+      }
+      router.navigate('search', '상담');
+      if (firstResult()) issues.push('broad queries should not label an unrelated result as the first answer');
+      if (useDark) setThemeMode(oldTheme, true);
+      return issues;
+    }, viewport.width === 390);
+    failures.push(...mobileIssues.map(issue => `${viewport.width}px: ${issue}`));
+  }
   await page.close();
 }
 await browser.close(); server.close();
@@ -186,4 +258,4 @@ if (failures.length) {
   if (process.env.GITHUB_ACTIONS) failures.slice(0, 20).forEach(f => console.log(`::error title=smoke-test::${f.replace(/\n/g, ' ')}`)); // Actions 화면·API에 오류 내용 표시
   process.exit(1);
 }
-console.log(`Smoke test passed: ${views.length} screens × 3 viewport sizes, review panels, saved situation checklist.`);
+console.log(`Smoke test passed: ${views.length} screens × 3 viewport sizes, review panels, saved checklist, mobile home → search → guide.`);

@@ -158,7 +158,7 @@
         ];
         // 15개 상황 가이드 전체에 대한 맞춤형 문서 양식(doc) 및 업무 플로우(course) 매핑
         const SITUATION_ACTION_MAP = {
-            1: { doc: 't3', course: 1, docLabel: '보건실 응급처치 알림장' },
+            1: { doc: 't3', course: null, docLabel: '보건실 응급처치 알림장' },
             2: { doc: 't11', course: 9, docLabel: '민원 면담 사전예약 안내문' },
             3: { doc: 't1', course: 5, docLabel: '학폭 초기 학부모 안내문' },
             4: { doc: 't12', course: 6, docLabel: '물품 구입 품의서 양식' },
@@ -169,10 +169,10 @@
             9: { doc: 't2', course: 1, docLabel: '현장체험학습 품의서' },
             10: { doc: 't8', course: null, docLabel: '감염병 등교중지 안내문' },
             11: { doc: 't10', course: null, docLabel: '알레르기 사전 조사 안내' },
-            12: { doc: 't16', course: 4, docLabel: '복직 인사 및 학급 안내장' },
-            13: { doc: 't14', course: 8, docLabel: '통합학급 협력 안내문' },
+            12: { doc: 't16', course: null, docLabel: '복직 인사 및 학급 안내장' },
+            13: { doc: 't14', course: null, docLabel: '통합학급 협력 안내문' },
             14: { doc: 't13', course: null, docLabel: '개인정보 제공 동의 안내' },
-            15: { doc: 't17', course: 7, docLabel: '생기부 마감 전 확인 안내' }
+            15: { doc: 't17', course: null, docLabel: '생기부 마감 전 확인 안내' }
         };
         const EDUCATION_OFFICES = [
             { code: 'seoul', name: '서울특별시교육청', url: 'https://www.sen.go.kr' },
@@ -213,25 +213,25 @@
         let PUBLIC_LINKS = { situations: [], courses: [] };
         let CONTENT_META = null;
         const SEARCH_LINKS = [
-            { words: ['현장체험학습 준비'], terms: [120], situations: [9], courses: [1] },
-            { words: ['학생이 다쳤어요', '다침'], terms: [10, 1002], situations: [1], courses: [] },
+            { primary: 'workflow', words: ['현장체험학습 준비', '현장체험학습 준비해요'], terms: [120], situations: [9], courses: [1] },
+            { primary: 'situation', words: ['학생이 다쳤어요', '다침'], terms: [10, 1002], situations: [1], courses: [] },
             { words: ['학폭'], terms: [4], situations: [3], courses: [5] },
-            { words: ['물건 살 때'], terms: [3], situations: [4], courses: [6] },
+            { primary: 'workflow', words: ['물건 살 때', '학급 물품 구입'], terms: [3], situations: [4], courses: [6] },
             { words: ['출석인정결석'], terms: [80], situations: [], courses: [] },
             { words: ['애가 다쳤어요', '피가 나요', '응급처치', '병원 치료비', '공제회 청구', '보건실'], terms: [10, 50, 1002], situations: [1], courses: [] },
-            { words: ['아파서 못가요', '출근 못해요', '몸살', '병가 내기', '진단서 기준', '조퇴할래요', '병원 다녀올게요'], terms: [1001, 82, 5], situations: [5], courses: [] },
+            { primary: 'situation', words: ['아파서 못가요', '출근 못해요', '몸살', '병가 내기', '진단서 기준', '조퇴할래요', '병원 다녀올게요'], terms: [1001, 82, 5], situations: [5], courses: [] },
             { words: ['내일 쉬고 싶어요', '연차 쓰기', '휴가 신청', '나이스 복무', '반차', '지참'], terms: [3001, 5, 82, 1001, 35], situations: [5], courses: [] },
             { words: ['부모님 전화', '엄마가 화났어요', '학부모 항의', '악성 민원', '폭언', '교권 침해', '밤에 전화'], terms: [97, 2003, 99], situations: [2, 8], courses: [9] },
             { words: ['아이들이 싸웠어요', '다툼', '괴롭힘', '단톡방 욕설', '사이버폭력', '학폭 신고'], terms: [4, 2005], situations: [3], courses: [5] },
-            { words: ['애가 안 왔어요', '연락두절', '무단결석', '미등교', '결석계 서류', '아파서 결석'], terms: [80, 5], situations: [6], courses: [] },
+            { primary: 'situation', words: ['애가 안 왔어요', '연락두절', '무단결석', '미등교', '결석계 서류', '아파서 결석'], terms: [80, 5], situations: [6], courses: [] },
             { words: ['가족여행', '교외체험학습 신청', '체험학습 보고서', '국내외 체험학습'], terms: [120, 80], situations: [9], courses: [1] },
             { words: ['독감 걸렸어요', '코로나', '수두', '전염병', '법정감염병', '등교중지'], terms: [131, 80, 50], situations: [10], courses: [] },
             { words: ['전학 왔어요', '전학 가요', '전입생', '전출생', '반 배정'], terms: [85, 5], situations: [], courses: [] },
             { words: ['생기부 뭐 써요', '행특 예시', '세특 작성', '바이트 계산', '생기부 금지어'], terms: [2001, 5], situations: [15], courses: [] },
-            { words: ['돈 어떻게 써요', '예산 집행', '법인카드 결제', '견적서', '물건 도착', '검수하기'], terms: [3, 6, 53, 55, 56], situations: [4], courses: [6] },
+            { primary: 'workflow', words: ['돈 어떻게 써요', '예산 집행', '법인카드 결제', '견적서', '물건 도착', '검수하기'], terms: [3, 6, 53, 55, 56], situations: [4], courses: [6] },
             { words: ['공문 어떻게 써요', '기안 올리기', '결재 취소', '문서 반려', '공람 처리'], terms: [65, 60, 61, 62, 63, 64, 6], situations: [], courses: [] },
-            { words: ['수업 방해해요', '돌아다니는 아이', '말 안 듣는 학생', '훈육 방법', '분리 조치'], terms: [150, 97], situations: [7], courses: [] },
-            { words: ['상담주간 준비', '학부모 상담 신청', '학부모 총회'], terms: [100, 101, 40], situations: [], courses: [7] },
+            { primary: 'situation', words: ['수업 방해해요', '돌아다니는 아이', '말 안 듣는 학생', '훈육 방법', '분리 조치'], terms: [150, 97], situations: [7], courses: [] },
+            { primary: 'workflow', words: ['상담주간 준비', '학부모 상담 신청', '학부모 총회'], terms: [100, 101, 40], situations: [], courses: [7] },
             { words: ['월급 명세서', '수당 신청', '출산 수당', '결혼 수당', '복지포인트', '호봉 언제 올라요'], terms: [30, 31, 32, 33, 34, 35], situations: [], courses: [] },
             { words: ['이사 가요', '다른 학교 가고 싶어요', '전보 내신', '만기 언제예요', '타시도 교류'], terms: [1, 11, 12, 13, 14, 20], situations: [], courses: [4] },
             { words: ['육아휴직', '육아휴직 복직', '휴직 신청', '복직 신청', '휴직 끝나가요'], terms: [3002, 16], situations: [12], courses: [] },
@@ -242,7 +242,7 @@
             { words: ['교실 고장났어요', '에어컨 고장', '문 고장', '수리 요청'], terms: [42, 43, 57], situations: [], courses: [] },
             { words: ['개인정보 파일', '명단 암호', '정보공개 청구'], terms: [58, 59], situations: [14], courses: [] },
             // 복무·수당 등 자주 찾는 말 (3001~ 용어는 data/terms-extra.json)
-            { words: ['연가', '연차'], terms: [3001, 35, 5], situations: [5], courses: [] },
+            { words: ['연가', '연차'], terms: [3001, 35, 5], situations: [], courses: [] },
             { words: ['출장', '출장 신청', '여비'], terms: [3003, 5], situations: [], courses: [] },
             { words: ['초과근무', '시간외근무', '야근 수당'], terms: [3004, 5], situations: [], courses: [] },
             { words: ['담임수당', '교직수당', '보직수당'], terms: [3005], situations: [], courses: [] },
@@ -298,6 +298,7 @@
                 return w.length >= 2 && (q.includes(w) || (q.length >= 3 && w.includes(q)));
             }));
             if (!partial.length) return undefined;
+            if (partial.length === 1) return partial[0];
             return {
                 words: [...new Set(partial.flatMap(p => p.words))],
                 terms: [...new Set(partial.flatMap(p => p.terms))],
@@ -964,9 +965,9 @@
             const when = info.checkedAt ? `최종 확인 ${info.checkedAt}` : (info.dataDate ? `내용 기준일 ${info.dataDate}` : '확인일 없음');
             return `${st.icon} ${st.label} · ${when} · ${office ? `${office.name} 지침 대조 권장` : '시도교육청별 지침 확인 권장'}`;
         }
-        function reviewDetailsHTML(publicId) {
+        function reviewDetailsHTML(publicId, title = reviewLabel(publicId)) {
             return `<details class="mb-3 text-xs">
-                <summary class="font-bold cursor-pointer text-slate-600 dark:text-slate-300">${escapeHTML(reviewLabel(publicId))}</summary>
+                <summary class="font-bold cursor-pointer text-slate-600 dark:text-slate-300">${escapeHTML(title)}</summary>
                 <div class="mt-2">${reviewPanelHTML(publicId)}</div>
             </details>`;
         }
@@ -1247,65 +1248,52 @@
                 ['tools-doc', '기안·알림장 20종', '빈칸만 채워 바로 복사·인쇄'],
                 ['tools-record', '학생별 생기부 도우미', '바이트 계산 · 기재금지 점검'],
                 ['counsel', '학부모 상담 기록장', '상담주간 시간표 자동 배정'],
-                ['mybox', '나의 교직함 · 백업', '즐겨찾기와 통합 암호화 백업']
+                ['mybox', '나의 교직함 · 백업', '즐겨찾기와 통합 암호화 백업'],
+                ...(!hasSetup ? [['start', '역할별 시작 코스', '처음 맡은 역할에 맞춰 둘러보기']] : [])
             ];
             container.innerHTML = `
                 <div class="editorial-home animate-fade-in">
-                    <!-- 1분 학급 세팅 온보딩 배너 / 내 학급 상태 바 -->
-                    <div class="p-4 rounded-2xl border border-slate-200/90 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
-                        ${hasSetup ? `
+                    <section class="editorial-hero" aria-label="교직 업무 검색">
+                        <div>
+                            <h2>필요한 근거는 빠르게,<br><em>오늘 할 일은 분명하게</em></h2>
+                        </div>
+                        <div class="editorial-home-find">
+                            <form class="editorial-search" onsubmit="event.preventDefault(); triggerHomeSearch()">
+                                <label for="home-search-input" class="sr-only">교직 업무 검색</label>
+                                <input type="search" id="home-search-input" enterkeyhint="search" placeholder="예: 학생이 다쳤어요" autocomplete="off">
+                                <button type="submit">검색</button>
+                            </form>
+                            ${activeRun ? `
+                                <button type="button" id="home-resume-situation" data-public-id="${escapeHTML(activeRun.sit.publicId)}" onclick="openSituationRun(this.dataset.publicId)" class="editorial-home-resume">
+                                    <span><b>이어서 처리하기</b> · ${escapeHTML(activeRun.sit.title)}</span>
+                                    <span>${activeRun.pr.done}/${activeRun.pr.total}</span>
+                                </button>` : ''}
+                            <div class="editorial-home-actions">
+                                <button type="button" id="home-sos" class="editorial-action editorial-sos" onclick="openSosModal()">긴급 상황 SOS</button>
+                                <button type="button" class="editorial-action" onclick="router.navigate('navigator')">업무 순서</button>
+                                <button type="button" class="editorial-action" onclick="router.navigate('tools-doc')">문서 양식</button>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
+                                <button type="button" onclick="openCommandPalette()" class="font-bold hover:underline">빠른 이동 <kbd class="kbd-hint px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-mono text-[11px]">Ctrl+K</kbd></button>
+                                <button type="button" onclick="startVoiceSearch('home-search-input')" class="font-bold text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-microphone mr-1" aria-hidden="true"></i>음성 검색</button>
+                                <button type="button" onclick="openCalcModal()" class="font-bold hover:underline">출석·병가 계산기</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    ${hasSetup ? `<div class="mt-6 p-4 rounded-2xl border border-slate-200/90 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
                             <div class="flex flex-wrap items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-200">
                                 <span class="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300"><i class="fa-solid fa-school mr-1"></i>${escapeHTML(s.schoolName || '학교 미설정')} ${escapeHTML(s.className || '')} ${escapeHTML(s.teacherName ? s.teacherName + ' 선생님' : '')}</span>
                                 <span class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">학생 ${studentCount}명</span>
                                 <button type="button" onclick="router.navigate('timetable')" class="px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300"><i class="fa-regular fa-clock mr-1"></i><span class="now-status-title">${escapeHTML(nowSt.title)}</span> · <span class="now-status-sub">${escapeHTML(nowSt.sub)}</span></button>
                                 ${office ? `<a href="${escapeHTML(office.url)}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:underline">${escapeHTML(office.name)} ↗</a>` : ''}
                                 ${(() => { const ev = nextSchoolEvent(); return ev ? `<button type="button" onclick="router.navigate('mybox', 'calendar')" class="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300" title="우리 학교 학사일정"><i class="fa-regular fa-calendar mr-1"></i>${escapeHTML(ev.label)} ${ev.days === 0 ? '오늘' : `D-${ev.days}`}</button>` : `<button type="button" onclick="router.navigate('mybox', 'calendar')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-indigo-600"><i class="fa-regular fa-calendar mr-1"></i>학사일정 입력하고 방학 D-day 보기</button>`; })()}
-                                ${activeRun ? `<button type="button" onclick="openSituationRun('${escapeHTML(activeRun.sit.publicId)}')" class="px-2.5 py-1 rounded-lg bg-rose-600 text-white font-extrabold shadow-sm"><i class="fa-solid fa-bolt mr-1"></i>진행 중: ${escapeHTML(activeRun.sit.title)} (${activeRun.pr.done}/${activeRun.pr.total}) 이어하기 →</button>` : ''}
                             </div>
                             <div class="flex flex-wrap items-center gap-1.5 shrink-0">
-                                <button type="button" onclick="openCalcModal()" class="px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 text-xs font-bold hover:bg-indigo-100"><i class="fa-solid fa-calculator mr-1"></i>실무 계산기</button>
                                 <button type="button" onclick="openSetupWizard()" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-200"><i class="fa-solid fa-sliders mr-1"></i>학급 설정</button>
                                 <button type="button" onclick="openGuideModal()" class="px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200" aria-label="30초 사용법 안내">❓ 사용법</button>
                             </div>
-                        ` : `
-                            <div class="flex items-start md:items-center gap-3">
-                                <span class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-extrabold shrink-0"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
-                                <div>
-                                    <p class="text-sm font-extrabold text-slate-900 dark:text-white">처음 오셨나요? 1분 학급 세팅으로 우리 반 맞춤형 OS를 시작하세요</p>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400">학교명·학년반·학생 명단만 한 번 입력하면 문서 생성기, 자리 배치, 생기부, 상담 기록장에 모두 자동 연동됩니다.</p>
-                                </div>
-                            </div>
-                            <div class="flex flex-wrap items-center gap-2 shrink-0">
-                                ${activeRun ? `<button type="button" onclick="openSituationRun('${escapeHTML(activeRun.sit.publicId)}')" class="px-3 py-2 rounded-xl bg-rose-600 text-white text-xs font-extrabold shadow-sm"><i class="fa-solid fa-bolt mr-1"></i>진행 중: ${escapeHTML(activeRun.sit.title)} (${activeRun.pr.done}/${activeRun.pr.total}) 이어하기 →</button>` : ''}
-                                <button type="button" onclick="router.navigate('start')" class="px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-xs font-bold">🚩 역할별 시작 코스</button>
-                                <button type="button" onclick="openGuideModal()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold">❓ 30초 사용법</button>
-                                <button type="button" onclick="openSetupWizard()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow">🪄 1분 학급 세팅</button>
-                            </div>
-                        `}
-                    </div>
-
-                    <section class="editorial-hero" aria-label="교직백서 소개와 검색">
-                        <div>
-                            <span class="editorial-eyebrow">THE TEACHER'S DESK</span>
-                            <h2>필요한 근거는 빠르게,<br><em>오늘 할 일은 분명하게</em></h2>
-                            <p>정확한 공문 용어를 몰라도 일상 대화어로 검색하고, 상황별 대본과 양식을 바로 여세요</p>
-                            <div class="flex flex-wrap gap-2 mt-5 text-sm"><button type="button" onclick="openSosModal()" class="px-3 py-2 rounded-lg bg-rose-600 text-white font-bold shadow-sm">🚨 긴급 상황 SOS</button><button type="button" onclick="router.navigate('navigator')" class="px-3 py-2 rounded-lg bg-white/90 text-slate-900 dark:bg-slate-800 dark:text-slate-100 dark:border dark:border-slate-600 font-bold">처음 맡은 업무 알아보기</button><button type="button" onclick="router.navigate('tools-doc')" class="px-3 py-2 rounded-lg bg-white/90 text-slate-900 dark:bg-slate-800 dark:text-slate-100 dark:border dark:border-slate-600 font-bold">양식 20종 바로 쓰기</button></div>
-                        </div>
-                        <div class="space-y-2">
-                            <div class="editorial-search">
-                                <label for="home-search-input" class="sr-only">교직 업무 검색</label>
-                                <input type="search" id="home-search-input" enterkeyhint="search" placeholder="${narrowScreen() ? '예: 학생이 다쳤어요' : '예: 학생이 다쳤어요 · 물건 살 때 · 아파서 못가요'}" autocomplete="off">
-                                <button type="button" onclick="triggerHomeSearch()">검색</button>
-                            </div>
-                            <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 px-1">
-                                <span class="flex flex-wrap items-center gap-x-3 gap-y-1">
-                                    <button type="button" onclick="openCommandPalette()" class="text-left hover:underline"><i class="fa-solid fa-bolt text-amber-600 mr-1"></i><b>빠른 이동</b> <kbd class="kbd-hint px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-mono text-[11px]">Ctrl+K</kbd></button>
-                                    <button type="button" onclick="openCalcModal()" class="font-bold hover:underline"><i class="fa-solid fa-calculator text-indigo-600 dark:text-indigo-400 mr-1"></i>출석·병가 계산기</button>
-                                </span>
-                                <button type="button" onclick="startVoiceSearch('home-search-input')" class="font-bold text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-microphone mr-1"></i>음성 검색</button>
-                            </div>
-                        </div>
-                    </section>
+                    </div>` : ''}
 
                     <!-- 빠른 실행 도구 (교실 수업 도구 | 행정 칼퇴 도구 | 이달의 브리핑 | 내 고정핀) -->
                     <section class="mt-6 p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-4" aria-label="빠른 실행 도구">
@@ -1350,8 +1338,6 @@ ${weeklyAgendaHTML()}
                     <div class="editorial-recent"><span>자주 찾는 주제</span>${['관외 전보', '학교폭력', '품의', '안전사고', '출석인정결석', '생기부'].map(kw => `<button type="button" data-kw="${escapeHTML(kw)}" onclick="router.navigate('search', this.dataset.kw)">${escapeHTML(kw)}</button>`).join('')}</div>
                 </div>
             ` + FOOTER_HTML;
-            const searchInput = document.getElementById('home-search-input');
-            if (searchInput) searchInput.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) triggerHomeSearch(); });
             startClock();
         }
 
@@ -1710,6 +1696,7 @@ ${weeklyAgendaHTML()}
                                     <button onclick="pickRandom()" class="px-4 py-1.5 bg-rose-600 text-white text-xs font-bold rounded-lg shadow"><i class="fa-solid fa-wand-magic-sparkles"></i> 1명 뽑기</button>
                                 </div>
                             </div>
+                            ${!parseNameList(savedNames).length ? `<button type="button" onclick="openSetupWizard()" class="${btn2} self-start mb-2">학급 명단 등록하기</button>` : ''}
                             <textarea id="class-names-input" oninput="Storage.set('class_names', this.value); pickedNames.clear(); updatePickRemain();" class="w-full h-24 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm mb-3 resize-none" placeholder="예: 김하늘, 이바다, 박구름 (쉼표나 줄바꿈으로 구분)">${escapeHTML(savedNames)}</textarea>
                             <div class="flex flex-wrap items-center justify-between gap-2 mb-3 text-xs">
                                 <label class="flex items-center gap-2 font-semibold text-slate-600 dark:text-slate-300 cursor-pointer"><input type="checkbox" ${noRepeat ? 'checked' : ''} onchange="Storage.set('pick_norepeat', this.checked); pickedNames.clear(); updatePickRemain();" class="w-4 h-4 rounded"> 한 번 뽑힌 학생은 제외</label>
@@ -2246,7 +2233,7 @@ ${weeklyAgendaHTML()}
                     </div>
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-3 relative w-full">
                         <div class="relative">
-                            <input type="text" id="main-search-input" enterkeyhint="search" value="${escapeHTML(queryStr)}" placeholder="${narrowScreen() ? '용어·초성·일상어 검색' : "용어, 초성, 일상어('학생이 다쳤어요', '물건 살 때') 검색..."}" class="w-full pl-12 pr-20 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
+                            <input type="text" id="main-search-input" aria-label="교직어·상황 검색" enterkeyhint="search" value="${escapeHTML(queryStr)}" placeholder="${narrowScreen() ? '용어·초성·일상어 검색' : "용어, 초성, 일상어('학생이 다쳤어요', '물건 살 때') 검색..."}" class="w-full pl-12 pr-20 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
                                 <button type="button" onclick="clearSearch()" id="clear-search-btn" class="text-slate-400 hover:text-slate-600 hidden" aria-label="검색어 지우기"><i class="fa-solid fa-circle-xmark"></i></button>
@@ -2256,36 +2243,38 @@ ${weeklyAgendaHTML()}
                         </div>
 
                         <!-- 일상 대화형 검색어 예시 칩 (1줄 스크롤) -->
-                        <div class="flex flex-nowrap items-center gap-1.5 overflow-x-auto hide-scrollbar text-[11px]">
+                        <div id="quick-search-examples" class="flex flex-nowrap items-center gap-1.5 overflow-x-auto hide-scrollbar text-[11px]">
                             <span class="shrink-0 font-extrabold text-slate-400 dark:text-slate-500 mr-1">🗣️ 일상어 바로찾기:</span>
                             ${QUICK_CONVERSATIONAL_CHIPS.map(chip => `<button type="button" data-q="${escapeHTML(chip.query)}" onclick="applyQuickSearchChip(this.dataset.q)" class="shrink-0 px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-slate-900 hover:bg-blue-50 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-semibold transition">${escapeHTML(chip.label)}</button>`).join('')}
                         </div>
 
-                        <div class="flex flex-nowrap gap-2 overflow-x-auto pb-1 hide-scrollbar w-full">
-                            <button onclick="filterCategory('전체')" class="cat-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 text-white" data-cat="전체">전체 (${new Set(DB.map(item => canonicalTermId(item.id))).size})</button>
-                            ${Object.entries(ROLE_PRESETS).map(([rk, rv]) => `<button onclick="filterCategory('${rk}')" class="cat-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition" data-cat="${rk}">${escapeHTML(rv.label)}</button>`).join('')}
-                            ${FILTER_CATEGORIES.map(cat => `<button onclick="filterCategory('${cat}')" class="cat-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition" data-cat="${cat}">${cat}</button>`).join('')}
-                            <div class="shrink-0 w-2 md:w-4"></div>
-                        </div>
+                    </div>
+                    <div id="search-smart-answer" class="hidden"></div>
+                    <div id="search-featured-result" class="hidden"></div>
+                    <div class="flex flex-nowrap gap-2 overflow-x-auto pb-1 hide-scrollbar w-full">
+                        <button onclick="filterCategory('전체')" class="cat-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 text-white" data-cat="전체">전체 (${new Set(DB.map(item => canonicalTermId(item.id))).size})</button>
+                        ${Object.entries(ROLE_PRESETS).map(([rk, rv]) => `<button onclick="filterCategory('${rk}')" class="cat-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition" data-cat="${rk}">${escapeHTML(rv.label)}</button>`).join('')}
+                        ${FILTER_CATEGORIES.map(cat => `<button onclick="filterCategory('${cat}')" class="cat-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition" data-cat="${cat}">${cat}</button>`).join('')}
+                        <div class="shrink-0 w-2 md:w-4"></div>
                     </div>
                     <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 px-1">
-                        <span id="result-count" class="whitespace-nowrap shrink-0">검색 결과: ${new Set(DB.map(item => canonicalTermId(item.id))).size}개</span>
+                        <span id="result-count" aria-live="polite">교직어 ${new Set(DB.map(item => canonicalTermId(item.id))).size}개</span>
                         <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                             <button type="button" onclick="printTermCheatSheet('search')" class="whitespace-nowrap shrink-0 px-2.5 sm:px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-bold hover:bg-slate-200 transition" title="현재 목록을 A4 1장 요약표로 인쇄"><i class="fa-solid fa-print mr-1"></i>요약표 인쇄</button>
                             <button onclick="const c=curatedTerms(); openDetail(c[Math.floor(Math.random()*c.length)].id)" class="whitespace-nowrap shrink-0 px-2.5 sm:px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg font-bold transition"><i class="fa-solid fa-dice"></i> 랜덤</button>
                             <select id="sort-select" aria-label="검색 결과 정렬" onchange="handleSearch()" class="whitespace-nowrap shrink-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg px-2 sm:px-2.5 py-1 focus:outline-none"><option value="accuracy">관련도순</option><option value="name">가나다순</option></select>
                         </div>
                     </div>
-                    <div id="search-smart-answer" class="hidden"></div>
+                    <h3 id="search-term-heading" class="text-sm font-bold text-slate-800 dark:text-slate-100 hidden">교직어</h3>
                     <div id="search-results-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-                    <div id="search-related-results" class="space-y-4"></div>
                     <div id="load-more-container" class="text-center pt-4 hidden"><button onclick="searchDisplayLimit+=60;handleSearch();" class="px-6 py-2.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-xl">더 보기</button></div>
+                    <div id="search-related-results" class="space-y-4 hidden"></div>
                 </div>
             ` + FOOTER_HTML;
             const input = document.getElementById('main-search-input');
             if(input) {
                 input.value = queryStr;
-                input.addEventListener('input', debounce(() => { searchDisplayLimit = 60; handleSearch(); updateAutocomplete(input.value.trim()); }, 100));
+                input.addEventListener('input', debounce(() => { if (!input.isConnected) return; searchDisplayLimit = 60; handleSearch(); updateAutocomplete(input.value.trim()); }, 100));
                 input.addEventListener('keydown', handleAcKeydown);
                 input.addEventListener('blur', () => setTimeout(() => document.getElementById('autocomplete-box')?.classList.add('hidden'), 150));
             }
@@ -2315,7 +2304,7 @@ ${weeklyAgendaHTML()}
         function updateAutocomplete(query) {
             const acBox = document.getElementById('autocomplete-box');
             if(!acBox) return;
-            if(!query) { acBox.classList.add('hidden'); return; }
+            if (!query || document.querySelector('#search-featured-result article')) { acBox.classList.add('hidden'); return; }
             const qLower = normalizeSearch(query), qCompact = compactSearch(query);
             const seen = new Set();
             const matches = DB.filter(item => {
@@ -2383,41 +2372,107 @@ ${weeklyAgendaHTML()}
             return scoredResults.map(result => result.item);
         }
 
+        function findFeaturedSearchResult(query, linked, terms, situations, courses) {
+            if (!query || currentCategoryFilter !== '전체') return null;
+            const key = compactSearch(query);
+            const exactTerm = terms.find(term => compactSearch(term.keyword) === key);
+            if (exactTerm) return { kind: 'term', item: exactTerm };
+            if (linked?.primary === 'workflow') {
+                const course = courses.find(item => item.id === linked.courses[0]);
+                if (course) return { kind: 'workflow', item: course, action: SITUATION_ACTION_MAP[linked.situations[0]] };
+            }
+            if (linked?.primary === 'situation') {
+                const situation = situations.find(item => item.id === linked.situations[0]);
+                if (situation) return { kind: 'situation', item: situation };
+            }
+            const exactSituation = situations.find(item => compactSearch(item.title) === key);
+            if (exactSituation) return { kind: 'situation', item: exactSituation };
+            const exactCourse = courses.find(item => compactSearch(item.title) === key);
+            if (exactCourse) return { kind: 'workflow', item: exactCourse };
+            const alias = terms.find(term => term.aliases?.some(word => compactSearch(word) === key));
+            return alias ? { kind: 'term', item: alias } : null;
+        }
+
+        function featuredSearchResultHTML(result) {
+            if (!result) return '';
+            const { kind, item, action } = result;
+            const isTerm = kind === 'term';
+            const isWorkflow = kind === 'workflow';
+            const label = isTerm ? '교직어' : isWorkflow ? '업무 순서' : '상황 가이드';
+            const title = isTerm ? item.keyword : item.title;
+            const summary = isTerm ? item.simple : isWorkflow ? item.steps[0] : item.summary;
+            const open = isTerm ? `openDetail(${item.id})` :
+                `router.navigate('${isWorkflow ? 'navigator' : 'situations'}', this.dataset.publicId)`;
+            return `<article class="featured-search" data-result-kind="${kind}">
+                <span class="featured-search-type">${label}</span>
+                <h3>${escapeHTML(title)}</h3>
+                <p>${escapeHTML(summary)}</p>
+                <div class="featured-search-actions">
+                    <button type="button" class="editorial-action editorial-action-primary" data-public-id="${escapeHTML(item.publicId || '')}" onclick="${open}">${label} 열기</button>
+                    ${action?.doc ? `<button type="button" class="editorial-action" onclick="router.navigate('tools-doc', '${action.doc}')">${escapeHTML(action.docLabel)}</button>` : ''}
+                </div>
+            </article>`;
+        }
+
         function handleSearch() {
             const input = document.getElementById('main-search-input');
-            const rawQuery = input ? input.value : '';
+            if (!input) return;
+            const rawQuery = input.value;
             const query = normalizeSearch(rawQuery);
+            const smartHTML = buildSmartSearchAnswerHTML(rawQuery);
             const smartBox = document.getElementById('search-smart-answer');
-            if (smartBox) {
-                const smartHTML = buildSmartSearchAnswerHTML(rawQuery);
-                smartBox.innerHTML = smartHTML;
-                smartBox.classList.toggle('hidden', !smartHTML);
-            }
-            const sort = (document.getElementById('sort-select') && document.getElementById('sort-select').value) || 'accuracy';
-            const clearBtn = document.getElementById('clear-search-btn');
-            if (clearBtn) { if (query) clearBtn.classList.remove('hidden'); else clearBtn.classList.add('hidden'); }
+            smartBox.innerHTML = smartHTML;
+            smartBox.classList.toggle('hidden', !smartHTML);
+            document.getElementById('quick-search-examples').classList.toggle('hidden', !!query);
+            document.getElementById('clear-search-btn').classList.toggle('hidden', !query);
+
+            const sort = document.getElementById('sort-select').value;
             const results = rankTerms(query, currentCategoryFilter, sort);
-            const countEl = document.getElementById('result-count'); if(countEl) countEl.innerText = `검색 결과: ${results.length}개`;
-            const grid = document.getElementById('search-results-grid'); const loadMoreBtn = document.getElementById('load-more-container');
-            if(!grid) return;
+            const linked = searchLinks(query);
+            const compactQuery = compactSearch(query);
+            const matches = fields => fields.some(value => compactSearch(value).includes(compactQuery));
+            const situations = query ? SITUATIONS.filter(item => linked?.situations.includes(item.id) || matches([item.title, item.summary, ...item.relatedKeywords])) : [];
+            const courses = query ? NAVIGATOR_COURSES.filter(item => linked?.courses.includes(item.id) || matches([item.title, item.targetKeyword, ...item.steps])) : [];
+            const featured = smartHTML ? null : findFeaturedSearchResult(query, linked, results, situations, courses);
+            const featuredBox = document.getElementById('search-featured-result');
+            featuredBox.innerHTML = featuredSearchResultHTML(featured);
+            featuredBox.classList.toggle('hidden', !featured);
+
+            const relatedSection = (title, items, view) => items.length ? `<section>
+                <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 mb-2">${title} ${items.length}개</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">${items.map(item => `<button type="button" data-public-id="${escapeHTML(item.publicId)}" onclick="router.navigate('${view}', this.dataset.publicId)" class="text-left p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                    <span class="block font-bold text-sm text-slate-900 dark:text-white">${escapeHTML(item.title)}</span>
+                    <span class="block text-xs mt-1 text-slate-500 dark:text-slate-400">${escapeHTML(item.summary || item.targetKeyword || '')}</span>
+                </button>`).join('')}</div>
+            </section>` : '';
+            const relatedHTML =
+                relatedSection('상황 가이드', situations.filter(item => item !== featured?.item), 'situations') +
+                relatedSection('업무 순서', courses.filter(item => item !== featured?.item), 'navigator');
             const relatedBox = document.getElementById('search-related-results');
-            if (relatedBox) {
-                const linked = searchLinks(query);
-                const matches = (item, fields) => fields.some(value => compactSearch(value).includes(compactSearch(query)));
-                const situations = query ? SITUATIONS.filter(item => linked?.situations.includes(item.id) || matches(item, [item.title, item.summary, ...(item.relatedKeywords || [])])) : [];
-                const courses = query ? NAVIGATOR_COURSES.filter(item => linked?.courses.includes(item.id) || matches(item, [item.title, item.targetKeyword, ...(item.steps || [])])) : [];
-                const section = (title, items, view) => items.length ? `<section><h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 mb-2">${title} ${items.length}개</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-2">${items.map(item => `<button type="button" data-public-id="${escapeHTML(item.publicId)}" onclick="router.navigate('${view}', this.dataset.publicId)" class="text-left p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700"><span class="block font-bold text-sm text-slate-900 dark:text-white">${escapeHTML(item.title)}</span><span class="block text-xs mt-1 text-slate-500 dark:text-slate-400">${escapeHTML(item.summary || item.targetKeyword || '')}</span></button>`).join('')}</div></section>` : '';
-                relatedBox.innerHTML = section('상황별 안내', situations, 'situations') + section('업무 순서', courses, 'navigator');
+            relatedBox.innerHTML = relatedHTML;
+            relatedBox.classList.toggle('hidden', !relatedHTML);
+
+            const otherTerms = results.filter(item => item !== featured?.item);
+            document.getElementById('result-count').textContent = [
+                `교직어 ${results.length}개`,
+                situations.length && `상황 ${situations.length}개`,
+                courses.length && `업무 순서 ${courses.length}개`
+            ].filter(Boolean).join(' · ');
+            document.getElementById('search-term-heading').classList.toggle('hidden', !query || !otherTerms.length);
+            const grid = document.getElementById('search-results-grid');
+            const loadMoreBtn = document.getElementById('load-more-container');
+            if (!otherTerms.length) {
+                const hasAnswer = featured || relatedHTML || smartHTML;
+                if (query && !hasAnswer) Usage.noteZero(query);
+                grid.innerHTML = hasAnswer ? '' : `<div class="col-span-full py-8 text-center bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700"><h3 class="text-base font-bold text-slate-800 dark:text-slate-200">일치하는 검색 결과가 없어요</h3><div class="mt-4 flex justify-center gap-3"><button type="button" onclick="clearSearch()" class="px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700">검색어 지우기</button><button type="button" onclick="router.navigate('situations')" class="px-3 py-2 rounded-lg bg-blue-600 text-white">상황 안내 보기</button></div><button type="button" onclick="openFeedback('request', document.getElementById('main-search-input')?.value || '')" class="mt-4 text-sm font-bold text-blue-600 dark:text-blue-400 underline">이 용어 추가 요청하기</button></div>`;
+                grid.classList.toggle('hidden', !!hasAnswer);
+                loadMoreBtn.classList.add('hidden');
+                return;
             }
 
-            if(results.length === 0) {
-                if (query && !(relatedBox && relatedBox.textContent.trim())) Usage.noteZero(query);
-                grid.innerHTML = `<div class="col-span-full py-8 text-center bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700"><h3 class="text-base font-bold text-slate-800 dark:text-slate-200">일치하는 교직어가 없어요</h3><div class="mt-4 flex justify-center gap-3"><button type="button" onclick="clearSearch()" class="px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700">검색어 지우기</button><button type="button" onclick="router.navigate('situations')" class="px-3 py-2 rounded-lg bg-blue-600 text-white">상황 안내 보기</button></div><button type="button" onclick="openFeedback('request', document.getElementById('main-search-input')?.value || '')" class="mt-4 text-sm font-bold text-blue-600 dark:text-blue-400 underline">이 용어 추가 요청하기</button></div>`;
-                loadMoreBtn?.classList.add('hidden'); return;
-            }
-
+            grid.classList.remove('hidden');
             const bookmarks = (Storage.get('bookmarks', []) || []).map(canonicalTermId);
-            grid.innerHTML = results.slice(0, searchDisplayLimit).map(item => {
+            grid.innerHTML = otherTerms.slice(0, searchDisplayLimit).map(item => {
                 const hasNote = !!getTermNote(item.id);
                 const topMetric = (item.metrics && item.metrics[0]) || '';
                 return `
@@ -2437,7 +2492,7 @@ ${weeklyAgendaHTML()}
                     ${topMetric ? `<div class="pt-2 border-t border-slate-100 dark:border-slate-700/70 flex items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400"><span class="truncate font-semibold">${escapeHTML(topMetric)}</span><span class="shrink-0 text-blue-600 dark:text-blue-400 font-bold">상세 →</span></div>` : ''}
                 </div>`;
             }).join('');
-            loadMoreBtn?.classList.toggle('hidden', results.length <= searchDisplayLimit);
+            loadMoreBtn.classList.toggle('hidden', otherTerms.length <= searchDisplayLimit);
         }
 
         let lastFocusedElement = null;
@@ -2734,7 +2789,7 @@ ${weeklyAgendaHTML()}
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
                     <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">이럴 땐 어떻게?</h2><p class="text-sm text-slate-500 dark:text-slate-400">학교 현장의 당황스러운 순간, 실전 대응 가이드와 양식·업무 순서를 바로 연결해 드립니다.</p></div>
-                    <div class="relative max-w-md"><input type="text" id="situation-search-input" enterkeyhint="search" placeholder="다침, 학폭, 예산 검색" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500"><i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i></div>
+                    <div class="relative max-w-md"><input type="text" id="situation-search-input" aria-label="상황 가이드 검색" enterkeyhint="search" placeholder="다침, 학폭, 예산 검색" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500"><i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i></div>
                     <div id="situations-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
                 </div>
             ` + FOOTER_HTML;
@@ -2749,41 +2804,53 @@ ${weeklyAgendaHTML()}
             const has = v => String(v || '').toLowerCase().includes(q);
             const filtered = SITUATIONS.filter(sit => !q || has(sit.title) || has(sit.category) || has(sit.summary) || sit.steps.some(has) || sit.firstCheck.some(has) || sit.caution.some(has));
             if(filtered.length === 0) { grid.innerHTML = `<div class="col-span-full text-center py-12 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700"><p class="text-slate-400 text-sm">검색 결과가 없습니다.</p></div>`; return; }
-            const chips = (arr, cls) => arr.map(x => `<span class="px-2 py-1 rounded-lg text-[11px] font-semibold ${cls}">${escapeHTML(x)}</span>`).join('');
-
             grid.innerHTML = filtered.map(sit => {
-                const kw = sit.relatedKeywords[0];
-                const act = SITUATION_ACTION_MAP[sit.id] || {};
-                const courseIdx = act.course || act.nav;
-                const navPublicId = courseIdx ? NAVIGATOR_COURSES[courseIdx - 1]?.publicId : '';
+                const keyword = sit.relatedKeywords[0];
+                const action = SITUATION_ACTION_MAP[sit.id] || {};
+                const workflow = NAVIGATOR_COURSES.find(course => course.id === action.course);
+                const progress = situationProgress(sit);
+                const selected = sit.publicId === router.param || String(sit.id) === router.param;
                 return `
-                <div id="situation-${escapeHTML(sit.publicId)}" class="bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-2xl border ${router.param && (sit.publicId === router.param || String(sit.id) === router.param) ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-slate-200/80 dark:border-slate-700'} shadow-sm flex flex-col justify-between hover:border-blue-300 transition group">
-                    <div>
-                        <span class="text-xs font-bold px-3 py-1 bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-lg mb-3 inline-block">${escapeHTML(sit.category)}</span>
-                        <h3 class="text-base sm:text-lg font-bold tracking-tight mb-2 text-slate-900 dark:text-white">${escapeHTML(sit.title)}</h3>
-                        ${reviewDetailsHTML(sit.publicId)}
-                        <div class="mb-3">${officeGuideHTML(OFFICE_GUIDE_QUERIES[sit.category] || sit.title.replace(/요$/, ''))}</div>
-                        ${sit.summary ? `<p class="text-xs text-slate-500 dark:text-slate-400 mb-4">${escapeHTML(sit.summary)}</p>` : ''}
-                        ${sit.firstCheck.length ? `<div class="flex flex-wrap items-center gap-1.5 mb-3"><span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mr-1">먼저 확인</span>${chips(sit.firstCheck, 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300')}</div>` : ''}
-                        ${sit.script ? `
-                        <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700 mb-4 relative">
-                            <div class="flex items-center justify-between mb-1">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase"><i class="fa-solid fa-phone"></i> 실전 통화 스크립트</span>
-                                <button type="button" data-script="${escapeHTML(sit.script)}" onclick="copyText(this.dataset.script, '통화 스크립트를 복사했습니다.')" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-regular fa-copy"></i> 스크립트 복사</button>
-                            </div>
-                            <p class="text-sm font-medium text-slate-700 dark:text-slate-300 italic">"${escapeHTML(sit.script)}"</p>
+                    <article id="situation-${escapeHTML(sit.publicId)}" class="situation-card bg-white dark:bg-slate-800 p-5 sm:p-6 rounded-2xl border ${selected ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-slate-200/80 dark:border-slate-700'} shadow-sm">
+                        <header>
+                            <span class="featured-search-type">${escapeHTML(sit.category)}</span>
+                            <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">${escapeHTML(sit.title)}</h3>
+                            ${sit.summary ? `<p class="text-sm text-slate-500 dark:text-slate-400">${escapeHTML(sit.summary)}</p>` : ''}
+                        </header>
+                        ${sit.firstCheck.length ? `<div class="situation-first">
+                            <h4 class="text-sm font-bold text-emerald-700 dark:text-emerald-300">먼저 확인할 것</h4>
+                            <ul class="space-y-1 text-sm text-slate-700 dark:text-slate-200">${sit.firstCheck.map(text => `<li>${escapeHTML(text)}</li>`).join('')}</ul>
                         </div>` : ''}
-                        <div class="space-y-2 mb-4">${sit.steps.map((st, i) => `<div class="flex items-start gap-2.5 text-xs text-slate-600 dark:text-slate-300"><span class="w-5 h-5 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center font-bold shrink-0">${i+1}</span><span class="pt-0.5">${escapeHTML(st)}</span></div>`).join('')}</div>
-                        ${sit.caution.length ? `<div class="flex flex-wrap items-center gap-1.5 mb-4"><span class="text-[10px] font-bold text-rose-500 mr-1"><i class="fa-solid fa-triangle-exclamation"></i> 주의</span>${chips(sit.caution, 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-300')}</div>` : ''}
-                    </div>
-                    <div>
-                        ${(() => { const pr = situationProgress(sit); return `<button type="button" data-public-id="${escapeHTML(sit.publicId)}" onclick="openSituationRun(this.dataset.publicId)" class="w-full mb-3 min-h-[44px] px-4 rounded-xl ${pr ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-blue-600 hover:bg-blue-700'} text-white text-sm font-bold flex items-center justify-between gap-2"><span><i class="fa-solid fa-list-check mr-1.5"></i>${pr ? '이어서 처리하기' : '단계별로 처리하기'}</span>${pr ? `<span class="text-xs font-extrabold bg-white/20 px-2 py-0.5 rounded-lg">${pr.done}/${pr.total}</span>` : ''}</button>`; })()}
-                        ${kw ? `<div class="pt-4 border-t border-slate-100 dark:border-slate-700">
-                            <button data-kw="${escapeHTML(kw)}" onclick="openDetailByKeyword(this.dataset.kw)" class="text-xs font-bold text-blue-600 dark:text-blue-400 group-hover:underline w-full text-left">핵심 교직어 '${escapeHTML(kw)}' 상세보기 →</button>
+                        <button type="button" data-situation-start data-public-id="${escapeHTML(sit.publicId)}" onclick="openSituationRun(this.dataset.publicId)" class="editorial-action editorial-action-primary situation-start">
+                            <span>${progress ? '이어서 처리하기' : '단계별로 처리하기'}</span>
+                            ${progress ? `<span>${progress.done}/${progress.total}</span>` : ''}
+                        </button>
+                        ${sit.steps.length ? `<div class="space-y-2">
+                            <h4 class="text-sm font-bold text-slate-900 dark:text-white">처리 순서</h4>
+                            <ol class="list-decimal pl-5 space-y-2 text-sm text-slate-700 dark:text-slate-200">${sit.steps.map(text => `<li>${escapeHTML(text)}</li>`).join('')}</ol>
                         </div>` : ''}
-                        ${(navPublicId || act.doc) ? `<div class="mt-2.5 flex flex-wrap gap-2">${navPublicId ? `<button type="button" data-public-id="${escapeHTML(navPublicId)}" onclick="router.navigate('navigator', this.dataset.publicId)" class="text-xs font-bold px-3 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 transition"><i class="fa-solid fa-route mr-1"></i>업무 순서 보기 →</button>` : ''}${act.doc ? `<button type="button" onclick="router.navigate('tools-doc', '${act.doc}')" class="text-xs font-bold px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 transition"><i class="fa-solid fa-file-signature mr-1"></i>${escapeHTML(act.docLabel || '관련 양식 바로 쓰기')} →</button>` : ''}</div>` : ''}
-                    </div>
-                </div>`;
+                        ${sit.caution.length ? `<div class="space-y-1 text-xs">
+                            <h4 class="font-bold text-rose-600 dark:text-rose-300">주의할 점</h4>
+                            <ul class="list-disc pl-5 space-y-1 text-slate-700 dark:text-slate-200">${sit.caution.map(text => `<li>${escapeHTML(text)}</li>`).join('')}</ul>
+                        </div>` : ''}
+                        <div class="situation-support">
+                            ${reviewDetailsHTML(sit.publicId, '공식 근거와 확인일')}
+                            ${sit.script ? `<details>
+                                <summary>보호자 통화 문구</summary>
+                                <blockquote class="text-sm text-slate-700 dark:text-slate-200">${escapeHTML(sit.script)}</blockquote>
+                                <button type="button" data-script="${escapeHTML(sit.script)}" onclick="copyText(this.dataset.script, '통화 문구를 복사했습니다.')" class="editorial-action">통화 문구 복사</button>
+                            </details>` : ''}
+                            <details>
+                                <summary>관련 양식과 자료</summary>
+                                <div class="featured-search-actions">
+                                    ${action.doc ? `<button type="button" onclick="router.navigate('tools-doc', '${action.doc}')" class="editorial-action">${escapeHTML(action.docLabel)}</button>` : ''}
+                                    ${workflow ? `<button type="button" data-public-id="${escapeHTML(workflow.publicId)}" onclick="router.navigate('navigator', this.dataset.publicId)" class="editorial-action">업무 순서 보기</button>` : ''}
+                                    ${keyword ? `<button type="button" data-kw="${escapeHTML(keyword)}" onclick="openDetailByKeyword(this.dataset.kw)" class="editorial-action">${escapeHTML(keyword)} 용어 보기</button>` : ''}
+                                </div>
+                                <div class="mt-2">${officeGuideHTML(OFFICE_GUIDE_QUERIES[sit.category] || sit.title.replace(/요$/, ''))}</div>
+                            </details>
+                        </div>
+                    </article>`;
             }).join('');
             if (router.param) requestAnimationFrame(() => document.getElementById(`situation-${SITUATIONS.find(item => item.publicId === router.param || String(item.id) === router.param)?.publicId}`)?.scrollIntoView({ block: 'start' }));
         }
