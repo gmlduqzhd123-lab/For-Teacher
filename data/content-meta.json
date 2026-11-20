@@ -1,6 +1,6 @@
 {
   "metadataSchemaVersion": 1,
-  "contentVersion": "3-2026-11-20",
+  "contentVersion": "4-2026-11-20",
   "generatedAt": "2026-10-19T03:39:37.617Z",
   "reviewPolicy": "reviewStatus 'reviewed'는 sourceIds(공식 근거)와 checkedAt(확인일)이 모두 있을 때만 사용합니다. 편집은 scripts/content-review.mjs로 합니다.",
   "sources": [
@@ -603,6 +603,78 @@
       "title": "행정업무의 운영 및 혁신에 관한 규정 시행규칙",
       "kind": "행정안전부령",
       "url": "https://www.law.go.kr/lsInfoP.do?efYd=20230628&lsiSeq=252189"
+    },
+    {
+      "id": "review-curriculum-2022",
+      "title": "2022 개정 교육과정 고시 제2022-33호",
+      "kind": "교육부 자료",
+      "url": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=141&boardSeq=93458&lev=0&search="
+    },
+    {
+      "id": "review-curriculum-service",
+      "title": "학교생활기록부 종합지원포털 창의적 체험활동 봉사활동 안내",
+      "kind": "교육부 자료",
+      "url": "https://star.moe.go.kr/web/contents/m30103.do?id=85735&schM=view"
+    },
+    {
+      "id": "review-assessment-2026",
+      "title": "2026 학교생활기록부 종합지원포털 초등 교과 평가 안내",
+      "kind": "교육부 자료",
+      "url": "https://star.moe.go.kr/web/contents/m30103.do?id=118564&schM=view"
+    },
+    {
+      "id": "review-regular-exam",
+      "title": "교육부훈령 제555호 제·개정문 (별표 9)",
+      "kind": "교육부훈령",
+      "url": "https://www.law.go.kr/LSW/admRulInfoP.do?admRulSeq=2100000274694&chrClsCd=010202&urlMode=admRulRvsInfoR"
+    },
+    {
+      "id": "review-enrolment",
+      "title": "초·중등교육법 시행령 제28조 (취학 의무의 면제·유예)",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/lsLawLinkInfo.do?chrClsCd=010202&lsJoLnkSeq=1000948252"
+    },
+    {
+      "id": "review-elementary-transfer",
+      "title": "초·중등교육법 시행령 제21조",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1027223919"
+    },
+    {
+      "id": "review-school-discipline",
+      "title": "초·중등교육법 시행령 제31조",
+      "kind": "대통령령",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?chrClsCd=010202&efYd=20260526&lsiSeq=286321&urlMode=lsInfoP"
+    },
+    {
+      "id": "review-achievement-national",
+      "title": "교육부 국가수준 학업성취도 평가 시행 안내",
+      "kind": "교육부 자료",
+      "url": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=294&boardSeq=100953&lev=0&m=020402"
+    },
+    {
+      "id": "review-achievement-voluntary",
+      "title": "교육부 맞춤형 학업성취도 자율평가 안내",
+      "kind": "교육부 자료",
+      "url": "https://www.moe.go.kr/boardCnts/viewRenew.do?boardID=294&boardSeq=102599&lev=0&m=0204"
+    },
+    {
+      "id": "review-violence-protection",
+      "title": "학교폭력예방법 제16조 (피해학생의 보호)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1031440953"
+    },
+    {
+      "id": "review-violence-measures",
+      "title": "학교폭력예방법 제17조 (가해학생에 대한 조치)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1031440957"
+    },
+    {
+      "id": "review-teacher-protection",
+      "title": "교원지위법 제22조 (교원보호공제사업)",
+      "kind": "법률",
+      "url": "https://www.law.go.kr/LSW/lsSideInfoP.do?docCls=jo&joBrNo=00&joNo=0022&lsiSeq=283357&urlMode=lsScJoRltInfoR"
     }
   ],
   "items": {
@@ -1147,70 +1219,101 @@
       ]
     },
     "term:67": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 초등 전 학년 (2022 개정 교육과정)",
+      "sourceIds": [
+        "review-curriculum-2022"
+      ]
     },
     "term:68": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 초등 전 학년 (2022 개정 교육과정)",
+      "sourceIds": [
+        "review-curriculum-2022",
+        "student-record-guide-2026"
+      ]
     },
     "term:69": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 초등 전 학년 (2022 개정 교육과정)",
+      "sourceIds": [
+        "review-curriculum-2022"
+      ]
     },
     "term:70": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 초등 전 학년 (2022 개정 교육과정)",
+      "sourceIds": [
+        "review-curriculum-2022",
+        "student-record-guide-2026"
+      ]
     },
     "term:71": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2022 개정 교육과정 적용 학년",
+      "sourceIds": [
+        "review-curriculum-service",
+        "student-record-guide-2026"
+      ]
     },
     "term:72": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 초등 전 학년 (2022 개정 교육과정)",
+      "sourceIds": [
+        "review-curriculum-2022",
+        "student-record-guide-2026"
+      ]
     },
     "term:73": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 초등학교",
+      "sourceIds": [
+        "review-assessment-2026",
+        "rule-student-record"
+      ]
     },
     "term:74": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 초등학교",
+      "sourceIds": [
+        "review-assessment-2026",
+        "rule-student-record"
+      ]
     },
     "term:75": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 학교급·교과별 적용",
+      "sourceIds": [
+        "review-regular-exam",
+        "rule-student-record"
+      ]
     },
     "term:76": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 초등학교",
+      "sourceIds": [
+        "review-assessment-2026",
+        "rule-student-record"
+      ]
     },
     "term:77": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "2026학년도 초등학교",
+      "sourceIds": [
+        "review-assessment-2026",
+        "rule-student-record"
+      ]
     },
     "term:78": {
       "reviewStatus": "reviewed",
@@ -1239,52 +1342,73 @@
       ]
     },
     "term:81": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 학교가 정한 시각 기준 적용",
+      "sourceIds": [
+        "rule-attendance"
+      ]
     },
     "term:82": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 학교가 정한 시각 기준 적용",
+      "sourceIds": [
+        "rule-attendance"
+      ]
     },
     "term:83": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 학교가 정한 시각 기준 적용",
+      "sourceIds": [
+        "rule-attendance",
+        "student-record-guide-2026"
+      ]
     },
     "term:84": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 의무교육 대상 (학교·교육청별 안내 확인)",
+      "sourceIds": [
+        "review-enrolment",
+        "student-record-guide-2026"
+      ]
     },
     "term:85": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 초등학교, 전학 사유별 적용",
+      "sourceIds": [
+        "review-elementary-transfer",
+        "student-record-guide-2026"
+      ]
     },
     "term:86": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 의무교육 대상 (학교·교육청별 안내 확인)",
+      "sourceIds": [
+        "review-enrolment",
+        "student-record-guide-2026"
+      ]
     },
     "term:87": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 의무교육 과정 예외",
+      "sourceIds": [
+        "review-school-discipline",
+        "review-violence-measures"
+      ]
     },
     "term:88": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 학교별 사정 절차 확인",
+      "sourceIds": [
+        "decree-completion"
+      ]
     },
     "term:89": {
       "reviewStatus": "reviewed",
@@ -1295,46 +1419,62 @@
       ]
     },
     "term:90": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 학교별 사정 절차 확인",
+      "sourceIds": [
+        "decree-completion"
+      ]
     },
     "term:91": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "교육부·한국교육과정평가원 평가 유형 (일정은 해당 연도 안내)",
+      "sourceIds": [
+        "review-achievement-national",
+        "review-achievement-voluntary"
+      ]
     },
     "term:92": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통",
+      "sourceIds": [
+        "review-violence-protection"
+      ]
     },
     "term:93": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통 (의무교육 학생의 퇴학 제외)",
+      "sourceIds": [
+        "review-violence-measures"
+      ]
     },
     "term:94": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통 (의무교육 학생의 퇴학 제외)",
+      "sourceIds": [
+        "review-violence-measures"
+      ]
     },
     "term:95": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통 (의무교육 학생의 퇴학 제외)",
+      "sourceIds": [
+        "review-violence-measures"
+      ]
     },
     "term:96": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통 (의무교육 학생의 퇴학 제외)",
+      "sourceIds": [
+        "review-violence-measures",
+        "review-violence-protection"
+      ]
     },
     "term:97": {
       "reviewStatus": "reviewed",
@@ -1346,16 +1486,22 @@
       ]
     },
     "term:98": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 지원 범위·신청 절차는 해당 교육청 확인",
+      "sourceIds": [
+        "review-teacher-protection",
+        "law-teacher-status"
+      ]
     },
     "term:99": {
-      "reviewStatus": "needs-review",
-      "checkedAt": null,
-      "scope": null,
-      "sourceIds": []
+      "reviewStatus": "reviewed",
+      "checkedAt": "2026-11-20",
+      "scope": "전국 공통, 지원 범위·신청 절차는 해당 교육청 확인",
+      "sourceIds": [
+        "review-teacher-protection",
+        "law-teacher-status"
+      ]
     },
     "term:100": {
       "reviewStatus": "needs-review",
