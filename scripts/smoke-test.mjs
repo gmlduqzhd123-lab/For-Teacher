@@ -250,6 +250,65 @@ for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 
     }, viewport.width === 390);
     failures.push(...mobileIssues.map(issue => `${viewport.width}px: ${issue}`));
   }
+  if (mobile) {
+    const menuIssues = await page.evaluate(() => {
+      const issues = [];
+      const menu = document.getElementById('mobile-menu-modal');
+      const panel = menu.querySelector('.editorial-menu-panel');
+      const menuButton = document.getElementById('mob-menu');
+      const menuTheme = menu.querySelector('[data-theme-toggle]');
+      const headerInstall = document.querySelector('.editorial-header [data-ys-install-guide]');
+      const savedTheme = Storage.get('theme_mode', 'light');
+      const luminance = color => {
+        const channels = color.match(/\d+/g).slice(0, 3).map(value => {
+          const channel = Number(value) / 255;
+          return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+        });
+        return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+      };
+      const contrast = (text, surface) => {
+        const values = [luminance(getComputedStyle(text).color), luminance(getComputedStyle(surface).backgroundColor)];
+        return (Math.max(...values) + 0.05) / (Math.min(...values) + 0.05);
+      };
+      setThemeMode('light', true);
+      for (const mode of ['light', 'dark']) {
+        router.navigate('search');
+        const hint = document.querySelector('#app-view .editorial-help');
+        if (contrast(hint, document.getElementById('app-view')) < 4.5 || !getComputedStyle(hint).fontFamily.includes('Maru Buri')) issues.push(mode + ': search guidance readability');
+        if (document.querySelector('#app-view h2').textContent !== '검색' || document.getElementById('mob-search').getAttribute('aria-current') !== 'page') issues.push(mode + ': search route name or active tab');
+        menuButton.focus();
+        menuButton.click();
+        const headings = [...menu.querySelectorAll('.editorial-menu-group h3')].map(h => h.textContent.trim()).join('|');
+        if (headings !== '검색과 가이드|업무|수업과 기록|학습|설정' || menuButton.getAttribute('aria-expanded') !== 'true') issues.push(mode + ': mobile menu groups or open state');
+        if (panel.scrollWidth > panel.clientWidth + 1 || document.querySelector('.editorial-bottom-nav').scrollWidth > innerWidth) issues.push(mode + ': mobile menu overflows');
+        const situation = menu.querySelector('[data-menu-view="situations"]');
+        if (situation.getBoundingClientRect().height < 44 || contrast(situation, situation.closest('section')) < 4.5) issues.push(mode + ': menu action size or contrast');
+        situation.click();
+        if (router.current !== 'situations' || !menu.classList.contains('hidden') || document.querySelector('#app-view h2').textContent !== '상황 가이드') issues.push(mode + ': menu route does not open the matching screen');
+        headerInstall.focus();
+        headerInstall.click();
+        const appGuide = document.querySelector('.ysi-card');
+        const qrButton = appGuide?.querySelector('[data-qr]');
+        if (!qrButton || document.querySelector('.editorial-header [data-qr]') || contrast(appGuide.querySelector('.ysi-sub'), appGuide) < 4.5) {
+          issues.push(mode + ': app and QR guide is missing or hard to read');
+          appGuide?.querySelector('[data-ysi-close]').click();
+        } else {
+          qrButton.click();
+          const qrCard = document.querySelector('.yq-card');
+          if (!qrCard?.querySelector('svg[role="img"]') || document.querySelector('.ysi-back')) issues.push(mode + ': the QR dialog did not open on its own');
+          qrCard?.querySelector('.yq-close').click();
+          if (document.activeElement !== headerInstall) issues.push(mode + ': closing the QR should restore focus');
+        }
+        menuButton.click();
+        if (menuTheme.textContent.trim() !== (mode === 'light' ? '다크 모드' : '라이트 모드')) issues.push(mode + ': mode switch label');
+        menuTheme.click();
+        if (document.documentElement.classList.contains('dark') !== (mode === 'light') || menuButton.getAttribute('aria-expanded') !== 'false') issues.push(mode + ': changing mode through settings');
+      }
+      setThemeMode(savedTheme, true);
+      return issues;
+    });
+    failures.push(...menuIssues.map(issue => `${viewport.width}px: ${issue}`));
+  }
   await page.close();
 }
 await browser.close(); server.close();
@@ -258,4 +317,4 @@ if (failures.length) {
   if (process.env.GITHUB_ACTIONS) failures.slice(0, 20).forEach(f => console.log(`::error title=smoke-test::${f.replace(/\n/g, ' ')}`)); // Actions 화면·API에 오류 내용 표시
   process.exit(1);
 }
-console.log(`Smoke test passed: ${views.length} screens × 3 viewport sizes, review panels, saved checklist, mobile home → search → guide.`);
+console.log(`Smoke test passed: ${views.length} screens × 3 viewport sizes, review panels, saved checklist, mobile home → search → guide, menus in light and dark mode.`);

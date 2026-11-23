@@ -60,18 +60,16 @@
             <button type="button" class="editorial-brand" onclick="router.navigate('home')" aria-label="교직백서 1000 홈">교직백서 <span>1000</span></button>
             <nav class="editorial-primary-nav" aria-label="주 메뉴">
                 <button type="button" data-primary-nav="home" onclick="router.navigate('home')">홈</button>
-                <button type="button" data-primary-nav="search" onclick="router.navigate('search')">찾기</button>
-                <button type="button" data-primary-nav="year" onclick="router.navigate('year')">업무</button>
-                <button type="button" data-primary-nav="tools-class" onclick="router.navigate('tools-class')">수업과 기록</button>
-                <button type="button" data-primary-nav="quiz" onclick="router.navigate('quiz')">학습</button>
+                <button type="button" data-primary-nav="search" onclick="router.navigate('search')">검색</button>
+                <button type="button" data-primary-nav="situations" onclick="router.navigate('situations')">상황 가이드</button>
+                <button type="button" data-primary-nav="year" onclick="router.navigate('year')">교사의 1년</button>
+                <button type="button" data-primary-nav="tools-class" onclick="router.navigate('tools-class')">학급 도구</button>
+                <button type="button" data-primary-nav="quiz" onclick="router.navigate('quiz')">교직력 테스트</button>
             </nav>
             <div class="editorial-header-actions">
                 <button type="button" class="editorial-action editorial-mobile-keep" onclick="openCommandPalette()" aria-label="빠른 이동 및 통합 검색 열기" title="단축키: Ctrl+K 또는 /"><i class="fa-solid fa-bolt text-amber-600 mr-1"></i><span class="editorial-label">빠른 이동</span></button>
-                <button type="button" class="editorial-action" data-font-toggle onclick="cycleFontScale()" aria-label="글자 크기 조절 (현재 100%)">글자 크기 100%</button>
-                <button type="button" class="editorial-action editorial-menu-trigger" onclick="openMobileMenu()" aria-label="전체 메뉴 열기">전체 메뉴</button>
-                <button type="button" class="editorial-action" data-theme-toggle onclick="toggleQuickDarkMode()" aria-label="다크 모드로 전환">다크 모드</button>
-                <button type="button" class="editorial-action editorial-mobile-keep" data-ys-install>📲 <span class="editorial-wide">앱 </span>설치</button>
-                <button type="button" class="editorial-action editorial-mobile-keep" data-qr aria-label="QR 코드로 접속">📱 QR</button>
+                <button type="button" class="editorial-action editorial-menu-trigger" onclick="openMobileMenu()" aria-controls="mobile-menu-modal" aria-expanded="false">전체 메뉴</button>
+                <button type="button" class="editorial-action editorial-mobile-keep" data-ys-install-guide><span class="install-browser-label">앱 설치</span><span class="install-standalone-label">앱 안내</span></button>
                 <span id="bookmark-badge" class="hidden" aria-hidden="true"></span>
             </div>
         </div>
@@ -82,17 +80,17 @@
         <aside id="desktop-sidebar" class="hidden md:flex flex-col w-64 p-4 shrink-0 border-r border-slate-200 dark:border-slate-700 space-y-1 overflow-y-auto hide-scrollbar pb-10">
             <div class="text-xs font-semibold text-slate-400 dark:text-slate-500 px-3 mb-2 uppercase">메인 메뉴</div>
             <a onclick="router.navigate('home')" id="nav-home" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-house w-5 text-center"></i> 홈 대시보드</a>
-            <a onclick="router.navigate('search')" id="nav-search" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-magnifying-glass w-5 text-center"></i> 교직어 검색</a>
-            <a onclick="router.navigate('situations')" id="nav-situations" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-triangle-exclamation w-5 text-center"></i> 이럴 땐 어떻게?</a>
-            <a onclick="router.navigate('navigator')" id="nav-navigator" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-compass w-5 text-center"></i> 교직 내비게이터</a>
+            <a onclick="router.navigate('search')" id="nav-search" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-magnifying-glass w-5 text-center"></i> 검색</a>
+            <a onclick="router.navigate('situations')" id="nav-situations" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-triangle-exclamation w-5 text-center"></i> 상황 가이드</a>
+            <a onclick="router.navigate('navigator')" id="nav-navigator" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-compass w-5 text-center"></i> 업무 순서</a>
             <a onclick="router.navigate('map')" id="nav-map" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-network-wired w-5 text-center"></i> 교직 지식맵</a>
 
             <div class="text-xs font-semibold text-blue-500 px-3 mt-6 mb-2 uppercase">실무 & 편의 도구 ✦</div>
-            <a onclick="router.navigate('tools-doc')" id="nav-tools-doc" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-file-signature w-5 text-center"></i> 기안·알림장 생성기</a>
-            <a onclick="router.navigate('tools-class')" id="nav-tools-class" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-users-rectangle w-5 text-center"></i> 학급 경영 도구</a>
-            <a onclick="router.navigate('tools-board')" id="nav-tools-board" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-list-check w-5 text-center"></i> 실전 태스크 보드</a>
+            <a onclick="router.navigate('tools-doc')" id="nav-tools-doc" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-file-signature w-5 text-center"></i> 문서 양식</a>
+            <a onclick="router.navigate('tools-class')" id="nav-tools-class" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-users-rectangle w-5 text-center"></i> 학급 도구</a>
+            <a onclick="router.navigate('tools-board')" id="nav-tools-board" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-list-check w-5 text-center"></i> 업무 체크리스트</a>
             <a onclick="router.navigate('tools-edutech')" id="nav-tools-edutech" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-laptop-code w-5 text-center"></i> 에듀테크 큐레이션</a>
-            <a onclick="router.navigate('timetable')" id="nav-timetable" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-bell w-5 text-center"></i> 시간표 · 종 알림</a>
+            <a onclick="router.navigate('timetable')" id="nav-timetable" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-bell w-5 text-center"></i> 시간표·종 알림</a>
             <a onclick="router.navigate('tools-record')" id="nav-tools-record" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-pen-nib w-5 text-center"></i> 생기부 문장 도우미</a>
             <a onclick="router.navigate('counsel')" id="nav-counsel" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-comments w-5 text-center"></i> 상담 기록장</a>
             <a onclick="router.navigate('attendance')" id="nav-attendance" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer"><i class="fa-solid fa-file-circle-check w-5 text-center"></i> 출결 증빙 체크</a>
@@ -112,18 +110,18 @@
         <main id="app-view" class="flex-1 w-full p-4 md:p-8 overflow-y-auto hide-scrollbar pb-28 md:pb-16 relative scroll-smooth">
             <div class="flex flex-col items-center justify-center h-full">
                 <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-                <p class="text-sm font-bold text-slate-500">데이터를 최적화 중입니다...</p>
+                <p class="editorial-help">교직백서를 불러오는 중…</p>
             </div>
         </main>
     </div>
 
     <!-- 모바일 하단 네비게이션 -->
     <nav class="editorial-bottom-nav md:hidden fixed bottom-0 left-0 right-0 z-40 backdrop-blur-md border-t px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex justify-around items-center" aria-label="모바일 빠른 메뉴">
-        <button onclick="router.navigate('home')" id="mob-home" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-house text-lg mb-1"></i>홈</button>
-        <button onclick="router.navigate('search')" id="mob-search" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-magnifying-glass text-lg mb-1"></i>검색</button>
-        <button onclick="router.navigate('situations')" id="mob-situations" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-triangle-exclamation text-lg mb-1"></i>상황</button>
-        <button onclick="router.navigate('tools-class')" id="mob-tools-class" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-users-rectangle text-lg mb-1"></i>학급도구</button>
-        <button onclick="toggleMobileMenu()" id="mob-menu" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-bars text-lg mb-1"></i>메뉴</button>
+        <button onclick="router.navigate('home')" id="mob-home" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-house text-lg mb-1" aria-hidden="true"></i><span>홈</span></button>
+        <button onclick="router.navigate('search')" id="mob-search" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-magnifying-glass text-lg mb-1" aria-hidden="true"></i><span>검색</span></button>
+        <button onclick="router.navigate('situations')" id="mob-situations" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-triangle-exclamation text-lg mb-1" aria-hidden="true"></i><span>상황 가이드</span></button>
+        <button onclick="router.navigate('tools-class')" id="mob-tools-class" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-users-rectangle text-lg mb-1" aria-hidden="true"></i><span>학급 도구</span></button>
+        <button onclick="toggleMobileMenu()" id="mob-menu" aria-controls="mobile-menu-modal" aria-expanded="false" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-bars text-lg mb-1" aria-hidden="true"></i><span>전체 메뉴</span></button>
     </nav>
 
     <!-- 상세 모달 -->
@@ -134,12 +132,60 @@
     <!-- 모든 기존 기능을 그룹으로 정리한 전체 메뉴 -->
     <div id="mobile-menu-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex" role="dialog" aria-modal="true" aria-labelledby="all-menu-title" onclick="if(event.target === this) closeMobileMenu()">
         <div class="editorial-menu-panel hide-scrollbar">
-            <div class="editorial-menu-head"><h3 id="all-menu-title">전체 메뉴</h3><button type="button" onclick="closeMobileMenu()" aria-label="메뉴 닫기">×</button></div>
+            <div class="editorial-menu-head"><h2 id="all-menu-title">전체 메뉴</h2><button type="button" class="editorial-action" onclick="closeMobileMenu()" aria-label="전체 메뉴 닫기">닫기</button></div>
             <div class="editorial-menu-grid">
-                <section class="editorial-menu-group"><h4>찾기</h4><button onclick="closeMobileMenu(); router.navigate('search')">교직어 검색</button><button onclick="closeMobileMenu(); router.navigate('situations')">상황 가이드</button><button onclick="closeMobileMenu(); router.navigate('navigator')">교직 내비게이터</button><button onclick="closeMobileMenu(); router.navigate('map')">교직 지식맵</button><button onclick="closeMobileMenu(); openCommandPalette()">⚡ 빠른 이동 · 통합 검색<span class="kbd-hint"> (Ctrl+K)</span></button></section>
-                <section class="editorial-menu-group"><h4>업무</h4><button onclick="closeMobileMenu(); router.navigate('year')">교사의 1년</button><button onclick="closeMobileMenu(); router.navigate('tools-board')">태스크 보드</button><button onclick="closeMobileMenu(); router.navigate('tools-doc')">기안·알림장 생성기</button><button onclick="closeMobileMenu(); router.navigate('career')">교직 커리어맵</button></section>
-                <section class="editorial-menu-group"><h4>수업과 기록</h4><button onclick="closeMobileMenu(); router.navigate('tools-class')">학급 경영 도구</button><button onclick="closeMobileMenu(); router.navigate('timetable')">시간표 · 종 알림</button><button onclick="closeMobileMenu(); router.navigate('tools-record')">생기부 문장 도우미</button><button onclick="closeMobileMenu(); router.navigate('counsel')">상담 기록장</button><button onclick="closeMobileMenu(); router.navigate('attendance')">출결 증빙 체크</button><button onclick="closeMobileMenu(); openPresent('timer')">📺 전자칠판 수업 칠판모드</button></section>
-                <section class="editorial-menu-group"><h4>학습과 설정</h4><button onclick="closeMobileMenu(); router.navigate('start')">🚩 역할별 시작 코스</button><button onclick="closeMobileMenu(); openSosModal()">🚨 위급 상황 SOS 퀵 가이드</button><button onclick="closeMobileMenu(); openCalcModal()">🧮 교무실 미니 계산기 (출석·병가)</button><button onclick="closeMobileMenu(); openGuideModal()">❓ 30초 사용법 가이드</button><button onclick="closeMobileMenu(); openSetupWizard()">🪄 1분 학급 세팅 위저드</button><button onclick="closeMobileMenu(); router.navigate('quiz')">교직력 테스트</button><button onclick="closeMobileMenu(); router.navigate('card')">오늘의 교직카드</button><button onclick="closeMobileMenu(); router.navigate('tools-edutech')">에듀테크 큐레이션</button><button onclick="closeMobileMenu(); router.navigate('mybox')">나의 교직함 (백업·설정)</button><button data-font-toggle onclick="cycleFontScale()">가+ 글자 크기 조절</button><button data-ys-install onclick="closeMobileMenu()">앱 설치</button><button data-theme-toggle onclick="toggleQuickDarkMode(); closeMobileMenu()" aria-label="다크 모드로 전환">다크 모드</button><button data-qr onclick="closeMobileMenu()">QR 코드로 접속</button></section>
+                <section class="editorial-menu-group">
+                    <h3>검색과 가이드</h3>
+                    <div class="editorial-menu-links">
+                        <button type="button" data-menu-view="search" onclick="router.navigate('search')">검색</button>
+                        <button type="button" data-menu-view="situations" onclick="router.navigate('situations')">상황 가이드</button>
+                        <button type="button" data-menu-view="navigator" onclick="router.navigate('navigator')">업무 순서</button>
+                        <button type="button" data-menu-view="map" onclick="router.navigate('map')">교직 지식맵</button>
+                        <button type="button" onclick="closeMobileMenu(); openCommandPalette()">빠른 이동</button>
+                        <button type="button" class="editorial-menu-sos" onclick="closeMobileMenu(); openSosModal()">긴급 상황 SOS</button>
+                    </div>
+                </section>
+                <section class="editorial-menu-group">
+                    <h3>업무</h3>
+                    <div class="editorial-menu-links">
+                        <button type="button" data-menu-view="year" onclick="router.navigate('year')">교사의 1년</button>
+                        <button type="button" data-menu-view="tools-doc" onclick="router.navigate('tools-doc')">문서 양식</button>
+                        <button type="button" data-menu-view="tools-board" onclick="router.navigate('tools-board')">업무 체크리스트</button>
+                        <button type="button" data-menu-view="career" onclick="router.navigate('career')">교직 커리어맵</button>
+                        <button type="button" onclick="closeMobileMenu(); openCalcModal()">출석·병가 계산기</button>
+                    </div>
+                </section>
+                <section class="editorial-menu-group">
+                    <h3>수업과 기록</h3>
+                    <div class="editorial-menu-links">
+                        <button type="button" data-menu-view="tools-class" onclick="router.navigate('tools-class')">학급 도구</button>
+                        <button type="button" data-menu-view="timetable" onclick="router.navigate('timetable')">시간표·종 알림</button>
+                        <button type="button" data-menu-view="tools-record" onclick="router.navigate('tools-record')">생기부 문장 도우미</button>
+                        <button type="button" data-menu-view="counsel" onclick="router.navigate('counsel')">상담 기록장</button>
+                        <button type="button" data-menu-view="attendance" onclick="router.navigate('attendance')">출결 증빙 체크</button>
+                        <button type="button" onclick="closeMobileMenu(); openPresent('timer')">전자칠판 타이머</button>
+                    </div>
+                </section>
+                <section class="editorial-menu-group">
+                    <h3>학습</h3>
+                    <div class="editorial-menu-links">
+                        <button type="button" data-menu-view="start" onclick="router.navigate('start')">역할별 시작 코스</button>
+                        <button type="button" data-menu-view="quiz" onclick="router.navigate('quiz')">교직력 테스트</button>
+                        <button type="button" data-menu-view="card" onclick="router.navigate('card')">오늘의 교직카드</button>
+                        <button type="button" data-menu-view="tools-edutech" onclick="router.navigate('tools-edutech')">에듀테크 큐레이션</button>
+                        <button type="button" onclick="closeMobileMenu(); openGuideModal()">사용법</button>
+                    </div>
+                </section>
+                <section class="editorial-menu-group">
+                    <h3>설정</h3>
+                    <div class="editorial-menu-links">
+                        <button type="button" data-menu-view="mybox" onclick="router.navigate('mybox')">나의 교직함</button>
+                        <button type="button" onclick="closeMobileMenu(); openSetupWizard()">학급 설정</button>
+                        <button type="button" data-font-toggle onclick="cycleFontScale()">글자 크기 100%</button>
+                        <button type="button" data-theme-toggle aria-label="다크 모드로 전환" onclick="toggleQuickDarkMode(); closeMobileMenu()">다크 모드</button>
+                        <button type="button" data-ys-install-guide onclick="closeMobileMenu()">앱 설치·QR</button>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
@@ -176,15 +222,14 @@
     <script src="js/app.js"></script>
     <!-- 📱 QR로 접속 (교실 TV·전자칠판에 띄우는 큰 QR, 인터넷 없이도 뜸) -->
     <style>
-.qr-btn button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .yq-back{position:fixed;inset:0;z-index:2147483000;background:rgba(15,23,42,.72);display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box}
-.yq-card{box-sizing:border-box;background:#fff;color:#0f172a;border-radius:20px;padding:22px 20px 16px;width:min(100%,520px);max-height:100%;overflow:auto;text-align:center;font-family:inherit;line-height:1.5;box-shadow:0 20px 60px rgba(0,0,0,.35)}
-.yq-card .yq-title{margin:0;font-size:22px;font-weight:800;color:#0f172a}
-.yq-card .yq-name{margin:2px 0 0;color:#475569;font-size:15px;font-weight:600}
+.yq-card{box-sizing:border-box;background:var(--paper-card);color:var(--paper-ink);border-radius:20px;padding:22px 20px 16px;width:min(100%,520px);max-height:100%;overflow:auto;text-align:center;font-family:inherit;line-height:1.5;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.yq-card .yq-title{margin:0;font-size:22px;font-weight:700;color:var(--paper-ink)}
+.yq-card .yq-name{margin:2px 0 0;color:var(--paper-muted);font-size:15px;font-weight:700}
 .yq-card .yq-qr{display:block;width:min(100%,62vh,420px);height:auto;margin:12px auto}
-.yq-card .yq-url{margin:0 0 4px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:16px;word-break:break-all;color:#0f172a}
-.yq-card .yq-hint{margin:0 0 14px;color:#64748b;font-size:14px}
-.yq-card .yq-close{font:inherit;font-weight:700;width:100%;padding:12px;border:0;border-radius:12px;background:#0f172a;color:#fff;cursor:pointer}
+.yq-card .yq-url{margin:0 0 4px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:16px;word-break:break-all;color:var(--paper-ink)}
+.yq-card .yq-hint{margin:0 0 14px;color:var(--paper-muted);font-size:14px}
+.yq-card .yq-close{font:inherit;font-weight:700;width:100%;padding:12px;border:0;border-radius:12px;background:var(--paper-deep);color:#fff;cursor:pointer}
     </style>
     <script>
     (function () {
@@ -194,8 +239,8 @@
         back.className = 'yq-back';
         back.style.setProperty('display', 'flex', 'important'); // 앱 CSS가 다른 창을 숨겨도 QR 창은 보이게
         back.innerHTML = '<div class="yq-card" role="dialog" aria-modal="true" aria-labelledby="yq-title">' +
-            '<p class="yq-title" id="yq-title">📱 카메라로 찍어서 들어와요</p><p class="yq-name"></p>' + svg +
-            '<p class="yq-url"></p><p class="yq-hint">휴대폰·태블릿 카메라를 QR 코드에 비추면 바로 열려요.</p>' +
+            '<p class="yq-title" id="yq-title">QR로 교직백서 열기</p><p class="yq-name"></p>' + svg +
+            '<p class="yq-url"></p><p class="yq-hint">다른 기기의 카메라로 QR 코드를 스캔하세요.</p>' +
             '<button type="button" class="yq-close">닫기</button></div>';
         back.querySelector('.yq-name').textContent = name;
         back.querySelector('.yq-url').textContent = url.replace(/^https?:\/\//, '');

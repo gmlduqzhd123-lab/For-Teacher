@@ -94,7 +94,7 @@
             }
         };
 
-        const FOOTER_HTML = `<div class="w-full text-center mt-12 mb-4"><span class="inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-[10px] font-bold text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800/80 px-4 py-1.5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700"><span class="whitespace-nowrap">© 2026 엽쌤. All rights reserved.</span><span>·</span><a href="https://gmlduqzhd123-lab.github.io/YScode/" class="whitespace-nowrap" style="color:inherit;text-decoration:underline;text-underline-offset:3px">엽쌤의 다른 앱 보기 →</a><span class="qr-btn whitespace-nowrap">· <button type="button" data-qr class="whitespace-nowrap">📱 QR로 접속</button></span></span></div>`;
+        const FOOTER_HTML = `<div class="w-full text-center mt-12 mb-4"><span class="inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-[10px] font-bold text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800/80 px-4 py-1.5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700"><span class="whitespace-nowrap">© 2026 엽쌤. All rights reserved.</span><span>·</span><a href="https://gmlduqzhd123-lab.github.io/YScode/" class="whitespace-nowrap" style="color:inherit;text-decoration:underline;text-underline-offset:3px">엽쌤의 다른 앱 보기 →</a></span></div>`;
 
         const STRICT_CATEGORY_MAP = {
             "인사·발령": ["전보", "파견", "복직", "퇴직", "면직", "해임", "파면", "인사내신", "승진", "전출", "전입", "호봉", "경력", "근평", "근무성적", "다면평가", "상훈", "모범공무원"],
@@ -1107,21 +1107,25 @@
             render() {
                 try {
                     if (this.current === 'tools-record' && pendingRecordDraft && !saveRecordDraftNow()) return;
-                     const navGroup = { start: 'quiz', situations: 'search', navigator: 'search', map: 'search', 'tools-board': 'year', 'tools-doc': 'year', career: 'year', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', attendance: 'tools-class', card: 'quiz', 'tools-edutech': 'quiz' };
+                     const navGroup = { start: 'quiz', navigator: 'search', map: 'search', 'tools-board': 'year', 'tools-doc': 'year', career: 'year', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', attendance: 'tools-class', card: 'quiz', 'tools-edutech': 'quiz' };
                      const mobGroup = { home: 'home', search: 'search', navigator: 'search', map: 'search', situations: 'situations', 'tools-class': 'tools-class', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', attendance: 'tools-class', 'tools-doc': 'tools-class', 'tools-board': 'tools-class', year: 'menu', career: 'menu', quiz: 'menu', card: 'menu', 'tools-edutech': 'menu', mybox: 'menu', start: 'menu' };
                      const activeNav = navGroup[this.current] || this.current;
                      document.querySelectorAll('[data-primary-nav]').forEach(el => { const active = el.dataset.primaryNav === activeNav; el.classList.toggle('active', active); if (active) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current'); });
                     document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('bg-blue-50', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400'));
-                    document.querySelectorAll('.mob-item').forEach(el => el.classList.remove('text-blue-600', 'dark:text-blue-400', 'font-bold'));
+                    const activeMob = mobGroup[this.current] || this.current;
+                    document.querySelectorAll('.mob-item').forEach(el => {
+                        if (activeMob !== 'menu' && el.id === `mob-${activeMob}`) el.setAttribute('aria-current', 'page');
+                        else el.removeAttribute('aria-current');
+                    });
                     const activeSidebar = document.getElementById(`nav-${this.current}`); if (activeSidebar) activeSidebar.classList.add('bg-blue-50', 'dark:bg-slate-700', 'text-blue-600', 'dark:text-blue-400');
-                    const activeMob = document.getElementById(`mob-${mobGroup[this.current] || this.current}`); if (activeMob) activeMob.classList.add('text-blue-600', 'dark:text-blue-400', 'font-bold');
+
 
                     updateBookmarkBadge();
 
                     const viewContainer = document.getElementById('app-view'); if (!viewContainer) return;
-                    const pageTitles = { start:'역할별 시작 코스', home:'홈', search:'교직어 검색', situations:'상황 가이드', navigator:'교직 내비게이터', year:'교사의 1년', 'tools-doc':'문서 양식', 'tools-record':'생기부 문장 도우미', counsel:'상담 기록장', attendance:'출결 증빙 체크', mybox:'나의 교직함' };
-                    document.title = `${pageTitles[this.current] || '교직 도구'} | 교직백서 1000`;
-                    const pageH1 = document.getElementById('page-h1'); if (pageH1) pageH1.textContent = `교직백서 1000 · ${pageTitles[this.current] || '교직 도구'}`; // 화면낭독기용 화면 제목
+                    const pageTitle = viewTitle(this.current);
+                    document.title = `${pageTitle} | 교직백서 1000`;
+                    const pageH1 = document.getElementById('page-h1'); if (pageH1) pageH1.textContent = `교직백서 1000 · ${pageTitle}`; // 화면낭독기용 화면 제목
 
                     switch(this.current) {
                         case 'home': renderHome(viewContainer); break;
@@ -1218,14 +1222,14 @@
                 { icon: 'fa-wand-magic-sparkles text-rose-600', title: '발표자 랜덤 뽑기', sub: studentCount ? `명단 ${studentCount}명 연동` : '학급 명단을 넣으면 바로 연동', action: "openPresent('pick')" },
                 { icon: 'fa-chair text-emerald-600', title: '자리 배치기', sub: '짝·앞자리·분리 조건', action: "router.navigate('tools-class')" },
                 { icon: 'fa-chalkboard text-amber-600', title: '수업 칠판 메모', sub: '오늘 활동 안내 띄우기', action: "openPresent('memo')" },
-                { icon: 'fa-bell text-indigo-600', title: '시간표 · 종 알림', sub: `${nowSt.title}`, action: "router.navigate('timetable')" }
+                { icon: 'fa-bell text-indigo-600', title: '시간표·종 알림', sub: `${nowSt.title}`, action: "router.navigate('timetable')" }
             ];
             const adminDockItems = [
-                { icon: 'fa-file-signature text-blue-600', title: '기안·알림장 생성기', sub: '실전 양식 20종 자동완성', action: "router.navigate('tools-doc')" },
-                { icon: 'fa-pen-nib text-purple-600', title: '학생별 생기부 도우미', sub: '금지어 점검 · 엑셀 저장', action: "router.navigate('tools-record')" },
-                { icon: 'fa-comments text-emerald-600', title: '학부모 상담 기록장', sub: '상담주간 일정표 · 암호화', action: "router.navigate('counsel')" },
-                { icon: 'fa-triangle-exclamation text-amber-600', title: '이럴 땐 어떻게?', sub: '15대 돌발 상황별 대처', action: "router.navigate('situations')" },
-                { icon: 'fa-list-check text-teal-600', title: '실전 태스크 보드', sub: '동학년 체크리스트 공유', action: "router.navigate('tools-board')" }
+                { icon: 'fa-file-signature text-blue-600', title: '문서 양식', sub: '실전 양식 20종 자동완성', action: "router.navigate('tools-doc')" },
+                { icon: 'fa-pen-nib text-purple-600', title: '생기부 문장 도우미', sub: '금지어 점검 · 엑셀 저장', action: "router.navigate('tools-record')" },
+                { icon: 'fa-comments text-emerald-600', title: '상담 기록장', sub: '상담주간 일정표 · 암호화', action: "router.navigate('counsel')" },
+                { icon: 'fa-triangle-exclamation text-amber-600', title: '상황 가이드', sub: '15대 돌발 상황별 대처', action: "router.navigate('situations')" },
+                { icon: 'fa-list-check text-teal-600', title: '업무 체크리스트', sub: '동학년 체크리스트 공유', action: "router.navigate('tools-board')" }
             ];
             const monthlyBriefItems = [
                 ...(MONTHLY_BRIEFING[month] || []),
@@ -1245,9 +1249,9 @@
                 ? `${month}월에 꼭 챙겨야 할 핵심 실무 & 양식 바로가기`
                 : '자주 찾는 용어를 상세창에서 📌 핀으로 고정해 두세요';
             const shortcuts = [
-                ['tools-doc', '기안·알림장 20종', '빈칸만 채워 바로 복사·인쇄'],
-                ['tools-record', '학생별 생기부 도우미', '바이트 계산 · 기재금지 점검'],
-                ['counsel', '학부모 상담 기록장', '상담주간 시간표 자동 배정'],
+                ['tools-doc', '문서 양식', '기안문과 알림장을 작성해 복사·인쇄'],
+                ['tools-record', '생기부 문장 도우미', '바이트 계산 · 기재금지 점검'],
+                ['counsel', '상담 기록장', '상담주간 시간표 자동 배정'],
                 ['mybox', '나의 교직함 · 백업', '즐겨찾기와 통합 암호화 백업'],
                 ...(!hasSetup ? [['start', '역할별 시작 코스', '처음 맡은 역할에 맞춰 둘러보기']] : [])
             ];
@@ -1273,9 +1277,9 @@
                                 <button type="button" class="editorial-action" onclick="router.navigate('navigator')">업무 순서</button>
                                 <button type="button" class="editorial-action" onclick="router.navigate('tools-doc')">문서 양식</button>
                             </div>
-                            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
+                            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 editorial-home-helpers">
                                 <button type="button" onclick="openCommandPalette()" class="font-bold hover:underline">빠른 이동 <kbd class="kbd-hint px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-mono text-[11px]">Ctrl+K</kbd></button>
-                                <button type="button" onclick="startVoiceSearch('home-search-input')" class="font-bold text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-microphone mr-1" aria-hidden="true"></i>음성 검색</button>
+                                <button type="button" onclick="startVoiceSearch('home-search-input')" class="font-bold hover:underline"><i class="fa-solid fa-microphone mr-1" aria-hidden="true"></i>음성 검색</button>
                                 <button type="button" onclick="openCalcModal()" class="font-bold hover:underline">출석·병가 계산기</button>
                             </div>
                         </div>
@@ -1304,7 +1308,7 @@
                                 <button type="button" onclick="switchHomeDock('monthly')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${homeDockTab === 'monthly' ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}"><i class="fa-regular fa-calendar-check mr-1"></i>${month}월 브리핑</button>
                                 <button type="button" onclick="switchHomeDock('pins')" class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition ${homeDockTab === 'pins' ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}"><i class="fa-solid fa-thumbtack mr-1"></i>내 고정핀 (${pinnedDockItems.length})</button>
                             </div>
-                            <span class="text-[11px] font-semibold text-slate-400">${escapeHTML(dockCaption)}</span>
+                            <span class="editorial-help">${escapeHTML(dockCaption)}</span>
                         </div>
                         ${dockItems.length ? `
                         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -1435,7 +1439,7 @@ ${weeklyAgendaHTML()}
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                        <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">기안·알림장 생성기</h2><p class="text-sm text-slate-500 dark:text-slate-400">실전 양식 20종과 내 양식을 빈칸만 채워 완성하고 동료 선생님과 링크로 공유하세요.</p></div>
+                        <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">문서 양식</h2><p class="text-sm text-slate-500 dark:text-slate-400">실전 양식 20종과 내 양식을 빈칸만 채워 완성하고 동료 선생님과 링크로 공유하세요.</p></div>
                         <div class="flex flex-wrap gap-2">
                             <button type="button" onclick="promptImportSharedTemplate()" class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold hover:bg-slate-200 transition"><i class="fa-solid fa-file-import mr-1"></i>공유받은 양식 코드 붙여넣기</button>
                             <button type="button" onclick="openSetupWizard()" class="px-3.5 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-xs font-bold"><i class="fa-solid fa-school mr-1"></i>학교·담임 자동입력 설정</button>
@@ -1663,7 +1667,7 @@ ${weeklyAgendaHTML()}
         }
 
 
-        // ---------- 4·5. 학급 경영 도구 (전체 화면 모드 · 중복 없는 뽑기 · 자리 배치 고급) ----------
+        // ---------- 4·5. 학급 도구 (전체 화면 모드 · 중복 없는 뽑기 · 자리 배치 고급) ----------
         const pickedNames = new Set();
 
         function renderToolsClass(container) {
@@ -1673,7 +1677,7 @@ ${weeklyAgendaHTML()}
             const field = 'w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm outline-none';
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">학급 경영 도구</h2><p class="text-sm text-slate-500 dark:text-slate-400">타이머·랜덤 뽑기·자리 배치를 TV나 전자칠판에 <b>전체 화면</b>으로 띄울 수 있어요.</p></div>
+                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">학급 도구</h2><p class="text-sm text-slate-500 dark:text-slate-400">타이머·랜덤 뽑기·자리 배치를 TV나 전자칠판에 <b>전체 화면</b>으로 띄울 수 있어요.</p></div>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm text-center flex flex-col items-center justify-center relative">
                             <button onclick="openPresent('timer')" class="absolute top-4 right-4 ${btn2}" aria-label="타이머 전체 화면"><i class="fa-solid fa-expand"></i> 크게 보기</button>
@@ -1996,7 +2000,7 @@ ${weeklyAgendaHTML()}
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
                     <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                        <div><h2 class="text-2xl font-bold mb-1 text-slate-900 dark:text-white">실전 태스크 보드</h2><p class="text-sm text-slate-500 dark:text-slate-400">굵직한 행사의 세부 업무를 관리하고 동학년 선생님들과 링크·텍스트로 공유하세요.</p></div>
+                        <div><h2 class="text-2xl font-bold mb-1 text-slate-900 dark:text-white">업무 체크리스트</h2><p class="text-sm text-slate-500 dark:text-slate-400">굵직한 행사의 세부 업무를 관리하고 동학년 선생님들과 링크·텍스트로 공유하세요.</p></div>
                         <div class="flex flex-wrap gap-2 shrink-0">
                             <button onclick="copyBoardAsText()" class="px-3.5 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl hover:bg-slate-200 transition"><i class="fa-regular fa-copy mr-1"></i>메신저용 복사</button>
                             <button onclick="shareBoardTasks()" class="px-3.5 py-2.5 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 text-xs font-bold rounded-xl hover:bg-blue-100 transition"><i class="fa-solid fa-share-nodes mr-1"></i>동학년 링크 공유</button>
@@ -2228,16 +2232,16 @@ ${weeklyAgendaHTML()}
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
                     <div class="flex flex-wrap items-center justify-between gap-2">
-                        <div><h2 class="text-2xl font-bold mb-1 text-slate-900 dark:text-white">교직어 검색</h2><p class="text-sm text-slate-500 dark:text-slate-400">${new Set(DB.map(item => canonicalTermId(item.id))).size}개 대표 교직어 · 일상 대화어 &amp; 초성 검색 지원</p></div>
+                        <div><h2 class="text-2xl font-bold mb-1 text-slate-900 dark:text-white">검색</h2><p class="editorial-help">교직 용어, 초성, 일상 문장으로 검색할 수 있어요.</p></div>
                         <button type="button" onclick="openCalcModal()" class="px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 text-xs font-extrabold hover:bg-indigo-100"><i class="fa-solid fa-calculator mr-1"></i>출석·병가·평일 계산기</button>
                     </div>
-                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm space-y-3 relative w-full">
+                    <div class="editorial-search-panel p-4 rounded-2xl shadow-sm space-y-3 relative w-full">
                         <div class="relative">
-                            <input type="text" id="main-search-input" aria-label="교직어·상황 검색" enterkeyhint="search" value="${escapeHTML(queryStr)}" placeholder="${narrowScreen() ? '용어·초성·일상어 검색' : "용어, 초성, 일상어('학생이 다쳤어요', '물건 살 때') 검색..."}" class="w-full pl-12 pr-20 py-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
+                            <input type="text" id="main-search-input" aria-label="교직어·상황 검색" enterkeyhint="search" value="${escapeHTML(queryStr)}" placeholder="${narrowScreen() ? '용어·초성·일상어 검색' : "용어, 초성, 일상어('학생이 다쳤어요', '물건 살 때') 검색..."}" class="editorial-field w-full pl-12 pr-20 py-3.5 rounded-xl" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                                <button type="button" onclick="clearSearch()" id="clear-search-btn" class="text-slate-400 hover:text-slate-600 hidden" aria-label="검색어 지우기"><i class="fa-solid fa-circle-xmark"></i></button>
-                                <button type="button" onclick="startVoiceSearch('main-search-input')" class="text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition" title="음성으로 검색" aria-label="음성으로 검색"><i class="fa-solid fa-microphone"></i></button>
+                                <button type="button" onclick="clearSearch()" id="clear-search-btn" class="editorial-field-action hidden" aria-label="검색어 지우기"><i class="fa-solid fa-circle-xmark"></i></button>
+                                <button type="button" onclick="startVoiceSearch('main-search-input')" class="editorial-field-action" title="음성으로 검색" aria-label="음성으로 검색"><i class="fa-solid fa-microphone"></i></button>
                             </div>
                             <div id="autocomplete-box" class="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 hidden z-30 overflow-y-auto max-h-60 hide-scrollbar"></div>
                         </div>
@@ -2756,7 +2760,7 @@ ${weeklyAgendaHTML()}
             currentDetailId = null;
             // body는 원래 overflow-hidden 클래스이므로 'auto'로 덮어쓰지 않고 인라인 스타일만 제거
             document.body.style.overflow = ''; window.removeEventListener('keydown', handleModalKeyDown);
-            document.title = `${({start:'역할별 시작 코스',home:'홈',search:'교직어 검색',situations:'상황 가이드',navigator:'교직 내비게이터',year:'교사의 1년','tools-doc':'문서 양식','tools-record':'생기부 문장 도우미',counsel:'상담 기록장',attendance:'출결 증빙 체크',mybox:'나의 교직함'})[router.current] || '교직 도구'} | 교직백서 1000`;
+            document.title = `${viewTitle(router.current)} | 교직백서 1000`;
             if(lastFocusedElement && document.body.contains(lastFocusedElement)) { try { lastFocusedElement.focus(); } catch(e) {} }
             lastFocusedElement = null;
             // 검색어(param)를 유지한 채 주소만 되돌림 → 닫을 때 검색 화면이 초기화되던 문제 해결
@@ -2788,8 +2792,8 @@ ${weeklyAgendaHTML()}
         function renderSituations(container) {
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">이럴 땐 어떻게?</h2><p class="text-sm text-slate-500 dark:text-slate-400">학교 현장의 당황스러운 순간, 실전 대응 가이드와 양식·업무 순서를 바로 연결해 드립니다.</p></div>
-                    <div class="relative max-w-md"><input type="text" id="situation-search-input" aria-label="상황 가이드 검색" enterkeyhint="search" placeholder="다침, 학폭, 예산 검색" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 text-sm outline-none focus:ring-2 focus:ring-blue-500"><i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i></div>
+                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">상황 가이드</h2><p class="editorial-help">상황을 검색해 먼저 확인할 사항과 처리 순서를 보세요.</p></div>
+                    <div class="relative max-w-md"><input type="text" id="situation-search-input" aria-label="상황 가이드 검색" enterkeyhint="search" placeholder="다침, 학폭, 예산 검색" class="editorial-field w-full pl-10 pr-4 py-2.5 rounded-xl"><i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i></div>
                     <div id="situations-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
                 </div>
             ` + FOOTER_HTML;
@@ -2815,7 +2819,7 @@ ${weeklyAgendaHTML()}
                         <header>
                             <span class="featured-search-type">${escapeHTML(sit.category)}</span>
                             <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">${escapeHTML(sit.title)}</h3>
-                            ${sit.summary ? `<p class="text-sm text-slate-500 dark:text-slate-400">${escapeHTML(sit.summary)}</p>` : ''}
+                            ${sit.summary ? `<p class="editorial-help">${escapeHTML(sit.summary)}</p>` : ''}
                         </header>
                         ${sit.firstCheck.length ? `<div class="situation-first">
                             <h4 class="text-sm font-bold text-emerald-700 dark:text-emerald-300">먼저 확인할 것</h4>
@@ -2837,7 +2841,7 @@ ${weeklyAgendaHTML()}
                             ${reviewDetailsHTML(sit.publicId, '공식 근거와 확인일')}
                             ${sit.script ? `<details>
                                 <summary>보호자 통화 문구</summary>
-                                <blockquote class="text-sm text-slate-700 dark:text-slate-200">${escapeHTML(sit.script)}</blockquote>
+                                <blockquote class="editorial-help">${escapeHTML(sit.script)}</blockquote>
                                 <button type="button" data-script="${escapeHTML(sit.script)}" onclick="copyText(this.dataset.script, '통화 문구를 복사했습니다.')" class="editorial-action">통화 문구 복사</button>
                             </details>` : ''}
                             <details>
@@ -2957,7 +2961,7 @@ ${weeklyAgendaHTML()}
             { id: 'homeroom', label: '담임 한 학기', icon: 'fa-people-roof', who: '처음 담임 · 학년 변경', items: [
                 { t: 'term', id: 151, why: '새 학기 첫 주에 몰리는 일' },
                 { t: 'term', id: 149, why: '1년 학급 운영의 뼈대' },
-                { t: 'view', view: 'tools-class', param: null, label: '학급 경영 도구 둘러보기', why: '자리 배치·발표자 뽑기·타이머' },
+                { t: 'view', view: 'tools-class', param: null, label: '학급 도구 둘러보기', why: '자리 배치·발표자 뽑기·타이머' },
                 { t: 'view', view: 'timetable', param: null, label: '우리 반 시간표 입력', why: '홈에 지금 몇 교시인지와 종 알림 표시' },
                 { t: 'term', id: 83, why: '매일 하는 출결 처리' },
                 { t: 'situation', id: 'situation:06', why: '학생이 연락 없이 안 왔을 때' },
@@ -3369,7 +3373,7 @@ ${weeklyAgendaHTML()}
         function renderNavigator(container) {
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">교직 내비게이터</h2><p class="text-sm text-slate-500 dark:text-slate-400">목적에 따른 굵직한 교직 업무 플로우차트를 안내합니다.</p></div>
+                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">업무 순서</h2><p class="editorial-help">업무를 선택해 처리 단계와 관련 용어를 확인하세요.</p></div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         ${NAVIGATOR_COURSES.map(course => `
                             <div id="course-${escapeHTML(course.publicId)}" class="bg-white dark:bg-slate-800 p-6 rounded-3xl border ${router.param && (course.publicId === router.param || String(course.id) === router.param) ? 'border-emerald-500 ring-2 ring-emerald-500/20' : 'border-slate-200/80 dark:border-slate-700'} shadow-sm flex flex-col justify-between">
@@ -3435,7 +3439,7 @@ ${weeklyAgendaHTML()}
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">교사의 1년 타임라인</h2><p class="text-sm text-slate-500 dark:text-slate-400">월별 주요 학사 및 행정 업무를 체크하세요. ‘예시’ 표시는 학교마다 시기가 다를 수 있는 일반 업무예요.</p></div>
+                        <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">교사의 1년</h2><p class="text-sm text-slate-500 dark:text-slate-400">월별 주요 학사 및 행정 업무를 체크하세요. ‘예시’ 표시는 학교마다 시기가 다를 수 있는 일반 업무예요.</p></div>
                         <div class="flex flex-wrap gap-2">${tabBtn('all','전체 보기')}${tabBtn('homeroom','담임 업무')}${tabBtn('manager','부장·담당')}<button type="button" onclick="document.getElementById('year-month-${currentMonth}')?.scrollIntoView({ behavior: 'smooth', block: 'start' })" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition"><i class="fa-solid fa-location-dot"></i> 이번 달(${currentMonth}월)로</button></div>
                     </div>
 
@@ -3906,7 +3910,6 @@ ${weeklyAgendaHTML()}
             const s = getSettings();
             const fontScale = s.fontScale || '100';
             const office = currentOffice();
-            const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
             const field = 'w-full p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm outline-none mt-1';
             const card = 'bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 space-y-4';
 
@@ -3959,7 +3962,7 @@ ${weeklyAgendaHTML()}
 
 ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-settings-card" class="${card}">
                         <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-violet-500"></i> AI 문장 도우미 <span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300">선택 기능 · 기본 꺼짐</span></h3>
-                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">본인의 Anthropic API 키를 넣으면 생기부 문장 도우미와 기안·알림장 생성기에 <b>AI로 다듬기</b> 버튼이 생깁니다. 학급 명단의 이름, 학교·교사 이름, 전화번호·이메일·주민번호는 가린 뒤 보내고, 보내기 전에 보낼 내용을 보여 줍니다. 키는 이 기기에만 저장되고 백업 파일에는 들어가지 않습니다.</p>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">본인의 Anthropic API 키를 넣으면 생기부 문장 도우미와 문서 양식에 <b>AI로 다듬기</b> 버튼이 생깁니다. 학급 명단의 이름, 학교·교사 이름, 전화번호·이메일·주민번호는 가린 뒤 보내고, 보내기 전에 보낼 내용을 보여 줍니다. 키는 이 기기에만 저장되고 백업 파일에는 들어가지 않습니다.</p>
                         ${aiGetKey() ? `<div class="flex flex-wrap items-center gap-2"><span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">켜짐 · ${aiKeyRemembered() ? '이 기기에 기억 중' : '브라우저를 닫으면 지워짐'}</span><button type="button" onclick="forgetAiKey()" class="px-3 py-1.5 rounded-lg bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 text-xs font-bold">키 지우고 끄기</button></div>` : aiKeyFormHTML()}
                     </div>
 
@@ -3974,10 +3977,9 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                     </div>
 
                     <div class="${card}">
-                        <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-mobile-screen-button text-blue-500"></i> 앱으로 설치하기</h3>
-                        ${standalone ? `<p class="text-sm text-emerald-600 dark:text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check"></i> 지금 앱으로 실행 중이에요.</p>`
-                        : `<p class="text-xs text-slate-500 dark:text-slate-400">설치하면 홈 화면(바탕화면)에 아이콘이 생깁니다.</p><button type="button" data-ys-install class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm shadow"><i class="fa-solid fa-download"></i> 앱 설치</button>`}
-                        <p id="offline-status" class="text-xs text-slate-500 dark:text-slate-400">오프라인 준비 상태 확인 중…</p>
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-mobile-screen-button text-blue-500"></i> 앱 설치와 QR</h3>
+                        <button type="button" data-ys-install-guide class="editorial-action">앱 설치·QR 안내</button>
+                        <p id="offline-status" class="editorial-help">오프라인 준비 상태 확인 중…</p>
                     </div>
 
                     <div class="${card}">
@@ -3986,9 +3988,9 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                             <div>
                                 <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">색상 테마</p>
                                 <div class="flex flex-wrap gap-2">
-                                    <button onclick="setThemeMode('light')" class="px-4 py-2 rounded-xl text-xs font-bold transition ${currentThemeMode==='light'?'bg-blue-600 text-white shadow-md':'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}">라이트 모드</button>
-                                    <button onclick="setThemeMode('dark')" class="px-4 py-2 rounded-xl text-xs font-bold transition ${currentThemeMode==='dark'?'bg-blue-600 text-white shadow-md':'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}">다크 모드</button>
-                                    <button onclick="setThemeMode('system')" class="px-4 py-2 rounded-xl text-xs font-bold transition ${currentThemeMode==='system'?'bg-blue-600 text-white shadow-md':'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}">시스템 설정 따르기</button>
+                                    <button type="button" onclick="setThemeMode('light')" aria-pressed="${currentThemeMode === 'light'}" class="editorial-action">라이트 모드</button>
+                                    <button type="button" onclick="setThemeMode('dark')" aria-pressed="${currentThemeMode === 'dark'}" class="editorial-action">다크 모드</button>
+                                    <button type="button" onclick="setThemeMode('system')" aria-pressed="${currentThemeMode === 'system'}" class="editorial-action">시스템 설정 따르기</button>
                                 </div>
                             </div>
                             <div>
@@ -4789,7 +4791,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
         document.addEventListener('pointerdown', unlockAudio, { once: true });
 
         // ====================================================
-        // 3. 시간표 · 종 알림
+        // 3. 시간표·종 알림
         // ====================================================
         const TT_DAYS = ['월','화','수','목','금'];
         const DEFAULT_PERIODS = [['09:00','09:40'], ['09:50','10:30'], ['10:50','11:30'], ['11:40','12:20'], ['13:20','14:00'], ['14:10','14:50']];
@@ -4869,7 +4871,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             const sel = (key, val) => `<select onchange="setTTOption('${key}', Number(this.value))" class="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200">${[0,1,2,3,5,10].map(n => `<option value="${n}" ${val === n ? 'selected' : ''}>${n ? `${n}분 전` : '끄기'}</option>`).join('')}</select>`;
             container.innerHTML = `
                 <div class="space-y-6 animate-fade-in">
-                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">시간표 · 종 알림</h2><p class="text-sm text-slate-500 dark:text-slate-400">우리 반 시간표를 입력하면 홈 화면에 '지금 몇 교시인지'가 보이고, 수업 끝나기 전에 알려 드려요.</p></div>
+                    <div><h2 class="text-2xl font-bold tracking-tight mb-1 text-slate-900 dark:text-white">시간표·종 알림</h2><p class="text-sm text-slate-500 dark:text-slate-400">우리 반 시간표를 입력하면 홈 화면에 '지금 몇 교시인지'가 보이고, 수업 끝나기 전에 알려 드려요.</p></div>
 
                     <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-6 text-white shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
@@ -5401,7 +5403,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
         }
 
         // ====================================================
-        // 8. 학부모 상담 기록장 (기기 안에만 저장 · 암호화 백업)
+        // 8. 상담 기록장 (기기 안에만 저장 · 암호화 백업)
         // ====================================================
         const COUNSEL_WHO = ['학부모', '학생', '보호자(조부모 등)', '기타'];
         const COUNSEL_HOW = ['대면', '전화', '온라인(화상)', '문자·메시지'];
@@ -5711,8 +5713,15 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
         let menuTrigger = null;
         function openMobileMenu() {
             const m = document.getElementById('mobile-menu-modal'); if (!m) return;
+            if (!m.classList.contains('hidden')) return;
             menuTrigger = document.activeElement;
+            m.querySelectorAll('[data-menu-view]').forEach(button => {
+                if (button.dataset.menuView === router.current) button.setAttribute('aria-current', 'page');
+                else button.removeAttribute('aria-current');
+            });
             m.classList.remove('hidden');
+            m.querySelector('.editorial-menu-panel').scrollTop = 0;
+            document.querySelectorAll('[aria-controls="mobile-menu-modal"]').forEach(trigger => trigger.setAttribute('aria-expanded', 'true'));
             m.querySelector('.editorial-menu-head button')?.focus();
         }
         document.addEventListener('keydown', e => {
@@ -5730,6 +5739,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             const m = document.getElementById('mobile-menu-modal');
             if (!m || m.classList.contains('hidden')) return;
             m.classList.add('hidden');
+            document.querySelectorAll('[aria-controls="mobile-menu-modal"]').forEach(trigger => trigger.setAttribute('aria-expanded', 'false'));
             menuTrigger?.focus();
             menuTrigger = null;
         }
@@ -6264,26 +6274,27 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
         }
 
         const MENU_PAGES = [
-            ['home', '홈 대시보드', '1초 실행 도구 · 오늘의 안내 · 주요 일정'],
-            ['search', '교직어 검색', '대표 교직 용어 · 일상어·초성 검색 지원'],
-            ['situations', '이럴 땐 어떻게? (상황 가이드 15선)', '돌발 상황별 대응 순서 · 통화 스크립트 · 양식 연결'],
-            ['navigator', '교직 내비게이터', '업무 목적별 단계별 플로우차트'],
+            ['home', '홈', '1초 실행 도구 · 오늘의 안내 · 주요 일정'],
+            ['search', '검색', '대표 교직 용어 · 일상어·초성 검색 지원'],
+            ['situations', '상황 가이드', '돌발 상황별 대응 순서 · 통화 스크립트 · 양식 연결'],
+            ['navigator', '업무 순서', '업무별로 먼저 할 일과 처리 순서 확인'],
             ['map', '교직 지식맵', '연관 교직 개념 네트워크 탐색'],
-            ['tools-doc', '기안·알림장 생성기 (20종)', '빈칸 채우기로 가정통신문·알림장·품의서 완성'],
-            ['tools-class', '학급 경영 도구', '타이머 · 발표자 뽑기 · 자리 배치기'],
-            ['tools-board', '실전 태스크 보드', '행사·신학기·생기부 체크리스트 및 동학년 공유'],
+            ['tools-doc', '문서 양식', '빈칸 채우기로 가정통신문·알림장·품의서 완성'],
+            ['tools-class', '학급 도구', '타이머 · 발표자 뽑기 · 자리 배치기'],
+            ['tools-board', '업무 체크리스트', '행사·신학기·생기부 체크리스트 및 동학년 공유'],
             ['tools-edutech', '에듀테크 큐레이션', '수업 활용 AI 도구 및 추천 프롬프트'],
-            ['timetable', '시간표 · 종 알림', '주간 시간표 관리 및 수업 시작/종료 알림'],
+            ['timetable', '시간표·종 알림', '주간 시간표 관리 및 수업 시작/종료 알림'],
             ['tools-record', '생기부 문장 도우미', '학생별 작성 · 나이스 바이트 · 금지어 점검 · 엑셀 저장'],
-            ['counsel', '학부모 상담 기록장', '상담 기록 · 상담주간 시간표 자동 배정 · 암호화 백업'],
+            ['counsel', '상담 기록장', '상담 기록 · 상담주간 시간표 자동 배정 · 암호화 백업'],
             ['attendance', '출결 증빙 체크', '결석 종류별 서류 · 제출 마감 · 누락 목록'],
             ['start', '역할별 시작 코스', '신규·담임·전입·부장 맞춤 순서 안내'],
-            ['year', '교사의 1년 타임라인', '월별 주요 학사·행정 업무 체크 및 달력(.ics) 내보내기'],
+            ['year', '교사의 1년', '월별 주요 학사·행정 업무 체크 및 달력(.ics) 내보내기'],
             ['career', '교직 커리어맵', '수석교사 · 장학사 · 교감/교장 성장 경로'],
-            ['quiz', '교직력 테스트 & 오답 노트', '실무 상황 판단 퀴즈 및 틀린 문제 복습'],
+            ['quiz', '교직력 테스트', '실무 상황 판단 퀴즈 및 틀린 문제 복습'],
             ['card', '오늘의 교직카드', '하루 1개 대표 교직 키워드 학습'],
-            ['mybox', '나의 교직함 (설정 · 통합 백업)', '즐겨찾기 · 학급/교육청 설정 · 글자 크기 · 암호화 백업']
+            ['mybox', '나의 교직함', '즐겨찾기 · 학급/교육청 설정 · 글자 크기 · 암호화 백업']
         ];
+        function viewTitle(view) { return MENU_PAGES.find(([id]) => id === view)?.[1] || '교직 도구'; }
         let cmdPaletteItems = [];
         let cmdPaletteIdx = 0;
         function buildCommandPaletteItems(query) {
@@ -6306,7 +6317,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
                 all.push({ badge: '메뉴 이동', icon: 'fa-compass', color: 'text-indigo-500', title, sub: desc, run: () => router.navigate(id) });
             });
             DOC_TEMPLATES.forEach(t => {
-                all.push({ badge: '통신문/알림장', icon: 'fa-file-signature', color: 'text-violet-500', title: `[문서 서식] ${t.title}`, sub: '기안·알림장 생성기 · 빈칸 채우기로 3초 완성', run: () => router.navigate('tools-doc', t.id) });
+                all.push({ badge: '통신문/알림장', icon: 'fa-file-signature', color: 'text-violet-500', title: `[문서 서식] ${t.title}`, sub: '문서 양식 · 빈칸 채우기로 3초 완성', run: () => router.navigate('tools-doc', t.id) });
             });
             NAVIGATOR_COURSES.forEach(c => {
                 all.push({ badge: '실무 코스', icon: 'fa-route', color: 'text-emerald-600', title: `[실무 내비게이터] ${c.title}`, sub: `${c.category || '실무'} · ${(c.steps || []).join(' → ')}`, run: () => router.navigate('navigator', c.publicId) });
