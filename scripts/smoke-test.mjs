@@ -344,6 +344,102 @@ for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 
     });
     failures.push(...menuIssues.map(issue => `${viewport.width}px: ${issue}`));
   }
+  if (mobile) {
+    const restorationIssues = await page.evaluate(async useDark => {
+      const issues = [];
+      const previousTheme = Storage.get('theme_mode', 'light');
+      const previousScale = getSettings().fontScale || '100';
+      const app = document.getElementById('app-view');
+      const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+      const firstScreen = node => {
+        const bounds = node.getBoundingClientRect();
+        const area = app.getBoundingClientRect();
+        const nav = document.querySelector('.editorial-bottom-nav').getBoundingClientRect();
+        return bounds.top >= area.top - 1 && bounds.bottom <= Math.min(nav.top, area.bottom) + 1 &&
+          bounds.left >= area.left - 1 && bounds.right <= area.right + 1;
+      };
+
+      setThemeMode(useDark ? 'dark' : 'light', true);
+      router.navigate('home');
+      router.navigate('search');
+      const input = document.getElementById('main-search-input');
+      input.value = '물건 살 때';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      await wait(220);
+      const form = document.querySelector('#search-featured-result button:nth-child(2)');
+      if (!form) {
+        issues.push('typed search should offer the purchase form');
+      } else {
+        app.scrollTo({ top: 140, behavior: 'instant' });
+        const previousTop = app.scrollTop;
+        form.click();
+        await wait(140);
+        if (router.current !== 'tools-doc' || document.getElementById('doc-template-select').value !== 't12') issues.push('purchase form did not open');
+        history.back();
+        await wait(420);
+        const restored = document.getElementById('main-search-input');
+        if (router.current !== 'search' || restored?.value !== '물건 살 때' || previousTop < 1 || Math.abs(app.scrollTop - previousTop) > 3) {
+          issues.push(`browser Back did not restore typed search and scroll (${previousTop} → ${app.scrollTop})`);
+        }
+        if (location.hash.includes(encodeURIComponent('물건 살 때'))) issues.push('a typed search should stay out of the URL');
+      }
+
+      router.navigate('search', '전보');
+      const category = [...document.querySelectorAll('#search-filters button')].find(button => button.dataset.cat === '인사·발령');
+      if (category) {
+        category.click();
+        const sort = document.getElementById('sort-select');
+        sort.value = 'name';
+        sort.dispatchEvent(new Event('change'));
+        const filters = document.getElementById('search-filters');
+        filters.scrollLeft = 150;
+        const previousFiltersLeft = filters.scrollLeft;
+        app.scrollTo({ top: 220, behavior: 'instant' });
+        const previousTop = app.scrollTop;
+        router.navigate('year');
+        await wait(140);
+        history.back();
+        await wait(420);
+        if (document.querySelector('#search-filters [aria-pressed="true"]')?.dataset.cat !== '인사·발령' ||
+            document.getElementById('sort-select')?.value !== 'name' ||
+            document.getElementById('search-filters')?.scrollLeft !== previousFiltersLeft ||
+            Math.abs(app.scrollTop - previousTop) > 3) issues.push('Back restoration ' + JSON.stringify({ category: document.querySelector('#search-filters [aria-pressed=true]')?.dataset.cat, sort: document.getElementById('sort-select')?.value, left: [previousFiltersLeft, document.getElementById('search-filters')?.scrollLeft], top: [previousTop, app.scrollTop], saved: history.state?.searchResults }));
+      } else {
+        issues.push('search category controls missing');
+      }
+
+      saveSetting('fontScale', '120');
+      applyFontScale();
+      router.navigate('search', '학생이 다쳤어요');
+      await wait(300);
+      const action = document.querySelector('#search-featured-result button');
+      if (!action || !firstScreen(action)) issues.push('the primary search action must fit at 120%');
+      const searchActions = document.querySelectorAll('#search-filters button, .editorial-field-action:not(.hidden)');
+      if ([...searchActions].some(button => {
+        const box = button.getBoundingClientRect();
+        return box.width < 43.5 || box.height < 43.5;
+      })) issues.push('search filter and icon touch targets must be at least 44px');
+
+      document.getElementById('mob-menu').click();
+      const shortcut = document.getElementById('menu-settings-shortcut');
+      const panel = document.querySelector('.editorial-menu-panel');
+      const panelBottom = panel.getBoundingClientRect().bottom;
+      if (shortcut.getBoundingClientRect().bottom > panelBottom) issues.push('settings shortcut must be visible when the menu opens');
+      shortcut.click();
+      const menuHeader = document.querySelector('.editorial-menu-head');
+      for (const control of document.querySelectorAll('#menu-settings [data-theme-toggle], #menu-settings [data-font-toggle]')) {
+        const box = control.getBoundingClientRect();
+        if (box.top < menuHeader.getBoundingClientRect().bottom || box.bottom > panelBottom) issues.push('settings shortcut should reveal theme and font controls');
+      }
+      if (document.activeElement?.id !== 'menu-settings-title') issues.push('settings shortcut should move focus to the settings group');
+      closeMobileMenu();
+      saveSetting('fontScale', previousScale);
+      applyFontScale();
+      setThemeMode(previousTheme, true);
+      return issues;
+    }, viewport.width === 390);
+    failures.push(...restorationIssues.map(issue => `${viewport.width}px: ${issue}`));
+  }
   await page.close();
 }
 await browser.close(); server.close();
@@ -352,4 +448,4 @@ if (failures.length) {
   if (process.env.GITHUB_ACTIONS) failures.slice(0, 20).forEach(f => console.log(`::error title=smoke-test::${f.replace(/\n/g, ' ')}`)); // Actions 화면·API에 오류 내용 표시
   process.exit(1);
 }
-console.log(`Smoke test passed: ${views.length} screens × 3 viewport sizes, review panels, saved checklist, mobile home → search → guide, incident aliases, live checklist completion, menus in light and dark mode.`);
+console.log(`Smoke test passed: ${views.length} screens × 3 viewport sizes, review panels, saved checklist, mobile home → search → guide, incident aliases, live checklist completion, search Back restoration, 120% mobile controls, menus in light and dark mode.`);

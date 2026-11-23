@@ -1074,6 +1074,7 @@
             current: 'home', param: null,
             navigate(view, param = null) {
                 if (this.current === 'tools-record' && !saveRecordDraftNow()) return;
+                rememberSearchResults();
                 stopIntervals(); closePresent();
                 if (isModalOpen()) closeModal(false);
                 if (typeof closeCommandPalette === 'function') closeCommandPalette();
@@ -1101,10 +1102,10 @@
                     }
                     this.current = s.view; this.param = s.param;
                     Usage.view(s.view);
-                    this.render();
+                    this.render(true);
                 } catch(e) { this.renderError(e); }
             },
-            render() {
+            render(restoreSearch = false) {
                 try {
                     if (this.current === 'tools-record' && pendingRecordDraft && !saveRecordDraftNow()) return;
                      const navGroup = { start: 'quiz', navigator: 'search', map: 'search', 'tools-board': 'year', 'tools-doc': 'year', career: 'year', timetable: 'tools-class', 'tools-record': 'tools-class', counsel: 'tools-class', attendance: 'tools-class', card: 'quiz', 'tools-edutech': 'quiz' };
@@ -1129,7 +1130,7 @@
 
                     switch(this.current) {
                         case 'home': renderHome(viewContainer); break;
-                        case 'search': renderSearch(viewContainer, this.param); break;
+                        case 'search': renderSearch(viewContainer, this.param, restoreSearch ? history.state?.searchResults : null); break;
                         case 'situations': renderSituations(viewContainer); break;
                         case 'navigator': renderNavigator(viewContainer); break;
                         case 'map': renderMap(viewContainer); break;
@@ -1181,7 +1182,8 @@
             if (typeof closeMobileMenu === 'function') closeMobileMenu();
             router.current = s.view; router.param = s.param;
             Usage.view(s.view);
-            router.render(); scrollViewTop();
+            router.render(true);
+            if (s.view !== 'search') scrollViewTop();
         });
 
         // ----------------------------------------------------
@@ -2234,22 +2236,38 @@ ${weeklyAgendaHTML()}
 
         let searchDisplayLimit = 60; let currentCategoryFilter = '전체'; let selectedAutocompleteIdx = -1;
 
-        function renderSearch(container, initialQuery = '') {
-            const queryStr = (initialQuery && initialQuery !== 'null') ? initialQuery : '';
-            currentCategoryFilter = '전체'; searchDisplayLimit = 60;
-            if (queryStr) saveRecentSearch(queryStr);
+        function rememberSearchResults() {
+            if (router.current !== 'search' || parseHash().view !== 'search' || isModalOpen()) return;
+            const input = document.getElementById('main-search-input');
+            if (!input) return;
+            const searchResults = {
+                query: input.value,
+                category: currentCategoryFilter,
+                limit: searchDisplayLimit,
+                sort: document.getElementById('sort-select').value,
+                top: document.getElementById('app-view').scrollTop,
+                filtersLeft: document.getElementById('search-filters').scrollLeft,
+            };
+            try {
+                history.replaceState({ ...history.state, searchResults }, '');
+            } catch (_) { /* The current search remains usable if browser history is unavailable. */ }
+        }
+        const rememberSearchAfterIdle = debounce(rememberSearchResults, 400);
+
+        function renderSearch(container, initialQuery = '', savedResults = null) {
+            const queryStr = savedResults?.query ?? (initialQuery === 'null' ? '' : initialQuery ?? '');
+            currentCategoryFilter = savedResults?.category ?? '전체';
+            searchDisplayLimit = savedResults?.limit ?? 60;
+            if (queryStr && !savedResults) saveRecentSearch(queryStr);
 
             container.innerHTML = `
-                <div class="space-y-6 animate-fade-in">
-                    <div class="flex flex-wrap items-center justify-between gap-2">
-                        <div><h2 class="text-2xl font-bold mb-1 text-slate-900 dark:text-white">검색</h2><p class="editorial-help">교직 용어, 초성, 일상 문장으로 검색할 수 있어요.</p></div>
-                        <button type="button" onclick="openCalcModal()" class="px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-300 text-xs font-extrabold hover:bg-indigo-100"><i class="fa-solid fa-calculator mr-1"></i>출석·병가·평일 계산기</button>
-                    </div>
+                <div class="search-page${savedResults ? '' : ' animate-fade-in'}">
+                    <div><h2 class="text-2xl font-bold mb-1 text-slate-900 dark:text-white">검색</h2><p class="editorial-help">교직 용어, 초성, 일상 문장으로 검색할 수 있어요.</p></div>
                     <div class="editorial-search-panel p-4 rounded-2xl shadow-sm space-y-3 relative w-full">
                         <div class="relative">
-                            <input type="text" id="main-search-input" aria-label="교직어·상황 검색" enterkeyhint="search" value="${escapeHTML(queryStr)}" placeholder="${narrowScreen() ? '용어·초성·일상어 검색' : "용어, 초성, 일상어('학생이 다쳤어요', '물건 살 때') 검색..."}" class="editorial-field w-full pl-12 pr-20 py-3.5 rounded-xl" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
+                            <input type="text" id="main-search-input" aria-label="교직어·상황 검색" enterkeyhint="search" value="${escapeHTML(queryStr)}" placeholder="${narrowScreen() ? '용어·초성·일상어 검색' : "용어, 초성, 일상어('학생이 다쳤어요', '물건 살 때') 검색..."}" class="editorial-field w-full py-3.5 rounded-xl" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="autocomplete-box">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                            <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                            <div class="search-input-actions">
                                 <button type="button" onclick="clearSearch()" id="clear-search-btn" class="editorial-field-action hidden" aria-label="검색어 지우기"><i class="fa-solid fa-circle-xmark"></i></button>
                                 <button type="button" onclick="startVoiceSearch('main-search-input')" class="editorial-field-action" title="음성으로 검색" aria-label="음성으로 검색"><i class="fa-solid fa-microphone"></i></button>
                             </div>
@@ -2265,15 +2283,15 @@ ${weeklyAgendaHTML()}
                     </div>
                     <div id="search-smart-answer" class="hidden"></div>
                     <div id="search-featured-result" class="hidden"></div>
-                    <div class="flex flex-nowrap gap-2 overflow-x-auto pb-1 hide-scrollbar w-full">
-                        <button onclick="filterCategory('전체')" class="cat-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 text-white" data-cat="전체">전체 (${new Set(DB.map(item => canonicalTermId(item.id))).size})</button>
-                        ${Object.entries(ROLE_PRESETS).map(([rk, rv]) => `<button onclick="filterCategory('${rk}')" class="cat-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition" data-cat="${rk}">${escapeHTML(rv.label)}</button>`).join('')}
-                        ${FILTER_CATEGORIES.map(cat => `<button onclick="filterCategory('${cat}')" class="cat-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition" data-cat="${cat}">${cat}</button>`).join('')}
-                        <div class="shrink-0 w-2 md:w-4"></div>
+                    <div id="search-filters" class="search-filters" role="group" aria-label="검색 필터">
+                        <button type="button" onclick="filterCategory(this.dataset.cat)" class="cat-btn" data-cat="전체">전체 (${new Set(DB.map(item => canonicalTermId(item.id))).size})</button>
+                        ${Object.entries(ROLE_PRESETS).map(([key, preset]) => `<button type="button" onclick="filterCategory(this.dataset.cat)" class="cat-btn" data-cat="${escapeHTML(key)}">${escapeHTML(preset.label)}</button>`).join('')}
+                        ${FILTER_CATEGORIES.map(cat => `<button type="button" onclick="filterCategory(this.dataset.cat)" class="cat-btn" data-cat="${escapeHTML(cat)}">${escapeHTML(cat)}</button>`).join('')}
                     </div>
                     <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 px-1">
                         <span id="result-count" aria-live="polite">교직어 ${new Set(DB.map(item => canonicalTermId(item.id))).size}개</span>
                         <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                            <button type="button" onclick="openCalcModal()" class="search-tool">출석·병가 계산기</button>
                             <button type="button" onclick="printTermCheatSheet('search')" class="whitespace-nowrap shrink-0 px-2.5 sm:px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-bold hover:bg-slate-200 transition" title="현재 목록을 A4 1장 요약표로 인쇄"><i class="fa-solid fa-print mr-1"></i>요약표 인쇄</button>
                             <button onclick="const c=curatedTerms(); openDetail(c[Math.floor(Math.random()*c.length)].id)" class="whitespace-nowrap shrink-0 px-2.5 sm:px-3 py-1 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-lg font-bold transition"><i class="fa-solid fa-dice"></i> 랜덤</button>
                             <select id="sort-select" aria-label="검색 결과 정렬" onchange="handleSearch()" class="whitespace-nowrap shrink-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg px-2 sm:px-2.5 py-1 focus:outline-none"><option value="accuracy">관련도순</option><option value="name">가나다순</option></select>
@@ -2292,15 +2310,27 @@ ${weeklyAgendaHTML()}
                 input.addEventListener('keydown', handleAcKeydown);
                 input.addEventListener('blur', () => setTimeout(() => document.getElementById('autocomplete-box')?.classList.add('hidden'), 150));
             }
+            document.getElementById('sort-select').value = savedResults?.sort ?? 'accuracy';
+            syncSearchFilters();
             handleSearch();
+            document.getElementById('search-filters').scrollLeft = savedResults?.filtersLeft ?? 0;
+            container.scrollTo({ top: savedResults?.top ?? 0, behavior: 'instant' });
+            if (savedResults) requestAnimationFrame(() => {
+                if (input?.isConnected) container.scrollTo({ top: savedResults.top, behavior: 'instant' });
+            });
+            container.addEventListener('scroll', rememberSearchAfterIdle, { passive: true });
+        }
+
+        function syncSearchFilters() {
+            document.querySelectorAll('#search-filters button').forEach(button => {
+                button.setAttribute('aria-pressed', String(button.dataset.cat === currentCategoryFilter));
+            });
         }
 
         function filterCategory(cat) {
-            currentCategoryFilter = cat; searchDisplayLimit = 60;
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                if (btn.getAttribute('data-cat') === cat) btn.className = "cat-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 text-white";
-                else btn.className = "cat-btn shrink-0 whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition";
-            });
+            currentCategoryFilter = cat;
+            searchDisplayLimit = 60;
+            syncSearchFilters();
             handleSearch();
         }
 
@@ -2444,6 +2474,7 @@ ${weeklyAgendaHTML()}
         function handleSearch() {
             const input = document.getElementById('main-search-input');
             if (!input) return;
+            rememberSearchAfterIdle();
             const rawQuery = input.value;
             const query = normalizeSearch(rawQuery);
             const smartHTML = buildSmartSearchAnswerHTML(rawQuery);
@@ -2551,6 +2582,7 @@ ${weeklyAgendaHTML()}
             if (typeof window !== 'undefined' && 'speechSynthesis' in window && window.speechSynthesis.speaking && ttsSpeakingId !== item.id) {
                 try { window.speechSynthesis.cancel(); ttsSpeakingId = null; } catch (_) {}
             }
+            if (pushHash) rememberSearchResults();
             applyTermEnrichment(item);
             if (currentDetailId !== item.id) Usage.event('detail_open');
             if (!isModalOpen()) lastFocusedElement = document.activeElement; // 연관어로 연쇄 이동해도 처음 위치로 포커스 복귀
@@ -2784,10 +2816,12 @@ ${weeklyAgendaHTML()}
             // body는 원래 overflow-hidden 클래스이므로 'auto'로 덮어쓰지 않고 인라인 스타일만 제거
             document.body.style.overflow = ''; window.removeEventListener('keydown', handleModalKeyDown);
             document.title = `${viewTitle(router.current)} | 교직백서 1000`;
-            if(lastFocusedElement && document.body.contains(lastFocusedElement)) { try { lastFocusedElement.focus(); } catch(e) {} }
+            if(lastFocusedElement && document.body.contains(lastFocusedElement)) { try { lastFocusedElement.focus({ preventScroll: true }); } catch(e) {} }
             lastFocusedElement = null;
-            // 검색어(param)를 유지한 채 주소만 되돌림 → 닫을 때 검색 화면이 초기화되던 문제 해결
-            if(popHash && (window.location.hash.startsWith('#keyword=') || window.location.hash.startsWith('#term='))) history.replaceState(null, '', buildHash(router.current, router.param));
+            if (popHash && (window.location.hash.startsWith('#keyword=') || window.location.hash.startsWith('#term='))) {
+                history.replaceState(null, '', buildHash(router.current, router.param));
+                rememberSearchResults();
+            }
         }
 
         function shareKeyword(id) {
@@ -5746,7 +5780,7 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             m.classList.remove('hidden');
             m.querySelector('.editorial-menu-panel').scrollTop = 0;
             document.querySelectorAll('[aria-controls="mobile-menu-modal"]').forEach(trigger => trigger.setAttribute('aria-expanded', 'true'));
-            m.querySelector('.editorial-menu-head button')?.focus();
+            m.querySelector('[aria-label="전체 메뉴 닫기"]')?.focus();
         }
         document.addEventListener('keydown', e => {
             if (document.querySelector('.yq-back, .ysi-back')) return;
@@ -5759,6 +5793,15 @@ ${usageCardHTML(card)}${vaultCardHTML(card)}                    <div id="ai-sett
             if (e.shiftKey && document.activeElement === buttons[0]) { e.preventDefault(); buttons.at(-1).focus(); }
             else if (!e.shiftKey && document.activeElement === buttons.at(-1)) { e.preventDefault(); buttons[0].focus(); }
         });
+        function openMenuSettings() {
+            const panel = document.querySelector('#mobile-menu-modal .editorial-menu-panel');
+            const header = panel.querySelector('.editorial-menu-head');
+            const section = document.getElementById('menu-settings');
+            const top = panel.scrollTop + section.getBoundingClientRect().top - header.getBoundingClientRect().bottom - 8;
+            panel.scrollTo({ top, behavior: 'instant' });
+            document.getElementById('menu-settings-title').focus({ preventScroll: true });
+        }
+
         function closeMobileMenu() {
             const m = document.getElementById('mobile-menu-modal');
             if (!m || m.classList.contains('hidden')) return;

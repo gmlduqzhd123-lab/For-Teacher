@@ -116,7 +116,7 @@
     </div>
 
     <!-- 모바일 하단 네비게이션 -->
-    <nav class="editorial-bottom-nav md:hidden fixed bottom-0 left-0 right-0 z-40 backdrop-blur-md border-t px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex justify-around items-center" aria-label="모바일 빠른 메뉴">
+    <nav class="editorial-bottom-nav md:hidden border-t px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex justify-around items-center" aria-label="모바일 빠른 메뉴">
         <button onclick="router.navigate('home')" id="mob-home" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-house text-lg mb-1" aria-hidden="true"></i><span>홈</span></button>
         <button onclick="router.navigate('search')" id="mob-search" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-magnifying-glass text-lg mb-1" aria-hidden="true"></i><span>검색</span></button>
         <button onclick="router.navigate('situations')" id="mob-situations" class="mob-item flex flex-col items-center py-1 px-3 text-xs text-slate-500 dark:text-slate-400 transition-colors"><i class="fa-solid fa-triangle-exclamation text-lg mb-1" aria-hidden="true"></i><span>상황 가이드</span></button>
@@ -132,7 +132,13 @@
     <!-- 모든 기존 기능을 그룹으로 정리한 전체 메뉴 -->
     <div id="mobile-menu-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex" role="dialog" aria-modal="true" aria-labelledby="all-menu-title" onclick="if(event.target === this) closeMobileMenu()">
         <div class="editorial-menu-panel hide-scrollbar">
-            <div class="editorial-menu-head"><h2 id="all-menu-title">전체 메뉴</h2><button type="button" class="editorial-action" onclick="closeMobileMenu()" aria-label="전체 메뉴 닫기">닫기</button></div>
+            <div class="editorial-menu-head">
+                <h2 id="all-menu-title">전체 메뉴</h2>
+                <div class="editorial-menu-actions">
+                    <button type="button" id="menu-settings-shortcut" class="editorial-action" onclick="openMenuSettings()" aria-controls="menu-settings">설정</button>
+                    <button type="button" class="editorial-action" onclick="closeMobileMenu()" aria-label="전체 메뉴 닫기">닫기</button>
+                </div>
+            </div>
             <div class="editorial-menu-grid">
                 <section class="editorial-menu-group">
                     <h3>검색과 가이드</h3>
@@ -176,8 +182,8 @@
                         <button type="button" onclick="closeMobileMenu(); openGuideModal()">사용법</button>
                     </div>
                 </section>
-                <section class="editorial-menu-group">
-                    <h3>설정</h3>
+                <section id="menu-settings" class="editorial-menu-group" aria-labelledby="menu-settings-title">
+                    <h3 id="menu-settings-title" tabindex="-1">설정</h3>
                     <div class="editorial-menu-links">
                         <button type="button" data-menu-view="mybox" onclick="router.navigate('mybox')">나의 교직함</button>
                         <button type="button" onclick="closeMobileMenu(); openSetupWizard()">학급 설정</button>
