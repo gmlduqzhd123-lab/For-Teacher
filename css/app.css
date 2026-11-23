@@ -166,6 +166,7 @@
         .editorial-home-find { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
         .editorial-home-actions, .featured-search-actions { display: flex; flex-wrap: wrap; gap: 8px; }
         .editorial-home-resume { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; text-align: left; padding: 8px 12px; border: 1px solid var(--paper-line); border-radius: 8px; background: var(--paper-card); color: var(--paper-ink); font-size: 13px; }
+        .editorial-home-resume[hidden] { display: none; }
         .editorial-home-resume > :last-child { flex-shrink: 0; color: var(--paper-muted); }
         .editorial-sos { background: #fff1f2; border-color: #fecdd3; color: #9f1239; font-weight: 800; }
         .dark .editorial-sos { background: #4c1425; border-color: #854156; color: #ffe4eb; }

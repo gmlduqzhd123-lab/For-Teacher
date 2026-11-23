@@ -214,15 +214,15 @@
         let CONTENT_META = null;
         const SEARCH_LINKS = [
             { primary: 'workflow', words: ['현장체험학습 준비', '현장체험학습 준비해요'], terms: [120], situations: [9], courses: [1] },
-            { primary: 'situation', words: ['학생이 다쳤어요', '다침'], terms: [10, 1002], situations: [1], courses: [] },
-            { words: ['학폭'], terms: [4], situations: [3], courses: [5] },
+            { primary: 'situation', words: ['학생이 다쳤어요', '학생 다쳤어요', '애가 다쳤어요', '아이가 다쳤어요', '학생 부상', '피가 나요', '다침'], terms: [10, 1002], situations: [1], courses: [] },
+            { primary: 'situation', words: ['학폭', '학폭 신고', '학교폭력 신고'], terms: [4, 2005], situations: [3], courses: [5] },
             { primary: 'workflow', words: ['물건 살 때', '학급 물품 구입'], terms: [3], situations: [4], courses: [6] },
             { words: ['출석인정결석'], terms: [80], situations: [], courses: [] },
-            { words: ['애가 다쳤어요', '피가 나요', '응급처치', '병원 치료비', '공제회 청구', '보건실'], terms: [10, 50, 1002], situations: [1], courses: [] },
+            { words: ['응급처치', '병원 치료비', '공제회 청구', '보건실'], terms: [10, 50, 1002], situations: [1], courses: [] },
             { primary: 'situation', words: ['아파서 못가요', '출근 못해요', '몸살', '병가 내기', '진단서 기준', '조퇴할래요', '병원 다녀올게요'], terms: [1001, 82, 5], situations: [5], courses: [] },
             { words: ['내일 쉬고 싶어요', '연차 쓰기', '휴가 신청', '나이스 복무', '반차', '지참'], terms: [3001, 5, 82, 1001, 35], situations: [5], courses: [] },
             { words: ['부모님 전화', '엄마가 화났어요', '학부모 항의', '악성 민원', '폭언', '교권 침해', '밤에 전화'], terms: [97, 2003, 99], situations: [2, 8], courses: [9] },
-            { words: ['아이들이 싸웠어요', '다툼', '괴롭힘', '단톡방 욕설', '사이버폭력', '학폭 신고'], terms: [4, 2005], situations: [3], courses: [5] },
+            { words: ['아이들이 싸웠어요', '다툼', '괴롭힘', '단톡방 욕설', '사이버폭력'], terms: [4, 2005], situations: [3], courses: [5] },
             { primary: 'situation', words: ['애가 안 왔어요', '연락두절', '무단결석', '미등교', '결석계 서류', '아파서 결석'], terms: [80, 5], situations: [6], courses: [] },
             { words: ['가족여행', '교외체험학습 신청', '체험학습 보고서', '국내외 체험학습'], terms: [120, 80], situations: [9], courses: [1] },
             { words: ['독감 걸렸어요', '코로나', '수두', '전염병', '법정감염병', '등교중지'], terms: [131, 80, 50], situations: [10], courses: [] },
@@ -1206,6 +1206,17 @@
             return candidates[0] || null;
         }
 
+        function updateHomeSituationResume() {
+            const button = document.getElementById('home-resume-situation');
+            if (!button) return;
+            const active = getActiveSituationRun();
+            button.hidden = !active;
+            if (!active) return;
+            button.dataset.publicId = active.sit.publicId;
+            button.querySelector('[data-situation-title]').textContent = active.sit.title;
+            button.querySelector('[data-situation-progress]').textContent = `${active.pr.done}/${active.pr.total}`;
+        }
+
         function renderHome(container) {
             const month = new Date().getMonth() + 1;
             const monthlyTasks = YEAR_TASKS[month] || [];
@@ -1215,7 +1226,6 @@
             const studentCount = parseNameList(Storage.get('class_names', '')).length;
             const hasSetup = !!(s.schoolName || s.className || s.teacherName);
             const nowSt = getNowStatus();
-            const activeRun = getActiveSituationRun();
 
             const classDockItems = [
                 { icon: 'fa-stopwatch text-blue-600', title: '스마트 타이머', sub: '전자칠판 전체화면', action: "openPresent('timer')" },
@@ -1267,11 +1277,10 @@
                                 <input type="search" id="home-search-input" enterkeyhint="search" placeholder="예: 학생이 다쳤어요" autocomplete="off">
                                 <button type="submit">검색</button>
                             </form>
-                            ${activeRun ? `
-                                <button type="button" id="home-resume-situation" data-public-id="${escapeHTML(activeRun.sit.publicId)}" onclick="openSituationRun(this.dataset.publicId)" class="editorial-home-resume">
-                                    <span><b>이어서 처리하기</b> · ${escapeHTML(activeRun.sit.title)}</span>
-                                    <span>${activeRun.pr.done}/${activeRun.pr.total}</span>
-                                </button>` : ''}
+                            <button type="button" id="home-resume-situation" onclick="openSituationRun(this.dataset.publicId)" class="editorial-home-resume" hidden>
+                                <span><b>이어서 처리하기</b> · <span data-situation-title></span></span>
+                                <span data-situation-progress></span>
+                            </button>
                             <div class="editorial-home-actions">
                                 <button type="button" id="home-sos" class="editorial-action editorial-sos" onclick="openSosModal()">긴급 상황 SOS</button>
                                 <button type="button" class="editorial-action" onclick="router.navigate('navigator')">업무 순서</button>
@@ -1342,6 +1351,7 @@ ${weeklyAgendaHTML()}
                     <div class="editorial-recent"><span>자주 찾는 주제</span>${['관외 전보', '학교폭력', '품의', '안전사고', '출석인정결석', '생기부'].map(kw => `<button type="button" data-kw="${escapeHTML(kw)}" onclick="router.navigate('search', this.dataset.kw)">${escapeHTML(kw)}</button>`).join('')}</div>
                 </div>
             ` + FOOTER_HTML;
+            updateHomeSituationResume();
             startClock();
         }
 
@@ -2376,6 +2386,19 @@ ${weeklyAgendaHTML()}
             return scoredResults.map(result => result.item);
         }
 
+        function matchingSituations(query, linked = searchLinks(query)) {
+            const key = compactSearch(query);
+            if (!key) return SITUATIONS;
+            const linkedIds = linked?.situations || [];
+            const results = linkedIds.map(id => SITUATIONS.find(item => item.id === id)).filter(Boolean);
+            for (const item of SITUATIONS) {
+                if (linkedIds.includes(item.id)) continue;
+                const fields = [item.title, item.category, item.summary, ...item.relatedKeywords, ...item.firstCheck, ...item.steps, ...item.caution];
+                if (fields.some(value => compactSearch(value).includes(key))) results.push(item);
+            }
+            return results;
+        }
+
         function findFeaturedSearchResult(query, linked, terms, situations, courses) {
             if (!query || currentCategoryFilter !== '전체') return null;
             const key = compactSearch(query);
@@ -2435,7 +2458,7 @@ ${weeklyAgendaHTML()}
             const linked = searchLinks(query);
             const compactQuery = compactSearch(query);
             const matches = fields => fields.some(value => compactSearch(value).includes(compactQuery));
-            const situations = query ? SITUATIONS.filter(item => linked?.situations.includes(item.id) || matches([item.title, item.summary, ...item.relatedKeywords])) : [];
+            const situations = query ? matchingSituations(query, linked) : [];
             const courses = query ? NAVIGATOR_COURSES.filter(item => linked?.courses.includes(item.id) || matches([item.title, item.targetKeyword, ...item.steps])) : [];
             const featured = smartHTML ? null : findFeaturedSearchResult(query, linked, results, situations, courses);
             const featuredBox = document.getElementById('search-featured-result');
@@ -2804,9 +2827,7 @@ ${weeklyAgendaHTML()}
 
         function updateSituationsGrid(filterQuery) {
             const grid = document.getElementById('situations-grid'); if(!grid) return;
-            const q = filterQuery.toLowerCase();
-            const has = v => String(v || '').toLowerCase().includes(q);
-            const filtered = SITUATIONS.filter(sit => !q || has(sit.title) || has(sit.category) || has(sit.summary) || sit.steps.some(has) || sit.firstCheck.some(has) || sit.caution.some(has));
+            const filtered = matchingSituations(filterQuery);
             if(filtered.length === 0) { grid.innerHTML = `<div class="col-span-full text-center py-12 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700"><p class="text-slate-400 text-sm">검색 결과가 없습니다.</p></div>`; return; }
             grid.innerHTML = filtered.map(sit => {
                 const keyword = sit.relatedKeywords[0];
@@ -2923,12 +2944,15 @@ ${weeklyAgendaHTML()}
             const runs = situationRuns(); const run = runs[publicId]; if (!run) return;
             if (run.checks[key]) delete run.checks[key]; else run.checks[key] = new Date().toISOString();
             run.updatedAt = new Date().toISOString();
-            Storage.set('situation_runs', runs);
+            if (Storage.set('situation_runs', runs)) updateHomeSituationResume();
             openSituationRun(publicId);
         }
         function resetSituationRun(publicId) {
             if (!confirm('체크한 기록을 지우고 처음부터 다시 할까요?')) return;
-            const runs = situationRuns(); delete runs[publicId]; Storage.set('situation_runs', runs);
+            const runs = situationRuns();
+            delete runs[publicId];
+            if (!Storage.set('situation_runs', runs)) return;
+            updateHomeSituationResume();
             closeSetupWizard();
             if (router.current === 'situations') updateSituationsGrid(document.getElementById('situation-search-input')?.value.trim() || '');
             showToast('기록을 지웠습니다.');

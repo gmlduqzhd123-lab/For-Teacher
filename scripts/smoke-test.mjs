@@ -220,8 +220,43 @@ for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 
           const resume = document.getElementById('home-resume-situation');
           if (resume?.dataset.publicId !== 'situation:01' || resume.previousElementSibling !== document.getElementById('home-search-input').form || !firstScreen(resume)) {
             issues.push('unfinished checklist should appear immediately below home search');
+          } else {
+            const homeInput = document.getElementById('home-search-input');
+            homeInput.value = '작성 중인 검색어';
+            resume.click();
+            const unchecked = modal.querySelectorAll('input[data-step-key]:not(:checked)').length;
+            for (let step = 0; step < unchecked; step++) modal.querySelector('input[data-step-key]:not(:checked)')?.click();
+            if (!resume.hidden || modal.querySelectorAll('input[data-step-key]:not(:checked)').length) {
+              issues.push('completing the last check should hide the home resume action immediately');
+            }
+            modal.querySelector('[aria-label="닫기"]').click();
+            if (resume.getClientRects().length || homeInput.value !== '작성 중인 검색어' || document.getElementById(homeInput.id) !== homeInput) {
+              issues.push('closing a finished checklist should keep the home search input and remove the visible resume action');
+            }
           }
         }
+      }
+      const incidentQueries = [
+        ['다침', 'situation:01'],
+        ['학생 다쳤어요', 'situation:01'],
+        ['학폭', 'situation:03'],
+        ['학폭 신고', 'situation:03'],
+      ];
+      for (const [query, id] of incidentQueries) {
+        router.navigate('search', query);
+        const result = firstResult();
+        const action = result?.querySelector('button');
+        if (result?.dataset.resultKind !== 'situation' || action?.dataset.publicId !== id || !firstScreen(action)) {
+          issues.push(query + ': search should prioritize its situation guide on the first screen');
+        }
+      }
+      router.navigate('situations');
+      const situationsInput = document.getElementById('situation-search-input');
+      for (const [query, id] of incidentQueries) {
+        situationsInput.value = query;
+        situationsInput.dispatchEvent(new Event('input', { bubbles: true }));
+        await new Promise(resolve => setTimeout(resolve, 200));
+        if (document.querySelector('#situations-grid article')?.id !== 'situation-' + id) issues.push(query + ': situation guide search should show the matching guide first');
       }
       router.navigate('search', '물건 살 때');
       const purchasing = firstResult();
@@ -317,4 +352,4 @@ if (failures.length) {
   if (process.env.GITHUB_ACTIONS) failures.slice(0, 20).forEach(f => console.log(`::error title=smoke-test::${f.replace(/\n/g, ' ')}`)); // Actions 화면·API에 오류 내용 표시
   process.exit(1);
 }
-console.log(`Smoke test passed: ${views.length} screens × 3 viewport sizes, review panels, saved checklist, mobile home → search → guide, menus in light and dark mode.`);
+console.log(`Smoke test passed: ${views.length} screens × 3 viewport sizes, review panels, saved checklist, mobile home → search → guide, incident aliases, live checklist completion, menus in light and dark mode.`);
