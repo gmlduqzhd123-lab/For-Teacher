@@ -324,8 +324,8 @@ for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 
         headerInstall.click();
         const appGuide = document.querySelector('.ysi-card');
         const qrButton = appGuide?.querySelector('[data-qr]');
-        if (!qrButton || document.querySelector('.editorial-header [data-qr]') || contrast(appGuide.querySelector('.ysi-sub'), appGuide) < 4.5) {
-          issues.push(mode + ': app and QR guide is missing or hard to read');
+        if (!qrButton || !document.querySelector('.editorial-header [data-qr]') || contrast(appGuide.querySelector('.ysi-sub'), appGuide) < 4.5) {
+          issues.push(mode + ': app guide, guide QR or header QR is missing or hard to read');
           appGuide?.querySelector('[data-ysi-close]').click();
         } else {
           qrButton.click();
